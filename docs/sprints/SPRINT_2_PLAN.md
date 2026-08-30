@@ -12,6 +12,7 @@ Status: AWAITING TEAM-LEAD APPROVAL.
 5. **CVQBoost proxy pipeline:** weak-learner pool builder (dct/lg/knn/lda/shallow-xgb over single features and pairs per schedule), QUBO construction (J, C per Emami et al. eq. 5-6), proxy solve via non-negative ridge (identical objective; doubles as the H4 structural control), 100-trial tuning budget over pool composition, schedule, k, and lambda alpha; the free-tier (top-13, schedule 2, <= 100 vars) and full (top-17, schedule 3, 833 vars) configurations FROZEN and documented with variable counts.
 6. **Structural-control results** (non-negative ridge and L1 variants) on the same cells, feeding H4.
 7. **Hardware request prepared, not executed:** the B1 + G0b run list with exact call counts and expected metered seconds, presented for team-lead approval at sprint close.
+8. **F15 (team-lead assigned 2026-08-30): best-practices and ADR review from spamfilter-multi (~3h).** Review its ARCHITECTURE.md and docs/adr/ for (a) architecture/development/SE practices to copy and adapt here, (b) additional SE best-practice suggestions, (c) ML best practices to propose as ADRs (feature engineering, data curation, leakage prevention, training, evaluation), applied to this challenge. Output: docs/adr/ with template, initial ADRs for decisions already made, and a disposition list for the team lead.
 
 ## Explicitly out of scope
 

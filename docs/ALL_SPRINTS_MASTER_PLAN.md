@@ -107,6 +107,13 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 - Platform: N/A
 - Confirm portal login and note required submission fields into requirements-matrix A5
 
+**F15. Best-practices and ADR review from spamfilter-multi (~3h) Priority 11**
+- Phase: Experiments (assigned to Sprint 2 by the team lead, 2026-08-30)
+- Platform: docs
+- Review spamfilter-multi ARCHITECTURE.md and docs/adr/ for (1) architecture, development, and software-engineering practices to copy and adapt here, (2) additional SE best-practice suggestions, (3) ML best practices to propose as ADRs for this repo: feature engineering, data curation, leakage prevention, training, evaluation of results, applied to the challenge effort
+- Output: adapted docs/adr/ directory with an ADR template, initial ADRs for decisions already made, and a proposal list for team-lead disposition
+- Depends on: nothing
+
 ### HOLD Items (post-submission)
 
 **F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD**
