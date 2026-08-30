@@ -96,16 +96,12 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 
 ### External (team-lead-owned, parallel)
 
-**F11. QCi sponsorship letter send + follow-up (~30m) Priority 8**
-- Phase: External
-- Platform: N/A
-- Recipient + send (Outlook draft v3 ready); log date; follow-up cadence
-- Depends on: nothing (blocking B2/B3/B4 budget)
-
-**F12. Portal account verification (~15m) Priority 9**
+**F12. Portal account verification (~15m) Priority 9 -- ASSIGNED Sprint 2 (team-lead-owned)**
 - Phase: External
 - Platform: N/A
 - Confirm portal login and note required submission fields into requirements-matrix A5
+
+(F11 QCi sponsorship letter send: COMPLETED by the team lead 2026-08-30, per convention removed from candidates; history in SPRINT_2_PLAN.md Task H and CHECKLIST.md.)
 
 **F15. Best-practices and ADR review from spamfilter-multi (~3h) Priority 11**
 - Phase: Experiments (assigned to Sprint 2 by the team lead, 2026-08-30)

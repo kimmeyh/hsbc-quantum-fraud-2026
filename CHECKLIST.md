@@ -22,7 +22,7 @@ All development and debugging runs use the local proxy (the classical solve of t
 
 - [x] **C**: Sponsorship letter drafted, merged with H's draft (V3: two-account story, measured QPU costs, ~500 s balance, functional variable-limit ask); canonical in docs/qci-sponsorship-request.md
 - [x] **C**: Outlook draft "[v3]" saved to Drafts folder (delete v1/v2 drafts)
-- [ ] **H**: Add recipient name and address, confirm Phase 2 [TBD] ranges, send; log the send date here
+- [x] **H**: QCi letter taken over and handled by team lead; declared completed 2026-08-30 (F11)
 - [x] **C**: Phase 1 call-count arithmetic behind the ask (v1.1 run grid: 81 fits, ~2,300-2,600 QPU s vs ~3,000 requested); refresh the letter only if the frozen grid changes materially
 
 ## Stage 2: Experiment design (Aug 30 to 31)
