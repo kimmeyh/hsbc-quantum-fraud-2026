@@ -60,11 +60,7 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 - 3 strongest cells x 5 seeds; random-segment negative control machinery reused for fraud transfer
 - Depends on: QCi grant; F2 approval pattern
 
-**F6. Braket gate-based phase-active arm [SIM] (~0.5 day) Priority 20**
-- Phase: Experiments
-- Platform: Braket simulator
-- Sandwich/entangling encoding only; phase-complexity, Berry-connection, mode-MI diagnostics reported
-- Depends on: F4
+(F6 Braket gate-based arm: moved to HOLD per team-lead steering 2026-08-30; no Braket execution before submission/acceptance. The proposal covers Braket via the written [PROJ] Phase 2 plan plus Team Capability citing the team lead's near-expert AWS and hands-on Braket experience.)
 
 **F7. Results memo + gate review (~2h) Priority 22**
 - Phase: Experiments
@@ -116,6 +112,12 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 - Phase: Phase 2 (Nov 17 - Feb 28, if selected)
 - Platform: All
 - Braket hardware validation, IEEE-CIS at scale, calibrated deployment per the routing architecture; plan built on acceptance
+
+**F6. Braket gate-based phase-active arm (~0.5 day) Priority HOLD**
+- Phase: Phase 2 (if selected)
+- Platform: Braket simulator, then hardware
+- Sandwich/entangling encoding only (Inverse Born Rule: plain Ry is provably classical); phase-complexity, Berry-connection, mode-MI diagnostics reported
+- Team lead brings near-expert AWS + hands-on Braket experience; Phase 1 covers this as a written [PROJ] plan only
 
 **F14. eqc-models feedback package to QCi (~2h) Priority HOLD**
 - Phase: External

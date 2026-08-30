@@ -8,6 +8,31 @@ Do not stop to ask questions unless meeting the criteria in \docs\SPRINT_STOPPIN
 Sprint n Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
 
 ---------------------------------------------------------------------------------------------------------
+Sprint 3 Scope should include the below items only. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
+ #4 tuned GBDT trio + logistic, full and matched features, 10 seeds, results.json with CIs
+ #5 G0 scored as committed + Tuning Budget Equivalence table
+ #6 paired-delta SD measurement + MDE refinement decision (amendment path if warranted)
+ #7 CVQBoost proxy pipeline, free-tier and full configs frozen
+ #8 structural-control results (H4 baseline)
+ #9 B1+G0b hardware request prepared — zero metered seconds executed this sprint
+
+?  - F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14
+---------------------------------------------------------------------------------------------------------
+Sprint 2 Scope should include the below items only. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
+  - F11. QCi sponsorship letter send + follow-up (~30m) Priority 8
+I will handle this one from here. Consider it completed
+  - F12. Portal account verification (~15m) Priority 9
+  - F15
+
+Phase 3.7 approval request. Sprint 2 "Classical Evidence" (Sep 1–3), scope = your refinement selection F1 plus your assigned F15:
+
+  - A (#4) tuned GBDT trio + logistic, full and matched features, 10 seeds, results.json with CIs
+  - B (#5) G0 scored as committed + Tuning Budget Equivalence table
+  - C (#6) paired-delta SD measurement + MDE refinement decision (amendment path if warranted)
+  - D (#7) CVQBoost proxy pipeline, free-tier and full configs frozen
+  - E (#8) structural-control results (H4 baseline)
+  - F (#9) B1+G0b hardware request prepared — zero metered seconds executed this sprint
+
 
   Phase 8.4 — Refinement Pass 2: scope selection. Candidates per the authoritative format:
 
