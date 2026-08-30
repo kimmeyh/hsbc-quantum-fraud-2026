@@ -1,0 +1,16 @@
+# Claude Shannon's Fraud Catchers - experiment environment
+# Python 3.12 (C:\python312). Versions pinned at freeze time (Stage 7); ranges during development.
+numpy>=1.26,<2.0          # eqc-models ecosystem tested against numpy 1.26 (per qml-unlocked venv)
+pandas>=2.2
+scikit-learn>=1.5
+xgboost>=2.1
+lightgbm>=4.5
+catboost>=1.2
+imbalanced-learn>=0.12    # SMOTE for the Loke/Griffin reproduction arm only (prereg: no double-correction)
+shap>=0.46
+matplotlib>=3.9
+optuna>=4.0               # tuning with equal budgets per arm
+eqc-models==0.21.0        # QBoostClassifier (CVQBoost), QSVMClassifier; same version as qml-unlocked
+qci-client==5.0.2
+python-dotenv>=1.0
+joblib>=1.4

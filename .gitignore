@@ -1,0 +1,9 @@
+.venv/
+experiments/data/
+__pycache__/
+*.pyc
+.env
+experiments/results/*.png
+docs/source/*.pdf
+docs/papers/*.pdf
+.secrets-patterns.txt
