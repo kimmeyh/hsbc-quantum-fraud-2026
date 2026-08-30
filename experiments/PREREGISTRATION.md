@@ -4,7 +4,7 @@ Status: FROZEN, approved by the team lead 2026-08-30. Supersedes v1.0 after a st
 
 ## Amendment log
 
-- (freeze commit hash recorded in the first amendment after tagging)
+- 2026-08-30 (A1): Freeze recorded. Freeze commit `95751b9`, tag `prereg-freeze`. This amendment adds only this log line; no protocol content changed.
 
 ## 1. Central claims under test
 
