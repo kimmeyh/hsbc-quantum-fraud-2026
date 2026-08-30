@@ -1,6 +1,10 @@
-# Preregistration v1.1 (DRAFT, ready for freeze review)
+# Preregistration v1.1 (FROZEN)
 
-Status: DRAFT v1.1, 2026-08-30. Supersedes v1.0 after a structured review: two independent model reviews, a full-paper reading of the six methodology references, and a primary-source methods research pass (adjudication record: `docs/prereg-review-adjudication.md`; research report: `docs/research-baselines-best-practices.md`). Becomes binding when the team lead approves the freeze. After freezing, changes are recorded as dated amendments, never silent edits. Freeze target: Aug 31.
+Status: FROZEN, approved by the team lead 2026-08-30. Supersedes v1.0 after a structured review: two independent model reviews, a full-paper reading of the six methodology references, and a primary-source methods research pass (adjudication record: `docs/prereg-review-adjudication.md`; research report: `docs/research-baselines-best-practices.md`). From this point, changes are recorded as dated amendments per section 11, never silent edits. Analysis code in `experiments/src/` freezes at the same commit.
+
+## Amendment log
+
+- 2026-08-30 (A1): Freeze recorded. Freeze commit `95751b9`, tag `prereg-freeze`. This amendment adds only this log line; no protocol content changed.
 
 ## 1. Central claims under test
 

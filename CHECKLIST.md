@@ -33,9 +33,10 @@ All development and debugging runs use the local proxy (the classical solve of t
 - [x] **C**: Environment set up and smoke-tested: .venv (Python 3.12.10), XGBoost 3.4.1, LightGBM 4.7.0, CatBoost 1.2.10, scikit-learn 1.9.0, Optuna, SHAP, imbalanced-learn, eqc-models 0.21.0, qci-client 5.0.2; QBoostClassifier weak_cls knobs verified
 - [x] **C**: Harness skeleton written and smoke-tested on synthetic data only (experiments/src: data.py, tune.py, metrics.py)
 - [x] **C**: ULB data located on disk (`XGBvHQXGB\datasets\creditcard.csv` + x1 split); no download needed
-- [ ] **H+C**: Review and FREEZE `experiments/PREREGISTRATION.md` v1.1 (IN PROGRESS: H reading now; target Aug 31)
-- [ ] **C**: On freeze: `git init`, commit protocol + code, record commit hash in the prereg by amendment
-- [ ] **C**: Update `experiments/src/metrics.py` to the v1.1 statistical spec (stratified BCa 2,000 resamples, Wilson intervals, equal-mass ECE, dual operating points, paired-delta machinery) before any Stage 3 run
+- [x] **H+C**: PREREGISTRATION v1.1 FROZEN (H approved 2026-08-30; commit 95751b9, tag prereg-freeze, amendment A1)
+- [x] **C**: metrics.py at v1.1 spec, 11 known-answer tests passing (BCa vs scipy, Wilson vs statsmodels)
+- [x] **C**: Pilot variance run complete: ULB 10-seed untuned-XGB mean AP 0.8268, seed SD 0.0243, MDE(10) 0.0242 (experiments/PILOT_VARIANCE.md)
+- [x] **C**: Sprint 1 closed with all acceptance criteria evidenced (docs/sprints/SPRINT_1_PLAN.md); PR #1 ready for merge to develop
 - [x] **C**: SPECTRA datasets downloaded and staged into `experiments/data/spectra/` (all four CSVs, filenames match the FourierWall2 pipeline)
 - [x] **H**: Kaggle OAuth completed and IEEE-CIS rules accepted (Aug 30); legacy env-var credentials removed after they were found shadowing the OAuth cache
 - [x] **C**: IEEE-CIS downloaded and staged into `experiments/data/ieee-cis/` (train_transaction 651.7 MB, train_identity, test files, 1.3 GB total)

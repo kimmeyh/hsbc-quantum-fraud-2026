@@ -8,3 +8,5 @@ docs/source/*.pdf
 docs/papers/*.pdf
 .secrets-patterns.txt
 catboost_info/
+kaggle.json
+credentials.json
