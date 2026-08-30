@@ -42,7 +42,7 @@ Noting: this retrospective has proven highly effective at improving effectivenes
 - Minor function updates that need to be added to the next sprint plan
   - none
 - Function updates that can be added to the backlog for a future sprint
-  - none
+  - Can you investigate all the relevent information on quantumcomputinginc.com products, instructions, documentation, papers and articles to determine - is it reasonably possible to create a Dirac-3 simulator such that we could call the simulator QBoostClassifier for all the test runs prior to running on Dirac-3 using appropriately miniturized subsets of data (so that all test runs end in 10 mintues or less (or some other number we choose). It could use classical optimization python packages. Prioritize for after submission unless you think there is high value in doing this earlier.
 - Questions to be discussed before ending the sprint
   - none
 

@@ -32,6 +32,7 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 - G0 scored as committed (mean AP >= 0.85); Tuning Budget Equivalence table; paired-delta SD measurement with MDE refinement decision
 - CVQBoost proxy pipeline (weak pools, QUBO build, non-negative-ridge solve = structural control); free-tier and full configs frozen
 - B1+G0b hardware request PREPARED with call counts (not executed)
+- Inline scope additions from the approved 2026-08-30 disposition (retro Category 13 pattern): ADRs 0005-0010 authored as their modules are built; logging conventions (frd.* namespaces); full-pipeline smoke fixture; ARCHITECTURE.md with inline ADR cross-references; TESTING_STRATEGY.md adaptation; known-failure headers on long-running scripts (~4h total added)
 - Depends on: prereg freeze (done)
 
 **F2. Hardware campaign, first blocks (~0.5 day + approvals) Priority 12**
@@ -105,6 +106,12 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 - Review spamfilter-multi ARCHITECTURE.md and docs/adr/ for (1) architecture, development, and software-engineering practices to copy and adapt here, (2) additional SE best-practice suggestions, (3) ML best practices to propose as ADRs for this repo: feature engineering, data curation, leakage prevention, training, evaluation of results, applied to the challenge effort
 - Output: adapted docs/adr/ directory with an ADR template, initial ADRs for decisions already made, and a proposal list for team-lead disposition
 - Depends on: nothing
+
+**F16. Minimal CI: pytest + lint on PRs with smoke fixture (~30m) Priority 34**
+- Phase: Finalize
+- Platform: docs
+- GitHub Actions on PRs to develop; sub-minute; no dataset or metered access
+- Backlogged per the approved 2026-08-30 disposition (item 11)
 
 ### HOLD Items (post-submission)
 

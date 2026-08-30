@@ -10,3 +10,4 @@ docs/papers/*.pdf
 catboost_info/
 kaggle.json
 credentials.json
+!experiments/data/MANIFEST.json

@@ -23,3 +23,5 @@ Adopted from the spamfilter-multi ADR system (F15 review) with one addition: eve
 | [0002](0002-proxy-as-structural-control.md) | Proxy-as-structural-control dual-role design | Accepted | 2026-08-30 |
 | [0003](0003-dataset-provenance-and-storage.md) | Dataset acquisition, storage, and provenance handling | Accepted | 2026-08-30 |
 | [0004](0004-branch-and-carry-forward-model.md) | Branch and carry-forward model for sprint work | Accepted | 2026-08-30 |
+| 0005-0010 | Reserved per the approved 2026-08-30 disposition (leakage enforcement, feature-recipe registry, training discipline, results store, metrics single-implementation, splits/seeds provider); authored in the F1 campaign sprint as their modules are built | Proposed | - |
+| [0011](0011-secrets-and-credential-handling.md) | Secrets and credential handling | Accepted | 2026-08-30 |
