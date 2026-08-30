@@ -7,3 +7,4 @@ experiments/results/*.png
 docs/source/*.pdf
 docs/papers/*.pdf
 .secrets-patterns.txt
+catboost_info/
