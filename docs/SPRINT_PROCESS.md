@@ -12,7 +12,9 @@ develop   (integration; every sprint PR targets this)
 feature/YYYYMMDD_Sprint_N   (one branch per sprint; pushed continuously; PR to develop at sprint end)
 ```
 
-Remote: private GitHub repo under kimmeyh until the Stage 7 confidentiality scan; the public reproducibility package is published separately at Stage 7.
+Remote: private GitHub repo under kimmeyh until the Stage 7 confidentiality scan; the public reproducibility package is published separately at Stage 7. `develop` is the repository default branch; every PR opens against it from a feature branch.
+
+**Branch carry-forward rule (adopted from spamfilter-multi Phase 6.6):** immediately after being notified that a sprint PR merged to `develop`, create the NEXT sprint's branch FROM the just-merged sprint branch's head, not from `develop`. Commit any post-merge work (retro fixes, checklist reconciliation, next-sprint planning, files changed after the PR) on that new branch; it reaches `develop` through the next sprint's PR. This carries changed files forward without temporary PRs and without stranding work on a merged branch. NEVER stash to carry forward; create-branch-then-commit is the only sanctioned flow. Recovery if work was committed to the merged branch after its PR: create the next branch off `develop`, cherry-pick the stranded commits onto it, reset the merged branch to its pushed head.
 
 ## Sprint lifecycle
 
