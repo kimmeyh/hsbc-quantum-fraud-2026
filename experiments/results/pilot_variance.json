@@ -1,0 +1,45 @@
+{
+ "purpose": "seed-variance pilot (NOT the G0 tuned run)",
+ "dataset": "ULB",
+ "protocol": "stratified 60/20/20",
+ "seeds": [
+  42,
+  43,
+  44,
+  45,
+  46,
+  47,
+  48,
+  49,
+  50,
+  51
+ ],
+ "duplicates_removed": 1081,
+ "pilot_params": {
+  "n_estimators": 2000,
+  "learning_rate": 0.05,
+  "max_depth": 8,
+  "subsample": 0.9,
+  "colsample_bytree": 0.9,
+  "min_child_weight": 5,
+  "tree_method": "hist",
+  "eval_metric": "aucpr",
+  "early_stopping_rounds": 50
+ },
+ "test_ap_per_seed": [
+  0.8428376663992208,
+  0.8238462803310388,
+  0.8463377562165021,
+  0.8438152813003933,
+  0.8249031929451146,
+  0.8221623019418528,
+  0.8526340695606738,
+  0.8387412211225396,
+  0.7747727256291496,
+  0.7976309927027594
+ ],
+ "mean_ap": 0.8267681488149246,
+ "sd_ap": 0.024335458974631883,
+ "mde_10_seeds_alpha05_power80": 0.024206815289830753,
+ "evidence_tag": "[SIM]"
+}

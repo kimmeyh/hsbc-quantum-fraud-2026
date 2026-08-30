@@ -13,7 +13,13 @@ import pandas as pd
 from sklearn.feature_selection import mutual_info_classif
 
 ULB_CSV = Path(r"D:\Data\Harold\github\XGBvHQXGB\datasets\creditcard.csv")
-SPECTRA_DIR = Path(__file__).resolve().parents[1] / "data" / "spectra"
+_DATA = Path(__file__).resolve().parents[1] / "data"
+SPECTRA_DIR = _DATA / "spectra"
+IEEE_CIS_DIR = _DATA / "ieee-cis"
+
+SPECTRA_NAMES = ("energy_steel", "oilgas_gasturbine", "maintenance_ai4i", "telecom_churn")
+SPECTRA_ROWS = {"energy_steel": 35040, "oilgas_gasturbine": 36733,
+                "maintenance_ai4i": 10000, "telecom_churn": 3150}
 
 STRATIFIED_SEEDS = (42, 43, 44, 45, 46)
 LABEL_COL = "Class"
@@ -74,6 +80,73 @@ def top_k_features(X_train: pd.DataFrame, y_train: pd.Series, k: int, seed: int 
     mi = mutual_info_classif(X_train, y_train, random_state=seed)
     order = np.argsort(mi)[::-1]
     return [X_train.columns[i] for i in order[:k]]
+
+
+_CIS_STRING_COLS = frozenset(
+    ["ProductCD", "card4", "card6", "P_emaildomain", "R_emaildomain",
+     "DeviceType", "DeviceInfo"]
+    + [f"M{i}" for i in range(1, 10)]
+    + [f"id_{i:02d}" for i in range(12, 39)]
+)
+
+
+def _cis_dtypes(path) -> dict:
+    """float32 for every numeric column (halves memory vs pandas' float64
+    default, the standard practice for this dataset); strings stay object."""
+    cols = pd.read_csv(path, nrows=0).columns
+    dt = {}
+    for c in cols:
+        if c == "TransactionID":
+            dt[c] = "int32"
+        elif c == "isFraud":
+            dt[c] = "int8"
+        elif c not in _CIS_STRING_COLS:
+            dt[c] = "float32"
+    return dt
+
+
+def load_ieee_cis_train() -> pd.DataFrame:
+    """IEEE-CIS train: transaction left-joined with identity on TransactionID.
+    Feature engineering (D-normalization, UID aggregates) happens downstream
+    inside folds per PREREGISTRATION v1.1 section 5, never here."""
+    tx_path = IEEE_CIS_DIR / "train_transaction.csv"
+    id_path = IEEE_CIS_DIR / "train_identity.csv"
+    tx = pd.read_csv(tx_path, dtype=_cis_dtypes(tx_path))
+    ident = pd.read_csv(id_path, dtype=_cis_dtypes(id_path))
+    df = tx.merge(ident, on="TransactionID", how="left")
+    assert len(df) == 590540, f"unexpected IEEE-CIS train rows: {len(df)}"
+    assert "isFraud" in df.columns
+    return df
+
+
+def load_spectra(name: str) -> pd.DataFrame:
+    """One SPECTRA dataset with the leak-free contract: {target, target_real,
+    in_pocket} are labels/flags, never features (FourierWall2 leakage lesson)."""
+    assert name in SPECTRA_NAMES, name
+    df = pd.read_csv(SPECTRA_DIR / f"spectra_{name}.csv")
+    assert len(df) == SPECTRA_ROWS[name], f"{name}: unexpected rows {len(df)}"
+    for col in ("target", "target_real", "in_pocket"):
+        assert col in df.columns, f"{name}: missing {col}"
+    return df
+
+
+def spectra_features(df: pd.DataFrame) -> list[str]:
+    return [c for c in df.columns if c not in ("target", "target_real", "in_pocket")]
+
+
+def validate_all() -> dict:
+    """Sprint 1 acceptance check: every dataset loads with validated shape."""
+    report = {}
+    ulb = load_ulb()
+    report["ulb"] = {"rows": len(ulb), "frauds": int(ulb[LABEL_COL].sum())}
+    cis = load_ieee_cis_train()
+    report["ieee_cis"] = {"rows": len(cis), "cols": cis.shape[1],
+                          "fraud_rate": round(float(cis["isFraud"].mean()), 4)}
+    for name in SPECTRA_NAMES:
+        s = load_spectra(name)
+        report[f"spectra_{name}"] = {"rows": len(s),
+                                     "features": len(spectra_features(s))}
+    return report
 
 
 def qubo_vars(n_features: int, schedule: int) -> int:
