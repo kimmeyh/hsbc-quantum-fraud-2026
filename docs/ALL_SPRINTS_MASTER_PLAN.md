@@ -1,0 +1,120 @@
+# All Sprints Master Plan
+
+Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure. This document is IN THE REPOSITORY and persists across conversations. Read it before every sprint (Phase 1/2), update it after every sprint (Phase 7.7/8.2).
+
+## Maintenance Guide
+
+- **After each sprint (Phase 7.7 / 8.2)**: update "Last Completed Sprint"; add the sprint's row to "Past Sprint Summary" once its SUMMARY doc exists; prune shipped items from "Next Sprint Candidates"; add retro Category-14 items with new F#s.
+- **During Sprint N+1 planning (Phase 3.2.1)**: create `docs/sprints/SPRINT_N_SUMMARY.md` for the just-finished sprint and link it here.
+- **IDs**: F# for all features/process/tech-debt items; next available number; never reuse.
+- **Estimates**: minutes/hours from recorded actuals; `[no-history]` where uncalibrated.
+- The repo-root `CHECKLIST.md` remains the submission-wide deliverable ledger; this document is the sprint-scoping view over it. Keep them consistent; CHECKLIST wins on deliverable truth, this file wins on sprint sequencing.
+
+## Past Sprint Summary
+
+| Sprint | Summary doc | Status | Duration |
+|---|---|---|---|
+| 1 | docs/sprints/SPRINT_1_SUMMARY.md | [OK] Complete | ~1 day (Aug 30, 2026) |
+
+## Last Completed Sprint
+
+**Sprint 1: Freeze and Foundations** (Aug 30, 2026; PR #1 merged to develop, develop merged to main via PR #3).
+Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metrics.py at the v1.1 statistical spec (11 known-answer tests); loaders validated across ULB/IEEE-CIS/SPECTRA; pilot variance run (mean AP 0.8268, seed SD 0.0243, MDE(10) 0.0242 [SIM]); repo infrastructure (private remote, branch model, Copilot instructions, pre-commit confidentiality hook). Zero metered seconds. Retro: docs/sprints/SPRINT_1_RETROSPECTIVE.md (lightweight protocol; full 14x4 applies from Sprint 2).
+
+## Next Sprint Candidates
+
+### Experiments (Stage 3 of the master timeline; submission-ready Sep 8)
+
+**F1. Classical evidence campaign (~1.5 days) Priority 10**
+- Phase: Experiments
+- Platform: ULB
+- Tuned XGB/LGBM/CatBoost (100 Optuna trials each) + logistic; full and matched features; 10 seeds; BCa CIs into results.json
+- G0 scored as committed (mean AP >= 0.85); Tuning Budget Equivalence table; paired-delta SD measurement with MDE refinement decision
+- CVQBoost proxy pipeline (weak pools, QUBO build, non-negative-ridge solve = structural control); free-tier and full configs frozen
+- B1+G0b hardware request PREPARED with call counts (not executed)
+- Depends on: prereg freeze (done)
+
+**F2. Hardware campaign, first blocks (~0.5 day + approvals) Priority 12**
+- Phase: Experiments
+- Platform: Dirac-3
+- Execute B1 (free-tier ULB) and G0b (proxy fidelity) on team-lead approval per block; B2/B3 if the QCi grant lands
+- results.json [HW] rows; retry discipline per frozen protocol
+- Depends on: F1; team-lead approval; QCi grant for B2/B3
+
+**F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14**
+- Phase: Experiments
+- Platform: IEEE-CIS
+- Preregistered feature pass (D-normalization, UID excluded, named aggregates, V-reduction); leakage controls incl. shuffled-label positive control
+- GroupKFold-by-month rolling origin; classical arms + proxy CVQBoost on the reduced set; H3 ladder cells
+- Depends on: F1
+
+**F4. QFE phase arms + order-matched twins (~0.5 day) Priority 16**
+- Phase: Experiments
+- Platform: ULB, IEEE-CIS
+- Fourier Wall recipe applied identically to all arms; trained-frequency GAM/GA2M/JOINT twins in every H6 cell
+- Depends on: F1
+
+**F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority 18**
+- Phase: Experiments
+- Platform: SPECTRA, Dirac-3
+- 3 strongest cells x 5 seeds; random-segment negative control machinery reused for fraud transfer
+- Depends on: QCi grant; F2 approval pattern
+
+**F6. Braket gate-based phase-active arm [SIM] (~0.5 day) Priority 20**
+- Phase: Experiments
+- Platform: Braket simulator
+- Sandwich/entangling encoding only; phase-complexity, Berry-connection, mode-MI diagnostics reported
+- Depends on: F4
+
+**F7. Results memo + gate review (~2h) Priority 22**
+- Phase: Experiments
+- Platform: docs
+- One-page results memo; gate table scored as committed; headline promotion decision per the thesis rule (team-lead review, Sep 4 target)
+- Depends on: F1-F4 (F5/F6 as available)
+
+### Paper (Stages 4-6)
+
+**F8. Outline + Draft V1 (~1 day) Priority 30**
+- Phase: Paper
+- Platform: docs
+- Seven rubric-mapped sections + appendices; [HW]/[SIM]/[PROJ] tags; prevalence beside every AUPRC; references from docs/references.md
+- Depends on: F7; team-lead outline approval
+
+**F9. Adversarial reviews V2/V3 + rubric pass (~0.5 day) Priority 32**
+- Phase: Paper
+- Platform: docs
+- Domain pass, quantum pass (encoding diagnostics, evidence-tag audit), rubric scoring; fix lowest criterion
+- Depends on: F8
+
+### Finalize (Stages 7-8)
+
+**F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 40**
+- Phase: Finalize
+- Platform: docs
+- Every number vs results.json; repo-wide confidential-string scan (fourierwall2 reference files file-by-file); requirements-matrix walk; public reproducibility repo; team-lead final PDF + portal submission, receipt archived
+- Depends on: F8, F9
+
+### External (team-lead-owned, parallel)
+
+**F11. QCi sponsorship letter send + follow-up (~30m) Priority 8**
+- Phase: External
+- Platform: N/A
+- Recipient + send (Outlook draft v3 ready); log date; follow-up cadence
+- Depends on: nothing (blocking B2/B3/B4 budget)
+
+**F12. Portal account verification (~15m) Priority 9**
+- Phase: External
+- Platform: N/A
+- Confirm portal login and note required submission fields into requirements-matrix A5
+
+### HOLD Items (post-submission)
+
+**F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD**
+- Phase: Phase 2 (Nov 17 - Feb 28, if selected)
+- Platform: All
+- Braket hardware validation, IEEE-CIS at scale, calibrated deployment per the routing architecture; plan built on acceptance
+
+**F14. eqc-models feedback package to QCi (~2h) Priority HOLD**
+- Phase: External
+- Platform: Dirac-3
+- Promised in the sponsorship letter; assemble after the hardware campaign
