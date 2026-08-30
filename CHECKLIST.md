@@ -36,7 +36,9 @@ All development and debugging runs use the local proxy (the classical solve of t
 - [ ] **H+C**: Review and FREEZE `experiments/PREREGISTRATION.md` v1.1 (IN PROGRESS: H reading now; target Aug 31)
 - [ ] **C**: On freeze: `git init`, commit protocol + code, record commit hash in the prereg by amendment
 - [ ] **C**: Update `experiments/src/metrics.py` to the v1.1 statistical spec (stratified BCa 2,000 resamples, Wilson intervals, equal-mass ECE, dual operating points, paired-delta machinery) before any Stage 3 run
-- [ ] **H**: Kaggle downloads: IEEE-CIS (requires accepting competition rules) into `experiments/data/ieee-cis/`; the four SPECTRA datasets into `experiments/data/spectra/` (needed for block B4)
+- [x] **C**: SPECTRA datasets downloaded and staged into `experiments/data/spectra/` (all four CSVs, filenames match the FourierWall2 pipeline)
+- [ ] **H**: Kaggle competitions auth: run `kaggle auth login` (OAuth) or set the new-style KAGGLE_API_TOKEN from kaggle.com/settings/api; then accept IEEE-CIS competition rules in browser
+- [ ] **C**: Download and stage IEEE-CIS into `experiments/data/ieee-cis/` once competitions auth works
 
 ## Stage 3: Experiments (Sep 1 to 4)
 
