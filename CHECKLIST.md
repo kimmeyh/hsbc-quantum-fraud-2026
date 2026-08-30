@@ -37,8 +37,9 @@ All development and debugging runs use the local proxy (the classical solve of t
 - [ ] **C**: On freeze: `git init`, commit protocol + code, record commit hash in the prereg by amendment
 - [ ] **C**: Update `experiments/src/metrics.py` to the v1.1 statistical spec (stratified BCa 2,000 resamples, Wilson intervals, equal-mass ECE, dual operating points, paired-delta machinery) before any Stage 3 run
 - [x] **C**: SPECTRA datasets downloaded and staged into `experiments/data/spectra/` (all four CSVs, filenames match the FourierWall2 pipeline)
-- [ ] **H**: Kaggle competitions auth: run `kaggle auth login` (OAuth) or set the new-style KAGGLE_API_TOKEN from kaggle.com/settings/api; then accept IEEE-CIS competition rules in browser
-- [ ] **C**: Download and stage IEEE-CIS into `experiments/data/ieee-cis/` once competitions auth works
+- [x] **H**: Kaggle OAuth completed and IEEE-CIS rules accepted (Aug 30); legacy env-var credentials removed after they were found shadowing the OAuth cache
+- [x] **C**: IEEE-CIS downloaded and staged into `experiments/data/ieee-cis/` (train_transaction 651.7 MB, train_identity, test files, 1.3 GB total)
+- [x] **C**: Sprint process adopted (docs/SPRINT_PROCESS.md); private GitHub remote live at github.com/kimmeyh/hsbc-quantum-fraud-2026 with main/develop branches; Sprint 1 plan drafted awaiting approval
 
 ## Stage 3: Experiments (Sep 1 to 4)
 
