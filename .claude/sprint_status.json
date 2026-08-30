@@ -1,12 +1,12 @@
 {
   "current_sprint": {
     "number": 2,
-    "name": "Classical Evidence",
+    "name": "Process Foundations and External Readiness",
     "branch": "feature/20260831_Sprint_2",
     "status": "phase_1_backlog_refinement",
     "plan_doc": "docs/sprints/SPRINT_2_PLAN.md",
     "pr": 2,
-    "plan_approved": false, "github_issues": [4,5,6,7,8,9,10]
+    "plan_approved": false, "github_issues": [10,11]
   },
   "last_completed_sprint": {
     "number": 1,
