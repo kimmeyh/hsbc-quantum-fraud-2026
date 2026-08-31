@@ -18,6 +18,38 @@ Sprint 3 Scope should include the below items only. Please complete sprint plann
 
 ?  - F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14
 ---------------------------------------------------------------------------------------------------------
+Architecture recommendations:
+OK - that makes sense as we are each here to make the other as successul as possible - TEAM!  |
+approved as recommended:
+  1. ADR-0005 Leakage enforcement by architecture + test_policy.py pinning frozen constants (step-wise AP only, seed lists, results schema,
+     no-resampling) — 75m [fold into F1 sprint, where the modules it governs get built]
+  2. ADR-0006 Feature-recipe registry (named, hashed, tested recipes; makes identical-QFE-across-arms structurally true) — 40m [F1 sprint]
+  3. ADR-0007 Training discipline for long/metered jobs (Optuna SQLite resumability, per-trial persistence, mechanical retry-twice accounting,
+     timing capture) — 45m [F1 sprint]
+  4. ADR-0008 Append-only results store + per-run env capture + hashed config files under experiments/configs/ — 60m [F1 sprint; this is what
+     makes config_hash real]
+  5. ADR-0009 Single-implementation metrics with evidence-tag propagation (tag flows config→results→tables, no manual retagging) — 30m [F1
+     sprint]
+  6. ADR-0010 Splits/seeds sole-provider module (guarantees paired deltas share identical test rows by construction) — 25m [F1 sprint]
+  7. Statistical-validity self-review checklist (fixed, in-repo, run before any gate evidence is recorded) — 30m [apply now: cheap, and it
+     guards everything downstream]
+  8. CHANGELOG.md with same-commit policy — 15m [apply now]
+  9. Data manifest + verifier script (ADR-0003 commits to it; this is the implementation) — 30m [apply now]
+  10. Logging conventions (frd.* namespaces, never log rows) — 20m [F1 sprint]
+  11. Minimal CI (pytest + lint on PRs, smoke fixture, sub-minute) — 30m [backlog; nice, not critical-path]
+  12. Smoke fixture running the full pipeline end-to-end — 30m [F1 sprint]
+  13. ARCHITECTURE.md for this repo — we don't have one at all; source practice is inline ADR cross-references per component — 45m [fold into
+      F1 sprint, once the CVQBoost/proxy modules exist to describe]
+  14. QUALITY_STANDARDS.md adaptation — doc headers (Purpose/Audience/Last Updated), the 40k-char cap with extract-and-cross-reference,
+      no-contractions/no-emoji, plus an explicit KISS/YAGNI statement for analysis code — 25m [apply now]
+  15. TESTING_STRATEGY.md adaptation — AAA structure, test independence, isolated-branch guard tests (one test per safety-critical branch where
+      that branch is the only possible decider — directly applicable to leakage controls), scratch-probes-never-in-repo — 30m [F1 sprint]
+  16. ADR: Secrets and credential handling — records what we already practice (env/OS-native storage, gitignore-pinned, hook-enforced, the
+      Kaggle/QCi token story), spamfilter ADR-0008/0027 adapted; this is the security ADR you'd expect and I failed to list — 25m [apply now]
+  17. PowerShell-native automation convention (spamfilter ADR-0017; learned on this exact machine) — 10m [apply now, one section in #14]
+  18. Known-failure headers on long-running scripts (Dirac error classes, retry rule, documented before anyone re-investigates) — 15m [F1
+      sprint]
+
 Sprint 2 Scope should include the below items only. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
   - F11. QCi sponsorship letter send + follow-up (~30m) Priority 8
 I will handle this one from here. Consider it completed

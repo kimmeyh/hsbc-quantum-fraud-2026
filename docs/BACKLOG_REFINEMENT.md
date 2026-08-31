@@ -19,6 +19,8 @@ Prepare (read master plan + repo CHECKLIST, gather velocity actuals) -> Review (
 
 Every item carries a real registered ID: **F#** for features/process/tech-debt items (next available number from ALL_SPRINTS_MASTER_PLAN.md), or **Issue #N** for GitHub issues without an F#. Never invent unregistered slugs.
 
+**F#-only rule (team lead, Sprint 2 retro, 2026-08-30)**: in every refinement presentation and candidate slate, items are referenced by their backlog identifier (F#) and NOTHING else. GitHub issue numbers, task letters, and card references never appear in a candidate presentation; they belong on sprint cards and PR bodies only.
+
 ## Backlog Presentation Format (AUTHORITATIVE)
 
 **Summary Index first** -- every item's header line only, in presentation order, HOLD items one line each in the same full shape (never a bare ID list):

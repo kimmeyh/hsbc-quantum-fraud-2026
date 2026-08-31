@@ -92,12 +92,14 @@ Team-lead preamble, verbatim: "this retrospective has proven highly effective at
 
 ## Improvement Decisions
 
+Team-lead decision 2026-08-30: "as recommended" (blanket approval), plus PR reviews (Copilot and Claude) and merge authorized.
+
 | # | Title | Source | Type | Effort | Recommendation | Decision |
 |---|---|---|---|---|---|---|
-| 1 | Port PowerShell best practices, troubleshooting, and applicable hooks from spamfilter (WINDOWS_DEVELOPMENT_GUIDE, TROUBLESHOOTING PowerShell sections, .claude/hooks), adapted | PO/SM cat 1 | Process/docs | ~45m | Apply now | pending |
-| 2 | Backlog presentation rule: F# identifiers only in refinement presentations; issue #s never appear in candidate slates | PO cat 1 | Docs | 5m | Apply now | pending |
-| 3 | F17: Dirac-3 simulator feasibility investigation and build (classical-optimizer backend, miniaturized data, <=10-min runs) | PO cat 15 | Backlog | ~2-3h investigate | Backlog, post-submission (rationale in cat 15) | pending |
-| 4 | sprint_status.json updated via parsed JSON (ConvertFrom-Json round-trip or Python helper), never regex replace | Dev Team cat 10 | Tooling | 15m | Apply now | pending |
-| 5 | Full-accounting-first rule for research summaries: totals and category counts first, triage second | Dev Team cat 7 | Process note | 10m | Apply now | pending |
-| 6 | Velocity actuals log (CODING_VELOCITY-lite): record per-task actual minutes from F1 sprint onward; recompute at retros | Dev Team cat 3 | Process | 15m setup | F1 sprint | pending |
-| 7 | Retrospective template extended with the team lead's two categories: "Assigned Coding Agents Quality" and "Questions to be discussed before ending the sprint" (14 -> 16 categories) | This retro | Docs | 10m | Apply now | pending |
+| 1 | Port PowerShell best practices, troubleshooting, and applicable hooks from spamfilter, adapted | PO/SM cat 1 | Process/docs | ~45m | Apply now | APPLIED: docs/WINDOWS_POWERSHELL_GUIDE.md (incl. this project's own observed error patterns and a hooks assessment: block-stash + closeout-verify ported in F1 sprint, others backlogged) |
+| 2 | Backlog presentation rule: F# identifiers only in refinement presentations | PO cat 1 | Docs | 5m | Apply now | APPLIED: BACKLOG_REFINEMENT.md F#-only rule |
+| 3 | F17: Dirac-3 simulator feasibility investigation and build | PO cat 15 | Backlog | ~2-3h investigate | Backlog, post-submission | APPLIED: F17 registered in master plan HOLD with feasibility note |
+| 4 | sprint_status.json via parsed JSON, never regex | Dev Team cat 10 | Tooling | 15m | Apply now | APPLIED: scripts/update-sprint-status.ps1 |
+| 5 | Full-accounting-first rule for research summaries | Dev Team cat 7 | Process note | 10m | Apply now | APPLIED: QUALITY_STANDARDS.md documentation standards |
+| 6 | Velocity actuals log from F1 sprint onward | Dev Team cat 3 | Process | 15m setup | F1 sprint | RECORDED: F1 inline scope additions |
+| 7 | Retrospective template extended to 16 categories | This retro | Docs | 10m | Apply now | APPLIED: SPRINT_RETROSPECTIVE.md categories 15-16 |

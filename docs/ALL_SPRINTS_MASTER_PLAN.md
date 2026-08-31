@@ -32,7 +32,7 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 - G0 scored as committed (mean AP >= 0.85); Tuning Budget Equivalence table; paired-delta SD measurement with MDE refinement decision
 - CVQBoost proxy pipeline (weak pools, QUBO build, non-negative-ridge solve = structural control); free-tier and full configs frozen
 - B1+G0b hardware request PREPARED with call counts (not executed)
-- Inline scope additions from the approved 2026-08-30 disposition (retro Category 13 pattern): ADRs 0005-0010 authored as their modules are built; logging conventions (frd.* namespaces); full-pipeline smoke fixture; ARCHITECTURE.md with inline ADR cross-references; TESTING_STRATEGY.md adaptation; known-failure headers on long-running scripts (~4h total added)
+- Inline scope additions from the approved 2026-08-30 disposition (retro Category 13 pattern): ADRs 0005-0010 authored as their modules are built; logging conventions (frd.* namespaces); full-pipeline smoke fixture; ARCHITECTURE.md with inline ADR cross-references; TESTING_STRATEGY.md adaptation; known-failure headers on long-running scripts; velocity actuals log started (Sprint 2 retro improvement 6); block-stash and closeout-verification hooks ported per WINDOWS_POWERSHELL_GUIDE assessment (~4.5h total added)
 - Depends on: prereg freeze (done)
 
 **F2. Hardware campaign, first blocks (~0.5 day + approvals) Priority 12**
@@ -114,6 +114,12 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 - Backlogged per the approved 2026-08-30 disposition (item 11)
 
 ### HOLD Items (post-submission)
+
+**F17. Dirac-3 simulator for pre-hardware test runs (~2-3h investigation, build TBD) Priority HOLD**
+- Phase: Phase 2 preparation (team lead: "prioritize for after submission")
+- Platform: Dirac-3 / local
+- Investigate quantumcomputinginc.com products, docs, papers to build a simulator-backed QBoostClassifier: same QUBO objective, classical optimizer backend (SLSQP/Hexaly precedent in Emami et al.), device-behavior modeling (sum constraint, ~23 dB dynamic-range clipping, num_samples stochasticity), miniaturized data subsets so every test run completes in <= 10 minutes
+- Preliminary feasibility: YES (Sprint 2 retro category 15); pre-submission value judged low because ADR-0002's proxy plus the G0b fidelity gate already fill the role and changes would require prereg amendments
 
 **F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD**
 - Phase: Phase 2 (Nov 17 - Feb 28, if selected)

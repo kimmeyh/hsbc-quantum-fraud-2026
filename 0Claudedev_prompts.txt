@@ -27,5 +27,5 @@ Please review the "Sprint Execution Docs", Sprint plan and sprint checklist to d
 
 
 
-PR #1 merged to develop, then PR #3 merged develop to main.  Please continue following the sprint checklist and \docs\SPRINT_EXECUTION_WORKFLOW.md until backlog refinement (docs\BACKLOG_REFINEMENT.md).
+
 

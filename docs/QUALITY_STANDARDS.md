@@ -10,6 +10,7 @@
 - File size cap ~40,000 characters; beyond it, extract sections to their own doc and cross-reference. Table of contents required above ~20,000 characters. (These docs are read by Claude every session; size is a cost.)
 - No contractions in formal docs; no emoji; bracketed markers ([OK], [FAIL], [WARNING]) where a status glyph is needed; no em dashes.
 - Templates are authoritative: read the template section in the same turn before producing its deliverable (workflow invariant 6).
+- **Full-accounting-first rule (Sprint 2 retro improvement 5)**: when summarizing research or review output, state the complete accounting FIRST (totals and per-category counts), then present the triaged subset. A compressed summary that makes 30 findings read as 4 forces the team lead to challenge to surface the rest.
 
 ## Analysis-code standards (KISS / YAGNI)
 
