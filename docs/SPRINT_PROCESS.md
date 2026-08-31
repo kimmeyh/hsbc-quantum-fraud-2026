@@ -12,6 +12,8 @@ develop   (integration + repository default; every sprint PR targets it)
 feature/YYYYMMDD_Sprint_N   (one branch per sprint; DRAFT PR from creation; ready only at Phase 7.7)
 ```
 
+**Merges are team-lead-only, at every level** (clarified 2026-08-30): Claude never merges any PR -- feature to develop included. Claude's responsibility ends at ready-for-review plus notification; the team lead merges and says when done.
+
 **Carry-forward (workflow 6.6):** on PR-merge notification, create the next sprint branch FROM the just-merged branch's head, never from develop; commit post-merge work there; never stash; recovery is cherry-pick. Sprint branches are never deleted.
 
 Remote: private (kimmeyh/hsbc-quantum-fraud-2026) until the Stage 7 confidentiality scan; the public reproducibility package publishes separately.
