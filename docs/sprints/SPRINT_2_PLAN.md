@@ -1,7 +1,7 @@
 # Sprint 2 Plan: Process Foundations and External Readiness
 
 Dates: Aug 31 - Sep 1, 2026. Branch: `feature/20260831_Sprint_2` (carried forward from Sprint 1's head). PR target: `develop` (PR #2, DRAFT).
-Status: AWAITING TEAM-LEAD APPROVAL.
+Status: APPROVED by the team lead 2026-08-30 ("Plan approved"); sprint executed and closed under that approval.
 Scope defined by the team lead 2026-08-30 (defined-scope rule: this list is complete; nothing additive).
 
 ## Scope

@@ -4,7 +4,7 @@
 **Audience**: Team lead; future sessions.
 **Last Updated**: 2026-08-30
 
-Team-lead feedback recorded VERBATIM (combined Product Owner / Scrum Master / Lead Developer per category, as provided). Claude Code Development Team lines added per protocol. Note: the team lead's category list adds "Assigned Coding Agents Quality" and "Questions to be discussed before ending the sprint"; proposal 7 adopts both into the template permanently.
+Team-lead feedback recorded VERBATIM (combined Product Owner / Scrum Master / Lead Developer per category, as provided). Claude Code Development Team lines added per protocol. Note: the team lead's category list adds "Assigned Coding Agents Quality" and "Questions to be discussed before ending the sprint"; proposal 7 adopts both into the template permanently. Sections below follow the guide's canonical numbering (additions appended as 15 and 16) so the workflow's Category-13/14 harvesting rules stay unambiguous.
 
 Team-lead preamble, verbatim: "this retrospective has proven highly effective at improving effectiveness and efficiency over time. It is not about who did what wrong, rather it is about how can we all be more successful in the future. It is a way to 'run the race better in order to get the prize.'"
 
@@ -35,55 +35,55 @@ Team-lead preamble, verbatim: "this retrospective has proven highly effective at
 - **PO/SM/LD (verbatim)**: "Very Good"
 - **Claude Code Development Team**: Top-tier research agent for F15 and top-tier authoring/adjudication in the main loop matched the planning doc's mandatory-tier table.
 
-### 6. Assigned Coding Agents Quality
-
-- **PO/SM/LD (verbatim)**: "Very Good"
-- **Claude Code Development Team**: The F15 agent produced a complete 42-ADR inventory, faithful template reproduction, and correctly grounded every ML candidate against the frozen preregistration in a single pass with zero rework. The output file was exactly to spec.
-
-### 7. Communication
+### 6. Communication
 
 - **PO/SM/LD (verbatim)**: "Very Good"
 - **Claude Code Development Team**: One self-flagged miss: the F15 summary compressed ~30 transferable items into what read as 4, and the team lead had to challenge to surface the full accounting. Proposal 5 sets the rule: full counts first, triage second.
 
-### 8. Requirements Clarity
+### 7. Requirements Clarity
 
 - **PO/SM/LD (verbatim)**: "Very Good"
 - **Claude Code Development Team**: The portal walkthrough converted an unknown (submission mechanics) into hard requirements (5-slot upload, team-profile-as-PDF, format list) days before they could bite.
 
-### 9. Documentation
+### 8. Documentation
 
 - **PO/SM/LD (verbatim)**: "Very Good"
 - **Claude Code Development Team**: Heavy documentation sprint by design; the same-commit CHANGELOG policy is now in force and this retrospective is the first document written under the full QUALITY_STANDARDS header convention.
 
-### 10. Process Issues
+### 9. Process Issues
 
 - **PO/SM/LD (verbatim)**: "Very Good"
 - **Claude Code Development Team**: Three small frictions for the record: PowerShell command errors (see category 1; proposal 1), sprint_status.json edited via regex string replacement instead of parsed JSON (fragile; proposal 4), and MANIFEST.json nearly swallowed by the data-directory gitignore (caught same-turn, exception added).
 
-### 11. Risk Management
+### 10. Risk Management
 
 - **PO/SM/LD (verbatim)**: "Very Good"
 - **Claude Code Development Team**: Zero metered seconds spent, as planned; the do-not-upload-until-final portal risk is documented in the requirements matrix.
 
-### 12. Next Sprint Readiness
+### 11. Next Sprint Readiness
 
 - **PO/SM/LD (verbatim)**: "Very Good"
 - **Claude Code Development Team**: F1 is fully specified (plan content, inline ADR additions, budget arithmetic) and blocked on nothing but selection and approval.
 
-### 13. Architecture Maintenance
+### 12. Architecture Maintenance
 
 - **PO/SM/LD (verbatim)**: "Very Good"
 - **Claude Code Development Team**: The ADR system is live with five accepted records and six reserved; the Preregistration-touchpoints section makes protocol non-contradiction self-enforcing.
 
-### 14. Minor Function Updates for the Next Sprint Plan
+### 13. Minor Function Updates for the Next Sprint Plan
 
 - **PO/SM/LD (verbatim)**: "none"
 - **Claude Code Development Team**: None beyond the already-recorded F1 inline additions.
 
-### 15. Function Updates for the Future Backlog
+### 14. Function Updates for the Future Backlog
 
 - **PO/SM/LD (verbatim)**: "Can you investigate all the relevent information on quantumcomputinginc.com products, instructions, documentation, papers and articles to determine - is it reasonably possible to create a Dirac-3 simulator such that we could call the simulator QBoostClassifier for all the test runs prior to running on Dirac-3 using appropriately miniturized subsets of data (so that all test runs end in 10 mintues or less (or some other number we choose). It could use classical optimization python packages. Prioritize for after submission unless you think there is high value in doing this earlier."
 - **Claude Code Development Team**: Registered as F17 (proposal 3). Preliminary feasibility read: YES, reasonably possible -- QCi's own paper trains CVQBoost with Scipy SLSQP and Hexaly as drop-in solvers, and eqc-models exposes the QUBO (J, C) cleanly, so a simulator = same objective + classical optimizer + device-behavior modeling (sum constraint, ~23 dB dynamic-range clipping, solution stochasticity via num_samples draws). Timing recommendation: AFTER submission. The frozen protocol already fields the proxy-as-structural-control (ADR-0002) plus the G0b fidelity gate for exactly the pre-hardware-confidence role, and swapping tuning machinery now would require amendments for modest marginal value; in Phase 2, a behavior-faithful simulator would save real metered budget and is worth doing properly.
+
+### 15. Assigned Coding Agents Quality
+
+- **PO/SM/LD (verbatim)**: "Very Good"
+- **Claude Code Development Team**: The F15 agent produced a complete 42-ADR inventory, faithful template reproduction, and correctly grounded every ML candidate against the frozen preregistration in a single pass with zero rework. The output file was exactly to spec.
 
 ### 16. Questions to be discussed before ending the sprint
 
@@ -98,8 +98,8 @@ Team-lead decision 2026-08-30: "as recommended" (blanket approval), plus PR revi
 |---|---|---|---|---|---|---|
 | 1 | Port PowerShell best practices, troubleshooting, and applicable hooks from spamfilter, adapted | PO/SM cat 1 | Process/docs | ~45m | Apply now | APPLIED: docs/WINDOWS_POWERSHELL_GUIDE.md (incl. this project's own observed error patterns and a hooks assessment: block-stash + closeout-verify ported in F1 sprint, others backlogged) |
 | 2 | Backlog presentation rule: F# identifiers only in refinement presentations | PO cat 1 | Docs | 5m | Apply now | APPLIED: BACKLOG_REFINEMENT.md F#-only rule |
-| 3 | F17: Dirac-3 simulator feasibility investigation and build | PO cat 15 | Backlog | ~2-3h investigate | Backlog, post-submission | APPLIED: F17 registered in master plan HOLD with feasibility note |
-| 4 | sprint_status.json via parsed JSON, never regex | Dev Team cat 10 | Tooling | 15m | Apply now | APPLIED: scripts/update-sprint-status.ps1 |
-| 5 | Full-accounting-first rule for research summaries | Dev Team cat 7 | Process note | 10m | Apply now | APPLIED: QUALITY_STANDARDS.md documentation standards |
+| 3 | F17: Dirac-3 simulator feasibility investigation and build | PO cat 14 | Backlog | ~2-3h investigate | Backlog, post-submission | APPLIED: F17 registered in master plan HOLD with feasibility note |
+| 4 | sprint_status.json via parsed JSON, never regex | Dev Team cat 9 | Tooling | 15m | Apply now | APPLIED: scripts/update-sprint-status.ps1 |
+| 5 | Full-accounting-first rule for research summaries | Dev Team cat 6 | Process note | 10m | Apply now | APPLIED: QUALITY_STANDARDS.md documentation standards |
 | 6 | Velocity actuals log from F1 sprint onward | Dev Team cat 3 | Process | 15m setup | F1 sprint | RECORDED: F1 inline scope additions |
 | 7 | Retrospective template extended to 16 categories | This retro | Docs | 10m | Apply now | APPLIED: SPRINT_RETROSPECTIVE.md categories 15-16 |

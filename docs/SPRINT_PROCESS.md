@@ -1,6 +1,6 @@
 # Sprint Process (one-page overlay)
 
-As of 2026-08-30 the full sprint execution doc set is adapted from spamfilter-multi and is authoritative: **SPRINT_EXECUTION_WORKFLOW.md** (phases 1-8), **SPRINT_CHECKLIST.md** (per-boundary single-pager), **SPRINT_STOPPING_CRITERIA.md**, **SPRINT_RETROSPECTIVE.md** (14x4 protocol), **BACKLOG_REFINEMENT.md** (two passes + presentation format), **ALL_SPRINTS_MASTER_PLAN.md** (backlog + history). This page keeps only the always-loaded essentials.
+As of 2026-08-30 the full sprint execution doc set is adapted from spamfilter-multi and is authoritative: **SPRINT_EXECUTION_WORKFLOW.md** (phases 1-8), **SPRINT_CHECKLIST.md** (per-boundary single-pager), **SPRINT_STOPPING_CRITERIA.md**, **SPRINT_RETROSPECTIVE.md** (16x4 protocol), **BACKLOG_REFINEMENT.md** (two passes + presentation format), **ALL_SPRINTS_MASTER_PLAN.md** (backlog + history). This page keeps only the always-loaded essentials.
 
 ## Branch and push model
 
@@ -41,9 +41,12 @@ Surface with the template phrasing; wait.
 | Sprint | Dates | Theme |
 |---|---|---|
 | 1 | Aug 30 (done) | Freeze and foundations |
-| 2 | Sep 1-3 | Classical evidence |
-| 3 | Sep 3-5 | Quantum evidence (hardware gated per block) |
-| 4 | Sep 5-7 | The paper |
-| 5 | Sep 7-8 | Ship |
+| 2 | Aug 31 - Sep 1 (done) | Process foundations and external readiness |
+| 3 | Sep 1-3 | Classical evidence |
+| 4 | Sep 3-5 | Quantum evidence (hardware gated per block) |
+| 5 | Sep 5-7 | The paper |
+| 6 | Sep 7-8 | Ship |
+
+Keep this table reconciled with ALL_SPRINTS_MASTER_PLAN.md at every sprint close; the master plan wins on scope, this table only mirrors it.
 
 Phase 2 of the challenge (Nov 17 - Feb 28, if selected): same process, new calendar, planned at acceptance (master plan F13).

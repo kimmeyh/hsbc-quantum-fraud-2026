@@ -45,7 +45,7 @@ The pre-commit confidentiality hook (this repo's own, `.git/hooks/pre-commit`) r
 uv pip install <pkg> --python .venv\Scripts\python.exe
 
 # Manifest verify (before hardware blocks; on the statistical checklist)
-.\.venv\Scripts\python.exe experiments\src\manifest.py verify
+.\.venv\Scripts\python.exe scripts\manifest.py verify
 
 # Sprint status (never regex)
 .\scripts\update-sprint-status.ps1 -Set status=phase_4_execution

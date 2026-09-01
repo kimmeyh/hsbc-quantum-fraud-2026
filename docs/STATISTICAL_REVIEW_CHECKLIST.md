@@ -31,6 +31,6 @@ Derived from the FROZEN preregistration sections 5-9. Walk EVERY line with evide
 ## Provenance
 
 - [ ] Evidence tag ([HW]/[SIM]/[PROJ]) matches what actually executed
-- [ ] Data manifest verified since last staging change (`experiments/src/manifest.py verify`)
+- [ ] Data manifest verified since last staging change (`scripts/manifest.py verify`)
 - [ ] results.json record carries all required keys (prereg s11), including config_hash, metered_seconds, retry_count
 - [ ] Any post-freeze change to frozen analysis files has its amendment line (ADR-0001)

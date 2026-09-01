@@ -1,6 +1,6 @@
 # Sprint Retrospective Guide
 
-Adapted 2026-08-30 from spamfilter-multi's SPRINT_RETROSPECTIVE.md. The 14-category x 4-role structure and the 7-step protocol are preserved verbatim in shape; examples are adapted to this project.
+Adapted 2026-08-30 from spamfilter-multi's SPRINT_RETROSPECTIVE.md. The source's 14-category x 4-role structure and 7-step protocol are preserved in shape and EXTENDED to 16 categories (15 and 16 are team-lead additions from Sprint 2); examples are adapted to this project.
 
 ## Rules
 
@@ -10,15 +10,15 @@ Adapted 2026-08-30 from spamfilter-multi's SPRINT_RETROSPECTIVE.md. The 14-categ
 
 ## The 7-Step Protocol (run in order; do not collapse, reorder, or skip)
 
-1. **Send the prompt**: ask the team lead for PO/SM/LD feedback across all 14 categories (combined per-category lines acceptable), noting that Claude is drafting its own role's feedback in parallel.
-2. **Draft in parallel**: Claude writes its Development Team feedback for all 14 categories into `docs/sprints/drafts/SPRINT_N_RETROSPECTIVE_claude_draft.md` while waiting.
-3. **Record verbatim**: paste the template into `docs/sprints/SPRINT_N_RETROSPECTIVE.md`; the team lead's exact words per category; Claude's lines from the draft. Exit gate: 14 categories, 4 roles, no placeholders.
+1. **Send the prompt**: ask the team lead for PO/SM/LD feedback across all 16 categories (combined per-category lines acceptable), noting that Claude is drafting its own role's feedback in parallel.
+2. **Draft in parallel**: Claude writes its Development Team feedback for all 16 categories into `docs/sprints/drafts/SPRINT_N_RETROSPECTIVE_claude_draft.md` while waiting.
+3. **Record verbatim**: paste the template into `docs/sprints/SPRINT_N_RETROSPECTIVE.md`; the team lead's exact words per category; Claude's lines from the draft. Exit gate: 16 categories, 4 roles, no placeholders.
 4. **Combine and display** in chat, both feedback sets together per category.
 5. **Propose improvements** from the combined feedback; per proposal: Title / Source / Type / Effort / Recommendation. Display; do NOT auto-apply.
 6. **Team lead disposes each**: apply now, backlog, or skip (blanket disposition acceptable). Record in an "Improvement Decisions" section.
 7. **Apply**: now-items as commits on the sprint branch; backlog-items to ALL_SPRINTS_MASTER_PLAN.md; skips noted. Then the mandatory completion updates (master plan Last Completed Sprint, summary doc scheduling, CHECKLIST reconciliation). THEN `gh pr ready`.
 
-## The 14 Mandatory Categories
+## The 16 Mandatory Categories
 
 1. **Effective while as Efficient as Reasonably Possible** -- right outcome, least reasonable effort, workflow followed, rework counted.
 2. **Testing Approach** -- did automated tests catch problems before validation; coverage adequate for the scope (for this project: known-answer statistical tests, leakage positive controls, loader validations).
@@ -86,6 +86,12 @@ Adapted 2026-08-30 from spamfilter-multi's SPRINT_RETROSPECTIVE.md. The 14-categ
 [same four-role block]
 
 ### 14. Function Updates for the Future Backlog
+[same four-role block]
+
+### 15. Assigned Coding Agents Quality
+[same four-role block]
+
+### 16. Questions to be discussed before ending the sprint
 [same four-role block]
 
 ## Improvement Decisions

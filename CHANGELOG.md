@@ -4,6 +4,11 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-09-01
+
+- **fix**: Dual PR review findings addressed (Claude review 10 findings, Copilot review 2 overlapping; PR #2): manifest tool moved to scripts/ (out of the frozen experiments/src), rewritten with portable logical keys, paths sourced from frozen data.py, hard-fail verify (missing/extra/changed all FAIL); .gitignore negation repaired so MANIFEST.json is actually committed; retrospective guide and enforcing docs unified at 16 categories with template sections 15-16; Sprint 2 retro renumbered to canonical order; SPRINT_PROCESS calendar reconciled (process sprint inserted); stopping criteria 4/7 precedence rule (results-invalidating defects always stop); sprint_status plan_approved corrected and update-sprint-status.ps1 extended (dotted-path sections, unknown-key hard error, null typing); Copilot-review request procedure documented in workflow 7.7
+- **process**: Merge rule clarified by the team lead: all PR merges at every level are team-lead-only (SPRINT_PROCESS.md)
+
 ### 2026-08-30
 
 - **process**: Sprint 2 dispositions applied: statistical-review checklist, CHANGELOG policy, data manifest + verifier, QUALITY_STANDARDS, secrets ADR-0011; F1-sprint items recorded in master plan; CI to backlog as F16 (Issue #10)

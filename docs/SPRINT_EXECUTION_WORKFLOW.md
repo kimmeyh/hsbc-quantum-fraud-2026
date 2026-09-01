@@ -10,7 +10,7 @@ Adapted 2026-08-30 from spamfilter-multi's SPRINT_EXECUTION_WORKFLOW.md (its har
 | **SPRINT_EXECUTION_WORKFLOW.md** (this doc) | Step-by-step execution checklist (Phases 1-8) |
 | **SPRINT_CHECKLIST.md** | Single-page phase checklist consulted at every boundary |
 | **SPRINT_STOPPING_CRITERIA.md** | When and why to stop working |
-| **SPRINT_RETROSPECTIVE.md** | Retrospective protocol and the 14x4 template |
+| **SPRINT_RETROSPECTIVE.md** | Retrospective protocol and the 16x4 template |
 | **BACKLOG_REFINEMENT.md** | Refinement passes and the authoritative presentation format |
 | **SPRINT_PROCESS.md** | One-page overlay: branch model, carry-forward, standing rules |
 | **CHECKLIST.md** (repo root) | The submission-wide task ledger (Phase 1 deliverable map) |
@@ -28,7 +28,7 @@ Consult this line at the START and END of every phase; state which steps were do
 | **4. Execution** | Implement tasks in plan order; run `pytest experiments/src -q` after each; commit with issue number; results only through the frozen protocol | All acceptance criteria met; tests green |
 | **5. Review & Validation** | Full test suite; results.json integrity check (every number tagged); walk plan acceptance criteria line by line with evidence; hand to team lead for manual validation | Team-lead validation feedback addressed |
 | **6. Push & Finalize PR** | Push branch; UPDATE the draft PR body (keep DRAFT); on merge notification, IMMEDIATELY create next sprint branch FROM THE CURRENT FEATURE BRANCH (6.6) | PR updated, still draft; next branch created on merge |
-| **7. Retrospective** | 7-step protocol per SPRINT_RETROSPECTIVE.md (14 categories x 4 roles); apply-now improvements committed; THEN `gh pr ready` (the ONE place); notify team lead for final approval | Retro doc committed; PR ready; team lead notified |
+| **7. Retrospective** | 7-step protocol per SPRINT_RETROSPECTIVE.md (16 categories x 4 roles); apply-now improvements committed; THEN `gh pr ready` (the ONE place); notify team lead for final approval | Retro doc committed; PR ready; team lead notified |
 | **8. Delivery Cycle** | After develop merge: team lead merges develop->main in parallel with Refinement Pass 1 (completeness sweep); submission-artifact refresh if due (see below); Refinement Pass 2 (scope selection) | Master plan rolled; next scope selected |
 
 ## Invariants (all phases)
@@ -81,8 +81,9 @@ Consult this line at the START and END of every phase; state which steps were do
 
 ### Phase 7: Retrospective (mandatory before merge-ready)
 - Follow SPRINT_RETROSPECTIVE.md's 7-step protocol: prompt to team lead -> Claude drafts its role's feedback in parallel (`docs/sprints/drafts/`) -> record team lead's words verbatim -> combine and display -> propose improvements (Title/Source/Type/Effort/Recommendation) -> team lead disposes each (now/backlog/skip) -> apply now-items as commits, backlog-items to master plan.
-- Exit gate: 14 categories x 4 roles, no placeholders; Category 13 feeds Sprint N+1's plan; Category 14 feeds the master plan.
+- Exit gate: 16 categories x 4 roles, no placeholders; Category 13 feeds Sprint N+1's plan; Category 14 feeds the master plan.
 - End of 7.7: `gh pr ready` (the only place). 7.7.5 final gate: manual validation + retro + improvements + Copilot review all complete -> notify team lead for final approval.
+- **Requesting the Copilot review**: `gh pr edit --add-reviewer Copilot` and the REST call SILENTLY fail (success output, reviewer never attaches). Working path: team lead signs into the automation browser once, then check Copilot under the PR's Reviewers gear in the web UI. Always verify with `gh pr view <N> --json reviewRequests` or the PR timeline ("Copilot started reviewing") before reporting it requested.
 - Update `.claude/sprint_status.json` `current_sprint.status` at every phase transition (it is how future tooling knows which side of the auto-advance window applies).
 
 ### Phase 8: Delivery Cycle (after every merge to develop)

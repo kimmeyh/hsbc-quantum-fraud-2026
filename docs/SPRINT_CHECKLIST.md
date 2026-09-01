@@ -36,7 +36,7 @@ Consult at EVERY phase boundary (open this file in the same turn; walk lines wit
 - [ ] ON MERGE NOTIFICATION: next sprint branch created FROM CURRENT FEATURE BRANCH immediately; post-merge work committed there; never stash; never branch from develop post-merge
 
 ## Phase 7: Retrospective (before ready)
-- [ ] 7-step protocol run in order (SPRINT_RETROSPECTIVE.md); 14 categories x 4 roles, verbatim, no placeholders
+- [ ] 7-step protocol run in order (SPRINT_RETROSPECTIVE.md); 16 categories x 4 roles, verbatim, no placeholders
 - [ ] Improvements proposed + dispositioned; now-items committed; backlog-items -> master plan with F#s
 - [ ] Completion updates: master plan Last Completed Sprint; CHECKLIST.md reconciled; sprint_status updated
 - [ ] `gh pr ready` (ONLY here); final gate; team lead notified for approval

@@ -2,8 +2,11 @@
 # Usage:
 #   .\scripts\update-sprint-status.ps1 -Set status=phase_4_execution
 #   .\scripts\update-sprint-status.ps1 -Set plan_approved=true -Set pr=3
+#   .\scripts\update-sprint-status.ps1 -Set last_completed_sprint.docs_triad_complete=true -Set last_completed_sprint.main_merge_pr=5
 #   .\scripts\update-sprint-status.ps1 -NewSprint 3 -Name "Classical Evidence" -Branch feature/20260901_Sprint_3 -PlanDoc docs/sprints/SPRINT_3_PLAN.md
-# Keys in -Set target current_sprint.<key>; booleans and integers are typed automatically.
+# Bare keys in -Set target current_sprint.<key>; dotted keys (section.key) reach any
+# top-level section (current_sprint, last_completed_sprint, prereg). Unknown keys are
+# a hard error, never a silent Add-Member. true/false, integers, and null are typed.
 param(
     [string[]]$Set = @(),
     [int]$NewSprint = 0,
@@ -32,14 +35,24 @@ foreach ($kv in $Set) {
     $k, $v = $kv -split '=', 2
     $typed = switch -Regex ($v) {
         '^(true|false)$' { [bool]::Parse($v); break }
+        '^null$'         { $null; break }
         '^\d+$'          { [int]$v; break }
         default          { $v }
     }
-    if ($j.current_sprint.PSObject.Properties.Name -contains $k) {
-        $j.current_sprint.$k = $typed
-    } else {
-        $j.current_sprint | Add-Member -NotePropertyName $k -NotePropertyValue $typed
+    $sectionName = 'current_sprint'
+    $key = $k
+    if ($k -match '^([a-z_]+)\.(.+)$') {
+        $sectionName = $Matches[1]
+        $key = $Matches[2]
     }
+    if ($j.PSObject.Properties.Name -notcontains $sectionName) {
+        throw "Unknown section '$sectionName' in '$kv'. Sections: $($j.PSObject.Properties.Name -join ', ')"
+    }
+    $section = $j.$sectionName
+    if ($section.PSObject.Properties.Name -notcontains $key) {
+        throw "Unknown key '$key' in section '$sectionName' ('$kv'). Keys: $($section.PSObject.Properties.Name -join ', ')"
+    }
+    $section.$key = $typed
 }
 
 $j.updated = Get-Date -Format "yyyy-MM-dd"
