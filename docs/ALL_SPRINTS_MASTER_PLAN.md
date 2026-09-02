@@ -32,6 +32,7 @@ Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored /
 - Tuned XGB/LGBM/CatBoost (100 Optuna trials each) + logistic; full and matched features; 10 seeds; BCa CIs into results.json
 - G0 scored as committed (mean AP >= 0.85); Tuning Budget Equivalence table; paired-delta SD measurement with MDE refinement decision
 - CVQBoost proxy pipeline (weak pools, QUBO build, non-negative-ridge solve = structural control); free-tier and full configs frozen
+- Amendment A3 side-by-side: sequential vs full-pair build compared on proxy validation AP across the 10 primary seeds (zero metered seconds; full-pair via WSL2, setup [no-history]); build selected before any test-set evaluation, applied uniformly
 - B1+G0b hardware request PREPARED with call counts (not executed)
 - Inline scope additions from the approved 2026-08-30 disposition (retro Category 13 pattern): ADRs 0005-0010 authored as their modules are built; logging conventions (frd.* namespaces); full-pipeline smoke fixture; ARCHITECTURE.md with inline ADR cross-references; TESTING_STRATEGY.md adaptation; known-failure headers on long-running scripts; velocity actuals log started (Sprint 2 retro improvement 6); block-stash and closeout-verification hooks ported per WINDOWS_POWERSHELL_GUIDE assessment (~4.5h total added)
 - Depends on: prereg freeze (done)
