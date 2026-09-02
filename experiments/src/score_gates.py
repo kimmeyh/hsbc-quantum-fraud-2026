@@ -57,7 +57,7 @@ def main() -> int:
         prev = cell[0]["metrics"]["prevalence"]
         cell_aps[key] = {r["seed"]: r["metrics"]["auprc"] for r in cell}
         ti = metrics.seed_mean_t_interval(aps) if len(aps) >= 2 else None
-        ci = f"[{ti['lo']:.4f}, {ti['hi']:.4f}]" if ti else "n/a"
+        ci = f"[{ti['ci95'][0]:.4f}, {ti['ci95'][1]:.4f}]" if ti else "n/a"
         lines.append(
             f"| {'/'.join(str(k) for k in key)} | {len(aps)} | {np.mean(aps):.4f} "
             f"| {np.std(aps, ddof=1):.4f} | {ci} | {np.mean(aucs):.4f} | {prev:.5f} |"
@@ -93,7 +93,7 @@ def main() -> int:
         lines += [f"Best matched GBDT: {best_arm}. Delta = proxy_CVQBoost - {best_arm}, "
                   f"{len(seeds)} seeds.",
                   f"Mean delta {ti['mean']:+.4f}, seed SD {sd:.4f}, "
-                  f"95% CI [{ti['lo']:+.4f}, {ti['hi']:+.4f}].",
+                  f"95% CI [{ti['ci95'][0]:+.4f}, {ti['ci95'][1]:+.4f}].",
                   f"MDE(10 seeds) from this SD: {metrics.mde(sd, N_SEEDS):.4f} "
                   f"(pilot value 0.0242; refinement is a Class-1 decision, surfaced not applied)."]
     else:
