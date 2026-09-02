@@ -1,11 +1,11 @@
 {
   "current_sprint": {
     "number": 3,
-    "name": "Scope selection pending",
+    "name": "Classical Evidence Campaign",
     "branch": "feature/20260902_Sprint_3",
-    "status": "phase_1_backlog_refinement",
+    "status": "phase_3_awaiting_plan_approval",
     "plan_doc": "docs/sprints/SPRINT_3_PLAN.md",
-    "pr": null,
+    "pr": 13,
     "plan_approved": false,
     "github_issues": []
   },
