@@ -1,0 +1,33 @@
+{
+ "xgboost:matched13": {
+  "params": {
+   "max_depth": 6,
+   "learning_rate": 0.07442945584768627,
+   "subsample": 0.7936659679005661,
+   "colsample_bytree": 0.8507179345430119,
+   "min_child_weight": 5,
+   "reg_alpha": 0.0022507336020777336,
+   "reg_lambda": 0.005277041436870275,
+   "scale_pos_weight": 1.0
+  },
+  "cv_ap": 0.8305781342942045,
+  "n_trials": 100,
+  "wall_seconds": 521.4,
+  "tuning_seed": 42,
+  "features": [
+   "V14",
+   "V17",
+   "V12",
+   "V10",
+   "V11",
+   "V16",
+   "V3",
+   "V4",
+   "V9",
+   "V18",
+   "V7",
+   "V2",
+   "V21"
+  ]
+ }
+}
