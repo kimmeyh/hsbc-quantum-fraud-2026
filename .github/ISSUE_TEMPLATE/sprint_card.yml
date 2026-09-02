@@ -1,0 +1,57 @@
+name: Sprint Card
+description: Sprint work item representing a deliverable task
+labels: ['sprint', 'card']
+assignees:
+  - kimmeyh
+body:
+  - type: input
+    id: sprint_number
+    attributes:
+      label: Sprint Number
+      placeholder: 'Sprint X'
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Experiment (protocol execution)
+        - Infrastructure / Tooling
+        - Documentation / Paper
+        - Process
+        - Bug Fix
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Critical (blocks the sprint)
+        - High (should complete this sprint)
+        - Medium (nice to have)
+        - Low (future consideration)
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: |
+        ## What needs to be done?
+        ## Why?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Specific, measurable, quantifiable criteria
+    validations:
+      required: true
+  - type: textarea
+    id: model_assignment
+    attributes:
+      label: Model Assignment and Complexity
+      description: Which model/agent executes (main loop, subagent review, background job) and cognitive load (Low/Medium/High)

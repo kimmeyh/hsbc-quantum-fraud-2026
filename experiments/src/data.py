@@ -149,13 +149,22 @@ def validate_all() -> dict:
     return report
 
 
-def qubo_vars(n_features: int, schedule: int) -> int:
-    """Weak-classifier count = Dirac variable count for CVQBoost schedules."""
+def qubo_vars(n_features: int, schedule: int, pair_build: str = "sequential") -> int:
+    """Weak-classifier count = Dirac variable count for CVQBoost schedules.
+
+    Amendment A2: the sequential strategy (mandatory on Windows) caps pairs at
+    the top-correlated n(n-3)/2, so singles+pairs total C(n,2) exactly (verified
+    on hardware: n=15 -> 105 @ schedule 2, 560 @ schedule 3). The full-pair
+    build (multi_processing, Linux/WSL2; amendment A3) uses all C(n,2) pairs,
+    adding n variables."""
     from math import comb
 
+    assert pair_build in ("sequential", "full"), pair_build
     v = n_features
     if schedule >= 2:
-        v += comb(n_features, 2)
+        pairs = comb(n_features, 2) if pair_build == "full" else max(
+            0, n_features * (n_features - 3) // 2)
+        v += pairs
     if schedule >= 3:
         v += comb(n_features, 3)
     return v

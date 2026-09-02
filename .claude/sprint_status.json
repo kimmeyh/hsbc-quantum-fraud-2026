@@ -1,0 +1,27 @@
+{
+  "current_sprint": {
+    "number": 2,
+    "name": "Process Foundations and External Readiness",
+    "branch": "feature/20260831_Sprint_2",
+    "status": "phase_7_retro_improvements_applied",
+    "plan_doc": "docs/sprints/SPRINT_2_PLAN.md",
+    "pr": 2,
+    "plan_approved": true,
+    "github_issues": [
+      10,
+      11
+    ]
+  },
+  "last_completed_sprint": {
+    "number": 1,
+    "merged_pr": 1,
+    "main_merge_pr": 3,
+    "docs_triad_complete": true
+  },
+  "prereg": {
+    "status": "FROZEN",
+    "freeze_commit": "95751b9",
+    "tag": "prereg-freeze"
+  },
+  "updated": "2026-09-01"
+}
