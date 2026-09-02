@@ -89,6 +89,15 @@ Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored /
 - One-page results memo; gate table scored as committed; headline promotion decision per the thesis rule (team-lead review, Sep 4 target)
 - Depends on: F1-F4 (F5/F6 as available)
 
+**F19. Draft submission PDF(s) to QCi (~2h assemble + team-lead send) Priority 13**
+- Phase: External (team-lead request 2026-09-02: "send a draft of the PDFs we will eventually submit ... based on what we have by the end of the next sprint")
+- Platform: docs
+- Assemble the best draft-state package available at that sprint's end (expected: preregistration incl. amendments, gate report / results memo, hardware plan; the F8 paper draft only if it exists yet), rendered as PDF(s) marked DRAFT
+- MANDATORY pre-send confidentiality scan of every page (the Stage 7 scan run early, scoped to the sent artifacts: no employer references, no account identifiers, no QPU balances tied to a named account)
+- Team lead reviews and personally sends; Claude records what was sent and when in requirements-matrix
+- Value: progress evidence for the pending QCi grant; early feedback on how Dirac-3 is represented; honors the sponsorship letter's collaborative framing
+- Depends on: end-of-next-sprint state (F7 results memo strengthens it; F8 not required)
+
 ### Paper (Stages 4-6)
 
 **F8. Outline + Draft V1 (~1 day) Priority 30**
