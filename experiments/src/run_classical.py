@@ -148,7 +148,8 @@ def stage_refit(df, tuned: dict, dedupe_count: int, smoke: bool) -> None:
     store = _load(RESULTS, {"meta": {}, "rows": []})
     store["meta"]["ulb_duplicates_removed"] = dedupe_count
     store["meta"]["dataset_rows_after_dedupe"] = len(df)
-    done = {(r["arm"], r["feature_set"], r["seed"]) for r in store["rows"]}
+    # .get: the store also holds proxy rows keyed by config/pool_variant instead.
+    done = {(r["arm"], r.get("feature_set"), r["seed"]) for r in store["rows"]}
     seeds = SEEDS[:2] if smoke else SEEDS
     for arm in ARMS:
         for fs in FEATURE_SETS:
