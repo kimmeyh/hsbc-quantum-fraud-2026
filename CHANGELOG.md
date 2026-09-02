@@ -6,6 +6,7 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ### 2026-09-02
 
+- **feat**: Preregistration amendments A2 (variable-count formula corrected to the sequential-strategy count, verified against eqc-models source + FourierWall2 measured runs; documented 949 device ceiling cited) and A3 (full-pair CVQBoost build side-by-side option via proxy at zero metered seconds, preregistered selection rule, Linux/WSL2); qubo_vars corrected in the same commit per section 11 (team-lead approved)
 - **process**: F18 registered (priority 11, before hardware blocks): mine the team lead's Dirac-3 integration notes (qml-unlocked/DIRAC3.md) with a 10-point checklist; binding decision recorded: freeze honored, protocol-touching items enter only as dated amendments
 
 ### 2026-09-01
