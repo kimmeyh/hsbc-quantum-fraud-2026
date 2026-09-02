@@ -1,0 +1,34 @@
+{
+  "_comment": "Project-level Claude Code settings. Hooks ported 2026-09-02 from spamfilter-multi per the Sprint 2 retro disposition (WINDOWS_POWERSHELL_GUIDE hooks assessment). The 0* deny rules mirror the standing never-read rule for team-lead working files.",
+  "permissions": {
+    "deny": [
+      "Read(//0[!0-9]*.md)",
+      "Read(//0[!0-9]*.txt)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\block-carry-forward-stash.ps1\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\verify-closeout-complete.ps1\"",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+=== seed 42 ===
+2026-09-02 11:34:40,286 root WARNING eqc-direct package not available
+2026-09-02 11:34:40,909 root WARNING emucore-direct package not available
+Using 32 workers to build weak classifiers.
+2026-09-02 11:34:50,813 frd.proxy INFO [BUILD] {'seed': 42, 'config': 'free', 'weak_type': 'dct', 'pair_build': 'full', 'features': ['V14', 'V17', 'V12', 'V10', 'V11', 'V16', 'V3', 'V4', 'V9', 'V18', 'V7', 'V2', 'V21'], 'n_pool': 91, 'started': '2026-09-02T11:33:56', 'finished': '2026-09-02T11:34:50'}: pool=91 -> experiments/results/pools/h_42_free_dct_full.npz
+Runtime of _build_weak_classifiers_mp: 8.19 seconds!
+=== seed 43 ===
+2026-09-02 11:35:27,941 root WARNING eqc-direct package not available
+2026-09-02 11:35:28,282 root WARNING emucore-direct package not available
+Using 32 workers to build weak classifiers.
+2026-09-02 11:35:38,799 frd.proxy INFO [BUILD] {'seed': 43, 'config': 'free', 'weak_type': 'dct', 'pair_build': 'full', 'features': ['V17', 'V14', 'V12', 'V10', 'V11', 'V16', 'V4', 'V3', 'V7', 'V9', 'V18', 'V2', 'V21'], 'n_pool': 91, 'started': '2026-09-02T11:34:53', 'finished': '2026-09-02T11:35:38'}: pool=91 -> experiments/results/pools/h_43_free_dct_full.npz
+Runtime of _build_weak_classifiers_mp: 8.87 seconds!
+=== seed 44 ===

@@ -187,6 +187,193 @@
     "started": "2026-09-02T11:27:44",
     "finished": "2026-09-02T11:30:12"
    }
+  },
+  {
+   "arm": "cvqboost_proxy",
+   "dataset": "ulb",
+   "protocol": "stratified",
+   "seed": 43,
+   "config": "free",
+   "pool_variant": "dct",
+   "pair_build": "sequential",
+   "n_weak_classifiers": 78,
+   "config_hash": "adc63c6b729d57e8",
+   "features_used": [
+    "V17",
+    "V14",
+    "V12",
+    "V10",
+    "V11",
+    "V16",
+    "V4",
+    "V3",
+    "V7",
+    "V9",
+    "V18",
+    "V2",
+    "V21"
+   ],
+   "metrics": {
+    "auprc": 0.7594805810674048,
+    "prevalence": 0.0016741268107003137,
+    "auprc_baseline_equals_prevalence": 0.0016741268107003137,
+    "auc_roc": 0.9062084656841659,
+    "tie_fraction": 0.9981496493144891,
+    "auprc_ci": {
+     "metric": "auprc",
+     "point": 0.7594805810674048,
+     "ci95": [
+      0.6634743366798177,
+      0.8354779337045224
+     ],
+     "n_boot": 2000,
+     "method": "stratified-BCa-blockjack"
+    },
+    "auc_ci": {
+     "metric": "auc",
+     "point": 0.9062084656841659,
+     "ci95": [
+      0.8572952520959584,
+      0.9394008265285304
+     ],
+     "n_boot": 2000,
+     "method": "stratified-BCa-blockjack"
+    },
+    "operating_points": [
+     {
+      "operating_point": "max_f1_on_val",
+      "threshold": 0.2564102699276043,
+      "precision": 0.9066666666666666,
+      "precision_wilson95": [
+       0.819653131504585,
+       0.9540514766093995
+      ],
+      "recall": 0.7157894736842105,
+      "recall_wilson95": [
+       0.6180898964168235,
+       0.7967157983714039
+      ],
+      "f1": 0.7999999999999999,
+      "confusion": {
+       "tn": 56644,
+       "fp": 7,
+       "fn": 27,
+       "tp": 68
+      }
+     },
+     {
+      "operating_point": "alert_budget_0.005",
+      "threshold": 0.03846154048914191,
+      "precision": 0.2558922558922559,
+      "precision_wilson95": [
+       0.20960191005993678,
+       0.30841664839140326
+      ],
+      "recall": 0.8,
+      "recall_wilson95": [
+       0.7086265584527134,
+       0.8680545294236028
+      ],
+      "f1": 0.38775510204081637,
+      "confusion": {
+       "tn": 56430,
+       "fp": 221,
+       "fn": 19,
+       "tp": 76
+      }
+     }
+    ],
+    "calibration": {
+     "ece_equal_mass": 0.0005124048110630914,
+     "n_bins": 15,
+     "reliability": [
+      {
+       "n": 3784,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.0010570824524312897
+      },
+      {
+       "n": 3783,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.0
+      },
+      {
+       "n": 3783,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.000528680941052075
+      },
+      {
+       "n": 3783,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.0
+      },
+      {
+       "n": 3783,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.0
+      },
+      {
+       "n": 3783,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.000528680941052075
+      },
+      {
+       "n": 3783,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.000528680941052075
+      },
+      {
+       "n": 3783,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.0
+      },
+      {
+       "n": 3783,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.0007930214115781126
+      },
+      {
+       "n": 3783,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.0
+      },
+      {
+       "n": 3783,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.000528680941052075
+      },
+      {
+       "n": 3783,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.0
+      },
+      {
+       "n": 3783,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.0
+      },
+      {
+       "n": 3783,
+       "mean_pred": 1.4988010832439613e-15,
+       "frac_pos": 0.0002643404705260375
+      },
+      {
+       "n": 3783,
+       "mean_pred": 0.02433965725841559,
+       "frac_pos": 0.020882897171556964
+      }
+     ],
+     "brier_joint_score": 0.0007141874950655953
+    }
+   },
+   "val_auprc": 0.8474930062192543,
+   "evidence_tag": "SIM",
+   "metered_seconds": 0,
+   "retry_count": 0,
+   "timestamps": {
+    "started": "2026-09-02T11:31:34",
+    "finished": "2026-09-02T11:34:07"
+   }
   }
  ]
 }
