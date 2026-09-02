@@ -35,6 +35,24 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 - Inline scope additions from the approved 2026-08-30 disposition (retro Category 13 pattern): ADRs 0005-0010 authored as their modules are built; logging conventions (frd.* namespaces); full-pipeline smoke fixture; ARCHITECTURE.md with inline ADR cross-references; TESTING_STRATEGY.md adaptation; known-failure headers on long-running scripts; velocity actuals log started (Sprint 2 retro improvement 6); block-stash and closeout-verification hooks ported per WINDOWS_POWERSHELL_GUIDE assessment (~4.5h total added)
 - Depends on: prereg freeze (done)
 
+**F18. Mine the Dirac-3 integration notes (qml-unlocked/DIRAC3.md) (~1.5h) Priority 11**
+- Phase: Experiments (team-lead request 2026-09-02: "to be completed soon", before hardware blocks)
+- Platform: docs / Dirac-3 preparation
+- Source: `D:\Data\Harold\github\qml-unlocked\DIRAC3.md` -- the team lead's hands-on notes from running all QML Unlocked chapters on real Dirac-3 hardware (Aug 2026), heritage ForrierWall pipeline
+- **Binding constraint (team-lead decision 2026-09-02): the frozen preregistration is honored. Anything from these notes that touches protocol (arms, configs, gates, budgets) enters ONLY as a dated amendment proposed for team-lead approval; everything else (tooling, error handling, credentials, cost discipline) adopts freely.**
+- Task checklist:
+  - [ ] Read DIRAC3.md in full plus the three cited ForrierWall reference points (credentials main.py:50, dirac_params :92, free-tier backoff :715, local proxy :1243)
+  - [ ] Verify variable-count math against eqc-models source: notes say schedule-2 = `n + n(n-3)/2`, repo `qubo_vars` uses `n + C(n,2)`; reconcile and correct whichever is wrong (free-tier config n<=13 and device n<=17 bounds depend on it; prereg touchpoint if bounds change -> amendment)
+  - [ ] B5/QSVM: confirm sign-augmentation (`np.hstack([X, -X])`) is specified for the QSVM arm; if the frozen protocol lacks it, draft the amendment (measured stakes: AUC 0.18 un-augmented vs 0.987 augmented on anti-correlated features)
+  - [ ] Confirm {-1,+1} label mapping and `weak_cls_strategy="sequential"` (Windows) are in the CVQBoost pipeline spec before any fit code is written
+  - [ ] Adopt the free-tier rejection backoff pattern (error strings "number of variables" / "free-tier device limit") into the hardware retry discipline, reconciled with the frozen retry-twice rule
+  - [ ] Adopt the credentials pattern (QCI_API_URL + QCI_TOKEN, gitignored .env, never printed) into ADR-0011 practice; note QCI_API_URL=https://api.qci-prod.com verified working
+  - [ ] Cross-check constructor knobs (relaxation_schedule, num_samples, lambda_coef, weak_cls_type) against the frozen FourierWall2-derived config for consistency; discrepancies -> report, not silent change
+  - [ ] Record cost-control rules (one metered call per fit, no hardware grid search, proxy-first dev) against the hardware-block plans; note measured ~1 s/fit for small QSVM problems as a B5 budget datapoint
+  - [ ] Below-4-features pair impossibility (schedule 1 only for n<4): check the H3 feature ladder's lowest rung configs
+  - [ ] Output: findings memo with adopt/amend/reject disposition per item, presented to the team lead; amendments drafted but NOT applied
+- Depends on: nothing (read-only analysis; must complete before F2 hardware execution)
+
 **F2. Hardware campaign, first blocks (~0.5 day + approvals) Priority 12**
 - Phase: Experiments
 - Platform: Dirac-3

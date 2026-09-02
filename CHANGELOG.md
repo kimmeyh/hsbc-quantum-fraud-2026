@@ -4,6 +4,10 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-09-02
+
+- **process**: F18 registered (priority 11, before hardware blocks): mine the team lead's Dirac-3 integration notes (qml-unlocked/DIRAC3.md) with a 10-point checklist; binding decision recorded: freeze honored, protocol-touching items enter only as dated amendments
+
 ### 2026-09-01
 
 - **fix**: Dual PR review findings addressed (Claude review 10 findings, Copilot review 2 overlapping; PR #2): manifest tool moved to scripts/ (out of the frozen experiments/src), rewritten with portable logical keys, paths sourced from frozen data.py, hard-fail verify (missing/extra/changed all FAIL); .gitignore negation repaired so MANIFEST.json is actually committed; retrospective guide and enforcing docs unified at 16 categories with template sections 15-16; Sprint 2 retro renumbered to canonical order; SPRINT_PROCESS calendar reconciled (process sprint inserted); stopping criteria 4/7 precedence rule (results-invalidating defects always stop); sprint_status plan_approved corrected and update-sprint-status.ps1 extended (dotted-path sections, unknown-key hard error, null typing); Copilot-review request procedure documented in workflow 7.7
