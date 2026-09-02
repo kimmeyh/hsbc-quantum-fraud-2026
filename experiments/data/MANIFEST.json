@@ -1,0 +1,65 @@
+{
+ "generated": "2026-09-01T00:24:04",
+ "files": {
+  "ieee-cis/sample_submission.csv": {
+   "sha256": "50d7e0d6fcfc6e498efc297001f252101512ccdcb34aefbde6db98f8242a3626",
+   "bytes": 6080314,
+   "lines": 506692
+  },
+  "ieee-cis/test_identity.csv": {
+   "sha256": "3e5978cb13ca5e72f52babc4349ae0125e14b87ca8bfabe952ab67bb4ff1e10b",
+   "bytes": 25797161,
+   "lines": 141908
+  },
+  "ieee-cis/test_transaction.csv": {
+   "sha256": "2a8e51f1d335a86025d2b7f45beb9b78d0ab1edd726ef531d8b71a8a0065c011",
+   "bytes": 613194934,
+   "lines": 506692
+  },
+  "ieee-cis/train_identity.csv": {
+   "sha256": "b63c725d8377be90a995268d97f347c17d456b95db45807adcf9f59cd603c37c",
+   "bytes": 26529680,
+   "lines": 144234
+  },
+  "ieee-cis/train_transaction.csv": {
+   "sha256": "3a5c83ab6b3cc13dcabe5ffa9f522307fd5f7f7b6e6f6a60c32284ca6283d642",
+   "bytes": 683351067,
+   "lines": 590541
+  },
+  "spectra/spectra_energy_steel.csv": {
+   "sha256": "b07007b5db6b619b31073e46ea802dc575f6eb617d71a048a2775ad481020142",
+   "bytes": 4229424,
+   "lines": 35041
+  },
+  "spectra/spectra_maintenance_ai4i.csv": {
+   "sha256": "979db538a6458471fc862bf9ffd5658260d188f577cd12244d1f9b86672c0d55",
+   "bytes": 836548,
+   "lines": 10001
+  },
+  "spectra/spectra_oilgas_gasturbine.csv": {
+   "sha256": "2c78870bd3400b9f8cbb522ed36e09309f087f0fd2fdd804043cf092ea308801",
+   "bytes": 4275745,
+   "lines": 36734
+  },
+  "spectra/spectra_telecom_churn.csv": {
+   "sha256": "71dff0dbf95f019e8eefbac0efdb16075553ee80e948a3a72101fbb9a0b90334",
+   "bytes": 278895,
+   "lines": 3151
+  },
+  "ulb/creditcard.csv": {
+   "sha256": "76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89",
+   "bytes": 150828752,
+   "lines": 284808
+  },
+  "ulb/creditcard_x1_test.csv": {
+   "sha256": "11e0768511b51fd5cfadb8b179fc211bed426dcac12fea723b6a0c0c497c9c1c",
+   "bytes": 45331398,
+   "lines": 85444
+  },
+  "ulb/creditcard_x1_train.csv": {
+   "sha256": "8544ac3261c2b8d7a36c82cf03b7c32dcc3cc9f83a8426add5dfe5b70fed8685",
+   "bytes": 105771129,
+   "lines": 199365
+  }
+ }
+}

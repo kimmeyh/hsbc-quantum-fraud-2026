@@ -1,5 +1,6 @@
 .venv/
-experiments/data/
+experiments/data/*
+!experiments/data/MANIFEST.json
 __pycache__/
 *.pyc
 .env
