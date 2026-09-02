@@ -42,17 +42,17 @@ Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored /
 - Platform: docs / Dirac-3 preparation
 - Source: `D:\Data\Harold\github\qml-unlocked\DIRAC3.md` -- the team lead's hands-on notes from running all QML Unlocked chapters on real Dirac-3 hardware (Aug 2026), heritage ForrierWall pipeline
 - **Binding constraint (team-lead decision 2026-09-02): the frozen preregistration is honored. Anything from these notes that touches protocol (arms, configs, gates, budgets) enters ONLY as a dated amendment proposed for team-lead approval; everything else (tooling, error handling, credentials, cost discipline) adopts freely.**
-- Task checklist:
-  - [ ] Read DIRAC3.md in full plus the three cited ForrierWall reference points (credentials main.py:50, dirac_params :92, free-tier backoff :715, local proxy :1243)
+- Task checklist (ALL COMPLETE 2026-09-02; dispositions in docs/sprints/drafts/F18_dirac3_notes_findings.md):
+  - [x] Read DIRAC3.md in full plus the three cited ForrierWall reference points (line numbers drifted; located by symbol)
   - [x] Verify variable-count math (DONE 2026-09-02): eqc-models source shows the sequential strategy (mandatory on Windows) defaults pairs to n(n-3)/2, so true totals are schedule-2 = C(n,2) exactly and schedule-3 = C(n,2)+C(n,3); confirmed empirically by FourierWall2 hardware runs (oilgas n=15: measured 105 and 560 vars, exact). `qubo_vars` and prereg section 10 overestimate by exactly n (conservative direction); bounds unchanged (free tier n<=13, device n<=17); amendment A2 drafted for team-lead approval
   - [x] B5/QSVM sign-augmentation (DONE 2026-09-02): already in the frozen protocol -- section 4 model-arms table reads "QSVM (sign-augmented primal, Dirac-3)". No amendment needed; implementation must honor it when B5 code is written
-  - [ ] Confirm {-1,+1} label mapping and `weak_cls_strategy="sequential"` (Windows) are in the CVQBoost pipeline spec before any fit code is written
-  - [ ] Adopt the free-tier rejection backoff pattern (error strings "number of variables" / "free-tier device limit") into the hardware retry discipline, reconciled with the frozen retry-twice rule
-  - [ ] Adopt the credentials pattern (QCI_API_URL + QCI_TOKEN, gitignored .env, never printed) into ADR-0011 practice; note QCI_API_URL=https://api.qci-prod.com verified working
-  - [ ] Cross-check constructor knobs (relaxation_schedule, num_samples, lambda_coef, weak_cls_type) against the frozen FourierWall2-derived config for consistency; discrepancies -> report, not silent change
-  - [ ] Record cost-control rules (one metered call per fit, no hardware grid search, proxy-first dev) against the hardware-block plans; note measured ~1 s/fit for small QSVM problems as a B5 budget datapoint
-  - [ ] Below-4-features pair impossibility (schedule 1 only for n<4): check the H3 feature ladder's lowest rung configs
-  - [ ] Output: findings memo with adopt/amend/reject disposition per item, presented to the team lead; amendments drafted but NOT applied
+  - [x] {-1,+1} label mapping and explicit sequential strategy adopted into the B5 spec (with known-answer mapping test)
+  - [x] Backoff pattern: DETECTION adopted (error strings + raw-error logging), config-MUTATING retries REJECTED for preregistered cells (frozen identical-config retry rule preserved; A2 formula prevents sizing rejections ex ante)
+  - [x] Credentials pattern adopted into ADR-0011 practice (resolve-once, both vars required, never printed)
+  - [x] Knob cross-check clean vs eqc-models 0.21.0; NEW invariant: constructed-attribute round-trip assert (ForrierWall silent-kwarg-drop gotcha)
+  - [x] Cost-control rules confirmed aligned with ADR-0002 and the frozen grid; QSVM ~1 s/fit supports the B5 estimate
+  - [x] H3 low rung clear (k=5 -> 10/20 vars); n<4 guard adopted with a real error message
+  - [x] Findings memo delivered: docs/sprints/drafts/F18_dirac3_notes_findings.md; zero amendments required
 - Depends on: nothing (read-only analysis; must complete before F2 hardware execution)
 
 **F2. Hardware campaign, first blocks (~0.5 day + approvals) Priority 12**

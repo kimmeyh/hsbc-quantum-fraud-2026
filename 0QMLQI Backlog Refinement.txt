@@ -8,6 +8,122 @@ Do not stop to ask questions unless meeting the criteria in \docs\SPRINT_STOPPIN
 Sprint n Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
 
 ---------------------------------------------------------------------------------------------------------
+Sprint 3 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
+F1 + F18
+
+
+
+  Candidates at a glance
+
+  - F1. Classical evidence campaign (~1.5 days + ~5.5h inline additions) Priority 10
+  - F18. Mine the Dirac-3 integration notes (~1h remaining) Priority 11
+  - F2. Hardware campaign, first blocks (~0.5 day + approvals) Priority 12
+  - F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14
+  - F4. QFE phase arms + order-matched twins (~0.5 day) Priority 16
+  - F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority 18
+  - F7. Results memo + gate review (~2h) Priority 22
+  - F8. Outline + Draft V1 (~1 day) Priority 30
+  - F9. Adversarial reviews V2/V3 + rubric pass (~0.5 day) Priority 32
+  - F16. Minimal CI: pytest + lint on PRs (~30m) Priority 34
+  - F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 40
+  - F17. Dirac-3 simulator for pre-hardware test runs (~2-3h investigation) Priority HOLD
+  - F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD
+  - F6. Braket gate-based phase-active arm (~0.5 day) Priority HOLD
+  - F14. eqc-models feedback package to QCi (~2h) Priority HOLD
+
+  Experiments
+
+  F1. Classical evidence campaign (~1.5 days + ~5.5h inline additions) Priority 10
+  - Phase: Experiments
+  - Platform: ULB
+  - Tuned XGB/LGBM/CatBoost (100 Optuna trials each) + logistic; full and matched features; 10 seeds; BCa CIs into results.json; G0 scored as
+    committed (mean AP >= 0.85); Tuning Budget Equivalence table; paired-delta SD measurement with MDE refinement decision
+  - CVQBoost proxy pipeline (weak pools, QUBO build, non-negative-ridge solve = structural control); free-tier and full configs frozen
+  - Amendment A3 side-by-side: sequential vs full-pair build compared on proxy validation AP across the 10 primary seeds (zero metered seconds;
+    full-pair via WSL2, setup [no-history]); build selected before any test-set evaluation
+  - B1+G0b hardware request PREPARED with call counts (not executed); inline additions from the approved disposition: ADRs 0005-0010, logging
+    conventions, smoke fixture, ARCHITECTURE.md, TESTING_STRATEGY, known-failure headers, velocity log start, two hook ports
+  - Depends on: prereg freeze (done, amended A2/A3)
+
+  F18. Mine the Dirac-3 integration notes (~1h remaining) Priority 11
+  - Phase: Experiments
+  - Platform: docs / Dirac-3 preparation
+  - 8 of 10 checklist items remain (variable-count math and QSVM augmentation already done); highest-value remaining: free-tier backoff pattern
+    into retry discipline, credentials pattern into ADR-0011 practice, knob cross-check vs the frozen config, H3 ladder low-rung check
+  - Output: findings memo with adopt/amend/reject dispositions; must complete before F2 hardware execution
+  - Depends on: nothing
+
+  F2. Hardware campaign, first blocks (~0.5 day + approvals) Priority 12
+  - Phase: Experiments
+  - Platform: Dirac-3
+  - Execute B1 (free-tier ULB) and G0b (proxy fidelity) on per-block team-lead approval; B2/B3 if the QCi grant lands; results.json [HW] rows;
+    retry discipline per frozen protocol
+  - Depends on: F1, F18, per-block approval, QCi grant for B2/B3
+
+  F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14
+  - Phase: Experiments
+  - Platform: IEEE-CIS
+  - Preregistered feature pass (D-normalization, UID excluded, named aggregates, V-reduction); leakage controls incl. shuffled-label positive
+    control; GroupKFold-by-month rolling origin; classical arms + proxy CVQBoost; H3 ladder cells
+  - Depends on: F1
+
+  F4. QFE phase arms + order-matched twins (~0.5 day) Priority 16
+  - Phase: Experiments
+  - Platform: ULB, IEEE-CIS
+  - Fourier Wall recipe applied identically to all arms; trained-frequency GAM/GA2M/JOINT twins in every H6 cell
+  - Depends on: F1
+
+  F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority 18
+  - Phase: Experiments
+  - Platform: SPECTRA, Dirac-3
+  - 3 strongest cells x 5 seeds; random-segment negative control machinery reused for fraud transfer
+  - Depends on: QCi grant, F2 approval pattern
+
+  F7. Results memo + gate review (~2h) Priority 22
+  - Phase: Experiments
+  - Platform: docs
+  - One-page results memo; gate table scored as committed; headline promotion decision per the thesis rule (team-lead review, Sep 4 target)
+  - Depends on: F1-F4 (F5 as available)
+
+  Paper
+
+  F8. Outline + Draft V1 (~1 day) Priority 30
+  - Phase: Paper
+  - Platform: docs
+  - Seven rubric-mapped sections + appendices; [HW]/[SIM]/[PROJ] tags; prevalence beside every AUPRC
+  - Depends on: F7, team-lead outline approval
+
+  F9. Adversarial reviews V2/V3 + rubric pass (~0.5 day) Priority 32
+  - Phase: Paper
+  - Platform: docs
+  - Domain pass, quantum pass (encoding diagnostics, evidence-tag audit), rubric scoring; fix lowest criterion
+  - Depends on: F8
+
+  Finalize
+
+  F16. Minimal CI: pytest + lint on PRs (~30m) Priority 34
+  - Phase: Finalize
+  - Platform: docs
+  - GitHub Actions on PRs to develop; sub-minute; no dataset or metered access
+  - Depends on: nothing
+
+  F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 40
+  - Phase: Finalize
+  - Platform: docs
+  - Every number vs results.json; repo-wide confidential-string scan; requirements-matrix walk; public reproducibility repo; team-lead final
+    PDF + portal submission
+  - Depends on: F8, F9
+
+  HOLD Items (post-submission / Phase 2)
+
+  - F17. Dirac-3 simulator for pre-hardware test runs (~2-3h investigation) Priority HOLD — team-lead prioritized post-submission; proxy + G0b
+    fill the role for Phase 1
+  - F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD — built at acceptance
+  - F6. Braket gate-based phase-active arm (~0.5 day) Priority HOLD — Phase 1 covers it as a written [PROJ] plan + team capability
+  - F14. eqc-models feedback package to QCi (~2h) Priority HOLD — assembled after the hardware campaign
+
+
+---------------------------------------------------------------------------------------------------------
 Sprint 3 Scope should include the below items only. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
  #4 tuned GBDT trio + logistic, full and matched features, 10 seeds, results.json with CIs
  #5 G0 scored as committed + Tuning Budget Equivalence table
