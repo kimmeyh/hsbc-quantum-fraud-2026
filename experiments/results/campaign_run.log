@@ -1,2 +1,0 @@
-2026-09-02 11:16:43,752 frd.classical INFO [DATA] ULB rows=283726 duplicates_removed=1081
-2026-09-02 11:25:46,593 frd.classical INFO [TUNE] xgboost:matched13 done: cv_ap=0.8306 trials=100 wall=521s

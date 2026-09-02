@@ -1,4 +1,0 @@
-2026-09-02 11:31:34,825 frd.proxy INFO [PROXY] ('cvqboost_proxy', 'free', 'dct', 'sequential', 42) exists, skipping
-2026-09-02 11:32:10,494 root WARNING eqc-direct package not available
-2026-09-02 11:32:11,048 root WARNING emucore-direct package not available
-2026-09-02 11:34:07,469 frd.proxy INFO [PROXY] free/dct/sequential seed=43 pool=78 test_ap=0.7595 val_ap=0.8475
