@@ -15,11 +15,12 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | Sprint | Summary doc | Status | Duration |
 |---|---|---|---|
 | 1 | docs/sprints/SPRINT_1_SUMMARY.md | [OK] Complete | ~1 day (Aug 30, 2026) |
+| 2 | docs/sprints/SPRINT_2_SUMMARY.md | [OK] Complete | ~2 days (Aug 31 - Sep 2, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 1: Freeze and Foundations** (Aug 30, 2026; PR #1 merged to develop, develop merged to main via PR #3).
-Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metrics.py at the v1.1 statistical spec (11 known-answer tests); loaders validated across ULB/IEEE-CIS/SPECTRA; pilot variance run (mean AP 0.8268, seed SD 0.0243, MDE(10) 0.0242 [SIM]); repo infrastructure (private remote, branch model, Copilot instructions, pre-commit confidentiality hook). Zero metered seconds. Retro: docs/sprints/SPRINT_1_RETROSPECTIVE.md (lightweight protocol; full 14x4 applies from Sprint 2).
+**Sprint 2: Process Foundations and External Readiness** (Aug 31 - Sep 2, 2026; PR #2 merged to develop, develop merged to main via PR #12).
+Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored / 18 dispositioned); portal mechanics verified into requirements-matrix A5/A5b (F12); QCi letter sent (F11); dual PR review with all 12 findings fixed and threads resolved; manifest tooling portable and hard-failing in scripts/; prereg amendments A2 (variable-count correction + documented 949 ceiling) and A3 (full-pair build side-by-side option); F18 registered with 2/10 checklist items pre-completed. Zero metered seconds. Retro: docs/sprints/SPRINT_2_RETROSPECTIVE.md (first full 16x4).
 
 ## Next Sprint Candidates
 
@@ -111,19 +112,7 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 
 ### External (team-lead-owned, parallel)
 
-**F12. Portal account verification (~15m) Priority 9 -- ASSIGNED Sprint 2 (team-lead-owned)**
-- Phase: External
-- Platform: N/A
-- Confirm portal login and note required submission fields into requirements-matrix A5
-
-(F11 QCi sponsorship letter send: COMPLETED by the team lead 2026-08-30, per convention removed from candidates; history in SPRINT_2_PLAN.md Task H and CHECKLIST.md.)
-
-**F15. Best-practices and ADR review from spamfilter-multi (~3h) Priority 11**
-- Phase: Experiments (assigned to Sprint 2 by the team lead, 2026-08-30)
-- Platform: docs
-- Review spamfilter-multi ARCHITECTURE.md and docs/adr/ for (1) architecture, development, and software-engineering practices to copy and adapt here, (2) additional SE best-practice suggestions, (3) ML best practices to propose as ADRs for this repo: feature engineering, data curation, leakage prevention, training, evaluation of results, applied to the challenge effort
-- Output: adapted docs/adr/ directory with an ADR template, initial ADRs for decisions already made, and a proposal list for team-lead disposition
-- Depends on: nothing
+(F11 QCi sponsorship letter send: COMPLETED by the team lead 2026-08-30. F12 portal verification and F15 best-practices/ADR review: COMPLETED in Sprint 2, merged via PR #2; history in SPRINT_2_SUMMARY.md. All three removed from candidates per convention.)
 
 **F16. Minimal CI: pytest + lint on PRs with smoke fixture (~30m) Priority 34**
 - Phase: Finalize
