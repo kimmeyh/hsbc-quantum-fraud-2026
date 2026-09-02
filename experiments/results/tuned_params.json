@@ -29,5 +29,53 @@
    "V2",
    "V21"
   ]
+ },
+ "xgboost:full": {
+  "params": {
+   "max_depth": 10,
+   "learning_rate": 0.10249134631427885,
+   "subsample": 0.8091693039216357,
+   "colsample_bytree": 0.7001888916353922,
+   "min_child_weight": 4,
+   "reg_alpha": 0.016285227382410675,
+   "reg_lambda": 0.14553047247313675,
+   "scale_pos_weight": 24.462604401095707
+  },
+  "cv_ap": 0.8554707982392132,
+  "n_trials": 100,
+  "wall_seconds": 732.5,
+  "tuning_seed": 42,
+  "features": [
+   "Time",
+   "V1",
+   "V2",
+   "V3",
+   "V4",
+   "V5",
+   "V6",
+   "V7",
+   "V8",
+   "V9",
+   "V10",
+   "V11",
+   "V12",
+   "V13",
+   "V14",
+   "V15",
+   "V16",
+   "V17",
+   "V18",
+   "V19",
+   "V20",
+   "V21",
+   "V22",
+   "V23",
+   "V24",
+   "V25",
+   "V26",
+   "V27",
+   "V28",
+   "Amount"
+  ]
  }
 }
