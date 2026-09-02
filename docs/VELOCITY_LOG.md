@@ -13,3 +13,7 @@
 | 3 | B5 proxy module + tests | code | 120m | ~75m | 0.6 | eqc source reading included |
 | 3 | ADRs 0005-0010 | docs | 90m | ~40m | 0.45 | modules already existed to cite |
 | 3 | Hook ports + registration + payload tests | tooling | 60m | ~30m | 0.5 | sources adapted, not rewritten |
+| 3 | B1 tuning studies (unattended) | compute | 240-480m | 256m | ~0.8 | CatBoost slowest (56m full); CPU shared with proxy track |
+| 3 | B2-B4 refits + gate scoring | compute+code | 100m | ~95m | 0.95 | incl. one checkpoint-key fix + relaunch |
+| 3 | B6 A3 side-by-side (builds+solves) | compute | 60m + 60m timebox | ~75m | 0.6 | WSL setup consumed the timebox's first half |
+| 3 | B7 hardware request doc | docs | 30m | ~20m | 0.7 | |

@@ -5,6 +5,14 @@ Manual Validation complete
 Sprint n Manual Validation Feedback 
 
 
+---------------------------------------------------------------------------------------------------------
+Sprint 3 Manual Validation Feedback 
+
+What did we learn from the Dirac3.md summary from the q book? How did it align with what we already knew? What did we decide to adopt?
+
+How were the raw datasets processed into curated datasets (features and rows) for training?
+Different for each ML algorithm? How?
+
 
 
 
