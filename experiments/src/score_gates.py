@@ -117,8 +117,12 @@ def main() -> int:
     gbdt_cells = {a: cell_aps.get((a, "matched13"), {})
                   for a in ("xgboost", "lightgbm", "catboost")}
     complete = {a: c for a, c in gbdt_cells.items() if len(c) >= N_SEEDS}
-    # Prefer the section-6 tuned proxy cell (Sprint 4, F22) when present.
-    proxy_key = next((k for k in cell_aps if k[0] == "cvqboost_proxy" and k[1] == "tuned_full"), None)         or next((k for k in cell_aps if k[0] == "cvqboost_proxy" and k[1] == "tuned_free"), None)         or ("cvqboost_proxy", "free", "dct", "sequential")
+    # Proxy cell = the config SELECTED on validation AP (A3 rule applied to
+    # configs): highest mean val_auprc across seeds among full-pair proxy cells.
+    val_means = {k: np.mean([r["val_auprc"] for r in by_cell[k]])
+                 for k in by_cell if k[0] == "cvqboost_proxy" and k[3] == "full"
+                 and len(by_cell[k]) >= N_SEEDS}
+    proxy_key = max(val_means, key=val_means.get) if val_means else ("cvqboost_proxy", "free", "dct", "sequential")
     proxy = cell_aps.get(proxy_key, {})
     lines.append(f"Proxy cell used: {'/'.join(str(x) for x in proxy_key)}")
     if complete and len(proxy) >= N_SEEDS:

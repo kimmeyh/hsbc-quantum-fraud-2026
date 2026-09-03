@@ -17,3 +17,8 @@
 | 3 | B2-B4 refits + gate scoring | compute+code | 100m | ~95m | 0.95 | incl. one checkpoint-key fix + relaunch |
 | 3 | B6 A3 side-by-side (builds+solves) | compute | 60m + 60m timebox | ~75m | 0.6 | WSL setup consumed the timebox's first half |
 | 3 | B7 hardware request doc | docs | 30m | ~20m | 0.7 | |
+| 4 | Task A (F22) A1 health flags + A2 harness + smoke | code | 110m | ~70m | 0.65 | |
+| 4 | Task A (F22) 100-trial study (unattended, WSL) | compute | 120-240m | ~85m | 0.5 | fork builds + H cache |
+| 4 | Task A (F22) refits + rank + report updates | code+compute | 60m | ~45m | 0.75 | |
+| 4 | Task B (F21) research memo (agent) | research | 120m | ~9m agent + 15m fold-in | 0.2 | primary-source finds decisive |
+| 4 | Task D (F7) memo + checklist walk + positive control | docs | 120m | ~60m | 0.5 | |
