@@ -59,6 +59,24 @@ Delivered: F18 mined (10 dispositions, zero amendments); F1 campaign with 110 [S
 - GroupKFold-by-month rolling origin; classical arms + proxy CVQBoost on the reduced set; H3 ladder cells
 - Depends on: F1
 
+**F23. F4 prep: QFE phase recipe + twin scaffolding (~3h, subagent-parallel) Priority 15**
+- Phase: Experiments (team-lead roadmap 2026-09-03: prep in Sprint 6 alongside F3, execution F4 in Sprint 7)
+- Platform: ULB (IEEE-CIS later), docs
+- Implement the exact Fourier Wall phase recipe as a fitted, train-only transformer: rank phase phi = 2*pi*(rank - 1/2)/n - pi, log magnitudes first, calendar cycles (ULB Time -> daily cycle), train-only whitening, low-cardinality columns excluded from encoded blocks; known-answer tests (phase range, rank invariance, no test leakage)
+- Capability pre-flights for the three twin families the H6 bar requires: trained-frequency GAM, GA2M, and the JOINT twin (supervised coarse-to-fine cosine frequency scan fit by logistic regression); pin dependencies; ADR candidate recording the twin design (Fourier Wall: omitting the twin manufactures fake quantum wins)
+- Freeze the H6 cell list (arms x representation), the results.json representation tag, and the A2 variable-count implications of phase blocks for CVQBoost (n changes -> free-tier/device bounds re-checked)
+- No arm is RUN in prep; execution is F4. Zero metered seconds
+- Depends on: F1 (done); F22 (tuned proxy config so H6 sits on a tuned CVQBoost)
+
+**F24. F5 prep: SPECTRA in-segment machinery + B4 request (~3h, subagent-parallel) Priority 15**
+- Phase: Experiments (team-lead roadmap 2026-09-03: prep in Sprint 6, execution F5 in Sprint 8)
+- Platform: SPECTRA, Dirac-3 (request only)
+- In-segment evaluation machinery per H5: in_pocket segment metrics, matched random-segment negative control (same size and base rate), the >= 50-test-positives-per-cell rule, 5-seed splits, leak-free contract enforced (target/target_real/in_pocket never features); tests
+- Identify the 3 strongest in-segment cells from the FourierWall2 evidence (experiments/reference/fourierwall2/) and freeze them with config hashes; prove via scripts/manifest.py whether the staged SPECTRA files match or differ from the FourierWall2-era files (ADR-0003 requirement for B4)
+- Proxy dry run on the 3 cells (zero metered) to set expected values; write the B4 hardware request (15 fits, ~450 QPU s) in the HARDWARE_REQUEST template, ready for grant arrival
+- Named fallback for Sprint 8 if no grant: proxy-only replication labeled [SIM], or the sprint re-scopes to an F4 extension -- decided by the team lead at Sprint 8 refinement
+- Depends on: F1 (done); QCi grant status for the hardware path
+
 **F4. QFE phase arms + order-matched twins (~0.5 day) Priority 16**
 - Phase: Experiments
 - Platform: ULB, IEEE-CIS

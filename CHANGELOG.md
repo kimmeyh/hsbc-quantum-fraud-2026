@@ -6,6 +6,7 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ### 2026-09-03
 
+- **process**: F23 (F4 prep: QFE phase recipe + twin scaffolding) and F24 (F5 prep: SPECTRA in-segment machinery + B4 request) registered at priority 15 per the team lead's Sprint 4-8 roadmap
 - **process**: Sprint 3 closed: PR #13 merged to develop, develop to main via PR #16; carry-forward branch feature/20260903_Sprint_4 created from the Sprint 3 head; SPRINT_3_SUMMARY.md written (three-doc rule); master plan rolled (F1/F18 pruned); CHECKLIST reconciled; issue #15 closed; sprint_status rolled to Sprint 4
 
 ### 2026-09-02
