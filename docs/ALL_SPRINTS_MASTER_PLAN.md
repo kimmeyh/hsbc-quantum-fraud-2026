@@ -55,6 +55,21 @@ Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored /
   - [x] Findings memo delivered: docs/sprints/drafts/F18_dirac3_notes_findings.md; zero amendments required
 - Depends on: nothing (read-only analysis; must complete before F2 hardware execution)
 
+**F22. CVQBoost proxy tuning per prereg section 6 (~2-3h + unattended solves) Priority 11**
+- Phase: Experiments (team-lead validation 2026-09-02; PREREQUISITE for G0b and for un-quarantining lg)
+- Platform: ULB, local proxy (zero metered seconds)
+- The preregistered equal-budget tuning: 100 trials over weak pool composition (incl. class-weighted weak learners), schedule, k, lambda alpha in {0.5, 1, 2, 4}; num_samples/relaxation_schedule stay fixed
+- Expected to fix the score degeneracy found at Sprint 3 validation (near-uniform weights under lambda=2*n_train; unweighted weak learners voting -1 on ~99.8% of rows): smaller lambda spreads scores, weighted weak learners grade the votes
+- Produces the proxy config RANKING that G0b's top-3 + bottom-2 hardware fits require; lg pools return to tables only if tuning fixes them
+- Depends on: nothing (proxy-only); blocks G0b execution
+
+**F21. Baseline-protocol research: duplicates methodology + ULB feature engineering (~2h) Priority 12**
+- Phase: Experiments (team-lead request at Sprint 3 validation, re G0 FAIL)
+- Platform: docs -> possible amendment proposal
+- Research published ULB methodology: how do strong published baselines handle exact duplicates (retain? partial? per which papers); what leakage-free feature engineering exists (Amount/Time transforms, interaction features); what protocol differences explain the 0.85-0.88 literature band vs our 0.8296
+- Output: findings memo with a recommended amendment proposal if justified (e.g., a LABELED duplicate-retained sensitivity protocol as an added exploratory analysis -- allowed by section 11; the primary protocol and G0's scored outcome stay as committed) -> team-lead disposition, then retry under the amended protocol if approved
+- Depends on: nothing
+
 **F2. Hardware campaign, first blocks (~0.5 day + approvals) Priority 12**
 - Phase: Experiments
 - Platform: Dirac-3

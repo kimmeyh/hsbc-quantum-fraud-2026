@@ -2,6 +2,10 @@
 
 Rows: 110. Every number below is [SIM] from results.json.
 
+NOTE: 10 lg-pool proxy rows are QUARANTINED from all tables (team-lead validation 2026-09-02: degenerate scoring -- ~99.8% identical scores, alert budget unusable). Rows remain in results.json; they return to tables after the F22 proxy-tuning fix.
+
+CAVEAT on dct proxy cells: scores take ~120 distinct values with ~96% of transactions at the mode (near-uniform weights under the frozen lambda=2*n_train starting config). AUPRC/AUC handle the ties correctly (step-wise AP; tie_fraction recorded per row), but alert-budget precision and calibration numbers are weaker evidence until F22 tunes lambda and pool composition per prereg section 6.
+
 ## Across-seed summaries (test AUPRC; prevalence beside it)
 
 | Cell | Seeds | Mean AP | Seed SD | t-95% CI | Mean AUC | Prevalence |
@@ -10,7 +14,6 @@ Rows: 110. Every number below is [SIM] from results.json.
 | catboost/matched13 | 10 | 0.8070 | 0.0321 | [0.7841, 0.8300] | 0.9738 | 0.00167 |
 | cvqboost_proxy/free/dct/full | 10 | 0.7681 | 0.0312 | [0.7458, 0.7905] | 0.9210 | 0.00167 |
 | cvqboost_proxy/free/dct/sequential | 10 | 0.7655 | 0.0316 | [0.7429, 0.7881] | 0.9199 | 0.00167 |
-| cvqboost_proxy/free/lg/sequential | 10 | 0.5565 | 0.0296 | [0.5353, 0.5777] | 0.8271 | 0.00167 |
 | lightgbm/full | 10 | 0.8240 | 0.0295 | [0.8029, 0.8451] | 0.9788 | 0.00167 |
 | lightgbm/matched13 | 10 | 0.8024 | 0.0274 | [0.7828, 0.8220] | 0.9726 | 0.00167 |
 | logistic/full | 10 | 0.7218 | 0.0268 | [0.7026, 0.7410] | 0.9769 | 0.00167 |

@@ -36,6 +36,11 @@
 | **Expected total** | **~20-35 QPU s** (prereg envelope ~100 s) |
 | Gated on | current balance; team-lead approval; proxy ranking table present in results.json |
 
+## Validation notes (2026-09-02, team lead)
+
+- Both pool variants KEPT in B1 per team-lead decision ("keep both"); no amendment.
+- EXECUTION RECOMMENDATION: hold both blocks until F22 (preregistered proxy tuning) completes -- it produces the config ranking G0b requires, and it addresses the score degeneracy found at validation (lg quarantined from reporting; dct operating points weak evidence until tuned). Request size and structure unchanged.
+
 ## Not in this request
 
 B2 (ULB full config, 816 vars, 11 fits, ~450 s), B3 (IEEE-CIS + ladder, 16 fits, ~650 s), B4 (SPECTRA, 15 fits, ~450 s), B5 (QSVM, 12 fits, ~15 s): all wait on the QCi grant per the frozen spend priority (B3 > B2 > ladder > B4) and their own approvals.
