@@ -3,7 +3,7 @@
     "number": 3,
     "name": "Classical Evidence Campaign",
     "branch": "feature/20260902_Sprint_3",
-    "status": "phase_5_awaiting_manual_validation",
+    "status": "phase_7_pr_ready",
     "plan_doc": "docs/sprints/SPRINT_3_PLAN.md",
     "pr": 13,
     "plan_approved": true,
