@@ -24,7 +24,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import logging
 import os
@@ -36,6 +35,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import data
+import store
 
 if os.name == "posix" and not data.ULB_CSV.exists():
     # WSL shim (frozen data.py hardcodes the Windows drive path): D:\x -> /mnt/d/x
@@ -129,15 +129,6 @@ def solve_simplex_qp(H: np.ndarray, y: np.ndarray, lam: float,
 
 # ------------------------------------------------------------------ pipeline
 
-def _atomic_append_row(row: dict) -> None:
-    store = (json.loads(RESULTS.read_text())
-             if RESULTS.exists() else {"meta": {}, "rows": []})
-    store["rows"].append(row)
-    tmp = RESULTS.with_suffix(".tmp")
-    tmp.write_text(json.dumps(store, indent=1))
-    os.replace(tmp, RESULTS)
-
-
 def _done_keys() -> set:
     if not RESULTS.exists():
         return set()
@@ -172,20 +163,19 @@ def _score_and_row(w, H_va, H_te, split, cols, config, weak_type, pair_build,
         "dataset": "ulb", "protocol": "stratified", "seed": seed,
         "config": config, "pool_variant": weak_type, "pair_build": pair_build,
         "n_weak_classifiers": int(n_pool),
-        "config_hash": hashlib.sha256(json.dumps(
+        "config_hash": store.config_hash(
             {"config": config, "weak_type": weak_type, "pair_build": pair_build,
-             "fixed": FIXED, "lambda_mult": LAMBDA_MULT,
-             "cfg": CONFIGS[config]}, sort_keys=True).encode()).hexdigest()[:16],
+             "fixed": FIXED, "lambda_mult": LAMBDA_MULT, "cfg": CONFIGS[config]}),
         "features_used": cols,
         "metrics": m,
-        "val_auprc": float(__import__("sklearn.metrics", fromlist=["x"])
-                           .average_precision_score(split.y_val.to_numpy(), p_val)),
+        "val_auprc": float(metrics.average_precision_score(
+            split.y_val.to_numpy(), p_val)),
         "evidence_tag": "SIM",
         "metered_seconds": 0, "retry_count": 0,
         "timestamps": {"started": t0,
                        "finished": time.strftime("%Y-%m-%dT%H:%M:%S")},
     }
-    _atomic_append_row(row)
+    store.append_row(row)
     log.info("[PROXY] %s/%s/%s seed=%d pool=%d test_ap=%.4f val_ap=%.4f",
              config, weak_type, pair_build, seed, n_pool,
              m["auprc"], row["val_auprc"])

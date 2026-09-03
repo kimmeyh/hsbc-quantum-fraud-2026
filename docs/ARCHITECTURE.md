@@ -4,7 +4,7 @@
 **Audience**: Claude Code sessions; submission reviewers via the public package.
 **Last Updated**: 2026-09-02
 
-The methodology authority is `experiments/PREREGISTRATION.md` (FROZEN; amendments A1-A4). This document maps the code that implements it. Every module decision traces to an ADR (docs/adr/).
+The methodology authority is `experiments/PREREGISTRATION.md` (FROZEN; see its Amendment log for the current amendment list). This document maps the code that implements it. Every module decision traces to an ADR (docs/adr/).
 
 ## Pipeline
 

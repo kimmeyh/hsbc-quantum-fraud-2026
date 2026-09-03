@@ -17,7 +17,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import logging
 import os
@@ -28,6 +27,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import data
 import metrics
+import store
 import tune
 
 log = logging.getLogger("frd.classical")
@@ -45,19 +45,8 @@ ARMS = ("xgboost", "lightgbm", "catboost", "logistic")
 FEATURE_SETS = ("matched13", "full")
 
 
-def _atomic_write(path: Path, obj) -> None:
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(obj, indent=1))
-    os.replace(tmp, path)
-
-
 def _load(path: Path, default):
     return json.loads(path.read_text()) if path.exists() else default
-
-
-def _config_hash(payload: dict) -> str:
-    return hashlib.sha256(
-        json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()[:16]
 
 
 def _dedupe(df):
@@ -138,18 +127,19 @@ def stage_tune(df, smoke: bool) -> dict:
                 "tuning_seed": TUNING_SEED,
                 "features": cols,
             }
-            _atomic_write(PARAMS, tuned)
+            store.atomic_write_json(PARAMS, tuned)
             log.info("[TUNE] %s done: cv_ap=%.4f trials=%d wall=%.0fs",
                      key, study.best_value, len(study.trials), tuned[key]["wall_seconds"])
     return tuned
 
 
 def stage_refit(df, tuned: dict, dedupe_count: int, smoke: bool) -> None:
-    store = _load(RESULTS, {"meta": {}, "rows": []})
-    store["meta"]["ulb_duplicates_removed"] = dedupe_count
-    store["meta"]["dataset_rows_after_dedupe"] = len(df)
+    store.update_meta(ulb_duplicates_removed=dedupe_count,
+                      dataset_rows_after_dedupe=len(df))
+    existing = _load(RESULTS, {"meta": {}, "rows": []})
     # .get: the store also holds proxy rows keyed by config/pool_variant instead.
-    done = {(r["arm"], r.get("feature_set"), r["seed"]) for r in store["rows"]}
+    done = {(r["arm"], r.get("feature_set"), r["seed"]) for r in existing["rows"]}
+    n_rows = len(existing["rows"])
     seeds = SEEDS[:2] if smoke else SEEDS
     for arm in ARMS:
         for fs in FEATURE_SETS:
@@ -171,7 +161,7 @@ def stage_refit(df, tuned: dict, dedupe_count: int, smoke: bool) -> None:
                     "protocol": "stratified",
                     "seed": seed,
                     "feature_set": fs,
-                    "config_hash": _config_hash(
+                    "config_hash": store.config_hash(
                         {"arm": arm, "fs": fs, "params": cfg["params"]}),
                     "features_used": cols,
                     "early_stopping": es,
@@ -184,10 +174,10 @@ def stage_refit(df, tuned: dict, dedupe_count: int, smoke: bool) -> None:
                     "timestamps": {"started": t0,
                                    "finished": time.strftime("%Y-%m-%dT%H:%M:%S")},
                 }
-                store["rows"].append(row)
-                _atomic_write(RESULTS, store)
+                store.append_row(row)
+                n_rows += 1
                 log.info("[REFIT] %s/%s seed=%d ap=%.4f (rows=%d)",
-                         arm, fs, seed, row["metrics"]["auprc"], len(store["rows"]))
+                         arm, fs, seed, row["metrics"]["auprc"], n_rows)
 
 
 def main() -> int:
