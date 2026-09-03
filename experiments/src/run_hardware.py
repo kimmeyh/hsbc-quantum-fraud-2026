@@ -74,9 +74,12 @@ def _load_env():
         if "=" in line and not line.strip().startswith("#"):
             k, v = line.split("=", 1)
             os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+    # ForrierWall convention: QCI_API_KEY is accepted as the token (never printed).
+    if not os.environ.get("QCI_TOKEN") and os.environ.get("QCI_API_KEY"):
+        os.environ["QCI_TOKEN"] = os.environ["QCI_API_KEY"]
     for k in ("QCI_API_URL", "QCI_TOKEN"):
         if not os.environ.get(k):
-            raise SystemExit(f"FATAL: {k} not set")
+            raise SystemExit(f"FATAL: {k} not set (QCI_API_KEY accepted as alias)")
 
 
 def _require_wsl():
