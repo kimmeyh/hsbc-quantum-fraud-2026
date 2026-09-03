@@ -90,13 +90,13 @@ Team-lead feedback recorded VERBATIM (combined Product Owner / Scrum Master / Le
 
 ## Improvement Decisions
 
-Presented 2026-09-02; awaiting team-lead disposition.
+Team-lead decision 2026-09-02: "all improvements as recommended" (blanket approval).
 
 | # | Title | Source | Type | Effort | Recommendation | Decision |
 |---|---|---|---|---|---|---|
-| 1 | Score-distribution health check: threshold tie_fraction/mode-share in summarize output; WARN flag in rows and gate report | Dev Team cat 2 | Code (amendment-registered) | 20m | Sprint 4 plan | PENDING |
-| 2 | Config-provenance rule: porting a config across datasets requires recording source-data characteristics and an imbalance sanity check (STATISTICAL_REVIEW_CHECKLIST + SPRINT_PLANNING) | Dev Team cat 4 | Docs | 15m | Apply now | PENDING |
-| 3 | WSL interop practices into WINDOWS_POWERSHELL_GUIDE: script files not inline quoting; per-distro venv; path shim pattern | Dev Team cat 9 | Docs | 15m | Apply now | PENDING |
-| 4 | Plain-language companion in every Phase 5 validation package (one plain paragraph per decision item) | Dev Team cat 7 | Process note (workflow Phase 5) | 10m | Apply now | PENDING |
-| 5 | Background-launch fencing rule: before launching a background writer, verify outputs are gitignored or deliberately tracked (QUALITY_STANDARDS) | Dev Team cat 9 | Docs | 10m | Apply now | PENDING |
-| 6 | Fresh-eyes evidence review at Phase 5: before the validation handoff, a fresh-context review (subagent or fresh session, no campaign context) of the raw results.json/gate_report with an open "describe; any useful observations?" prompt; findings attached to the validation package. Credits the team lead's catch mechanism (Claude Windows app + results.json drop) | PO cat 2 note | Process (workflow Phase 5) | 15m + ~5m/sprint | Apply now | PENDING |
+| 1 | Score-distribution health check: threshold tie_fraction/mode-share in summarize output; WARN flag in rows and gate report | Dev Team cat 2 | Code (amendment-registered) | 20m | Sprint 4 plan | RECORDED: F22 inline addition (master plan) |
+| 2 | Config-provenance rule: porting a config across datasets requires recording source-data characteristics and an imbalance sanity check | Dev Team cat 4 | Docs | 15m | Apply now | APPLIED: STATISTICAL_REVIEW_CHECKLIST + SPRINT_PLANNING |
+| 3 | WSL interop practices: script files not inline quoting; per-distro venv; path shim pattern | Dev Team cat 9 | Docs | 15m | Apply now | APPLIED: WINDOWS_POWERSHELL_GUIDE |
+| 4 | Plain-language companion in every Phase 5 validation package | Dev Team cat 7 | Process note | 10m | Apply now | APPLIED: SPRINT_EXECUTION_WORKFLOW Phase 5 |
+| 5 | Background-launch fencing rule: outputs gitignored or deliberately tracked before launch | Dev Team cat 9 | Docs | 10m | Apply now | APPLIED: QUALITY_STANDARDS |
+| 6 | Fresh-eyes evidence review at Phase 5 (fresh-context reviewer of raw evidence files; credits the team lead's Claude-Windows-app catch) | PO cat 2 note | Process | 15m + ~5m/sprint | Apply now | APPLIED: SPRINT_EXECUTION_WORKFLOW Phase 5 |

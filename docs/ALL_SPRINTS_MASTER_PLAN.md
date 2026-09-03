@@ -61,6 +61,7 @@ Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored /
 - The preregistered equal-budget tuning: 100 trials over weak pool composition (incl. class-weighted weak learners), schedule, k, lambda alpha in {0.5, 1, 2, 4}; num_samples/relaxation_schedule stay fixed
 - Expected to fix the score degeneracy found at Sprint 3 validation (near-uniform weights under lambda=2*n_train; unweighted weak learners voting -1 on ~99.8% of rows): smaller lambda spreads scores, weighted weak learners grade the votes
 - Produces the proxy config RANKING that G0b's top-3 + bottom-2 hardware fits require; lg pools return to tables only if tuning fixes them
+- Inline addition (Sprint 3 retro improvement 1, approved): score-distribution health check -- threshold tie_fraction/mode-share in summarize output, WARN flag in rows and gate report (~20m, amendment-registered code change)
 - Depends on: nothing (proxy-only); blocks G0b execution
 
 **F21. Baseline-protocol research: duplicates methodology + ULB feature engineering (~2h) Priority 12**

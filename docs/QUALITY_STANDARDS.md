@@ -1,5 +1,7 @@
 # Quality Standards
 
+**Background-launch fencing rule (Sprint 3 retro improvement 5)**: before launching ANY background job that writes files, verify each output path is either gitignored or deliberately tracked -- in that turn, not after. A later `git add -A` must never be the moment output paths are first considered (Sprint 3: volatile pool/log artifacts swept into a commit before the fence landed).
+
 **Purpose**: Documentation, code, and automation standards for this repository.
 **Audience**: Claude Code sessions; the team lead.
 **Last Updated**: 2026-08-30 (disposition items 14 and 17, adapted from spamfilter-multi QUALITY_STANDARDS.md and ADR-0017)

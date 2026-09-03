@@ -72,6 +72,8 @@ Consult this line at the START and END of every phase; state which steps were do
 
 ### Phase 5: Review & Validation
 - Full test suite; verify no frozen-protocol drift (metrics/analysis code changes since `prereg-freeze` tag are amendments).
+- **Fresh-eyes evidence review (Sprint 3 retro improvement 6)**: before the validation handoff, a fresh-context reviewer (subagent or fresh session with NO campaign context) reads the raw results.json / gate_report with an open prompt ("describe; any useful observations?"); findings attach to the validation package. Rationale: the invested session knows what the numbers are supposed to mean; fresh context describes what is actually there (this mechanism, via the Claude Windows app, caught the Sprint 3 score degeneracy).
+- **Plain-language companion (Sprint 3 retro improvement 4)**: every validation package item carries one plain-terms paragraph alongside the technical table -- what it means, what is being decided, in words that need no campaign context.
 - Walk the sprint plan's acceptance criteria line by line with evidence (invariant 4).
 - Hand deliverables to the team lead for manual validation; from here on, questions are correct.
 
