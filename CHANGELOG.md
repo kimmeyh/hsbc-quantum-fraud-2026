@@ -4,6 +4,10 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-09-03
+
+- **process**: Sprint 3 closed: PR #13 merged to develop, develop to main via PR #16; carry-forward branch feature/20260903_Sprint_4 created from the Sprint 3 head; SPRINT_3_SUMMARY.md written (three-doc rule); master plan rolled (F1/F18 pruned); CHECKLIST reconciled; issue #15 closed; sprint_status rolled to Sprint 4
+
 ### 2026-09-02
 
 - **fix**: Sprint 3 validation findings addressed: lg proxy rows quarantined from all report tables (degenerate scoring, 99.8% identical scores); dct tie caveat noted; root cause diagnosed (lambda=2*n_train near-uniform weights + unweighted weak learners on 0.17% positives); fix path = preregistered section-6 proxy tuning, registered as F22 (blocks G0b); F21 registered (duplicates-methodology + feature-engineering research re G0)

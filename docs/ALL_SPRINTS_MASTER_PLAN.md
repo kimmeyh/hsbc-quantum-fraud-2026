@@ -16,44 +16,18 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 |---|---|---|---|
 | 1 | docs/sprints/SPRINT_1_SUMMARY.md | [OK] Complete | ~1 day (Aug 30, 2026) |
 | 2 | docs/sprints/SPRINT_2_SUMMARY.md | [OK] Complete | ~2 days (Aug 31 - Sep 2, 2026) |
+| 3 | docs/sprints/SPRINT_3_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 2-3, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 2: Process Foundations and External Readiness** (Aug 31 - Sep 2, 2026; PR #2 merged to develop, develop merged to main via PR #12).
-Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored / 18 dispositioned); portal mechanics verified into requirements-matrix A5/A5b (F12); QCi letter sent (F11); dual PR review with all 12 findings fixed and threads resolved; manifest tooling portable and hard-failing in scripts/; prereg amendments A2 (variable-count correction + documented 949 ceiling) and A3 (full-pair build side-by-side option); F18 registered with 2/10 checklist items pre-completed. Zero metered seconds. Retro: docs/sprints/SPRINT_2_RETROSPECTIVE.md (first full 16x4).
+**Sprint 3: Classical Evidence Campaign** (Sep 2-3, 2026; PR #13 merged to develop, develop merged to main via PR #16).
+Delivered: F18 mined (10 dispositions, zero amendments); F1 campaign with 110 [SIM] rows -- G0 scored as committed = FAIL (0.8296 vs 0.85; no leakage flag), best arm CatBoost/full 0.8368, paired proxy-vs-GBDT delta -0.0415, measured MDE 0.0268 (A5); CVQBoost proxy pipeline with exact Hamiltonian + known-answer tests; A3 full-pair selected; B7 hardware request prepared (not executed); ADRs 0005-0010; hooks ported; validation found lg scoring degeneracy (quarantined; fix = F22). Zero metered seconds. Retro: docs/sprints/SPRINT_3_RETROSPECTIVE.md (6 improvements applied).
 
 ## Next Sprint Candidates
 
 ### Experiments (Stage 3 of the master timeline; submission-ready Sep 8)
 
-**F1. Classical evidence campaign (~1.5 days) Priority 10**
-- Phase: Experiments
-- Platform: ULB
-- Tuned XGB/LGBM/CatBoost (100 Optuna trials each) + logistic; full and matched features; 10 seeds; BCa CIs into results.json
-- G0 scored as committed (mean AP >= 0.85); Tuning Budget Equivalence table; paired-delta SD measurement with MDE refinement decision
-- CVQBoost proxy pipeline (weak pools, QUBO build, non-negative-ridge solve = structural control); free-tier and full configs frozen
-- Amendment A3 side-by-side: sequential vs full-pair build compared on proxy validation AP across the 10 primary seeds (zero metered seconds; full-pair via WSL2, setup [no-history]); build selected before any test-set evaluation, applied uniformly
-- B1+G0b hardware request PREPARED with call counts (not executed)
-- Inline scope additions from the approved 2026-08-30 disposition (retro Category 13 pattern): ADRs 0005-0010 authored as their modules are built; logging conventions (frd.* namespaces); full-pipeline smoke fixture; ARCHITECTURE.md with inline ADR cross-references; TESTING_STRATEGY.md adaptation; known-failure headers on long-running scripts; velocity actuals log started (Sprint 2 retro improvement 6); block-stash and closeout-verification hooks ported per WINDOWS_POWERSHELL_GUIDE assessment (~4.5h total added)
-- Depends on: prereg freeze (done)
-
-**F18. Mine the Dirac-3 integration notes (qml-unlocked/DIRAC3.md) (~1.5h) Priority 11**
-- Phase: Experiments (team-lead request 2026-09-02: "to be completed soon", before hardware blocks)
-- Platform: docs / Dirac-3 preparation
-- Source: `D:\Data\Harold\github\qml-unlocked\DIRAC3.md` -- the team lead's hands-on notes from running all QML Unlocked chapters on real Dirac-3 hardware (Aug 2026), heritage ForrierWall pipeline
-- **Binding constraint (team-lead decision 2026-09-02): the frozen preregistration is honored. Anything from these notes that touches protocol (arms, configs, gates, budgets) enters ONLY as a dated amendment proposed for team-lead approval; everything else (tooling, error handling, credentials, cost discipline) adopts freely.**
-- Task checklist (ALL COMPLETE 2026-09-02; dispositions in docs/sprints/drafts/F18_dirac3_notes_findings.md):
-  - [x] Read DIRAC3.md in full plus the three cited ForrierWall reference points (line numbers drifted; located by symbol)
-  - [x] Verify variable-count math (DONE 2026-09-02): eqc-models source shows the sequential strategy (mandatory on Windows) defaults pairs to n(n-3)/2, so true totals are schedule-2 = C(n,2) exactly and schedule-3 = C(n,2)+C(n,3); confirmed empirically by FourierWall2 hardware runs (oilgas n=15: measured 105 and 560 vars, exact). `qubo_vars` and prereg section 10 overestimate by exactly n (conservative direction); bounds unchanged (free tier n<=13, device n<=17); amendment A2 drafted for team-lead approval
-  - [x] B5/QSVM sign-augmentation (DONE 2026-09-02): already in the frozen protocol -- section 4 model-arms table reads "QSVM (sign-augmented primal, Dirac-3)". No amendment needed; implementation must honor it when B5 code is written
-  - [x] {-1,+1} label mapping and explicit sequential strategy adopted into the B5 spec (with known-answer mapping test)
-  - [x] Backoff pattern: DETECTION adopted (error strings + raw-error logging), config-MUTATING retries REJECTED for preregistered cells (frozen identical-config retry rule preserved; A2 formula prevents sizing rejections ex ante)
-  - [x] Credentials pattern adopted into ADR-0011 practice (resolve-once, both vars required, never printed)
-  - [x] Knob cross-check clean vs eqc-models 0.21.0; NEW invariant: constructed-attribute round-trip assert (ForrierWall silent-kwarg-drop gotcha)
-  - [x] Cost-control rules confirmed aligned with ADR-0002 and the frozen grid; QSVM ~1 s/fit supports the B5 estimate
-  - [x] H3 low rung clear (k=5 -> 10/20 vars); n<4 guard adopted with a real error message
-  - [x] Findings memo delivered: docs/sprints/drafts/F18_dirac3_notes_findings.md; zero amendments required
-- Depends on: nothing (read-only analysis; must complete before F2 hardware execution)
+(F1 classical evidence campaign and F18 Dirac-3 notes mining: COMPLETED in Sprint 3, merged via PR #13; history in SPRINT_3_SUMMARY.md. Removed from candidates per convention. F1 residual -- the section-6 CVQBoost proxy tuning -- continues as F22.)
 
 **F22. CVQBoost proxy tuning per prereg section 6 (~2-3h + unattended solves) Priority 11**
 - Phase: Experiments (team-lead validation 2026-09-02; PREREQUISITE for G0b and for un-quarantining lg)
