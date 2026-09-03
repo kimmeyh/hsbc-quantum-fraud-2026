@@ -141,6 +141,41 @@ def main() -> int:
         lines.append("UNSCOREABLE YET: needs 10-seed matched GBDT cells and 10 proxy seeds.")
     lines.append("")
 
+    # ---- hardware rows + G0b (Spearman over the 5 ranked configs) ----
+    hw = [r for r in rows if r["arm"] == "cvqboost_hw"]
+    lines += ["## Hardware rows [HW] and G0b proxy-fidelity gate", ""]
+    if hw:
+        ok = [r for r in hw if r.get("status") == "ok"]
+        failed = [r for r in hw if r.get("status") != "ok"]
+        spent = sum(r.get("metered_seconds") or 0.0 for r in ok)
+        lines += [f"{len(ok)} successful fits, {len(failed)} failed, metered seconds recorded: {spent:.1f} "
+                  f"(None-valued rows: {sum(1 for r in ok if r.get('metered_seconds') is None)})", "",
+                  "| Cell | Rows | Mean test AP | Mean val AP | Mean weight cosine (hw vs exact proxy) | Mean obj gap (hw - proxy) |",
+                  "|---|---|---|---|---|---|"]
+        from collections import defaultdict as _dd
+        cells = _dd(list)
+        for r in ok:
+            cells[(r["config"], r["protocol"])].append(r)
+        for key in sorted(cells):
+            c = cells[key]
+            gap = [r["fidelity"]["hw_objective_recomputed"] - r["fidelity"]["proxy_objective"] for r in c]
+            lines.append(f"| {key[0]}/{key[1]} | {len(c)} | {np.mean([r['metrics']['auprc'] for r in c]):.4f} "
+                         f"| {np.mean([r['val_auprc'] for r in c]):.4f} | {np.mean([r['fidelity']['weight_cosine'] for r in c]):.4f} "
+                         f"| {np.mean(gap):+.4g} |")
+        g0b = sorted([r for r in ok if r.get("block") == "G0b"], key=lambda r: r["config"])
+        if len(g0b) >= 5:
+            from scipy.stats import spearmanr
+            px = [r["fidelity"]["proxy_val_auprc_same_pool"] for r in g0b]
+            hv = [r["val_auprc"] for r in g0b]
+            rho = float(spearmanr(px, hv).statistic)
+            verdict = "PASS" if rho >= 0.5 else "FAIL"
+            lines += ["", f"G0b: Spearman(proxy val AP, hardware val AP) over {len(g0b)} configs = {rho:.3f} -> **{verdict}** (gate >= 0.5, prereg 3)"]
+        else:
+            lines += ["", f"G0b UNSCOREABLE YET: {len(g0b)}/5 hardware config fits present."]
+    else:
+        lines.append("No hardware rows yet (blocks pending team-lead approval / execution).")
+    lines.append("")
+
     # ---- A3 side-by-side ----
     lines += ["## A3 build side-by-side (validation AP, free config, dct pool)", ""]
     seq = {r["seed"]: r["val_auprc"] for r in

@@ -49,6 +49,10 @@ Best matched GBDT: catboost. Delta = proxy_CVQBoost - catboost, 10 seeds.
 Mean delta -0.0389, seed SD 0.0259, 95% CI [-0.0574, -0.0203].
 MDE(10 seeds) from this SD: 0.0258 (pilot value 0.0242; refinement is a Class-1 decision, surfaced not applied).
 
+## Hardware rows [HW] and G0b proxy-fidelity gate
+
+No hardware rows yet (blocks pending team-lead approval / execution).
+
 ## A3 build side-by-side (validation AP, free config, dct pool)
 
 | Seed | sequential val AP | full-pair val AP |
