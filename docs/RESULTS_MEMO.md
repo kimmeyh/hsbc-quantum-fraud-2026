@@ -10,7 +10,7 @@ Every number is [SIM] unless tagged otherwise and traces to `experiments/results
 
 | Gate | Prediction | Outcome | Evidence | Amendment ref |
 |---|---|---|---|---|
-| G0 | Tuned-XGB full-feature mean test AUPRC >= 0.85 (10 seeds) | **FAIL**: 0.8296, t-95% CI [0.8092, 0.8501] | [SIM] gate_report | none (criterion unchanged) |
+| G0 | Tuned-XGB full-feature mean test AUPRC >= 0.85 (10 seeds) | **FAIL as committed**: 0.8296, t-95% CI [0.8092, 0.8501]. Footnote: the 0.85 threshold derived from a literature band that primary-source research (F21) could not corroborate; A7 sensitivity cells proposed | [SIM] gate_report | none (criterion unchanged); A7 proposed |
 | G0 leakage tripwire | No cell > 0.95 AUPRC | PASS: max cell mean 0.8368 (CatBoost/full) | [SIM] | -- |
 | G0b | Proxy-vs-hardware config rank Spearman >= 0.5 (top-3 + bottom-2 free-tier configs) | PENDING: needs F22 ranking + B1/G0b hardware approval | [PROJ] until run | A2 (variable counts), A3 (build) |
 | H1a | SMU reproduction AUC-PR >= 0.80 | NOT YET RUN | [PROJ] | -- |
@@ -39,7 +39,7 @@ Untuned pilot (Sprint 1): XGBoost 0.8268. Tuning at the frozen 100-trial budget 
 ## What the evidence says (plain terms)
 
 - The tuned classical baselines are solid and clean: no leakage flags, tight seed CIs, ordering CatBoost > XGBoost > LightGBM.
-- They land ~0.02 below the literature band we preregistered as the floor. F21 (research memo) explains why (duplicate handling and split protocol are the leading candidates) and proposes what, if anything, to amend as a labeled sensitivity analysis.
+- They land ~0.02 below the literature band we preregistered as the floor. F21's primary-source research (docs/research-ulb-baseline-protocols.md) found the band itself is not corroborated: its probable origin computes trapezoidal PR-AUC (banned by our section 9 as too optimistic), trains on 90% of the data with no held-out test fold, and keeps duplicates; the clean-protocol equivalent is ~0.80-0.81, and a step-wise-AP benchmark (AutoXGB) reports 0.78. Our 0.8296 exceeds both. G0 stays FAIL as committed; F21 proposes amendment A7 (three zero-metered exploratory sensitivity cells: metric definition S1, duplicate retention S2, split ratio S3) for the team lead's disposition. Implementation note for S1: the runner does not persist predictions, so S1 needs either a prediction dump added to the refit stage or a deterministic re-run (~1.5h unattended).
 - The quantum arm's proxy (identical Hamiltonian, classical solve) at its starting configuration trails the best matched GBDT by 0.04. The tuned proxy result (F22) is the number that matters for H1b; the hardware number requires B1/G0b approval.
 - The build side-by-side (A3) favored the full-pair pool by a noise-level margin; it is the selected build.
 
