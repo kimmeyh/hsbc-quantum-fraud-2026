@@ -31,6 +31,7 @@ import argparse
 import json
 import logging
 import os
+import re
 import sys
 import time
 import traceback
@@ -102,7 +103,12 @@ def _metered(resp) -> float | None:
             for v in o:
                 walk(v)
     walk(resp)
-    return max(found) if found else None
+    if found:
+        return max(found)
+    # eqc-models returns a SolutionResults object (not a dict); its repr carries
+    # the billed field 'device_usage_s': N (verified on the first G0b call).
+    m = re.search(r"'device_usage_s':\s*([0-9.]+)", repr(resp))
+    return float(m.group(1)) if m else None
 
 
 def _wp_eff(wt, wp, y_pm1):
