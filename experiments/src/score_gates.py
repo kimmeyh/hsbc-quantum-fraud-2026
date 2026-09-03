@@ -43,7 +43,7 @@ def main() -> int:
             # alert budget flags everything). Root cause: frozen lambda=2*n_train
             # (SPECTRA-calibrated) + unweighted weak learners on 0.17% positives.
             # Fix path: the preregistered section-6 proxy tuning (F22).
-            if r["pool_variant"] == "lg":
+            if r["pool_variant"] == "lg" and r.get("config") == "free":   # starting-config lg only; tuned lg re-enters if healthy
                 quarantined += 1
                 continue
             key = (r["arm"], r["config"], r["pool_variant"], r["pair_build"])
@@ -86,6 +86,20 @@ def main() -> int:
             f"| n/a | n/a | {np.mean(aucs):.4f} | {prev:.5f} |")
     lines.append("")
 
+    # ---- score health (A6) ----
+    lines += ["## Score health (amendment A6; WARN = degenerate score distribution)", "",
+              "| Cell | Rows | WARN rows | Median mode share | Median n_distinct |", "|---|---|---|---|---|"]
+    for key in sorted(by_cell, key=str):
+        cell = by_cell[key]
+        hs = [r["metrics"].get("score_health") for r in cell]
+        hs = [h for h in hs if h]
+        if not hs:
+            lines.append(f"| {'/'.join(str(k) for k in key)} | {len(cell)} | n/a (pre-A6 rows) | n/a | n/a |")
+            continue
+        lines.append(f"| {'/'.join(str(k) for k in key)} | {len(cell)} | {sum(h['warn'] for h in hs)} "
+                     f"| {np.median([h['mode_share'] for h in hs]):.3f} | {int(np.median([h['n_distinct'] for h in hs]))} |")
+    lines.append("")
+
     # ---- G0 ----
     xgb_full = cell_aps.get(("xgboost", "full"), {})
     lines += ["## G0 (tuned-XGB full features, mean test AP >= 0.85)", ""]
@@ -103,7 +117,10 @@ def main() -> int:
     gbdt_cells = {a: cell_aps.get((a, "matched13"), {})
                   for a in ("xgboost", "lightgbm", "catboost")}
     complete = {a: c for a, c in gbdt_cells.items() if len(c) >= N_SEEDS}
-    proxy = cell_aps.get(("cvqboost_proxy", "free", "dct", "sequential"), {})
+    # Prefer the section-6 tuned proxy cell (Sprint 4, F22) when present.
+    proxy_key = next((k for k in cell_aps if k[0] == "cvqboost_proxy" and k[1] == "tuned_full"), None)         or next((k for k in cell_aps if k[0] == "cvqboost_proxy" and k[1] == "tuned_free"), None)         or ("cvqboost_proxy", "free", "dct", "sequential")
+    proxy = cell_aps.get(proxy_key, {})
+    lines.append(f"Proxy cell used: {'/'.join(str(x) for x in proxy_key)}")
     if complete and len(proxy) >= N_SEEDS:
         best_arm = max(complete, key=lambda a: np.mean(list(complete[a].values())))
         seeds = sorted(set(proxy) & set(complete[best_arm]))

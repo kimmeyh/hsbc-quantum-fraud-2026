@@ -21,12 +21,28 @@ CAVEAT on dct proxy cells: scores take ~120 distinct values with ~96% of transac
 | xgboost/full | 10 | 0.8296 | 0.0286 | [0.8092, 0.8501] | 0.9791 | 0.00167 |
 | xgboost/matched13 | 10 | 0.8019 | 0.0239 | [0.7847, 0.8190] | 0.9730 | 0.00167 |
 
+## Score health (amendment A6; WARN = degenerate score distribution)
+
+| Cell | Rows | WARN rows | Median mode share | Median n_distinct |
+|---|---|---|---|---|
+| catboost/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| catboost/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| cvqboost_proxy/free/dct/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| cvqboost_proxy/free/dct/sequential | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| lightgbm/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| lightgbm/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| logistic/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| logistic/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| xgboost/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| xgboost/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
+
 ## G0 (tuned-XGB full features, mean test AP >= 0.85)
 
 Mean AP = 0.8296 over 10 seeds -> **FAIL**
 
 ## Paired per-seed deltas (H1b machinery check; matched features)
 
+Proxy cell used: cvqboost_proxy/free/dct/sequential
 Best matched GBDT: catboost. Delta = proxy_CVQBoost - catboost, 10 seeds.
 Mean delta -0.0415, seed SD 0.0269, 95% CI [-0.0608, -0.0222].
 MDE(10 seeds) from this SD: 0.0268 (pilot value 0.0242; refinement is a Class-1 decision, surfaced not applied).
