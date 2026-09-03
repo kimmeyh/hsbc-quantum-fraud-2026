@@ -226,7 +226,11 @@ def cmd_refit(args):
     _require_wsl()
     rec = json.loads(RECORD.read_text())
     done = qp._done_keys()
-    for label, cfg in (("tuned_free", rec["best_free_tier"]), ("tuned_full", rec["best_overall"])):
+    labels = [("tuned_free", rec["best_free_tier"]), ("tuned_full", rec["best_overall"])]
+    if (rec["best_free_tier"] and rec["best_overall"]
+            and rec["best_free_tier"]["config_hash"] == rec["best_overall"]["config_hash"]):
+        labels = labels[:1]   # identical config: one label, no duplicate rows
+    for label, cfg in labels:
         if cfg is None:
             log.warning("[REFIT] no %s config", label); continue
         for seed in SEEDS:
@@ -237,7 +241,27 @@ def cmd_refit(args):
 
 def cmd_rank(args):
     rec = json.loads(RECORD.read_text())
-    free = [r for r in rec["trials"] if r.get("free_tier_eligible")]
+    # The preregistered STARTING config (free, dct, full-pair; unlimited-depth
+    # trees, alpha 2) is a candidate by definition: pull its tuning-seed val AP
+    # from the existing results.json rows.
+    start_rows = [r for r in json.loads(qp.RESULTS.read_text())["rows"]
+                  if r["arm"] == "cvqboost_proxy" and r.get("config") == "free"
+                  and r.get("pool_variant") == "dct" and r.get("pair_build") == PAIR_BUILD
+                  and r["seed"] == TUNING_SEED]
+    trials = list(rec["trials"])
+    if start_rows:
+        s = start_rows[0]
+        h = s["metrics"].get("score_health", {})
+        trials.append({"number": -1, "val_ap": s["val_auprc"],
+                       "params": {"k": 13, "schedule": 2, "weak_type": "dct",
+                                  "dct_max_depth": "none", "dct_class_weight": "none",
+                                  "lambda_alpha": 2.0},
+                       "n_vars": data.qubo_vars(13, 2, PAIR_BUILD), "n_pool": s["n_weak_classifiers"],
+                       "health_warn": h.get("warn", True), "mode_share": h.get("mode_share"),
+                       "n_distinct": h.get("n_distinct"), "free_tier_eligible": True,
+                       "config_hash": s["config_hash"], "note": "preregistered starting config"})
+    trials.sort(key=lambda r: -r["val_ap"])
+    free = [r for r in trials if r.get("free_tier_eligible")]
     # one row per distinct config_hash, best value first
     seen, ranked = set(), []
     for r in free:
