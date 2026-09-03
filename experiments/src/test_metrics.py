@@ -99,3 +99,16 @@ def test_operating_points_and_alert_budget():
 def test_tie_fraction():
     assert M.tie_fraction(np.array([0.1, 0.1, 0.2, 0.3])) == pytest.approx(0.25)
     assert M.tie_fraction(np.arange(10) / 10) == 0.0
+
+
+def test_score_health_flags_degenerate_scores():
+    """Amendment A6: the Sprint 3 lg/dct degeneracy class must trip the flag."""
+    from metrics import score_health
+
+    rng = np.random.default_rng(0)
+    smooth = rng.random(5000)
+    assert score_health(smooth)["warn"] is False
+    degenerate = np.zeros(5000)
+    degenerate[:40] = np.linspace(0.1, 1.0, 40)      # 99.2% identical scores
+    h = score_health(degenerate)
+    assert h["warn"] is True and h["mode_share"] > 0.99 and h["n_distinct"] == 41
