@@ -1,12 +1,12 @@
 {
   "current_sprint": {
     "number": 4,
-    "name": "Scope selection pending",
+    "name": "Proxy Tuning, Baseline Research, First Hardware Blocks, Results Memo",
     "branch": "feature/20260903_Sprint_4",
-    "status": "phase_1_backlog_refinement",
+    "status": "phase_4_execution",
     "plan_doc": "docs/sprints/SPRINT_4_PLAN.md",
     "pr": null,
-    "plan_approved": false,
+    "plan_approved": true,
     "github_issues": []
   },
   "last_completed_sprint": {

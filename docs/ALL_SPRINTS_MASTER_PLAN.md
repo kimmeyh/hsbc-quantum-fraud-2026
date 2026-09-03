@@ -23,6 +23,19 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 **Sprint 3: Classical Evidence Campaign** (Sep 2-3, 2026; PR #13 merged to develop, develop merged to main via PR #16).
 Delivered: F18 mined (10 dispositions, zero amendments); F1 campaign with 110 [SIM] rows -- G0 scored as committed = FAIL (0.8296 vs 0.85; no leakage flag), best arm CatBoost/full 0.8368, paired proxy-vs-GBDT delta -0.0415, measured MDE 0.0268 (A5); CVQBoost proxy pipeline with exact Hamiltonian + known-answer tests; A3 full-pair selected; B7 hardware request prepared (not executed); ADRs 0005-0010; hooks ported; validation found lg scoring degeneracy (quarantined; fix = F22). Zero metered seconds. Retro: docs/sprints/SPRINT_3_RETROSPECTIVE.md (6 improvements applied).
 
+## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
+
+| Sprint | Dates | Targeted scope | Gate |
+|---|---|---|---|
+| 4 | Sep 3-5 | F22, F21, F2 (per-block approval), F7 | -- |
+| 5 | Sep 5-7 | F8, F9, then F19 at sprint end (QCi package with the actual paper draft) | -- |
+| 6 | Sep 7-9 | F3 + paper updates (outline, draft, diff-scoped reviews, rubric) + F23/F24 prep in parallel agents | still time for F16 + F10 |
+| 7 | Sep 9-11 | F4 + paper updates | still time for F16 + F10 |
+| 8 | Sep 11-12 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
+| Finalize | Sep 12-13 | F16, F10; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
+
+A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
+
 ## Next Sprint Candidates
 
 ### Experiments (Stage 3 of the master timeline; submission-ready Sep 8)
@@ -97,15 +110,6 @@ Delivered: F18 mined (10 dispositions, zero amendments); F1 campaign with 110 [S
 - One-page results memo; gate table scored as committed; headline promotion decision per the thesis rule (team-lead review, Sep 4 target)
 - Depends on: F1-F4 (F5/F6 as available)
 
-**F19. Draft submission PDF(s) to QCi (~2h assemble + team-lead send) Priority 13**
-- Phase: External (team-lead request 2026-09-02: "send a draft of the PDFs we will eventually submit ... based on what we have by the end of the next sprint")
-- Platform: docs
-- Assemble the best draft-state package available at that sprint's end (expected: preregistration incl. amendments, gate report / results memo, hardware plan; the F8 paper draft only if it exists yet), rendered as PDF(s) marked DRAFT
-- MANDATORY pre-send confidentiality scan of every page (the Stage 7 scan run early, scoped to the sent artifacts: no employer references, no account identifiers, no QPU balances tied to a named account)
-- Team lead reviews and personally sends; Claude records what was sent and when in requirements-matrix
-- Value: progress evidence for the pending QCi grant; early feedback on how Dirac-3 is represented; honors the sponsorship letter's collaborative framing
-- Depends on: end-of-next-sprint state (F7 results memo strengthens it; F8 not required)
-
 ### Paper (Stages 4-6)
 
 **F8. Outline + Draft V1 (~1 day) Priority 30**
@@ -120,6 +124,15 @@ Delivered: F18 mined (10 dispositions, zero amendments); F1 campaign with 110 [S
 - Domain pass, quantum pass (encoding diagnostics, evidence-tag audit), rubric scoring; fix lowest criterion
 - Depends on: F8
 
+**F19. Draft submission PDF(s) to QCi (~2h assemble + team-lead send) Priority 34**
+- Phase: External (team-lead request 2026-09-02; moved 2026-09-03 to the END of Sprint 5 so the package carries the actual F8/F9 paper draft)
+- Platform: docs
+- Assemble the Sprint-5-end package: the F8/F9 paper draft (reviewed, rubric-scored) plus preregistration incl. amendments, gate report / results memo, and hardware plan, rendered as PDF(s) marked DRAFT
+- MANDATORY pre-send confidentiality scan of every page (the Stage 7 scan run early, scoped to the sent artifacts: no employer references, no account identifiers, no QPU balances tied to a named account)
+- Team lead reviews and personally sends; Claude records what was sent and when in requirements-matrix
+- Value: progress evidence for the pending QCi grant; early feedback on how Dirac-3 is represented; honors the sponsorship letter's collaborative framing
+- Depends on: F8, F9 (Sprint 5)
+
 ### Finalize (Stages 7-8)
 
 **F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 40**
@@ -132,7 +145,7 @@ Delivered: F18 mined (10 dispositions, zero amendments); F1 campaign with 110 [S
 
 (F11 QCi sponsorship letter send: COMPLETED by the team lead 2026-08-30. F12 portal verification and F15 best-practices/ADR review: COMPLETED in Sprint 2, merged via PR #2; history in SPRINT_2_SUMMARY.md. All three removed from candidates per convention.)
 
-**F16. Minimal CI: pytest + lint on PRs with smoke fixture (~30m) Priority 34**
+**F16. Minimal CI: pytest + lint on PRs with smoke fixture (~30m) Priority 36**
 - Phase: Finalize
 - Platform: docs
 - GitHub Actions on PRs to develop; sub-minute; no dataset or metered access
