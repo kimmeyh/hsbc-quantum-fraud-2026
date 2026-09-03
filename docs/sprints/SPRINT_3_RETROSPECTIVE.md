@@ -16,7 +16,7 @@ Team-lead feedback recorded VERBATIM (combined Product Owner / Scrum Master / Le
 ### 2. Testing Approach
 
 - **PO/SM/LD (verbatim)**: "Very Good"
-- **Claude Code Development Team**: Known-answer suite grew 11 to 15 (FISTA vs SLSQP, pool count vs the A2 formula, guards); the smoke pre-flight caught real defects cheaply (CatBoost positive-class starvation at 5k rows). The honest gap: Manual Validation caught the score degeneracy that no automated check did -- tie_fraction was RECORDED in every row but nothing thresholded it. A distribution-health check is proposal 1.
+- **Claude Code Development Team**: Known-answer suite grew 11 to 15 (FISTA vs SLSQP, pool count vs the A2 formula, guards); the smoke pre-flight caught real defects cheaply (CatBoost positive-class starvation at 5k rows). The honest gap: the score degeneracy escaped every automated check -- tie_fraction was RECORDED in every row but nothing thresholded it. How it WAS caught (team lead, noted 2026-09-02): dropping results.json into the Claude Windows app with the prompt "Can you describe? any useful observations?" -- a fresh-context review of the raw evidence file, carrying none of the campaign session's assumptions. Two lessons, two proposals: automate the check that should have existed (proposal 1), and institutionalize the fresh-eyes evidence review that actually worked (proposal 6).
 
 ### 3. Effort Accuracy
 
@@ -99,3 +99,4 @@ Presented 2026-09-02; awaiting team-lead disposition.
 | 3 | WSL interop practices into WINDOWS_POWERSHELL_GUIDE: script files not inline quoting; per-distro venv; path shim pattern | Dev Team cat 9 | Docs | 15m | Apply now | PENDING |
 | 4 | Plain-language companion in every Phase 5 validation package (one plain paragraph per decision item) | Dev Team cat 7 | Process note (workflow Phase 5) | 10m | Apply now | PENDING |
 | 5 | Background-launch fencing rule: before launching a background writer, verify outputs are gitignored or deliberately tracked (QUALITY_STANDARDS) | Dev Team cat 9 | Docs | 10m | Apply now | PENDING |
+| 6 | Fresh-eyes evidence review at Phase 5: before the validation handoff, a fresh-context review (subagent or fresh session, no campaign context) of the raw results.json/gate_report with an open "describe; any useful observations?" prompt; findings attached to the validation package. Credits the team lead's catch mechanism (Claude Windows app + results.json drop) | PO cat 2 note | Process (workflow Phase 5) | 15m + ~5m/sprint | Apply now | PENDING |
