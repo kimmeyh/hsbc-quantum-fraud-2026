@@ -5,6 +5,8 @@ __pycache__/
 *.pyc
 .env
 experiments/results/*.png
+experiments/results/*.log
+experiments/results/pools/
 docs/source/*.pdf
 docs/papers/*.pdf
 .secrets-patterns.txt

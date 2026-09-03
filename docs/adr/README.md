@@ -23,5 +23,10 @@ Adopted from the spamfilter-multi ADR system (F15 review) with one addition: eve
 | [0002](0002-proxy-as-structural-control.md) | Proxy-as-structural-control dual-role design | Accepted | 2026-08-30 |
 | [0003](0003-dataset-provenance-and-storage.md) | Dataset acquisition, storage, and provenance handling | Accepted | 2026-08-30 |
 | [0004](0004-branch-and-carry-forward-model.md) | Branch and carry-forward model for sprint work | Accepted | 2026-08-30 |
-| 0005-0010 | Reserved per the approved 2026-08-30 disposition (leakage enforcement, feature-recipe registry, training discipline, results store, metrics single-implementation, splits/seeds provider); authored in the F1 campaign sprint as their modules are built | Proposed | - |
+| [0005](0005-leakage-enforcement.md) | Leakage enforcement lives in code paths, not review vigilance | Accepted | 2026-09-02 |
+| [0006](0006-feature-recipe-registry.md) | Feature recipes are named, hashed, and recorded per row | Accepted | 2026-09-02 |
+| [0007](0007-training-discipline.md) | Training discipline: checkpointed stages, atomic rows, resumable | Accepted | 2026-09-02 |
+| [0008](0008-results-store.md) | Single results.json store, append-only, schema-complete rows | Accepted | 2026-09-02 |
+| [0009](0009-metrics-single-implementation.md) | One metrics implementation, known-answer tested, used by every arm | Accepted | 2026-09-02 |
+| [0010](0010-splits-and-seeds-provider.md) | Splits and seeds from one provider; seed lists are constants | Accepted | 2026-09-02 |
 | [0011](0011-secrets-and-credential-handling.md) | Secrets and credential handling | Accepted | 2026-08-30 |

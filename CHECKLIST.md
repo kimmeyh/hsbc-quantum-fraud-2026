@@ -2,7 +2,7 @@
 
 Owners: **H** = Harold (only you can do it), **C** = Claude (I do it), **H+C** = decision or review done together.
 Mark items `[x]` as they complete. This list is the working agenda; `docs/requirements-matrix.md` is the final acceptance gate.
-Last reconciled: 2026-08-30 evening.
+Last reconciled: 2026-09-02 (Sprint 2 close).
 
 ## Standing rule: Dirac-3 hardware budget
 
@@ -16,7 +16,7 @@ All development and debugging runs use the local proxy (the classical solve of t
 - [x] **H**: Team name decided: "Claude Shannon's Fraud Catchers" (docs/team-name.md, with Claude Code disclosure language)
 - [x] **H+C**: Thesis decided (Aug 30): performance-first framing, scoped to provable wins; H1b promotion to blanket claim only on Stage 3 evidence (docs/thesis-candidates.md). Overall goal recorded: best predictions/inference, quantum or not
 - [x] **H**: Winning QML results located: FourierWall2 repo (in-segment CVQBoost wins, tuned config); analyzed in docs/evidence-inventory.md 3a/3b; 42 evidence files copied to experiments/reference/fourierwall2/
-- [ ] **H**: Confirm portal account works and note required submission fields
+- [x] **H**: Portal account confirmed (Sprint 2, F12): submission = 5-slot file upload; fields recorded in requirements-matrix A5/A5b; team profile ships as a one-page PDF; nothing uploaded until the final package
 
 ## QCi sponsorship (parallel track)
 
@@ -46,7 +46,7 @@ All development and debugging runs use the local proxy (the classical solve of t
 
 - [ ] **C**: Tuned classical arms: XGBoost, LightGBM, CatBoost, full features, 100 Optuna trials each; G0 gate = mean AUPRC >= 0.85 across 10 ULB seeds (the corroborated clean-protocol floor)
 - [ ] **C**: Matched-feature classical arms and logistic control (MI top-k inside folds)
-- [ ] **C**: Pilot seed-variance run and minimum-detectable-effect statement (required before hardware approval)
+- [x] **C**: Pilot seed-variance run and minimum-detectable-effect statement (done Sprint 1: mean AP 0.8268, seed SD 0.0243, MDE(10) 0.0242; experiments/PILOT_VARIANCE.md)
 - [ ] **C**: CVQBoost arm tuned entirely on the proxy (non-negative ridge over identical weak-learner outputs, which doubles as the H4 structural control); free-tier config (top-13, schedule 2) and full config (top-17, schedule 3) frozen
 - [ ] **C**: QFE phase-representation arms (Fourier Wall recipe) for every model, including trained-frequency GAM/GA2M/JOINT twins in H6 cells
 - [ ] **C**: IEEE-CIS reduced Deotte recipe implemented per prereg section 5 (UID excluded, named aggregates, leakage controls, shuffled-label positive control)
