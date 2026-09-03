@@ -5,6 +5,44 @@ Manual Validation complete
 Sprint n Manual Validation Feedback 
 
 
+---------------------------------------------------------------------------------------------------------
+Sprint 3 Manual Validation Feedback 
+Noting: The lg version is broken. Its score is 0 for almost every transaction, so when the file tries to pick the top 0.5% of riskiest transactions (the "alert budget"), it cannot, and it ends up flagging all 56,746. Take it out of any table until it is fixed.
+
+Also: The dct version has a related but milder issue. Its score only takes a handful of distinct values (about 1/26 apart), and 99.8% of transactions get the exact same score. That makes the alert-budget precision and the calibration numbers less meaningful than they look. If the model can output a smoother score (for example the raw weighted vote total instead of a rounded one), the ranking grades will probably rise with no other change.
+
+  1. Read experiments/results/gate_report.md (2 pages — the whole evidence summary).
+read
+  2. G0 disposition: confirm you're comfortable reporting FAIL-as-committed with the dedupe/protocol-strictness context in the results memo
+     (how the headline frames it is a Class-2 decision at F7 gate review).
+Is this because we had to reduce all to 13 columns in order to fit the QCi free account?
+Is there research we can do on alternative feature engineering, reason not to remove duplicates or all duplicates per some published methodology... and then retry? If so add to backlog for next sprint.
+  3. Class-1 decision — MDE: keep the pilot 0.0242 or amend to the measured 0.0268 (the prereg preregistered this refinement path; it needs
+     your dated approval either way).
+amend to measured MDE and noted in amendment.
+  4. A3 selection: the rule picked full-pair on a +0.0013 margin (inside noise); consequence is hardware CVQBoost fits execute from WSL.
+     Confirm or direct otherwise.
+need more details - 8th grade level explination
+  5. B1 pool variants: lg pools measured far weaker; the frozen grid commits both variants (22 calls). Keeping both is protocol-clean; dropping
+     lg would be an amendment saving ~11 calls. Your call at approval time.
+keep both
+  6. Hardware: approve, hold, or modify the B1 + G0b request — nothing runs until you say so.
+do the above answer change this item
+  7. Spot-check if desired: .\.venv\Scripts\python.exe -m pytest experiments/src -q and any row in results.json.
+good
+
+
+What did we learn from the Dirac3.md summary from the q book? How did it align with what we already knew? What did we decide to adopt?
+
+How were the raw datasets processed into curated datasets (features and rows) for training?
+Different for each ML algorithm? How?
+
+since Dirac-3 can take {-1,1}, {0,1} or {0,199} why not use {0,199} where it makes sense to - it is OK, but want to know why?
+
+When will the dataset curation include the quantum enhancement features as described in Fourier Wall?
+
+  Recommended Manual Validation steps
+
 
 
 

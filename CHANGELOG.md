@@ -6,6 +6,13 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ### 2026-09-02
 
+- **fix**: Sprint 3 validation findings addressed: lg proxy rows quarantined from all report tables (degenerate scoring, 99.8% identical scores); dct tie caveat noted; root cause diagnosed (lambda=2*n_train near-uniform weights + unweighted weak learners on 0.17% positives); fix path = preregistered section-6 proxy tuning, registered as F22 (blocks G0b); F21 registered (duplicates-methodology + feature-engineering research re G0)
+- **feat**: Prereg amendment A5: MDE refined to measured paired-delta value 0.0268 (team-lead approved at validation)
+- **feat**: F1 classical evidence campaign complete [SIM]: 110 results.json rows (4 arms x 2 feature sets x 10 seeds + 30 proxy rows); G0 scored as committed = FAIL (tuned-XGB full mean test AP 0.8296 vs 0.85 floor); A3 side-by-side = full-pair selected on validation (0.7816 vs 0.7803); paired proxy-vs-best-GBDT delta -0.0415 [CI -0.0608, -0.0222]; measured MDE(10) 0.0268; budget table published; zero metered seconds (Issue #15)
+- **feat**: F18 complete: Dirac-3 notes mined, 10 dispositions, zero amendments required (Issue #14)
+- **feat**: Prereg amendment A4 (Sprint 3 analysis-code additions registered); CVQBoost proxy pipeline (exact Hamiltonian + FISTA, known-answer tested); campaign runner; gate scorer; ADRs 0005-0010; hooks ported; ARCHITECTURE/TESTING_STRATEGY/VELOCITY_LOG docs; B1+G0b hardware request PREPARED not executed (Issue #15)
+- **process**: F19 registered (priority 13, team-lead request): draft submission PDFs to QCi at next sprint's end, gated on a pre-send confidentiality scan; team lead sends
+- **process**: Sprint 2 closed: PR #2 merged to develop, develop to main via PR #12; carry-forward branch feature/20260902_Sprint_3 created from the Sprint 2 head; SPRINT_2_SUMMARY.md written (three-doc rule); master plan rolled (F11/F12/F15 pruned); CHECKLIST reconciled; sprint_status rolled to Sprint 3
 - **feat**: Preregistration amendments A2 (variable-count formula corrected to the sequential-strategy count, verified against eqc-models source + FourierWall2 measured runs; documented 949 device ceiling cited) and A3 (full-pair CVQBoost build side-by-side option via proxy at zero metered seconds, preregistered selection rule, Linux/WSL2); qubo_vars corrected in the same commit per section 11 (team-lead approved)
 - **process**: F18 registered (priority 11, before hardware blocks): mine the team lead's Dirac-3 integration notes (qml-unlocked/DIRAC3.md) with a 10-point checklist; binding decision recorded: freeze honored, protocol-touching items enter only as dated amendments
 

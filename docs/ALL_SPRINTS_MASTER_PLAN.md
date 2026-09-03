@@ -15,11 +15,12 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | Sprint | Summary doc | Status | Duration |
 |---|---|---|---|
 | 1 | docs/sprints/SPRINT_1_SUMMARY.md | [OK] Complete | ~1 day (Aug 30, 2026) |
+| 2 | docs/sprints/SPRINT_2_SUMMARY.md | [OK] Complete | ~2 days (Aug 31 - Sep 2, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 1: Freeze and Foundations** (Aug 30, 2026; PR #1 merged to develop, develop merged to main via PR #3).
-Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metrics.py at the v1.1 statistical spec (11 known-answer tests); loaders validated across ULB/IEEE-CIS/SPECTRA; pilot variance run (mean AP 0.8268, seed SD 0.0243, MDE(10) 0.0242 [SIM]); repo infrastructure (private remote, branch model, Copilot instructions, pre-commit confidentiality hook). Zero metered seconds. Retro: docs/sprints/SPRINT_1_RETROSPECTIVE.md (lightweight protocol; full 14x4 applies from Sprint 2).
+**Sprint 2: Process Foundations and External Readiness** (Aug 31 - Sep 2, 2026; PR #2 merged to develop, develop merged to main via PR #12).
+Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored / 18 dispositioned); portal mechanics verified into requirements-matrix A5/A5b (F12); QCi letter sent (F11); dual PR review with all 12 findings fixed and threads resolved; manifest tooling portable and hard-failing in scripts/; prereg amendments A2 (variable-count correction + documented 949 ceiling) and A3 (full-pair build side-by-side option); F18 registered with 2/10 checklist items pre-completed. Zero metered seconds. Retro: docs/sprints/SPRINT_2_RETROSPECTIVE.md (first full 16x4).
 
 ## Next Sprint Candidates
 
@@ -31,6 +32,7 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 - Tuned XGB/LGBM/CatBoost (100 Optuna trials each) + logistic; full and matched features; 10 seeds; BCa CIs into results.json
 - G0 scored as committed (mean AP >= 0.85); Tuning Budget Equivalence table; paired-delta SD measurement with MDE refinement decision
 - CVQBoost proxy pipeline (weak pools, QUBO build, non-negative-ridge solve = structural control); free-tier and full configs frozen
+- Amendment A3 side-by-side: sequential vs full-pair build compared on proxy validation AP across the 10 primary seeds (zero metered seconds; full-pair via WSL2, setup [no-history]); build selected before any test-set evaluation, applied uniformly
 - B1+G0b hardware request PREPARED with call counts (not executed)
 - Inline scope additions from the approved 2026-08-30 disposition (retro Category 13 pattern): ADRs 0005-0010 authored as their modules are built; logging conventions (frd.* namespaces); full-pipeline smoke fixture; ARCHITECTURE.md with inline ADR cross-references; TESTING_STRATEGY.md adaptation; known-failure headers on long-running scripts; velocity actuals log started (Sprint 2 retro improvement 6); block-stash and closeout-verification hooks ported per WINDOWS_POWERSHELL_GUIDE assessment (~4.5h total added)
 - Depends on: prereg freeze (done)
@@ -40,18 +42,34 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 - Platform: docs / Dirac-3 preparation
 - Source: `D:\Data\Harold\github\qml-unlocked\DIRAC3.md` -- the team lead's hands-on notes from running all QML Unlocked chapters on real Dirac-3 hardware (Aug 2026), heritage ForrierWall pipeline
 - **Binding constraint (team-lead decision 2026-09-02): the frozen preregistration is honored. Anything from these notes that touches protocol (arms, configs, gates, budgets) enters ONLY as a dated amendment proposed for team-lead approval; everything else (tooling, error handling, credentials, cost discipline) adopts freely.**
-- Task checklist:
-  - [ ] Read DIRAC3.md in full plus the three cited ForrierWall reference points (credentials main.py:50, dirac_params :92, free-tier backoff :715, local proxy :1243)
+- Task checklist (ALL COMPLETE 2026-09-02; dispositions in docs/sprints/drafts/F18_dirac3_notes_findings.md):
+  - [x] Read DIRAC3.md in full plus the three cited ForrierWall reference points (line numbers drifted; located by symbol)
   - [x] Verify variable-count math (DONE 2026-09-02): eqc-models source shows the sequential strategy (mandatory on Windows) defaults pairs to n(n-3)/2, so true totals are schedule-2 = C(n,2) exactly and schedule-3 = C(n,2)+C(n,3); confirmed empirically by FourierWall2 hardware runs (oilgas n=15: measured 105 and 560 vars, exact). `qubo_vars` and prereg section 10 overestimate by exactly n (conservative direction); bounds unchanged (free tier n<=13, device n<=17); amendment A2 drafted for team-lead approval
   - [x] B5/QSVM sign-augmentation (DONE 2026-09-02): already in the frozen protocol -- section 4 model-arms table reads "QSVM (sign-augmented primal, Dirac-3)". No amendment needed; implementation must honor it when B5 code is written
-  - [ ] Confirm {-1,+1} label mapping and `weak_cls_strategy="sequential"` (Windows) are in the CVQBoost pipeline spec before any fit code is written
-  - [ ] Adopt the free-tier rejection backoff pattern (error strings "number of variables" / "free-tier device limit") into the hardware retry discipline, reconciled with the frozen retry-twice rule
-  - [ ] Adopt the credentials pattern (QCI_API_URL + QCI_TOKEN, gitignored .env, never printed) into ADR-0011 practice; note QCI_API_URL=https://api.qci-prod.com verified working
-  - [ ] Cross-check constructor knobs (relaxation_schedule, num_samples, lambda_coef, weak_cls_type) against the frozen FourierWall2-derived config for consistency; discrepancies -> report, not silent change
-  - [ ] Record cost-control rules (one metered call per fit, no hardware grid search, proxy-first dev) against the hardware-block plans; note measured ~1 s/fit for small QSVM problems as a B5 budget datapoint
-  - [ ] Below-4-features pair impossibility (schedule 1 only for n<4): check the H3 feature ladder's lowest rung configs
-  - [ ] Output: findings memo with adopt/amend/reject disposition per item, presented to the team lead; amendments drafted but NOT applied
+  - [x] {-1,+1} label mapping and explicit sequential strategy adopted into the B5 spec (with known-answer mapping test)
+  - [x] Backoff pattern: DETECTION adopted (error strings + raw-error logging), config-MUTATING retries REJECTED for preregistered cells (frozen identical-config retry rule preserved; A2 formula prevents sizing rejections ex ante)
+  - [x] Credentials pattern adopted into ADR-0011 practice (resolve-once, both vars required, never printed)
+  - [x] Knob cross-check clean vs eqc-models 0.21.0; NEW invariant: constructed-attribute round-trip assert (ForrierWall silent-kwarg-drop gotcha)
+  - [x] Cost-control rules confirmed aligned with ADR-0002 and the frozen grid; QSVM ~1 s/fit supports the B5 estimate
+  - [x] H3 low rung clear (k=5 -> 10/20 vars); n<4 guard adopted with a real error message
+  - [x] Findings memo delivered: docs/sprints/drafts/F18_dirac3_notes_findings.md; zero amendments required
 - Depends on: nothing (read-only analysis; must complete before F2 hardware execution)
+
+**F22. CVQBoost proxy tuning per prereg section 6 (~2-3h + unattended solves) Priority 11**
+- Phase: Experiments (team-lead validation 2026-09-02; PREREQUISITE for G0b and for un-quarantining lg)
+- Platform: ULB, local proxy (zero metered seconds)
+- The preregistered equal-budget tuning: 100 trials over weak pool composition (incl. class-weighted weak learners), schedule, k, lambda alpha in {0.5, 1, 2, 4}; num_samples/relaxation_schedule stay fixed
+- Expected to fix the score degeneracy found at Sprint 3 validation (near-uniform weights under lambda=2*n_train; unweighted weak learners voting -1 on ~99.8% of rows): smaller lambda spreads scores, weighted weak learners grade the votes
+- Produces the proxy config RANKING that G0b's top-3 + bottom-2 hardware fits require; lg pools return to tables only if tuning fixes them
+- Inline addition (Sprint 3 retro improvement 1, approved): score-distribution health check -- threshold tie_fraction/mode-share in summarize output, WARN flag in rows and gate report (~20m, amendment-registered code change)
+- Depends on: nothing (proxy-only); blocks G0b execution
+
+**F21. Baseline-protocol research: duplicates methodology + ULB feature engineering (~2h) Priority 12**
+- Phase: Experiments (team-lead request at Sprint 3 validation, re G0 FAIL)
+- Platform: docs -> possible amendment proposal
+- Research published ULB methodology: how do strong published baselines handle exact duplicates (retain? partial? per which papers); what leakage-free feature engineering exists (Amount/Time transforms, interaction features); what protocol differences explain the 0.85-0.88 literature band vs our 0.8296
+- Output: findings memo with a recommended amendment proposal if justified (e.g., a LABELED duplicate-retained sensitivity protocol as an added exploratory analysis -- allowed by section 11; the primary protocol and G0's scored outcome stay as committed) -> team-lead disposition, then retry under the amended protocol if approved
+- Depends on: nothing
 
 **F2. Hardware campaign, first blocks (~0.5 day + approvals) Priority 12**
 - Phase: Experiments
@@ -87,6 +105,15 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 - One-page results memo; gate table scored as committed; headline promotion decision per the thesis rule (team-lead review, Sep 4 target)
 - Depends on: F1-F4 (F5/F6 as available)
 
+**F19. Draft submission PDF(s) to QCi (~2h assemble + team-lead send) Priority 13**
+- Phase: External (team-lead request 2026-09-02: "send a draft of the PDFs we will eventually submit ... based on what we have by the end of the next sprint")
+- Platform: docs
+- Assemble the best draft-state package available at that sprint's end (expected: preregistration incl. amendments, gate report / results memo, hardware plan; the F8 paper draft only if it exists yet), rendered as PDF(s) marked DRAFT
+- MANDATORY pre-send confidentiality scan of every page (the Stage 7 scan run early, scoped to the sent artifacts: no employer references, no account identifiers, no QPU balances tied to a named account)
+- Team lead reviews and personally sends; Claude records what was sent and when in requirements-matrix
+- Value: progress evidence for the pending QCi grant; early feedback on how Dirac-3 is represented; honors the sponsorship letter's collaborative framing
+- Depends on: end-of-next-sprint state (F7 results memo strengthens it; F8 not required)
+
 ### Paper (Stages 4-6)
 
 **F8. Outline + Draft V1 (~1 day) Priority 30**
@@ -111,19 +138,7 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 
 ### External (team-lead-owned, parallel)
 
-**F12. Portal account verification (~15m) Priority 9 -- ASSIGNED Sprint 2 (team-lead-owned)**
-- Phase: External
-- Platform: N/A
-- Confirm portal login and note required submission fields into requirements-matrix A5
-
-(F11 QCi sponsorship letter send: COMPLETED by the team lead 2026-08-30, per convention removed from candidates; history in SPRINT_2_PLAN.md Task H and CHECKLIST.md.)
-
-**F15. Best-practices and ADR review from spamfilter-multi (~3h) Priority 11**
-- Phase: Experiments (assigned to Sprint 2 by the team lead, 2026-08-30)
-- Platform: docs
-- Review spamfilter-multi ARCHITECTURE.md and docs/adr/ for (1) architecture, development, and software-engineering practices to copy and adapt here, (2) additional SE best-practice suggestions, (3) ML best practices to propose as ADRs for this repo: feature engineering, data curation, leakage prevention, training, evaluation of results, applied to the challenge effort
-- Output: adapted docs/adr/ directory with an ADR template, initial ADRs for decisions already made, and a proposal list for team-lead disposition
-- Depends on: nothing
+(F11 QCi sponsorship letter send: COMPLETED by the team lead 2026-08-30. F12 portal verification and F15 best-practices/ADR review: COMPLETED in Sprint 2, merged via PR #2; history in SPRINT_2_SUMMARY.md. All three removed from candidates per convention.)
 
 **F16. Minimal CI: pytest + lint on PRs with smoke fixture (~30m) Priority 34**
 - Phase: Finalize
@@ -138,6 +153,15 @@ Delivered: PREREGISTRATION v1.1 FROZEN (commit 95751b9, tag prereg-freeze); metr
 - Platform: Dirac-3 / local
 - Investigate quantumcomputinginc.com products, docs, papers to build a simulator-backed QBoostClassifier: same QUBO objective, classical optimizer backend (SLSQP/Hexaly precedent in Emami et al.), device-behavior modeling (sum constraint, ~23 dB dynamic-range clipping, num_samples stochasticity), miniaturized data subsets so every test run completes in <= 10 minutes
 - Preliminary feasibility: YES (Sprint 2 retro category 14, Function Updates for the Future Backlog); pre-submission value judged low because ADR-0002's proxy plus the G0b fidelity gate already fill the role and changes would require prereg amendments
+
+**F20. Soft-vote CVQBoost exploration (multi-level weak outputs) (~3h proxy investigation) Priority HOLD**
+- Phase: Phase 2 preparation (team-lead approved 2026-09-02, "fits naturally as a post-submission/Phase 2 exploration item next to F17")
+- Platform: local proxy first; Dirac-3 only if the proxy shows signal
+- Replace hard +/-1 weak-classifier votes in the H matrix with confidence scores (predict_proba mapped to [-1,1], optionally discretized to the device's ~200-level dynamic range); same Hamiltonian shape (J=HH^T+lambda*I, C=-2Hy), same simplex solve -- a model variant, not a protocol change
+- Rationale: hard votes discard per-learner confidence; the weights are already continuous (CVQBoost), so the information bottleneck is the vote quantization
+- Zero-cost evaluation path: proxy side-by-side vs hard-vote pools on identical seeds (the A3 comparison machinery reused verbatim)
+- Constraints: custom H construction departs from eqc-models' builders (pool identity with the library is lost; document as its own arm); Phase 1 evidence chain untouched; any Phase 2 use enters through that phase's preregistration
+- Depends on: F17 pairs well (the simulator would evaluate both); nothing blocks the proxy investigation
 
 **F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD**
 - Phase: Phase 2 (Nov 17 - Feb 28, if selected)

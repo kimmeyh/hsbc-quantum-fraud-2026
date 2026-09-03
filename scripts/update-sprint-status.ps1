@@ -1,8 +1,8 @@
 # Update .claude/sprint_status.json safely via parsed JSON (Sprint 2 retro improvement 4).
 # Usage:
 #   .\scripts\update-sprint-status.ps1 -Set status=phase_4_execution
-#   .\scripts\update-sprint-status.ps1 -Set plan_approved=true -Set pr=3
-#   .\scripts\update-sprint-status.ps1 -Set last_completed_sprint.docs_triad_complete=true -Set last_completed_sprint.main_merge_pr=5
+#   .\scripts\update-sprint-status.ps1 -Set plan_approved=true,pr=3           (multiple: comma array, ONE -Set)
+#   .\scripts\update-sprint-status.ps1 -Set last_completed_sprint.docs_triad_complete=true,last_completed_sprint.main_merge_pr=5
 #   .\scripts\update-sprint-status.ps1 -NewSprint 3 -Name "Classical Evidence" -Branch feature/20260901_Sprint_3 -PlanDoc docs/sprints/SPRINT_3_PLAN.md
 # Bare keys in -Set target current_sprint.<key>; dotted keys (section.key) reach any
 # top-level section (current_sprint, last_completed_sprint, prereg). Unknown keys are

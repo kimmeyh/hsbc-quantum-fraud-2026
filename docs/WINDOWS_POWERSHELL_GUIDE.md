@@ -26,6 +26,13 @@ PowerShell 7+ is the primary shell. Bash (Git Bash POSIX sh) is available for PO
 - **Long-running work**: background execution with output files; per-unit persistence (per Optuna trial, per fit) so interruption loses one unit; never edit a job's inputs while it runs.
 - **Known-failure triage**: before investigating a failing script, read its header and this guide; the failure may be documented (workflow invariant; headers land per disposition item 18).
 
+## WSL interop (Sprint 3 retro improvement 3)
+
+- **Never pass complex commands inline through `wsl.exe -e bash -lc "..."`**: PowerShell and bash quoting interact destructively (variables expand empty, quotes glue arguments; two silent failures in Sprint 3). Write a `.sh` script file in the repo, run `wsl.exe -e bash /mnt/d/...`.
+- **Per-distro venv**: the Windows .venv is unusable from Linux; create a venv inside WSL (python3.12 via dnf on OracleLinux) and pin the same critical library versions (sklearn matched at 1.9.0 in Sprint 3 for pool comparability).
+- **Windows paths in frozen code**: shim at the consumer (`D:\x` -> `/mnt/d/x`), never edit the frozen module (see qubo_proxy.py's ULB_CSV shim).
+- **Default WSL user may be root**: `~` resolves differently per user; use absolute paths in scripts.
+
 ## Hooks (assessment from spamfilter .claude/hooks)
 
 | Source hook | Purpose there | Applicability here | Plan |

@@ -20,6 +20,10 @@ Sprint planning; retrospectives; backlog refinement; architecture/protocol deep 
 
 Architectural or protocol-shaping changes get an ADR designed and team-lead-approved BEFORE implementation. For this project, the frozen preregistration is the master ADR for methodology; ADRs in docs/adr/ record engineering decisions around it (pipeline structure, data handling, tooling). Amendments to the frozen protocol are ADR-class decisions with their own dated log.
 
+## Config-provenance check (mandatory when porting configs; Sprint 3 retro improvement 2)
+
+A frozen or tuned configuration carried from one dataset to another is a HYPOTHESIS, not a setting. Planning any item that ports a config records where the config came from (dataset, class balance, scale) and sanity-checks it against the target's characteristics -- imbalance first. A config whose provenance data differs materially gets a cheap proxy/smoke evaluation before full runs.
+
 ## Capability pre-flight (mandatory for tool-dependent items)
 
 Any item that depends on an external capability (a Dirac-3/eqc-models feature, a Braket simulator behavior, a Kaggle endpoint, a library API) gets a ~5-minute spike proving the single primitive it depends on BEFORE the item is estimated or built. If the spike fails, the item is re-scoped first. Also applies to environment preconditions in validation steps: confirm the environment actually works now, do not assume.

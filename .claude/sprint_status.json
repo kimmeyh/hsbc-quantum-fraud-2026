@@ -1,21 +1,18 @@
 {
   "current_sprint": {
-    "number": 2,
-    "name": "Process Foundations and External Readiness",
-    "branch": "feature/20260831_Sprint_2",
-    "status": "phase_7_retro_improvements_applied",
-    "plan_doc": "docs/sprints/SPRINT_2_PLAN.md",
-    "pr": 2,
+    "number": 3,
+    "name": "Classical Evidence Campaign",
+    "branch": "feature/20260902_Sprint_3",
+    "status": "phase_7_pr_ready",
+    "plan_doc": "docs/sprints/SPRINT_3_PLAN.md",
+    "pr": 13,
     "plan_approved": true,
-    "github_issues": [
-      10,
-      11
-    ]
+    "github_issues": []
   },
   "last_completed_sprint": {
-    "number": 1,
-    "merged_pr": 1,
-    "main_merge_pr": 3,
+    "number": 2,
+    "merged_pr": 2,
+    "main_merge_pr": 12,
     "docs_triad_complete": true
   },
   "prereg": {
@@ -23,5 +20,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-01"
+  "updated": "2026-09-02"
 }
