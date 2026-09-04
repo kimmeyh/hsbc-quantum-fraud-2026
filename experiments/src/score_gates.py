@@ -25,6 +25,7 @@ import metrics
 RESULTS_DIR = Path(__file__).resolve().parents[1] / "results"
 G0_FLOOR = 0.85          # prereg 3: tuned-XGB mean AP >= 0.85 (0.85-0.88 honest band)
 G0_LEAK_FLAG = 0.95      # >0.95 = leakage flag
+MDE = 0.0268             # amendment A5 (measured paired-delta MDE); single source
 N_SEEDS = 10
 
 
@@ -143,8 +144,8 @@ def main() -> int:
                   f"{len(seeds)} seeds.",
                   f"Mean delta {ti['mean']:+.4f}, seed SD {sd:.4f}, "
                   f"95% CI [{ti['ci95'][0]:+.4f}, {ti['ci95'][1]:+.4f}].",
-                  f"MDE(10 seeds) from this SD: {metrics.mde(sd, N_SEEDS):.4f} "
-                  f"(pilot value 0.0242; refinement is a Class-1 decision, surfaced not applied)."]
+                  f"MDE(10 seeds) recomputed from this SD: {metrics.mde(sd, N_SEEDS):.4f} "
+                  f"(adjudication uses the amendment-A5 value {MDE}; any change is Class-1)."]
     else:
         lines.append("UNSCOREABLE YET: needs 10-seed matched GBDT cells and 10 proxy seeds.")
     lines.append("")
@@ -175,9 +176,15 @@ def main() -> int:
             from scipy.stats import spearmanr
             px = [r["fidelity"]["proxy_val_auprc_same_pool"] for r in g0b]
             hv = [r["val_auprc"] for r in g0b]
-            rho = float(spearmanr(px, hv).statistic)
-            verdict = "PASS" if rho >= 0.5 else "FAIL"
-            lines += ["", f"G0b: Spearman(proxy val AP, hardware val AP) over {len(g0b)} configs = {rho:.3f} -> **{verdict}** (gate >= 0.5, prereg 3)"]
+            res = spearmanr(px, hv)
+            rho = float(res.statistic)
+            if not np.isfinite(rho):
+                verdict = "UNSCOREABLE (constant input: Spearman undefined)"
+            else:
+                verdict = "PASS" if rho >= 0.5 else "FAIL"
+            pval = float(res.pvalue) if np.isfinite(res.pvalue) else float("nan")
+            lines += ["", f"G0b: Spearman(proxy val AP, hardware val AP) over {len(g0b)} configs = {rho:.3f} "
+                      f"(p = {pval:.3f}; n=5, so the interval is wide) -> **{verdict}** (gate >= 0.5, prereg 3)"]
         else:
             lines += ["", f"G0b UNSCOREABLE YET: {len(g0b)}/5 hardware config fits present."]
     else:
@@ -189,12 +196,13 @@ def main() -> int:
                 and len(v) >= N_SEEDS}   # B1 cells only; G0b cells are single-seed
     gbdt_matched = {a: {r["seed"]: r["metrics"]["auprc"] for r in by_cell.get((a, "matched13"), [])}
                     for a in ("xgboost", "lightgbm", "catboost")}
-    complete = {a: c for a, c in gbdt_matched.items() if len(c) >= N_SEEDS}
-    if hw_cells and complete:
-        best_hw = max(hw_cells, key=lambda k: np.mean([r["metrics"]["auprc"] for r in hw_cells[k]]))
+    hw_complete = {a: c for a, c in gbdt_matched.items() if len(c) >= N_SEEDS}
+    if hw_cells and hw_complete:
+        # selection on VALIDATION AP (repo-wide rule: A3, proxy-cell selection)
+        best_hw = max(hw_cells, key=lambda k: np.mean([r["val_auprc"] for r in hw_cells[k]]))
         hwap = {r["seed"]: r["metrics"]["auprc"] for r in hw_cells[best_hw]}
         lines += ["", "### H1b on hardware [HW]"]
-        for arm, c in complete.items():
+        for arm, c in hw_complete.items():
             seeds = sorted(set(hwap) & set(c))
             if len(seeds) < N_SEEDS:
                 continue
@@ -203,10 +211,15 @@ def main() -> int:
             neg = sum(1 for x in d if x < 0)
             lines.append(f"{best_hw[1]} minus {arm}/matched13: mean {ti['mean']:+.4f} "
                          f"CI [{ti['ci95'][0]:+.4f}, {ti['ci95'][1]:+.4f}], trails on {neg}/{len(d)} seeds, "
-                         f"{'exceeds' if abs(ti['mean']) > 0.0268 else 'within'} MDE 0.0268 (A5)")
+                         f"{'exceeds' if abs(ti['mean']) > MDE else 'within'} MDE {MDE} (A5)")
         # hardware vs its own exact proxy (H4 solver-fidelity component)
-        for pk in [k for k in by_cell if k[0] == "cvqboost_proxy" and k[3] == "full"
-                   and k[1] == best_hw[1].replace("hw_b1_dct", "free").replace("hw_b1_lg", "tuned_free")]:
+        hw_hashes = {r.get("config_hash") for r in hw_cells[best_hw]}
+        matched_proxy = [k for k in by_cell if k[0] == "cvqboost_proxy"
+                         and {r.get("config_hash") for r in by_cell[k]} & hw_hashes]
+        if not matched_proxy:
+            lines.append("H4 solver-fidelity component UNPAIRED: no proxy cell shares a "
+                         f"config_hash with {best_hw[1]} (expected one; investigate).")
+        for pk in matched_proxy:
             pxa = {r["seed"]: r["metrics"]["auprc"] for r in by_cell[pk]}
             seeds = sorted(set(hwap) & set(pxa))
             if len(seeds) >= N_SEEDS:

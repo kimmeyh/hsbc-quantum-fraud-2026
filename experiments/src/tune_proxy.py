@@ -79,9 +79,16 @@ def weak_config(trial) -> tuple[str, dict]:
                 "n_jobs": 4, "verbosity": 0, "_spw": spw}
 
 
+POOL_BUILD_VERSION = 2   # bump whenever build_pool's construction changes (A3/A6 era = 2)
+
+
 def _pool_key(k, schedule, wt, wp) -> str:
+    """Cache key covers everything that changes the H matrix: config, the FIXED
+    solver settings, and the pool-builder version (a persistent .npz must never
+    be served from a previous build_pool implementation)."""
     return store.config_hash({"k": k, "schedule": schedule, "wt": wt, "wp": wp,
-                              "seed": TUNING_SEED, "pair_build": PAIR_BUILD})
+                              "seed": TUNING_SEED, "pair_build": PAIR_BUILD,
+                              "fixed": qp.FIXED, "build_version": POOL_BUILD_VERSION})
 
 
 _prep_cache: dict = {}
@@ -195,14 +202,18 @@ def _refit_one(label: str, cfg: dict, seed: int):
     p = cfg["params"]
     k, schedule, alpha = p["k"], p["schedule"], p["lambda_alpha"]
     wt = p["weak_type"]
-    wp = {"dct": lambda: {"max_depth": p["dct_max_depth"],
-                          "class_weight": None if p["dct_class_weight"] == "none" else "balanced",
+    _depth = p.get("dct_max_depth")
+    if _depth in (None, "none"):        # starting-config record injected by cmd_rank
+        _depth = None
+    wp = {"dct": lambda: {"max_depth": _depth,
+                          "class_weight": None if p.get("dct_class_weight", "none") == "none" else "balanced",
                           "random_state": 0},
           "lg": lambda: {"max_iter": 300,
-                         "class_weight": None if p["lg_class_weight"] == "none" else "balanced"},
+                         "class_weight": None if p.get("lg_class_weight", "none") == "none" else "balanced"},
           "lda": lambda: {},
           "xgb": lambda: {"max_depth": 2, "n_estimators": 20, "learning_rate": 0.3,
-                          "n_jobs": 4, "verbosity": 0, "_spw": p["xgb_scale_pos_weight"]}}[wt]()
+                          "n_jobs": 4, "verbosity": 0,
+                          "_spw": p.get("xgb_scale_pos_weight", "one")}}[wt]()
     t0 = time.strftime("%Y-%m-%dT%H:%M:%S")
     split, cols, H_tr, H_va, H_te, y_pm1, n_pool = _pool_h(seed, k, schedule, wt, wp)
     w = qp.solve_simplex_qp(H_tr, y_pm1, alpha * len(y_pm1))
@@ -225,17 +236,23 @@ def _refit_one(label: str, cfg: dict, seed: int):
 def cmd_refit(args):
     _require_wsl()
     rec = json.loads(RECORD.read_text())
-    done = qp._done_keys()
+    existing_rows = (json.loads(qp.RESULTS.read_text())["rows"]
+                     if qp.RESULTS.exists() else [])
     labels = [("tuned_free", rec["best_free_tier"]), ("tuned_full", rec["best_overall"])]
     if (rec["best_free_tier"] and rec["best_overall"]
             and rec["best_free_tier"]["config_hash"] == rec["best_overall"]["config_hash"]):
         labels = labels[:1]   # identical config: one label, no duplicate rows
+        log.info("[REFIT] best_free_tier and best_overall are the SAME config "
+                 "(%s); refitting once under label tuned_free. tuned_full rows are "
+                 "absent by design, not by failure.", rec["best_overall"]["config_hash"])
     for label, cfg in labels:
         if cfg is None:
             log.warning("[REFIT] no %s config", label); continue
         for seed in SEEDS:
-            if ("cvqboost_proxy", label, cfg["params"]["weak_type"], PAIR_BUILD, seed) in done:
-                continue
+            if any(r.get("arm") == "cvqboost_proxy" and r.get("config") == label
+                   and r.get("seed") == seed and r.get("config_hash") == cfg["config_hash"]
+                   for r in existing_rows):
+                continue      # same label AND same config_hash: genuinely done
             _refit_one(label, cfg, seed)
 
 

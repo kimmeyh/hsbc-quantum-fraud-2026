@@ -65,7 +65,7 @@ Mean AP = 0.8296 over 10 seeds -> **FAIL**
 Proxy cell used: cvqboost_proxy/free/dct/full
 Best matched GBDT: catboost. Delta = proxy_CVQBoost - catboost, 10 seeds.
 Mean delta -0.0389, seed SD 0.0259, 95% CI [-0.0574, -0.0203].
-MDE(10 seeds) from this SD: 0.0258 (pilot value 0.0242; refinement is a Class-1 decision, surfaced not applied).
+MDE(10 seeds) recomputed from this SD: 0.0258 (adjudication uses the amendment-A5 value 0.0268; any change is Class-1).
 
 ## Hardware rows [HW] and G0b proxy-fidelity gate
 
@@ -83,7 +83,7 @@ MDE(10 seeds) from this SD: 0.0258 (pilot value 0.0242; refinement is a Class-1 
 | hw_g0b_4/stratified | 1 | 0.5431 | 0.4869 | 0.9911 | +123 |
 | hw_g0b_5/stratified | 1 | 0.0017 | 0.0017 | 0.9987 | +96.32 |
 
-G0b: Spearman(proxy val AP, hardware val AP) over 5 configs = 0.900 -> **PASS** (gate >= 0.5, prereg 3)
+G0b: Spearman(proxy val AP, hardware val AP) over 5 configs = 0.900 (p = 0.037; n=5, so the interval is wide) -> **PASS** (gate >= 0.5, prereg 3)
 
 
 ### H1b on hardware [HW]

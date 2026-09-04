@@ -56,6 +56,8 @@ SEEDS = qp.SEEDS
 PAIR_BUILD = "full"
 MAX_RETRIES = 2
 BLOCK_CAP_S = {"B1": 220.0, "G0b": 70.0}     # 2x the request's expected upper bound
+EXPECTED_CALL_S = 6.0                        # measured 4-5 s/fit; bound the NEXT call
+UNPARSEABLE_CALL_CHARGE_S = 10.0             # conservative charge when billing is unreadable
 TUNING_SEED = 42
 
 B1_VARIANTS = [
@@ -65,6 +67,26 @@ B1_VARIANTS = [
      "wp": {"max_iter": 300, "class_weight": "balanced"}, "alpha": 0.5,
      "proxy_hash": "bf9e473250b773fa"},
 ]
+
+
+def verify_proxy_hashes() -> None:
+    """B1 hashes are literals; a re-run tuning study would silently make them
+    stale, and config_hash is the field every reported number traces by.
+    Recompute from the live ranking/results and refuse to run on a mismatch."""
+    if not RANKING.exists():
+        log.warning("[HW] no proxy_ranking.json; cannot verify B1 hashes")
+        return
+    known = {c["config_hash"] for c in json.loads(RANKING.read_text())["free_tier_ranking"]}
+    if qp.RESULTS.exists():
+        known |= {r.get("config_hash") for r in json.loads(qp.RESULTS.read_text())["rows"]
+                  if r.get("arm") == "cvqboost_proxy"}
+    missing = [v["proxy_hash"] for v in B1_VARIANTS if v["proxy_hash"] not in known]
+    if missing:
+        raise SystemExit(
+            "FATAL: B1 proxy_hash values not found in the current ranking/results: "
+            f"{missing}. The tuning study has changed; re-derive B1_VARIANTS before "
+            "spending metered seconds.")
+    log.info("[HW] B1 proxy hashes verified against the live ranking")
 
 
 def _load_env():
@@ -192,11 +214,17 @@ def run_cell(spec) -> dict:
         except Exception as e:                  # noqa: BLE001
             err = f"{type(e).__name__}: {str(e)[:300]}"
             log.error("[HW] %s seed=%d attempt %d failed: %s", spec["label"], spec["seed"], retries + 1, err)
-            if "number of variables" in str(e) and "free-tier" in str(e):
+            msg = str(e).lower()
+            if ("number of variables" in msg or "variable" in msg and "limit" in msg
+                    or "free-tier" in msg or "free tier" in msg):
+                retries += 1                     # record the attempt that was made
                 break                            # sizing error: no retry (F18 disposition 5)
             retries += 1
             time.sleep(5)
-    row = {"arm": "cvqboost_hw", "dataset": "ulb", "protocol": spec["protocol"], "seed": spec["seed"],
+    # temporal_split ignores the seed (Split.seed is None); recording 42 would
+    # misrepresent provenance and let a second temporal seed bypass _done().
+    row_seed = spec["seed"] if spec["protocol"] == "stratified" else None
+    row = {"arm": "cvqboost_hw", "dataset": "ulb", "protocol": spec["protocol"], "seed": row_seed,
            "block": spec["block"], "config": spec["label"], "pool_variant": spec["wt"],
            "pair_build": PAIR_BUILD, "n_vars_expected": n_vars, "config_hash": spec["proxy_hash"],
            "hw_config": {k: (v if k != "weak_cls_params" else dict(v)) for k, v in cfg.items()},
@@ -211,6 +239,13 @@ def run_cell(spec) -> dict:
     (RESP_DIR / f"{spec['label']}_{spec['protocol']}_{spec['seed']}.json").write_text(
         json.dumps(resp, default=str, indent=1))
     metered = _metered(resp)
+    if metered is None:
+        # A vendor response we cannot bill from must NEVER count as 0.0 spend:
+        # _spent() would go blind and the block cap could not fire. Charge the
+        # conservative per-call estimate and flag the row for audit.
+        log.error("[HW] %s seed=%d: billed seconds UNPARSEABLE; charging the "
+                  "conservative estimate %.1f s and flagging the row",
+                  spec["label"], spec["seed"], UNPARSEABLE_CALL_CHARGE_S)
     energies = resp.get("results", {}).get("energies", [])
     # --- fidelity: exact proxy on the identical Hamiltonian ---
     H_tr = qp.h_matrix(clf, Xtr)
@@ -226,7 +261,10 @@ def run_cell(spec) -> dict:
     m = metrics.summarize(split.y_test.to_numpy(), split.y_val.to_numpy(), p_val, p_test, seed=spec["seed"])
     s_px_val = np.clip((w_px @ qp.h_matrix(clf, Xva) + 1.0) / 2.0, 0.0, 1.0)
     row.update({
-        "status": "ok", "metered_seconds": metered, "n_weak_classifiers": len(clf.h_list),
+        "status": "ok" if metered is not None else "ok_unmetered",
+        "metered_seconds": metered if metered is not None else UNPARSEABLE_CALL_CHARGE_S,
+        "metered_seconds_parsed": metered is not None,
+        "n_weak_classifiers": len(clf.h_list),
         "metrics": m,
         "val_auprc": float(metrics.average_precision_score(split.y_val.to_numpy(), p_val)),
         "fidelity": {"hw_min_energy": float(min(energies)) if len(energies) else None,
@@ -246,17 +284,24 @@ def run_cell(spec) -> dict:
 
 def run_block(block: str, only_first: bool = False):
     _require_wsl(); _load_env()
+    if block == "B1":
+        verify_proxy_hashes()
     done = _done()
     specs = list(_cells(block))
     if only_first:
         specs = specs[:1]
     for spec in specs:
-        key = ("cvqboost_hw", spec["label"], spec["seed"], spec["protocol"])
+        key = ("cvqboost_hw", spec["label"],
+               spec["seed"] if spec["protocol"] == "stratified" else None,
+               spec["protocol"])
         if key in done:
             log.info("[HW] %s exists, skipping", key); continue
         spent = _spent(block)
-        if spent > BLOCK_CAP_S[block]:
-            log.error("[HW] block %s spend %.1f s exceeds cap %.0f s -- STOPPING", block, spent, BLOCK_CAP_S[block])
+        projected = spent + EXPECTED_CALL_S
+        if projected >= BLOCK_CAP_S[block]:
+            log.error("[HW] block %s: spend %.1f s + one call (%.1f s) would reach the "
+                      "%.0f s cap -- STOPPING BEFORE the call", block, spent,
+                      EXPECTED_CALL_S, BLOCK_CAP_S[block])
             return
         log.info("[HW] CALL %s/%s seed=%d %s k=%d s=%d a=%.1f hash=%s (block spend so far %.1f s)",
                  block, spec["label"], spec["seed"], spec["protocol"], spec["k"], spec["schedule"],
@@ -264,8 +309,11 @@ def run_block(block: str, only_first: bool = False):
         try:
             run_cell(spec)
         except Exception:                        # noqa: BLE001
-            log.error("[HW] unexpected error on %s: %s", spec["label"], traceback.format_exc()[-800:])
-            return
+            # The metered call may already have been made and billed; abandoning
+            # the block would waste the remaining approved calls. Record and go on.
+            log.error("[HW] post-call error on %s seed=%s (call may have been billed): %s",
+                      spec["label"], spec["seed"], traceback.format_exc()[-800:])
+            continue
     log.info("[HW] block %s done; total metered %.1f s", block, _spent(block))
 
 
