@@ -22,3 +22,4 @@
 | 4 | Task A (F22) refits + rank + report updates | code+compute | 60m | ~45m | 0.75 | |
 | 4 | Task B (F21) research memo (agent) | research | 120m | ~9m agent + 15m fold-in | 0.2 | primary-source finds decisive |
 | 4 | Task D (F7) memo + checklist walk + positive control | docs | 120m | ~60m | 0.5 | |
+| 4 | Task C (F2) hardware runner + 27 metered fits | code+compute | 240m | ~150m | 0.6 | 0 failures, 0 retries; 120 QPU s |
