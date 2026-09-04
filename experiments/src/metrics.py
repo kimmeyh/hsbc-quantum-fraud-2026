@@ -130,6 +130,26 @@ def tie_fraction(p: np.ndarray) -> float:
     return float(1.0 - len(np.unique(p)) / len(p))
 
 
+HEALTH_MODE_SHARE_MAX = 0.90
+HEALTH_MIN_DISTINCT = 50
+
+
+def score_health(p: np.ndarray) -> dict:
+    """Amendment A6 (Sprint 3 retro improvement 1): score-distribution health.
+    Degenerate score vectors (most rows sharing one value, or only a handful
+    of distinct levels) make alert-budget and calibration metrics weak
+    evidence even when ranking metrics are valid. WARN when the modal score
+    covers > HEALTH_MODE_SHARE_MAX of rows or fewer than HEALTH_MIN_DISTINCT
+    distinct values exist."""
+    p = np.asarray(p)
+    _, counts = np.unique(p, return_counts=True)
+    n_distinct = int(len(counts))
+    mode_share = float(counts.max() / len(p)) if len(p) else 0.0
+    return {"n_distinct": n_distinct, "mode_share": mode_share,
+            "warn": bool(mode_share > HEALTH_MODE_SHARE_MAX
+                         or n_distinct < HEALTH_MIN_DISTINCT)}
+
+
 def wilson_interval(k: int, n: int, alpha: float = 0.05) -> tuple[float, float]:
     """Wilson score interval (prereg 9; Brown-Cai-DasGupta)."""
     if n == 0:
@@ -206,5 +226,6 @@ def summarize(y: np.ndarray, p_val_y: np.ndarray, p_val: np.ndarray,
                         f"alert_budget_{alert_rate}"),
         ],
         "calibration": calibration_report(y, p_test),
+        "score_health": score_health(p_test),   # A6
     }
     return out

@@ -22,3 +22,14 @@ Authoritative documents a change must not contradict:
 - Documentation: plain professional prose; no emoji; no em dashes; no contractions in formal docs.
 - PowerShell for automation scripts, not bash.
 - Do not suggest adding new model arms, metrics, or datasets; scope is fixed by the preregistration.
+
+## Review scope: generated evidence artifacts are OUT of scope
+
+`experiments/results/*.json` (notably `results.json`, `proxy_tuning.json`, `proxy_ranking.json`, `lambda_sweep.json`) and `experiments/results/*.md` (`gate_report.md`) are GENERATED evidence artifacts, not source. A sprint diff routinely adds thousands of lines of them.
+
+Do NOT code-review these files. They are verified by their own mechanisms:
+- `experiments/src/score_gates.py` regenerates every reported figure from them.
+- `docs/STATISTICAL_REVIEW_CHECKLIST.md` is walked line by line before any figure becomes gate evidence.
+- Schema conformance is enforced at write time by `experiments/src/store.py` (PREREGISTRATION section 11).
+
+Review the CODE that produces them (`experiments/src/*.py`, `scripts/*.py`, `scripts/*.ps1`, `scripts/*.sh`) and the DOCUMENTS that interpret them (`docs/*.md`). Reviewing the data files themselves consumes large review budget for no signal and has caused review runs to stall.

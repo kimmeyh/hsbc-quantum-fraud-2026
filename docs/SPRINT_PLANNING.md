@@ -20,6 +20,10 @@ Sprint planning; retrospectives; backlog refinement; architecture/protocol deep 
 
 Architectural or protocol-shaping changes get an ADR designed and team-lead-approved BEFORE implementation. For this project, the frozen preregistration is the master ADR for methodology; ADRs in docs/adr/ record engineering decisions around it (pipeline structure, data handling, tooling). Amendments to the frozen protocol are ADR-class decisions with their own dated log.
 
+## Audience-first rule for deliverables (Sprint 4 retro improvement 3)
+
+Before drafting ANY external-facing document (results memo, paper section, sponsor package, submission artifact), state at the top of the task: who reads this, and what must they believe or decide after reading it. That statement shapes structure and emphasis, and it belongs at the START of the task -- a framing correction after the draft exists costs a rewrite. (Sprint 4: the production-bound framing arrived after the results memo was drafted and materially changed it.)
+
 ## Config-provenance check (mandatory when porting configs; Sprint 3 retro improvement 2)
 
 A frozen or tuned configuration carried from one dataset to another is a HYPOTHESIS, not a setting. Planning any item that ports a config records where the config came from (dataset, class balance, scale) and sanity-checks it against the target's characteristics -- imbalance first. A config whose provenance data differs materially gets a cheap proxy/smoke evaluation before full runs.

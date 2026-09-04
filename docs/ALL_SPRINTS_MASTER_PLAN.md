@@ -16,44 +16,31 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 |---|---|---|---|
 | 1 | docs/sprints/SPRINT_1_SUMMARY.md | [OK] Complete | ~1 day (Aug 30, 2026) |
 | 2 | docs/sprints/SPRINT_2_SUMMARY.md | [OK] Complete | ~2 days (Aug 31 - Sep 2, 2026) |
+| 3 | docs/sprints/SPRINT_3_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 2-3, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 2: Process Foundations and External Readiness** (Aug 31 - Sep 2, 2026; PR #2 merged to develop, develop merged to main via PR #12).
-Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored / 18 dispositioned); portal mechanics verified into requirements-matrix A5/A5b (F12); QCi letter sent (F11); dual PR review with all 12 findings fixed and threads resolved; manifest tooling portable and hard-failing in scripts/; prereg amendments A2 (variable-count correction + documented 949 ceiling) and A3 (full-pair build side-by-side option); F18 registered with 2/10 checklist items pre-completed. Zero metered seconds. Retro: docs/sprints/SPRINT_2_RETROSPECTIVE.md (first full 16x4).
+**Sprint 3: Classical Evidence Campaign** (Sep 2-3, 2026; PR #13 merged to develop, develop merged to main via PR #16).
+Delivered: F18 mined (10 dispositions, zero amendments); F1 campaign with 110 [SIM] rows -- G0 scored as committed = FAIL (0.8296 vs 0.85; no leakage flag), best arm CatBoost/full 0.8368, paired proxy-vs-GBDT delta -0.0415, measured MDE 0.0268 (A5); CVQBoost proxy pipeline with exact Hamiltonian + known-answer tests; A3 full-pair selected; B7 hardware request prepared (not executed); ADRs 0005-0010; hooks ported; validation found lg scoring degeneracy (quarantined; fix = F22). Zero metered seconds. Retro: docs/sprints/SPRINT_3_RETROSPECTIVE.md (6 improvements applied).
+
+## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
+
+| Sprint | Dates | Targeted scope | Gate |
+|---|---|---|---|
+| 4 | Sep 3-5 | F22, F21, F2 (per-block approval), F7 | -- |
+| 5 | Sep 5-7 | F8, F9, then F19 at sprint end (QCi package with the actual paper draft) | -- |
+| 6 | Sep 7-9 | F3 + paper updates (outline, draft, diff-scoped reviews, rubric) + F23/F24 prep in parallel agents | still time for F16 + F10 |
+| 7 | Sep 9-11 | F4 + paper updates | still time for F16 + F10 |
+| 8 | Sep 11-12 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
+| Finalize | Sep 12-13 | F16, F10; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
+
+A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
 
 ## Next Sprint Candidates
 
 ### Experiments (Stage 3 of the master timeline; submission-ready Sep 8)
 
-**F1. Classical evidence campaign (~1.5 days) Priority 10**
-- Phase: Experiments
-- Platform: ULB
-- Tuned XGB/LGBM/CatBoost (100 Optuna trials each) + logistic; full and matched features; 10 seeds; BCa CIs into results.json
-- G0 scored as committed (mean AP >= 0.85); Tuning Budget Equivalence table; paired-delta SD measurement with MDE refinement decision
-- CVQBoost proxy pipeline (weak pools, QUBO build, non-negative-ridge solve = structural control); free-tier and full configs frozen
-- Amendment A3 side-by-side: sequential vs full-pair build compared on proxy validation AP across the 10 primary seeds (zero metered seconds; full-pair via WSL2, setup [no-history]); build selected before any test-set evaluation, applied uniformly
-- B1+G0b hardware request PREPARED with call counts (not executed)
-- Inline scope additions from the approved 2026-08-30 disposition (retro Category 13 pattern): ADRs 0005-0010 authored as their modules are built; logging conventions (frd.* namespaces); full-pipeline smoke fixture; ARCHITECTURE.md with inline ADR cross-references; TESTING_STRATEGY.md adaptation; known-failure headers on long-running scripts; velocity actuals log started (Sprint 2 retro improvement 6); block-stash and closeout-verification hooks ported per WINDOWS_POWERSHELL_GUIDE assessment (~4.5h total added)
-- Depends on: prereg freeze (done)
-
-**F18. Mine the Dirac-3 integration notes (qml-unlocked/DIRAC3.md) (~1.5h) Priority 11**
-- Phase: Experiments (team-lead request 2026-09-02: "to be completed soon", before hardware blocks)
-- Platform: docs / Dirac-3 preparation
-- Source: `D:\Data\Harold\github\qml-unlocked\DIRAC3.md` -- the team lead's hands-on notes from running all QML Unlocked chapters on real Dirac-3 hardware (Aug 2026), heritage ForrierWall pipeline
-- **Binding constraint (team-lead decision 2026-09-02): the frozen preregistration is honored. Anything from these notes that touches protocol (arms, configs, gates, budgets) enters ONLY as a dated amendment proposed for team-lead approval; everything else (tooling, error handling, credentials, cost discipline) adopts freely.**
-- Task checklist (ALL COMPLETE 2026-09-02; dispositions in docs/sprints/drafts/F18_dirac3_notes_findings.md):
-  - [x] Read DIRAC3.md in full plus the three cited ForrierWall reference points (line numbers drifted; located by symbol)
-  - [x] Verify variable-count math (DONE 2026-09-02): eqc-models source shows the sequential strategy (mandatory on Windows) defaults pairs to n(n-3)/2, so true totals are schedule-2 = C(n,2) exactly and schedule-3 = C(n,2)+C(n,3); confirmed empirically by FourierWall2 hardware runs (oilgas n=15: measured 105 and 560 vars, exact). `qubo_vars` and prereg section 10 overestimate by exactly n (conservative direction); bounds unchanged (free tier n<=13, device n<=17); amendment A2 drafted for team-lead approval
-  - [x] B5/QSVM sign-augmentation (DONE 2026-09-02): already in the frozen protocol -- section 4 model-arms table reads "QSVM (sign-augmented primal, Dirac-3)". No amendment needed; implementation must honor it when B5 code is written
-  - [x] {-1,+1} label mapping and explicit sequential strategy adopted into the B5 spec (with known-answer mapping test)
-  - [x] Backoff pattern: DETECTION adopted (error strings + raw-error logging), config-MUTATING retries REJECTED for preregistered cells (frozen identical-config retry rule preserved; A2 formula prevents sizing rejections ex ante)
-  - [x] Credentials pattern adopted into ADR-0011 practice (resolve-once, both vars required, never printed)
-  - [x] Knob cross-check clean vs eqc-models 0.21.0; NEW invariant: constructed-attribute round-trip assert (ForrierWall silent-kwarg-drop gotcha)
-  - [x] Cost-control rules confirmed aligned with ADR-0002 and the frozen grid; QSVM ~1 s/fit supports the B5 estimate
-  - [x] H3 low rung clear (k=5 -> 10/20 vars); n<4 guard adopted with a real error message
-  - [x] Findings memo delivered: docs/sprints/drafts/F18_dirac3_notes_findings.md; zero amendments required
-- Depends on: nothing (read-only analysis; must complete before F2 hardware execution)
+(F1 classical evidence campaign and F18 Dirac-3 notes mining: COMPLETED in Sprint 3, merged via PR #13; history in SPRINT_3_SUMMARY.md. Removed from candidates per convention. F1 residual -- the section-6 CVQBoost proxy tuning -- continues as F22.)
 
 **F22. CVQBoost proxy tuning per prereg section 6 (~2-3h + unattended solves) Priority 11**
 - Phase: Experiments (team-lead validation 2026-09-02; PREREQUISITE for G0b and for un-quarantining lg)
@@ -78,12 +65,54 @@ Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored /
 - results.json [HW] rows; retry discipline per frozen protocol
 - Depends on: F1; team-lead approval; QCi grant for B2/B3
 
+**F26. Cost-based operating-point analysis (~2h) Priority 13**
+- Phase: Experiments (team-lead direction 2026-09-03: the proposal must read as production-bound)
+- Platform: ULB, docs (zero metered seconds; reuses existing rows)
+- Report every arm at a realistic review capacity (alerts/day budget) and under an asymmetric cost assumption (missed fraud vs declined-good-customer), alongside AUPRC: "fraud caught per analyst-hour" is the number a fraud team buys on
+- Uses the existing validation-chosen operating points (metrics.evaluate_at, threshold_alert_budget) and the persisted-prediction fix shared with A7 cell S1; states cost assumptions explicitly as assumptions, with a sensitivity range
+- Output: a cost table for the paper's Validation section + one paragraph translating AUPRC into operational terms
+- Depends on: prediction persistence (shared with A7 S1)
+
+**F27. Production-trial design section (~2h) Priority 13**
+- Phase: Paper (team-lead direction 2026-09-03)
+- Platform: docs
+- A concrete 90-day trial the bank could start: shadow-mode scoring against live traffic, champion/challenger vs the incumbent, the review-capacity operating point, latency budget for real-time scoring, calibration requirements for the downstream rules engine, drift monitoring with named retraining triggers, and the dispute/regulator explainability path
+- Cites measured inputs we already hold: per-fit hardware cost (4-5 QPU s), calibration data, operating points, the temporal-decay question from the Sprint 4 temporal rows
+- Names the free-tier feature constraint honestly: 13 features fit the device tier, not the problem; production sizing math included
+- Depends on: F7 memo (done); feeds F8
+
+**F28. Explainability thread: ensemble inspectability vs GBDT baseline (~3h) Priority 14**
+- Phase: Experiments + Paper (team-lead direction 2026-09-03; team lead has prior QML explainability work to cite as capability)
+- Platform: ULB, docs (zero metered seconds)
+- Structural argument plus evidence: a CVQBoost ensemble is a weighted vote over small, individually inspectable weak learners (1-3 features each), versus a 2,000-tree boosted model requiring post-hoc attribution; quantify with weight concentration, per-learner feature attribution, and a worked single-decision explanation for both arms
+- Frames explainability as the bar that actually gates deployment in banking (dispute handling, regulator review), not as a nice-to-have
+- Output: an explainability subsection for the paper with a side-by-side worked example
+- Depends on: existing pools and rows; team-lead input on which prior QML explainability work to cite
+
 **F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14**
 - Phase: Experiments
 - Platform: IEEE-CIS
 - Preregistered feature pass (D-normalization, UID excluded, named aggregates, V-reduction); leakage controls incl. shuffled-label positive control
 - GroupKFold-by-month rolling origin; classical arms + proxy CVQBoost on the reduced set; H3 ladder cells
 - Depends on: F1
+
+**F23. F4 prep: QFE phase recipe + twin scaffolding (~3h, subagent-parallel) Priority 15**
+- Phase: Experiments (team-lead roadmap 2026-09-03: prep in Sprint 6 alongside F3, execution F4 in Sprint 7)
+- Platform: ULB (IEEE-CIS later), docs
+- Implement the exact Fourier Wall phase recipe as a fitted, train-only transformer: rank phase phi = 2*pi*(rank - 1/2)/n - pi, log magnitudes first, calendar cycles (ULB Time -> daily cycle), train-only whitening, low-cardinality columns excluded from encoded blocks; known-answer tests (phase range, rank invariance, no test leakage)
+- Capability pre-flights for the three twin families the H6 bar requires: trained-frequency GAM, GA2M, and the JOINT twin (supervised coarse-to-fine cosine frequency scan fit by logistic regression); pin dependencies; ADR candidate recording the twin design (Fourier Wall: omitting the twin manufactures fake quantum wins)
+- Freeze the H6 cell list (arms x representation), the results.json representation tag, and the A2 variable-count implications of phase blocks for CVQBoost (n changes -> free-tier/device bounds re-checked)
+- No arm is RUN in prep; execution is F4. Zero metered seconds
+- Depends on: F1 (done); F22 (tuned proxy config so H6 sits on a tuned CVQBoost)
+
+**F24. F5 prep: SPECTRA in-segment machinery + B4 request (~3h, subagent-parallel) Priority 15**
+- Phase: Experiments (team-lead roadmap 2026-09-03: prep in Sprint 6, execution F5 in Sprint 8)
+- Platform: SPECTRA, Dirac-3 (request only)
+- In-segment evaluation machinery per H5: in_pocket segment metrics, matched random-segment negative control (same size and base rate), the >= 50-test-positives-per-cell rule, 5-seed splits, leak-free contract enforced (target/target_real/in_pocket never features); tests
+- Identify the 3 strongest in-segment cells from the FourierWall2 evidence (experiments/reference/fourierwall2/) and freeze them with config hashes; prove via scripts/manifest.py whether the staged SPECTRA files match or differ from the FourierWall2-era files (ADR-0003 requirement for B4)
+- Proxy dry run on the 3 cells (zero metered) to set expected values; write the B4 hardware request (15 fits, ~450 QPU s) in the HARDWARE_REQUEST template, ready for grant arrival
+- Named fallback for Sprint 8 if no grant: proxy-only replication labeled [SIM], or the sprint re-scopes to an F4 extension -- decided by the team lead at Sprint 8 refinement
+- Depends on: F1 (done); QCi grant status for the hardware path
 
 **F4. QFE phase arms + order-matched twins (~0.5 day) Priority 16**
 - Phase: Experiments
@@ -105,20 +134,12 @@ Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored /
 - One-page results memo; gate table scored as committed; headline promotion decision per the thesis rule (team-lead review, Sep 4 target)
 - Depends on: F1-F4 (F5/F6 as available)
 
-**F19. Draft submission PDF(s) to QCi (~2h assemble + team-lead send) Priority 13**
-- Phase: External (team-lead request 2026-09-02: "send a draft of the PDFs we will eventually submit ... based on what we have by the end of the next sprint")
-- Platform: docs
-- Assemble the best draft-state package available at that sprint's end (expected: preregistration incl. amendments, gate report / results memo, hardware plan; the F8 paper draft only if it exists yet), rendered as PDF(s) marked DRAFT
-- MANDATORY pre-send confidentiality scan of every page (the Stage 7 scan run early, scoped to the sent artifacts: no employer references, no account identifiers, no QPU balances tied to a named account)
-- Team lead reviews and personally sends; Claude records what was sent and when in requirements-matrix
-- Value: progress evidence for the pending QCi grant; early feedback on how Dirac-3 is represented; honors the sponsorship letter's collaborative framing
-- Depends on: end-of-next-sprint state (F7 results memo strengthens it; F8 not required)
-
 ### Paper (Stages 4-6)
 
 **F8. Outline + Draft V1 (~1 day) Priority 30**
 - Phase: Paper
 - Platform: docs
+- Inline addition (Sprint 4 retro improvement 1, approved): known-answer tests for score_gates.py aggregation -- gate verdicts, paired deltas, Spearman, cell keying against hand-computed fixtures (~45m); every reported number passes through this code and it is currently untested
 - Seven rubric-mapped sections + appendices; [HW]/[SIM]/[PROJ] tags; prevalence beside every AUPRC; references from docs/references.md
 - Depends on: F7; team-lead outline approval
 
@@ -127,6 +148,15 @@ Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored /
 - Platform: docs
 - Domain pass, quantum pass (encoding diagnostics, evidence-tag audit), rubric scoring; fix lowest criterion
 - Depends on: F8
+
+**F19. Draft submission PDF(s) to QCi (~2h assemble + team-lead send) Priority 34**
+- Phase: External (team-lead request 2026-09-02; moved 2026-09-03 to the END of Sprint 5 so the package carries the actual F8/F9 paper draft)
+- Platform: docs
+- Assemble the Sprint-5-end package: the F8/F9 paper draft (reviewed, rubric-scored) plus preregistration incl. amendments, gate report / results memo, and hardware plan, rendered as PDF(s) marked DRAFT
+- MANDATORY pre-send confidentiality scan of every page (the Stage 7 scan run early, scoped to the sent artifacts: no employer references, no account identifiers, no QPU balances tied to a named account)
+- Team lead reviews and personally sends; Claude records what was sent and when in requirements-matrix
+- Value: progress evidence for the pending QCi grant; early feedback on how Dirac-3 is represented; honors the sponsorship letter's collaborative framing
+- Depends on: F8, F9 (Sprint 5)
 
 ### Finalize (Stages 7-8)
 
@@ -140,7 +170,7 @@ Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored /
 
 (F11 QCi sponsorship letter send: COMPLETED by the team lead 2026-08-30. F12 portal verification and F15 best-practices/ADR review: COMPLETED in Sprint 2, merged via PR #2; history in SPRINT_2_SUMMARY.md. All three removed from candidates per convention.)
 
-**F16. Minimal CI: pytest + lint on PRs with smoke fixture (~30m) Priority 34**
+**F16. Minimal CI: pytest + lint on PRs with smoke fixture (~30m) Priority 36**
 - Phase: Finalize
 - Platform: docs
 - GitHub Actions on PRs to develop; sub-minute; no dataset or metered access
@@ -162,6 +192,14 @@ Delivered: full sprint process suite + ADR system (F15: 8 adopted / 4 authored /
 - Zero-cost evaluation path: proxy side-by-side vs hard-vote pools on identical seeds (the A3 comparison machinery reused verbatim)
 - Constraints: custom H construction departs from eqc-models' builders (pool identity with the library is lost; document as its own arm); Phase 1 evidence chain untouched; any Phase 2 use enters through that phase's preregistration
 - Depends on: F17 pairs well (the simulator would evaluate both); nothing blocks the proxy investigation
+
+**F25. Non-convex CVQBoost: cardinality-constrained weak-learner selection on Dirac-3 (~4h investigation + hardware) Priority HOLD**
+- Phase: Phase 2 (team-lead approved 2026-09-03; the direct consequence of the Sprint 4 degeneracy finding)
+- Platform: Dirac-3 integer/qudit solver, local proxy for the relaxation only
+- The Sprint 4 evidence: the continuous-weight formulation is strictly convex AND nearly degenerate (uniform weights even at lambda = 0), so an exact classical proxy always matches the hardware. The formulation where that stops being true is combinatorial selection: choose the best subset of m weak learners from a pool of n (cardinality or L0 sparsity constraint), optionally with integer weights -- NP-hard, no exact classical proxy, and the native problem class for Dirac-3's integer solver (num_levels budget against the documented 949 device limit)
+- Design sketch: same H matrix and objective, plus a cardinality constraint; classical comparators become greedy/forward selection, L1-then-threshold, and a MIP solver at small n; the honest question is solution QUALITY at fixed wall-clock, not just feasibility
+- Expected value: this is the concrete "where quantum optimization is necessary rather than optional" program the Phase 1 paper points at, and the strongest technical item for the QCi conversation
+- Depends on: Phase 2 preregistration; QCi grant for meaningful hardware time; pairs with F17 (simulator) and F20 (soft votes)
 
 **F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD**
 - Phase: Phase 2 (Nov 17 - Feb 28, if selected)

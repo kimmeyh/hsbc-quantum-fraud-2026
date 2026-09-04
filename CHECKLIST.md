@@ -2,7 +2,7 @@
 
 Owners: **H** = Harold (only you can do it), **C** = Claude (I do it), **H+C** = decision or review done together.
 Mark items `[x]` as they complete. This list is the working agenda; `docs/requirements-matrix.md` is the final acceptance gate.
-Last reconciled: 2026-09-02 (Sprint 2 close).
+Last reconciled: 2026-09-03 (Sprint 4, hardware executed).
 
 ## Standing rule: Dirac-3 hardware budget
 
@@ -44,14 +44,14 @@ All development and debugging runs use the local proxy (the classical solve of t
 
 ## Stage 3: Experiments (Sep 1 to 4)
 
-- [ ] **C**: Tuned classical arms: XGBoost, LightGBM, CatBoost, full features, 100 Optuna trials each; G0 gate = mean AUPRC >= 0.85 across 10 ULB seeds (the corroborated clean-protocol floor)
-- [ ] **C**: Matched-feature classical arms and logistic control (MI top-k inside folds)
+- [x] **C**: Tuned classical arms: XGBoost, LightGBM, CatBoost, full features, 100 Optuna trials each (Sprint 3); G0 scored as committed = FAIL (tuned-XGB mean AP 0.8296 vs 0.85; no leakage flag); framing decided at F7 gate review; F21 researches the protocol gap
+- [x] **C**: Matched-feature classical arms and logistic control (MI top-13 on train per seed; Sprint 3, 40 rows)
 - [x] **C**: Pilot seed-variance run and minimum-detectable-effect statement (done Sprint 1: mean AP 0.8268, seed SD 0.0243, MDE(10) 0.0242; experiments/PILOT_VARIANCE.md)
-- [ ] **C**: CVQBoost arm tuned entirely on the proxy (non-negative ridge over identical weak-learner outputs, which doubles as the H4 structural control); free-tier config (top-13, schedule 2) and full config (top-17, schedule 3) frozen
+- [x] **C**: CVQBoost arm tuned entirely on the proxy: pipeline + exact-Hamiltonian solve (Sprint 3), section-6 100-trial tuning (Sprint 4, F22); starting config retained by the validation-AP rule; tuned lg config lifts the score-health quarantine
 - [ ] **C**: QFE phase-representation arms (Fourier Wall recipe) for every model, including trained-frequency GAM/GA2M/JOINT twins in H6 cells
 - [ ] **C**: IEEE-CIS reduced Deotte recipe implemented per prereg section 5 (UID excluded, named aggregates, leakage controls, shuffled-label positive control)
 - [ ] **C**: Temporal protocols: IEEE-CIS GroupKFold-by-month rolling origin; ULB temporal sensitivity split; classical-refit fairness control on any drift claim
-- [ ] **H+C**: Approve hardware run list per block (B1 + G0b on current balance; B2/B3/B4 gated on QCi grant; spend priority B3 > B2 > H3 ladder > B4); execute once
+- [x] **H+C**: B1 + G0b approved and executed 2026-09-03 (27 fits, 120 QPU s, 0 failures; G0b PASS Spearman 0.900). B2/B3/B4/B5 remain gated on the QCi grant, spend priority B3 > B2 > H3 ladder > B4
 - [ ] **C**: results.json per schema, CIs per spec, one-page results memo
 - [ ] **H+C**: Gate review Sep 4: score gates as committed; decide headline promotion per the thesis decision rule
 

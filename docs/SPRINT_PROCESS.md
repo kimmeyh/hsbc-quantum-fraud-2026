@@ -42,10 +42,13 @@ Surface with the template phrasing; wait.
 |---|---|---|
 | 1 | Aug 30 (done) | Freeze and foundations |
 | 2 | Aug 31 - Sep 1 (done) | Process foundations and external readiness |
-| 3 | Sep 1-3 | Classical evidence |
-| 4 | Sep 3-5 | Quantum evidence (hardware gated per block) |
-| 5 | Sep 5-7 | The paper |
-| 6 | Sep 7-8 | Ship |
+| 3 | Sep 2-3 (done) | Classical evidence |
+| 4 | Sep 3-5 | Proxy tuning, baseline research, first hardware blocks, results memo |
+| 5 | Sep 5-7 | The paper (draft V1, reviews) + QCi draft package |
+| 6 | Sep 7-9 | IEEE-CIS evidence + paper updates + F4/F5 prep |
+| 7 | Sep 9-11 | QFE evidence + paper updates |
+| 8 | Sep 11-12 | SPECTRA replication (or fallback) + paper updates |
+| Finalize | Sep 12-13 | CI, verification, confidentiality scan, submission (evidence freeze Sep 12; never later than Sep 14) |
 
 Keep this table reconciled with ALL_SPRINTS_MASTER_PLAN.md at every sprint close; the master plan wins on scope, this table only mirrors it.
 
