@@ -18,6 +18,19 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $src = (Resolve-Path $Source).Path
+
+# Pre-flight: a PDF open in a viewer holds a write lock, and Word's SaveAs then
+# fails with an opaque COM error. Name the cause instead (Sprint 5: cost a
+# diagnostic round trip when the proposal was open in Acrobat).
+if (Test-Path $Out) {
+    try {
+        $probe = [System.IO.File]::Open((Resolve-Path $Out).Path, 'Open', 'ReadWrite', 'None')
+        $probe.Close()
+    } catch {
+        throw ("Output PDF is LOCKED by another process: {0}`n" +
+               "Close it (a PDF viewer such as Acrobat or Edge is the usual cause) and re-run." -f $Out)
+    }
+}
 $outDir = Split-Path -Parent $Out
 if ($outDir -and -not (Test-Path $outDir)) { New-Item -ItemType Directory -Force $outDir | Out-Null }
 $docx = [System.IO.Path]::ChangeExtension([System.IO.Path]::GetTempFileName(), '.docx')
