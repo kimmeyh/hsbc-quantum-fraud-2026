@@ -64,7 +64,15 @@ Untuned pilot (Sprint 1): XGBoost 0.8268. Tuning at the frozen 100-trial budget:
 2. **Hybrid-system framing**: best achievable detection is the tuned classical ensemble; CVQBoost is positioned as the in-segment specialist and the hardware-scaling arm, with Phase 2 evidence targets.
 3. **Conditional quantum-advantage framing**: not defensible on the ULB primary endpoint given the measured null.
 
-**Recommendation**: option 1 as the spine with option 2's positioning, stated as an early choice pending H3/H5. The methodological contribution to lead with is the exact structural control plus the measured solver-fidelity result and the degeneracy analysis; that combination is rarer, and more credible, than another performance claim.
+**Recommendation (team-lead direction 2026-09-03: the proposal is written as production-bound work)**: option 2's system framing as the spine, with option 1's regime map as the method inside it. The proposal's posture is a program headed for a production trial, not a benchmark report:
+
+1. **A deployable system today.** The tuned classical ensemble is the production detector, validated under a leakage-controlled protocol with a shuffled-label tripwire and per-seed CIs.
+2. **A rigorously mapped search for what improves it.** The quantum-inspired arm is an evaluated candidate, not an assumption. We report its null on the ULB primary endpoint and, more usefully, we diagnose WHY: the continuous-weight formulation on a fixed pool is nearly degenerate (uniform weights even at lambda = 0), so no solver could have won there. That is a negative result about one search location, not about the approach.
+3. **A stated expectation, with the reasons it is credible.** We expect to find a component that produces better predictions and clears the production bar. The untested levers are the ones the design points at: representation (QFE phase features, H6), in-segment specialization (H5, where prior measured runs favored CVQBoost over XGBoost), the non-convex selection formulation (F25) where no exact classical proxy exists, and larger sparser regimes (IEEE-CIS, F3). The preregistration commits us to reporting each either way.
+4. **Explainability as a named advantage, not a hope.** A weighted vote over small inspectable weak learners is structurally more explainable than a 2,000-tree boosted model; explainability is the bar that actually gates bank deployment (dispute handling, regulator review). Quantified in F28, with the team lead's prior QML explainability work cited as capability.
+5. **A concrete transfer path.** The 90-day production-trial design (F27) and the cost-based operating points (F26) state what a trial would run and what it would measure, using inputs we already hold.
+
+**Note on the framing trigger**: prereg section 1's compound falsification criterion (H1b fails AND H3 slope non-positive AND H5 does not transfer) has NOT been evaluated -- H3 and H5 are unrun. The regime map is being used as method, not invoked as a fired fallback, and the paper says so.
 
 ## Statistical review checklist walk
 

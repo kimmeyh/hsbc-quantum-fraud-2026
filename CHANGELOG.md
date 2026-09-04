@@ -6,6 +6,7 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ### 2026-09-03
 
+- **process**: F26 (cost-based operating points), F27 (production-trial design), F28 (explainability thread) registered per team-lead direction that the proposal read as production-bound; results memo recommendation reframed to the system/program spine
 - **feat**: Hardware blocks B1 + G0b EXECUTED [HW] on team-lead approval: 27 Dirac-3 fits, 120 QPU s, 0 failures, 0 retries. **G0b PASS** (Spearman 0.900 vs 0.5 gate). H4 structural attribution measured: hardware minus exact proxy = -0.0010 AUPRC [CI -0.0032, +0.0012], weight cosine 0.975-0.999. H1b on hardware: -0.0399 [CI -0.0571, -0.0227] vs CatBoost matched-13, reported as the preregistered null (Issue #19)
 - **feat**: F22 section-6 proxy tuning complete (100 trials); starting config retained by the validation-AP rule; tuned lg config lifts the score-health quarantine; G0b ranking produced (Issue #17)
 - **feat**: Amendment A6 (score-distribution health flags); F21 research memo: G0's 0.85 band not corroborated by primary sources; A7 sensitivity cells proposed (Issues #17 #18)
