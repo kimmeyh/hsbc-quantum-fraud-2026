@@ -28,7 +28,7 @@ Prerequisite inside this task: **prediction persistence** (the enabling change A
 Structural argument plus measured evidence: weight concentration in the CVQBoost ensemble, per-weak-learner feature attribution, and a worked single-decision explanation for both the CVQBoost arm and the CatBoost baseline on the same transaction.
 
 - **Acceptance**: `docs/EXPLAINABILITY.md` with the weight-concentration figures, the attribution method stated, and one worked decision explained end to end for both arms; the honest caveat that near-uniform weights (the Sprint 4 finding) cut against a simple "few learners explain it" story and are reported as such.
-- **Open input needed from the team lead**: which prior QML explainability work to cite as team capability. If not supplied by drafting time, the section cites the structural argument and the measured evidence only, and the capability line is left for the team lead to add.
+- **RESOLVED 2026-09-04 (team lead)**: the prior QML explainability work cannot be brought forward, so F28 REPRODUCES the evidence here on this project's own arms. No external citation carries evidentiary weight; Team Capability may mention the prior experience in prose only. This strengthens the section: every claim is checkable against results.json and the committed pools.
 - **Model**: top tier. **Owner**: Claude drafts; team lead supplies the citation.
 
 ### Task C / F8: Outline + Draft V1 (~1 day)
