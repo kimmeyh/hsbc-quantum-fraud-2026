@@ -194,6 +194,18 @@ A submittable paper exists after Sprint 5; every later sprint adds evidence and 
 - Expected value: this is the concrete "where quantum optimization is necessary rather than optional" program the Phase 1 paper points at, and the strongest technical item for the QCi conversation
 - Depends on: Phase 2 preregistration; QCi grant for meaningful hardware time; pairs with F17 (simulator) and F20 (soft votes)
 
+**F30. Concurrent Dirac-3 submission with bounded in-flight requests (~4h build + 1h dry run) Priority HOLD**
+- Phase: Phase 2 preparation / infrastructure (team-lead request 2026-09-04)
+- Platform: Dirac-3 (offline-testable; gated live vetting of 2-3 calls only)
+- Dirac-3 queues one job at a time, so a 4-5 QPU s fit cost ~85 s of wall clock in Sprint 4; nearly all elapsed time is queue wait. Multiple requests CAN be enqueued concurrently, via separate processes or async submission inside one program
+- Design: a BOUNDED window (default 4) of in-flight requests, topping up by one as each completes. Metered calls cannot be wasted, so the window is deliberately small: a reboot or network failure risks only the in-flight requests, never a 20-call block
+- Crash safety: a durable job ledger records submission intent and job ids before each call, so a restart retrieves results for in-flight jobs instead of re-billing them
+- Preserves every existing guard: spend caps computed against projected spend INCLUDING in-flight requests, frozen identical-config retry rule, B1 hash verification, unparseable-billing charge
+- Fully tested offline first (fake client simulating queue latency, out-of-order completion, crash-restart, failed job, unreadable billing); only then 2-3 real calls at window size 2, on explicit approval
+- Full card drafted at docs/sprints/drafts/F30_CARD_DRAFT.md
+- Value arrives with Phase 2 volume (81+ fit grids); not recommended before submission
+- Depends on: nothing to build; live vetting needs team-lead approval (Criterion H)
+
 **F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD**
 - Phase: Phase 2 (Nov 17 - Feb 28, if selected)
 - Platform: All
