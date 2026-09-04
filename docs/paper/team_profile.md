@@ -14,7 +14,16 @@ date: "September 2026"
 
 A solo entry. Harold Kimmey is the sole legal participant, holds all decision authority, and is responsible for every claim in the submission.
 
-**AI tool disclosure**: Claude Code (Anthropic) was used throughout as a development tool, under the team lead's direction, for implementation, analysis, and drafting. Every experimental decision, every change to the frozen protocol, and every metered quantum-hardware execution required the team lead's explicit approval, recorded in the project's amendment log and issue history. The team name is a nod to Claude Shannon and to that tool; it does not imply Anthropic's participation or endorsement.
+**AI tool disclosure**: Claude Code (Anthropic) was used throughout as a development tool under the team lead's direction. Every experimental decision, protocol change, and metered hardware execution required the team lead's explicit approval, recorded in the amendment log and issue history. The team name references Claude Shannon and that tool; it does not imply Anthropic's participation or endorsement.
+
+## What this entry delivers
+
+Four artifacts, all produced within Phase 1 and all inspectable:
+
+- **A frozen preregistration** with ten dated amendments, under which every gate was scored as committed, including the one that failed.
+- **A completed hardware campaign**: 27 metered Dirac-3 fits, 120 QPU seconds, zero failures, with raw device responses and job identifiers retained.
+- **A reproducibility package**: analysis code, results store with a configuration hash on every row, dataset checksum manifest, and 28 known-answer tests.
+- **A production-trial design** specifying what a bank would run in 90 days and what it would have to satisfy to proceed.
 
 ## Relevant experience
 

@@ -24,7 +24,7 @@ All figures from a single results store; every row carries an evidence tag and a
 | CVQBoost on Dirac-3, tuned pool | matched 9 | 0.7014 | 0.0263 | [0.6826, 0.7202] | 0.9557 | [HW] |
 | Logistic regression | all 30 | 0.7218 | 0.0268 | [0.7026, 0.7410] | 0.9769 | [SIM] |
 
-The tuned-pool row uses 9 features and is not a like-for-like comparison with the matched-13 rows; it is included because it is the configuration with a healthy score distribution (see A.4).
+The tuned-pool row uses 9 features and is not a like-for-like comparison with the matched-13 rows; it is included because its score distribution is healthy (A.4). Every configuration uses one- and two-feature weak learners: 13 features give 13 singles plus 78 pairs, the 91 variables cited throughout. Three-feature subsets would give 377 variables, above the Phase 1 free-tier limit, so they were not run.
 
 ## A.2 Operational view: fraud caught within a fixed review budget
 
@@ -45,27 +45,51 @@ Expected cost relative to alerting nothing, at the 0.1% budget, is monotone in t
 
 Twenty-seven metered Dirac-3 fits, 120 QPU seconds billed, zero failures, zero retries, 4 to 5 seconds per fit at 25 to 91 variables.
 
+**Campaign accounting**
+
+| Quantity | Value |
+|---|---|
+| Metered fits | 27 (22 in the primary block, 5 in the fidelity gate) |
+| QPU seconds billed | 120 |
+| Failures / retries | 0 / 0 |
+| Per-fit cost | 4 to 5 s at 25 to 91 variables |
+| Wall time per fit, Dirac-3 versus exact classical solve | 4 to 5 s versus milliseconds |
+
+**Primary outcomes**
+
 | Quantity | Value | Tag |
 |---|---|---|
 | G0b: Spearman(proxy rank, hardware rank), 5 configs | 0.900 (exact permutation p: one-sided 0.042, two-sided 0.083) | [HW] |
 | H1b: CVQBoost minus best matched GBDT, 10 seeds | -0.0399, CI [-0.0571, -0.0227] | [HW] |
 | Per-seed paired BCa intervals excluding zero (proxy scores) | 6 of 10 | [SIM] |
+
+**Solver fidelity**
+
+| Quantity | Value | Tag |
+|---|---|---|
 | Hardware minus exact proxy, identical Hamiltonians | -0.0010, CI [-0.0032, +0.0012] | [HW] |
 | Solution weight cosine, hardware versus exact proxy | 0.975 to 0.999 | [HW] |
 | Hardware objective above the exact minimum, relative | 0.013% to 0.413% | [HW] |
-| Wall time per fit: Dirac-3 billed versus exact classical solve | 4 to 5 s versus milliseconds | [HW] / [SIM] |
 
 The last three rows are the solver-fidelity component of the structural-attribution hypothesis. The two preregistered structural controls (tuned-penalty non-negative ridge, and a sparse variant) have not been run, so that hypothesis is reported as partial rather than scored.
+
+## A.3b Solver stochasticity
+
+QCi documents Dirac-3 as a stochastic solver, so a returned solution is a draw rather than a deterministic answer. Every fit requested 8 samples and the raw responses were retained, so the spread across draws is measurable at no additional metered cost.
+
+| Quantity | Value | Tag |
+|---|---|---|
+| Fits where all 8 draws returned identical energies | 0 of 27 | [HW] |
+| Within-fit energy spread, median | 0.019% | [HW] |
+| Within-fit energy spread, maximum | 0.343% | [HW] |
+
+The device is measurably stochastic and the dispersion is small. Both facts support the same conclusion: on this formulation the objective surface is flat enough near its optimum that sampling variation barely matters, which is why repeated draws and the exact classical solve agree so closely.
 
 ## A.4 Score-distribution health
 
 The selected configuration carries a degeneracy warning on all ten seeds: the modal score covers 95.1% of transactions across 814 distinct values. Ranking metrics handle ties correctly, but its alert-budget precision and calibration figures are weaker evidence than the AUPRC. The tuned 9-feature pool is health-clean (modal share 51.8%, approximately 4,000 distinct scores) and scores lower. Both are reported.
 
-## A.5 Weak-learner pool composition
-
-Every configuration reported here uses one- and two-feature weak learners: 13 features give 13 singles plus 78 pairs, which is the 91 variables cited throughout. Three-feature subsets are supported by the method and would give 377 variables, above the free-tier device limit available in Phase 1, so they were not run.
-
-## A.6 Regularization sweep
+## A.5 Regularization sweep
 
 Validation AUPRC across penalty multipliers 0, 0.001, 0.01, 0.1, 0.5, 1, 2, 4 varies only within 0.7207 to 0.7216, and the solution stays uniform (all 91 weights active, maximum weight 0.0110 against a uniform 0.0110) even at zero penalty. The near-degenerate optimum is therefore a property of the simplex constraint over correlated weak learners, not of the penalty term.
 
@@ -111,11 +135,30 @@ AUPRC as step-wise average precision; stratified bias-corrected accelerated boot
 
 # Appendix C. Reproduction and references
 
+## C.0 Reproducibility record
+
+Every figure in this submission regenerates from the committed repository at one commit.
+
+| Item | Value |
+|---|---|
+| Preregistration freeze commit / tag | `95751b9` / `prereg-freeze` |
+| Amendments since freeze | A1 to A10, dated, in Appendix B.2 |
+| ULB dataset SHA-256 (first 16) | `76274b691b16a6c4`, 284,807 rows plus header |
+| Dataset manifest | `experiments/data/MANIFEST.json`, 12 files with checksums and line counts |
+| Results store | `experiments/results/results.json`, 147 rows, each with `config_hash` and evidence tag |
+| Regenerate the gate report | `python experiments/src/score_gates.py` |
+| Regenerate operating points / dispersion | `cost_analysis.py` / `hw_dispersion.py` |
+| Test suite | `pytest experiments/src -q`, 28 known-answer tests |
+| Python | 3.12.10 |
+| xgboost / lightgbm / catboost | 3.4.1 / 4.7.0 / 1.2.10 |
+| scikit-learn / numpy / scipy / optuna | 1.9.0 / 1.26.4 / 1.17.1 / 4.9.0 |
+| eqc-models / qci-client | 0.21.0 / 5.0.2 |
+| Dirac-3 solver parameters | `num_samples` 8, `relaxation_schedule` 2, `sum_constraint` 1.0, `lambda_coef` 2 x n_train |
+| Hardware job identifiers | 27 QCi job IDs retained in `experiments/results/hw_job_ids.json` for audit |
+
 ## C.1 Reproduction
 
-A public reproducibility package accompanies this submission containing the frozen preregistration with its amendment log, the analysis code, the results store with every configuration hash, and the generated gate report. Environment versions are pinned. Dataset files are not redistributed; a checksum manifest identifies them exactly.
-
-Every quantitative claim in this proposal resolves to a row in that results store by configuration hash.
+A public package accompanies this submission with the frozen preregistration and amendment log, the analysis code, the results store, and the generated gate report. Datasets are not redistributed; the checksum manifest identifies them exactly. Every quantitative claim resolves to a results-store row by configuration hash.
 
 ## C.2 Selected references
 
@@ -124,8 +167,8 @@ Full bibliography accompanies the reproducibility package.
 - QCi, CVQBoost and Dirac-3 entropy computing: formulation and profiling reports.
 - Emami, Dyk, Haycraft, Spear, Nguyen, Chancellor, 2025, Financial Fraud Detection with Entropy Computing, arXiv:2503.11273.
 - Neven et al., 2012, QBoost: the original binary formulation this work relaxes.
-- Le Borgne, Siblini, Lebichot, Bontempi, 2022, Reproducible Machine Learning for Credit Card Fraud Detection: mandates step-wise average precision and rejects interpolated PR-AUC. Its reported AP figures are on simulated companion data, not the ULB benchmark, and are not used as ULB comparators here.
-- AutoXGB ULB benchmark: average precision 0.782 tuned and 0.776 baseline, computed with step-wise average precision. This is the like-for-like comparator our 0.8296 exceeds.
-- The uncorroborated 0.85 to 0.88 band traces to a widely copied tutorial computing trapezoidal PR-AUC over repeated stratified folds with no held-out test set and no deduplication; full provenance in the project's baseline-protocol research memo, included in the reproducibility package.
+- Le Borgne, Siblini, Lebichot, Bontempi, 2022, Reproducible Machine Learning for Credit Card Fraud Detection: mandates step-wise average precision. Its AP figures are on simulated companion data and are not used as ULB comparators here.
+- AutoXGB ULB benchmark: average precision 0.782 tuned, 0.776 baseline, step-wise. The like-for-like comparator our 0.8296 exceeds.
+- The uncorroborated 0.85 to 0.88 band traces to a widely copied tutorial using trapezoidal PR-AUC, no held-out test set, and no deduplication; provenance in the baseline-protocol memo in the reproducibility package.
 - Caro et al., 2022, generalization in quantum machine learning from few training data.
 - Dal Pozzolo et al., ULB benchmark provenance and protocol.
