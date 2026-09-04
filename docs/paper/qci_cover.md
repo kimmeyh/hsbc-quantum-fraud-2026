@@ -37,4 +37,4 @@ We would also share the measured cost model, since our per-fit timings are consi
 
 ## A note on this package
 
-Everything enclosed is DRAFT and pre-submission. The results are as measured; the preregistration and its eight dated amendments show exactly what was decided before any result was seen. We would welcome correction on anything QCi believes we have characterized wrongly about Dirac-3, especially the convexity argument, before this becomes a public submission.
+Everything enclosed is DRAFT and pre-submission. The results are as measured; the preregistration and its ten dated amendments show exactly what was decided before any result was seen. We would welcome correction on anything QCi believes we have characterized wrongly about Dirac-3, especially the convexity argument, before this becomes a public submission.
