@@ -20,7 +20,14 @@ A Sprint 5 capability pre-flight established what is actually available on this 
 
 ## Decision
 
-Render Markdown to PDF in two steps: pandoc converts Markdown to docx, then Word (via COM automation) exports docx to PDF. Wrapped in `scripts/render-pdf.ps1`, which takes a source, an output path, an optional reference docx for styling, and a paper size, and reports the resulting page count (needed to check the 6-page limit before submission).
+**Superseded 2026-09-04 (same ADR, corrected in place before any submission):** render Markdown to PDF in ONE step with pandoc plus xelatex (MiKTeX), setting page size through the LaTeX geometry package. `scripts/render-pdf.ps1` verifies both the page size and the page count of what it produced and throws if either is wrong.
+
+The original decision routed through Word (pandoc to docx, then Word SaveAs) because no LaTeX engine was installed. Two defects made that unusable for a submission:
+
+1. **It produced the wrong page size.** The script set `PageSetup.PaperSize` AFTER opening the document; Word did not reflow, so it emitted 11x17 TABLOID pages. The proposal, team profile, and three package documents were all tabloid and nobody would have noticed from the file names.
+2. **Its page counts were wrong.** Word's `ComputeStatistics` reflows a PDF on open, reporting 4 pages for an appendix that was actually 6, against a hard 3-page limit that is an explicit rejection criterion.
+
+Both were caught by the team lead asking whether the pages were US Letter. `scripts/check-page-limits.py` now reads counts from the PDF itself with pypdf, and the render script refuses to emit a file whose page size is not what was requested.
 
 ## Alternatives Considered
 

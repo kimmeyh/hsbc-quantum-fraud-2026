@@ -2,56 +2,50 @@
 .SYNOPSIS
     Render a Markdown source to submission-grade PDF (ADR-0012 toolchain).
 .DESCRIPTION
-    Markdown -> docx (pandoc) -> PDF (Word COM). Chosen after a Sprint 5
-    pre-flight found pandoc present but with NO PDF engine (no xelatex or
-    pdflatex) and WeasyPrint unusable (missing GTK libraries). Word is
-    installed, produces reliable A4/Letter output with tables intact, and
-    embeds fonts, which the portal requires.
+    Markdown -> PDF via pandoc + xelatex (MiKTeX). Page size is set through the
+    LaTeX geometry package, so the document is laid out at that size from the
+    start.
+
+    HISTORY, so this is not reintroduced: an earlier version routed through Word
+    (pandoc -> docx -> Word SaveAs) and set PageSetup.PaperSize AFTER opening the
+    document. Word did not reflow, so it emitted 11x17 TABLOID pages while
+    reporting plausible page counts. Page size and page count are both submission
+    requirements (requirements-matrix B1), so this script verifies BOTH after
+    rendering and fails loudly on either.
 .EXAMPLE
     .\scripts\render-pdf.ps1 -Source docs\paper\proposal.md -Out docs\paper\out\proposal.pdf
 #>
 param(
     [Parameter(Mandatory)][string]$Source,
     [Parameter(Mandatory)][string]$Out,
-    [string]$Reference,                       # optional reference.docx for styling
-    [ValidateSet('letter','a4')][string]$Paper = 'letter'
+    [ValidateSet('letter','a4')][string]$Paper = 'letter',
+    [string]$Margin = '1in'
 )
 $ErrorActionPreference = 'Stop'
-$src = (Resolve-Path $Source).Path
 
-# Pre-flight: a PDF open in a viewer holds a write lock, and Word's SaveAs then
-# fails with an opaque COM error. Name the cause instead (Sprint 5: cost a
-# diagnostic round trip when the proposal was open in Acrobat).
+$src = (Resolve-Path $Source).Path
+$outDir = Split-Path -Parent $Out
+if ($outDir -and -not (Test-Path $outDir)) { New-Item -ItemType Directory -Force $outDir | Out-Null }
+
+# A PDF open in a viewer holds a write lock; name the cause rather than failing opaquely.
 if (Test-Path $Out) {
     try {
         $probe = [System.IO.File]::Open((Resolve-Path $Out).Path, 'Open', 'ReadWrite', 'None')
         $probe.Close()
     } catch {
-        throw ("Output PDF is LOCKED by another process: {0}`n" +
-               "Close it (a PDF viewer such as Acrobat or Edge is the usual cause) and re-run." -f $Out)
+        throw ("Output PDF is LOCKED by another process: {0}. Close it (a PDF viewer is the usual cause) and re-run." -f $Out)
     }
 }
-$outDir = Split-Path -Parent $Out
-if ($outDir -and -not (Test-Path $outDir)) { New-Item -ItemType Directory -Force $outDir | Out-Null }
-$docx = [System.IO.Path]::ChangeExtension([System.IO.Path]::GetTempFileName(), '.docx')
 
-$pandocArgs = @($src, '-o', $docx, '--standalone')
-if ($Reference) { $pandocArgs += @('--reference-doc', (Resolve-Path $Reference).Path) }
-& pandoc @pandocArgs
-if ($LASTEXITCODE -ne 0) { throw "pandoc failed on $Source" }
+$geom = if ($Paper -eq 'a4') { 'a4paper' } else { 'letterpaper' }
+& pandoc $src -o $Out --pdf-engine=xelatex -V "geometry:$geom" -V "geometry:margin=$Margin" -V fontsize=10pt
+if ($LASTEXITCODE -ne 0) { throw "pandoc/xelatex failed on $Source" }
 
-$word = $null
-try {
-    $word = New-Object -ComObject Word.Application
-    $word.Visible = $false
-    $doc = $word.Documents.Open($docx)
-    $doc.PageSetup.PaperSize = if ($Paper -eq 'a4') { 7 } else { 1 }   # wdPaperA4 / wdPaperLetter
-    $full = [System.IO.Path]::GetFullPath((Join-Path (Get-Location) $Out))
-    $doc.SaveAs([ref]$full, [ref]17)                                   # wdFormatPDF
-    $pages = $doc.ComputeStatistics(2)   # NOTE: Word's count reflows and is NOT authoritative
-    $doc.Close($false)
-    Write-Host "PDF written: $full ($pages pages)"
-} finally {
-    if ($word) { $word.Quit() }
-    Remove-Item $docx -ErrorAction SilentlyContinue
-}
+# Verify what was actually produced: page size AND page count.
+$py = Join-Path $PSScriptRoot "..\.venv\Scripts\python.exe"
+$abs = (Resolve-Path $Out).Path
+$result = & $py -c "from pypdf import PdfReader; r=PdfReader(r'$abs'); b=r.pages[0].mediabox; w,h=round(float(b.width)),round(float(b.height)); n={(612,792):'US Letter',(595,842):'A4',(792,1224):'TABLOID 11x17'}.get((w,h), 'OTHER %dx%dpt'%(w,h)); print('%d|%s'%(len(r.pages), n))"
+$pages, $size = $result -split '\|'
+$expected = if ($Paper -eq 'a4') { 'A4' } else { 'US Letter' }
+if ($size -ne $expected) { throw "WRONG PAGE SIZE: produced $size, expected $expected, for $Out" }
+Write-Host "PDF written: $Out ($pages pages, $size)"
