@@ -17,11 +17,12 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 1 | docs/sprints/SPRINT_1_SUMMARY.md | [OK] Complete | ~1 day (Aug 30, 2026) |
 | 2 | docs/sprints/SPRINT_2_SUMMARY.md | [OK] Complete | ~2 days (Aug 31 - Sep 2, 2026) |
 | 3 | docs/sprints/SPRINT_3_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 2-3, 2026) |
+| 4 | docs/sprints/SPRINT_4_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 3-4, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 3: Classical Evidence Campaign** (Sep 2-3, 2026; PR #13 merged to develop, develop merged to main via PR #16).
-Delivered: F18 mined (10 dispositions, zero amendments); F1 campaign with 110 [SIM] rows -- G0 scored as committed = FAIL (0.8296 vs 0.85; no leakage flag), best arm CatBoost/full 0.8368, paired proxy-vs-GBDT delta -0.0415, measured MDE 0.0268 (A5); CVQBoost proxy pipeline with exact Hamiltonian + known-answer tests; A3 full-pair selected; B7 hardware request prepared (not executed); ADRs 0005-0010; hooks ported; validation found lg scoring degeneracy (quarantined; fix = F22). Zero metered seconds. Retro: docs/sprints/SPRINT_3_RETROSPECTIVE.md (6 improvements applied).
+**Sprint 4: Proxy Tuning, Baseline Research, First Hardware Blocks, Results Memo** (Sep 3-4, 2026; PR #21 merged to develop, develop merged to main via PR #22).
+Delivered: F22 section-6 proxy tuning (100 trials; validation-AP rule retained the starting config; lg quarantine lifted); F21 research showing G0's 0.85 band is uncorroborated by primary sources (G0 still FAIL as committed); **F2 first metered hardware campaign -- 27 Dirac-3 fits, 120 QPU s, 0 failures, G0b PASSED at Spearman 0.900**; H4 solver-fidelity component measured at -0.0010 [CI -0.0032, +0.0012] with the lambda sweep showing near-degeneracy is structural, not ridge-driven; H1b null as preregistered (-0.0399 vs CatBoost); F7 results memo with the production-bound framing DECIDED. Amendments A6/A7/A8. 17 review findings fixed across two reviews. Retro: docs/sprints/SPRINT_4_RETROSPECTIVE.md (7 improvements applied).
 
 ## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
 
@@ -42,28 +43,14 @@ A submittable paper exists after Sprint 5; every later sprint adds evidence and 
 
 (F1 classical evidence campaign and F18 Dirac-3 notes mining: COMPLETED in Sprint 3, merged via PR #13; history in SPRINT_3_SUMMARY.md. Removed from candidates per convention. F1 residual -- the section-6 CVQBoost proxy tuning -- continues as F22.)
 
-**F22. CVQBoost proxy tuning per prereg section 6 (~2-3h + unattended solves) Priority 11**
-- Phase: Experiments (team-lead validation 2026-09-02; PREREQUISITE for G0b and for un-quarantining lg)
-- Platform: ULB, local proxy (zero metered seconds)
-- The preregistered equal-budget tuning: 100 trials over weak pool composition (incl. class-weighted weak learners), schedule, k, lambda alpha in {0.5, 1, 2, 4}; num_samples/relaxation_schedule stay fixed
-- Expected to fix the score degeneracy found at Sprint 3 validation (near-uniform weights under lambda=2*n_train; unweighted weak learners voting -1 on ~99.8% of rows): smaller lambda spreads scores, weighted weak learners grade the votes
-- Produces the proxy config RANKING that G0b's top-3 + bottom-2 hardware fits require; lg pools return to tables only if tuning fixes them
-- Inline addition (Sprint 3 retro improvement 1, approved): score-distribution health check -- threshold tie_fraction/mode-share in summarize output, WARN flag in rows and gate report (~20m, amendment-registered code change)
-- Depends on: nothing (proxy-only); blocks G0b execution
+(F22 CVQBoost proxy tuning and F2 hardware blocks B1+G0b: COMPLETED in Sprint 4, merged via PR #21; history in SPRINT_4_SUMMARY.md. F21 baseline research and F7 results memo likewise complete. Removed from candidates per convention. F2's remaining blocks B2/B3/B4/B5 continue as F2b below, gated on the QCi grant.)
 
-**F21. Baseline-protocol research: duplicates methodology + ULB feature engineering (~2h) Priority 12**
-- Phase: Experiments (team-lead request at Sprint 3 validation, re G0 FAIL)
-- Platform: docs -> possible amendment proposal
-- Research published ULB methodology: how do strong published baselines handle exact duplicates (retain? partial? per which papers); what leakage-free feature engineering exists (Amount/Time transforms, interaction features); what protocol differences explain the 0.85-0.88 literature band vs our 0.8296
-- Output: findings memo with a recommended amendment proposal if justified (e.g., a LABELED duplicate-retained sensitivity protocol as an added exploratory analysis -- allowed by section 11; the primary protocol and G0's scored outcome stay as committed) -> team-lead disposition, then retry under the amended protocol if approved
-- Depends on: nothing
-
-**F2. Hardware campaign, first blocks (~0.5 day + approvals) Priority 12**
+**F2b. Hardware campaign, remaining blocks (~0.5 day + approvals) Priority 20**
 - Phase: Experiments
 - Platform: Dirac-3
-- Execute B1 (free-tier ULB) and G0b (proxy fidelity) on team-lead approval per block; B2/B3 if the QCi grant lands
-- results.json [HW] rows; retry discipline per frozen protocol
-- Depends on: F1; team-lead approval; QCi grant for B2/B3
+- B2 (ULB full config, 816 vars, 11 fits, ~450 s), B3 (IEEE-CIS + H3 ladder, 16 fits, ~650 s), B4 (SPECTRA, 15 fits, ~450 s), B5 (QSVM sign-augmented, 12 fits, ~15 s); frozen spend priority B3 > B2 > ladder > B4
+- B1 + G0b already executed (Sprint 4, 120 QPU s); ~380 s of the current balance remain, so B5 is affordable now and the rest need the grant
+- Depends on: QCi grant; per-block team-lead approval (Criterion H)
 
 **F26. Cost-based operating-point analysis (~2h) Priority 13**
 - Phase: Experiments (team-lead direction 2026-09-03: the proposal must read as production-bound)
@@ -128,11 +115,7 @@ A submittable paper exists after Sprint 5; every later sprint adds evidence and 
 
 (F6 Braket gate-based arm: moved to HOLD per team-lead steering 2026-08-30; no Braket execution before submission/acceptance. The proposal covers Braket via the written [PROJ] Phase 2 plan plus Team Capability citing the team lead's near-expert AWS and hands-on Braket experience.)
 
-**F7. Results memo + gate review (~2h) Priority 22**
-- Phase: Experiments
-- Platform: docs
-- One-page results memo; gate table scored as committed; headline promotion decision per the thesis rule (team-lead review, Sep 4 target)
-- Depends on: F1-F4 (F5/F6 as available)
+(F7 results memo + gate review: COMPLETED Sprint 4 -> docs/RESULTS_MEMO.md. A REFRESH of the memo is folded into each later evidence sprint rather than tracked as a separate item.)
 
 ### Paper (Stages 4-6)
 

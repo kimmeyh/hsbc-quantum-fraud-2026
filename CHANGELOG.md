@@ -4,6 +4,11 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-09-04
+
+- **process**: Sprint 4 closed: PR #21 merged to develop, develop to main via PR #22; carry-forward branch feature/20260904_Sprint_5 created; SPRINT_4_SUMMARY.md written (three-doc rule); master plan rolled (F22/F21/F2-first-blocks/F7 pruned, F2b carries the remaining hardware); CHECKLIST reconciled; sprint_status rolled to Sprint 5
+- **fix**: All 17 PR #21 review findings addressed (Copilot 2, Claude 15) with amendment A8; most serious was unparseable billing reading as zero spend, which had made the hardware budget guard blind; 22 tests green including new spend-accounting guards
+
 ### 2026-09-03
 
 - **process**: Sprint 4 retro improvements applied (all as recommended): evidence-after-the-fact verification rule, external-review pass on evidence documents, audience-first deliverable rule, plain-language companion as deliverable, search-space containment check, re-read-before-write defect class; score_gates.py known-answer tests recorded into F8
