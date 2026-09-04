@@ -7,9 +7,10 @@ date: "September 2026"
 # Claude Shannon's Fraud Catchers
 
 **Problem statement**: HSBC, Quantum-Enhanced Credit Card Fraud Detection for Digital Payment Ecosystems.
-**Team lead and sole participant**: Harold Kimmey. Contact details supplied through the submission portal.
 
-**Composition and disclosure.** A solo entry. Harold Kimmey is the sole legal participant, holds all decision authority, and is responsible for every claim in the submission. Claude Code (Anthropic) was used throughout as a development tool under the team lead's direction; every experimental decision, protocol change, and metered hardware execution required his explicit approval, recorded in the amendment log and issue history. The team name references Claude Shannon and that tool, and does not imply Anthropic's participation or endorsement.
+**Team lead and sole participant.** Harold I. Kimmey III ("Harold Kimmey"), independent researcher (unaffiliated). Role: principal investigator, holding all decision authority for this submission. Email: `kimmeyharold@aol.com`. Phone: +1 216-357-9227. LinkedIn: `linkedin.com/in/haroldkimmey`
+
+**Composition and disclosure.** A solo entry with no other members. Harold Kimmey is the sole legal participant and is responsible for every claim in the submission. Claude Code (Anthropic) was used throughout as a development tool under the team lead's direction; every experimental decision, protocol change, and metered hardware execution required his explicit approval, recorded in the amendment log and issue history. The team name references Claude Shannon and that tool, and does not imply Anthropic's participation or endorsement.
 
 **What this entry delivers.** Four artifacts, all produced within Phase 1 and all inspectable: a frozen preregistration with ten dated amendments, under which every gate was scored as committed including the one that failed; a completed hardware campaign of 27 metered Dirac-3 fits over 120 QPU seconds with zero failures, raw device responses and job identifiers retained; a reproducibility package with analysis code, a results store carrying a configuration hash on every row, a dataset checksum manifest, and 28 known-answer tests; and a production-trial design specifying what a bank would run in 90 days and what it would have to satisfy to proceed.
 

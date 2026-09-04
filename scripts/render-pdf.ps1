@@ -37,8 +37,40 @@ if (Test-Path $Out) {
     }
 }
 
+# MiKTeX puts xelatex on the USER PATH, which a shell started before the install
+# (or a non-login shell) does not inherit. Resolve it explicitly rather than
+# failing with "xelatex not found" in an environment where it is installed.
+$xelatex = (Get-Command xelatex -ErrorAction SilentlyContinue).Source
+if (-not $xelatex) {
+    $candidates = @(
+        "$env:LOCALAPPDATA\Programs\MiKTeX\miktex\bin\x64\xelatex.exe",
+        "$env:ProgramFiles\MiKTeX\miktex\bin\x64\xelatex.exe",
+        "C:\miktex\miktex\bin\x64\xelatex.exe"
+    )
+    $xelatex = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+}
+if (-not $xelatex) {
+    throw "xelatex not found. Install MiKTeX, or add its bin directory to PATH. Checked PATH and the standard MiKTeX locations."
+}
+
+# MiKTeX enumerates every PATH entry at startup and ABORTS if one cannot be
+# read ("MiKTeX cannot retrieve attributes for the directory ..."). This machine
+# has stale entries, so xelatex died on a bare "Hello world" while the failure
+# looked like a document problem. Run it with a minimal PATH holding only what
+# the toolchain needs.
+$pandoc = (Get-Command pandoc -ErrorAction SilentlyContinue).Source
+if (-not $pandoc) { throw "pandoc not found on PATH." }
+$texBin = Split-Path -Parent $xelatex
+$safePath = @($texBin, "$env:SystemRoot\system32", $env:SystemRoot) -join ';'
+$origPath = $env:PATH
+
 $geom = if ($Paper -eq 'a4') { 'a4paper' } else { 'letterpaper' }
-& pandoc $src -o $Out --pdf-engine=xelatex -V "geometry:$geom" -V "geometry:margin=$Margin" -V fontsize=10pt
+try {
+    $env:PATH = $safePath
+    & $pandoc $src -o $Out --pdf-engine=$xelatex -V "geometry:$geom" -V "geometry:margin=$Margin" -V fontsize=10pt
+} finally {
+    $env:PATH = $origPath
+}
 if ($LASTEXITCODE -ne 0) { throw "pandoc/xelatex failed on $Source" }
 
 # Verify what was actually produced: page size AND page count.
