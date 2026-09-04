@@ -7,7 +7,7 @@ date: "September 2026"
 
 # Appendix A. Results
 
-All figures from a single results store; every row carries an evidence tag and a configuration hash. ULB benchmark, 284,807 transactions, 1,081 exact duplicates removed before splitting, 60/20/20 stratified, seeds 42-51, test-fold prevalence 0.00167. AUPRC is step-wise average precision throughout, never a trapezoidal approximation.
+All figures from a single results store; every row carries an evidence tag and a configuration hash. ULB benchmark, 284,807 transactions, 1,081 exact duplicates removed before splitting, 60/20/20 stratified, seeds 42-51, test-fold prevalence 0.00167. The benchmark's features are anonymized principal components (V1 to V28) plus transaction amount and elapsed time; no merchant, device, geography, or cardholder attributes are present, which bounds both the feature engineering possible here and the fairness testing that a deployment would require. AUPRC is step-wise average precision throughout, never a trapezoidal approximation.
 
 ## A.1 Detection quality by arm
 
@@ -28,14 +28,14 @@ The tuned-pool row uses 9 features and is not a like-for-like comparison with th
 
 ## A.2 Operational view: fraud caught within a fixed review budget
 
-Review capacity is a policy input set by analyst headcount, not a model property. Mean over ten seeds.
+Review capacity is a policy input set by analyst headcount, not a model property. Mean over ten seeds. The CVQBoost row is computed from the exact classical proxy, tagged [SIM]: hardware solution weights were not persisted during the Sprint 4 campaign, so per-transaction hardware scores are unavailable without further metered time. Hardware and proxy are measured as indistinguishable in aggregate (A.3), which supports the substitution but does not make it a hardware measurement.
 
 | Arm | Recall @ 0.05% | Recall @ 0.1% | Recall @ 0.5% | Precision @ 0.1% |
 |---|---|---|---|---|
 | CatBoost, all features | 0.294 | 0.593 | 0.855 | 0.988 |
 | XGBoost, all features | 0.291 | 0.588 | 0.856 | 0.981 |
 | LightGBM, all features | 0.289 | 0.587 | 0.853 | 0.979 |
-| CVQBoost on Dirac-3 [HW] | 0.283 | 0.565 | 0.819 | 0.942 |
+| CVQBoost, exact proxy [SIM] | 0.283 | 0.565 | 0.819 | 0.942 |
 | Logistic regression | 0.241 | 0.513 | 0.839 | 0.854 |
 
 Expected cost relative to alerting nothing, at the 0.1% budget, is monotone in the same order across cost ratios of 20, 50, and 100 (missed fraud versus false positive). The cost ratio is swept rather than fixed because its value is institution-specific.
@@ -48,10 +48,10 @@ Twenty-seven metered Dirac-3 fits, 120 QPU seconds billed, zero failures, zero r
 |---|---|---|
 | G0b: Spearman(proxy rank, hardware rank), 5 configs | 0.900 (p = 0.037) | [HW] |
 | H1b: CVQBoost minus best matched GBDT, 10 seeds | -0.0399, CI [-0.0571, -0.0227] | [HW] |
-| Per-seed paired BCa intervals excluding zero | 6 of 10 | [HW] |
+| Per-seed paired BCa intervals excluding zero (proxy scores) | 6 of 10 | [SIM] |
 | Hardware minus exact proxy, identical Hamiltonians | -0.0010, CI [-0.0032, +0.0012] | [HW] |
 | Solution weight cosine, hardware versus exact proxy | 0.975 to 0.999 | [HW] |
-| Hardware objective above the exact minimum | 0.013% to 0.413% | [HW] |
+| Hardware objective above the exact minimum, relative | 0.013% to 0.413% | [HW] |
 
 The last three rows are the solver-fidelity component of the structural-attribution hypothesis. The two preregistered structural controls (tuned-penalty non-negative ridge, and a sparse variant) have not been run, so that hypothesis is reported as partial rather than scored.
 
@@ -93,6 +93,7 @@ Multiplicity correction across exploratory cells is not yet applicable because t
 | A6 | 2026-09-03 | Score-distribution health flags added to the metrics output |
 | A7 | 2026-09-03 | Protocol-sensitivity ladder added as labeled exploratory cells; G0 unchanged. Prediction persistence added as the enabling change |
 | A8 | 2026-09-04 | Review-fix registration: metered-spend accounting, provenance keying, and gate-scoring corrections |
+| A9 | 2026-09-04 | Prediction-store keying corrected after adversarial review found hardware and proxy predictions colliding on a shared configuration hash; affected figures retagged [SIM] |
 
 No amendment changed a gate's pass criterion, and no gate was rescored after observation.
 

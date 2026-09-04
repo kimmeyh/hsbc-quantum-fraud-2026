@@ -159,7 +159,8 @@ def stage_refit(df, tuned: dict, dedupe_count: int, smoke: bool) -> None:
                     {"arm": arm, "fs": fs, "params": cfg["params"]})
                 pred_file = store.save_predictions(
                     cfg_hash, seed, "stratified",
-                    split.y_val.to_numpy(), p_val, split.y_test.to_numpy(), p_test)
+                    split.y_val.to_numpy(), p_val, split.y_test.to_numpy(), p_test,
+                    arm=arm)
                 row = {
                     "arm": arm,
                     "dataset": "ulb",

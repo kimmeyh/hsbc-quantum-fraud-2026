@@ -43,7 +43,7 @@ def main() -> int:
     for r in rows:
         if r["arm"] not in rc.ARMS or r.get("predictions_file"):
             continue
-        if store.prediction_path(r["config_hash"], r["seed"], r["protocol"]).exists():
+        if store.prediction_path(r["config_hash"], r["seed"], r["protocol"], r["arm"]).exists():
             skipped += 1
             continue
         seed, fs = r["seed"], r["feature_set"]
@@ -65,7 +65,7 @@ def main() -> int:
             continue
         store.save_predictions(r["config_hash"], seed, r["protocol"],
                                split.y_val.to_numpy(), p_val,
-                               split.y_test.to_numpy(), p_test)
+                               split.y_test.to_numpy(), p_test, arm=r["arm"])
         done += 1
         log.info("[BACKFILL] %s/%s seed=%d ap=%.6f verified and stored",
                  r["arm"], fs, seed, ap_now)

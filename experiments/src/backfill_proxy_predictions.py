@@ -46,7 +46,7 @@ def main() -> int:
         if r["arm"] != "cvqboost_proxy":
             continue
         seed = r["seed"]
-        if store.prediction_path(r["config_hash"], seed, "stratified").exists():
+        if store.prediction_path(r["config_hash"], seed, "stratified", "cvqboost_proxy").exists():
             skipped += 1
             continue
         # only the full-pair dct pools were saved as standalone npz files
@@ -68,7 +68,7 @@ def main() -> int:
             mismatch += 1
             continue
         store.save_predictions(r["config_hash"], seed, "stratified",
-                               z["y_va"], p_val, z["y_te"], p_test)
+                               z["y_va"], p_val, z["y_te"], p_test, arm="cvqboost_proxy")
         done += 1
         log.info("[BACKFILL] proxy %s/%s seed=%d ap=%.6f verified and stored",
                  r.get("config"), r.get("pool_variant"), seed, ap_now)

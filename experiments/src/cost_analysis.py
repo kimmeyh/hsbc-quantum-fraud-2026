@@ -37,7 +37,7 @@ def _cells(rows):
     cells = defaultdict(list)
     for r in rows:
         if not store.prediction_path(r["config_hash"], r["seed"],
-                                     r.get("protocol", "stratified")).exists():
+                                     r.get("protocol", "stratified"), r["arm"]).exists():
             continue
         if r["arm"] == "cvqboost_proxy":
             key = (r["arm"], r.get("config"), r.get("pool_variant"))
@@ -91,7 +91,7 @@ def main() -> int:
     for key in sorted(cells, key=str):
         for r in cells[key]:
             p = store.load_predictions(r["config_hash"], r["seed"],
-                                       r.get("protocol", "stratified"))
+                                       r.get("protocol", "stratified"), r["arm"])
             if p is not None:
                 preds[(key, r["seed"])] = p
 

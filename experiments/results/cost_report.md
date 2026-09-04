@@ -15,7 +15,6 @@ Computed from PERSISTED predictions (amendment A7); no model was refit.
 |---|---|---|---|---|---|---|
 | catboost/full | 0.294 | 0.593 | 0.855 | 0.9964 | 0.9877 | 0.2859 |
 | catboost/matched13 | 0.286 | 0.580 | 0.849 | 0.9714 | 0.9667 | 0.2842 |
-| cvqboost_hw/hw_b1_dct | 0.283 | 0.565 | 0.819 | 0.9607 | 0.9421 | 0.2739 |
 | cvqboost_proxy/free/dct | 0.283 | 0.565 | 0.819 | 0.9607 | 0.9421 | 0.2739 |
 | lightgbm/full | 0.289 | 0.587 | 0.853 | 0.9821 | 0.9789 | 0.2852 |
 | lightgbm/matched13 | 0.288 | 0.576 | 0.852 | 0.9786 | 0.9596 | 0.2849 |
@@ -32,7 +31,6 @@ Lower is better. Cost = false_positives + ratio * missed_frauds, at the 0.1% bud
 |---|---|---|---|
 | catboost/full | -19.83 | -49.59 | -99.20 |
 | catboost/matched13 | -19.39 | -48.52 | -97.07 |
-| cvqboost_hw/hw_b1_dct | -18.87 | -47.26 | -94.57 |
 | cvqboost_proxy/free/dct | -18.87 | -47.26 | -94.57 |
 | lightgbm/full | -19.65 | -49.15 | -98.31 |
 | lightgbm/matched13 | -19.24 | -48.16 | -96.35 |

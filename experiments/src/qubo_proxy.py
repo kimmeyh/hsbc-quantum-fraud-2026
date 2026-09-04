@@ -169,7 +169,8 @@ def _score_and_row(w, H_va, H_te, split, cols, config, weak_type, pair_build,
          "fixed": FIXED, "lambda_mult": LAMBDA_MULT, "cfg": CONFIGS[config]})
     pred_file = store.save_predictions(cfg_hash, seed, "stratified",
                                        split.y_val.to_numpy(), p_val,
-                                       split.y_test.to_numpy(), p_test)
+                                       split.y_test.to_numpy(), p_test,
+                                       arm="cvqboost_proxy")
     row = {
         "arm": "cvqboost_proxy",
         "dataset": "ulb", "protocol": "stratified", "seed": seed,
