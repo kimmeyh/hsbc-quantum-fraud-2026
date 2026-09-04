@@ -1,8 +1,8 @@
-# Hardware Request: Blocks B1 + G0b (PREPARED, NOT EXECUTED)
+# Hardware Request: Blocks B1 + G0b (EXECUTED 2026-09-03)
 
 **Purpose**: The written request for the first metered Dirac-3 blocks, per PREREGISTRATION section 10 and Criterion H. Nothing in this document authorizes execution; each block runs only on explicit team-lead approval of this request (or its amended successor).
 **Audience**: Team lead (approver); the F2 execution session.
-**Last Updated**: 2026-09-03 (Sprint 4, A4: exact hashes from F22)
+**Last Updated**: 2026-09-03 (EXECUTED on team-lead approval: 27 fits, 120 QPU s, 0 failures, 0 retries; G0b PASS at Spearman 0.900)
 
 ## Standing conditions (all blocks)
 

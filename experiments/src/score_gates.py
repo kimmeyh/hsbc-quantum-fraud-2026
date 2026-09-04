@@ -47,6 +47,10 @@ def main() -> int:
                 quarantined += 1
                 continue
             key = (r["arm"], r["config"], r["pool_variant"], r["pair_build"])
+        elif r["arm"] == "cvqboost_hw":
+            if r.get("status") != "ok":
+                continue                      # failed cells summarized separately
+            key = (r["arm"], r["config"], r["protocol"], r["pair_build"])
         else:
             key = (r["arm"], r["feature_set"])
         by_cell[key].append(r)
