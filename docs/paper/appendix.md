@@ -94,6 +94,7 @@ Multiplicity correction across exploratory cells is not yet applicable because t
 | A7 | 2026-09-03 | Protocol-sensitivity ladder added as labeled exploratory cells; G0 unchanged. Prediction persistence added as the enabling change |
 | A8 | 2026-09-04 | Review-fix registration: metered-spend accounting, provenance keying, and gate-scoring corrections |
 | A9 | 2026-09-04 | Prediction-store keying corrected after adversarial review found hardware and proxy predictions colliding on a shared configuration hash; affected figures retagged [SIM] |
+| A10 | 2026-09-04 | Hardware prediction artifacts version-controlled: regeneration cost, not file size, decides what is tracked |
 
 No amendment changed a gate's pass criterion, and no gate was rescored after observation.
 
