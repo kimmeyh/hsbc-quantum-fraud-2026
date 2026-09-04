@@ -77,6 +77,6 @@ We also disclose a constraint honestly: the 13-feature configurations used here 
 
 Solo entry led by Harold Kimmey, with Claude Code disclosed as an AI development tool used throughout under the team lead's direction and approval.
 
-Directly relevant measured experience: prior Dirac-3 hardware campaigns using this model family, including the tuned configuration that seeds this work; quantum machine learning explainability work; near-expert AWS experience with hands-on Amazon Braket, which is why the Phase 2 gate-based arm is a credible plan rather than an aspiration; and a prior quantum-computing challenge entry.
+Directly relevant measured experience: prior Dirac-3 hardware campaigns using this model family, including the tuned configuration that seeds this work; quantum machine learning explainability work; near-expert AWS experience with hands-on Amazon Braket, which is why the Phase 2 gate-based arm is a credible plan rather than an aspiration.
 
 Honest gaps: this is a solo entry, so throughput is the binding constraint, and the Phase 2 program is scoped accordingly.

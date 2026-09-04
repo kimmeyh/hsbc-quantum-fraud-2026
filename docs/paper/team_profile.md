@@ -22,7 +22,6 @@ A solo entry. Harold Kimmey is the sole legal participant, holds all decision au
 - **Quantum machine learning breadth**: quantum reservoir computing, quantum feature engineering with phase-based representations, and explainability methods for quantum machine learning models.
 - **Cloud and gate-based quantum**: near-expert AWS experience with hands-on Amazon Braket, which is why the Phase 2 gate-based arm in this proposal is a credible plan rather than an aspiration.
 - **Applied machine learning at scale**: production-oriented model development, including work on highly imbalanced classification problems of the kind fraud detection presents.
-- **Prior challenge entry**: 2026 Global Industry Challenge (qBraid, MITRE, Jones Trading), quantum reservoir computing for volatility forecasting.
 
 ## Working method
 

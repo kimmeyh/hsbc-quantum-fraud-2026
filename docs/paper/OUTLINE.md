@@ -48,7 +48,7 @@ Where each component sits in a deployed pipeline and why the hybrid split is the
 The four open levers with their preregistered tests: representation (QFE/H6), in-segment specialization (H5), larger sparser regimes (IEEE-CIS/H3), and the non-convex cardinality-constrained formulation (F25) where no exact classical proxy exists. Includes the Braket [PROJ] arm.
 
 ### 7. Team capability (0.25 pp)
-Solo team lead with the measured record: prior Dirac-3 hardware campaigns, QML explainability work, near-expert AWS and hands-on Braket experience, prior challenge entry. Claude Code disclosed as an AI tool. **Team-lead input needed**: the explainability citation and any capability lines to add or remove.
+Solo team lead with the measured record: prior Dirac-3 hardware campaigns, quantum reservoir computing, quantum feature engineering, QML explainability work, near-expert AWS and hands-on Braket experience. Claude Code disclosed as an AI tool. RESOLVED 2026-09-04: the prior-challenge line was removed (the entry was withdrawn before submission, so it is not a track record); explainability is evidenced in-repo rather than cited externally.
 
 ## Appendices
 A: per-arm results tables with prevalence and CIs, hardware campaign detail, cost table.

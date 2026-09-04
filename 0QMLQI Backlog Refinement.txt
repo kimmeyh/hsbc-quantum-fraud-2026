@@ -10,6 +10,8 @@ Sprint 5 Scope should include the below items. Please complete sprint planning (
  Then sprint five scope as you recommended: F8 + F9 + F27 + F19, with F26 and
         F28. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.
 
+
+Done - added to backlog
 - Add to backlog and consider for future sprint:
   - Dirac-3 executions use a queuing system where only one request can run at one time. i.e. it may only take 1 QPU second, but like supercomputers of old it only runs one thing at a time and other requests are queued until all the prior requests have been completed. This means:
     - in order to read the results for a request the process must wait for a request to complete in order to read and process the output.
@@ -23,7 +25,7 @@ Sprint 5 Scope should include the below items. Please complete sprint planning (
 
 
 
-  Candidates at a glance
+  Sprint 5 Candidates at a glance
 
   - F8. Outline + Draft V1 (~1 day) Priority 30
   - F9. Adversarial reviews V2/V3 + rubric pass (~0.5 day) Priority 32
@@ -45,6 +47,14 @@ Sprint 5 Scope should include the below items. Please complete sprint planning (
   - F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD
   - F6. Braket gate-based phase-active arm (~0.5 day) Priority HOLD
   - F14. eqc-models feedback package to QCi (~2h) Priority HOLD
+
+
+From sprint 4 planning is the tentative future plan:
+Then in Sprint 5 we will plan to do F8 and F9.
+Then in Sprint 6 (after determining we still have time for F16 and F10) we will do F3, updates to outline, draft, reviews and rubric AND any prep work we can do (at the same time, using  multiple agents) prep work for F4 and F5. Can you create backlog items for "F4 prep" and "F5 prep" now - determine what makes sense for each.
+Then in Sprint 7 (after determining we still have time for F16 and F10) we will do F4, updates to outline, draft, reviews and rubric
+Then in Sprint 8 (after determining we still have time for F16 and F10) we will do F5, updates to outline, draft, reviews and rubric
+
 
   Paper (Stages 4-6)
 
