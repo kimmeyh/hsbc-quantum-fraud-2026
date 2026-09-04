@@ -3,7 +3,7 @@
     "number": 5,
     "name": "The Paper and the QCi Package",
     "branch": "feature/20260904_Sprint_5",
-    "status": "phase_4_execution",
+    "status": "phase_5_awaiting_manual_validation",
     "plan_doc": "docs/sprints/SPRINT_5_PLAN.md",
     "pr": 29,
     "plan_approved": true,
