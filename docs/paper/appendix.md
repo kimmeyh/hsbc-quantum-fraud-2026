@@ -32,7 +32,8 @@ Review capacity is a policy input set by analyst headcount, not a model property
 
 | Arm | Recall @ 0.05% | Recall @ 0.1% | Recall @ 0.5% | Precision @ 0.1% |
 |---|---|---|---|---|
-| CatBoost, all features | 0.294 | 0.593 | 0.855 | 0.988 |
+| CatBoost, all features (production detector) | 0.294 | 0.593 | 0.855 | 0.988 |
+| CatBoost, matched 13 (H1b comparator) | 0.286 | 0.580 | 0.849 | 0.967 |
 | XGBoost, all features | 0.291 | 0.588 | 0.856 | 0.981 |
 | LightGBM, all features | 0.289 | 0.587 | 0.853 | 0.979 |
 | CVQBoost, exact proxy [SIM] | 0.283 | 0.565 | 0.819 | 0.942 |
@@ -46,12 +47,13 @@ Twenty-seven metered Dirac-3 fits, 120 QPU seconds billed, zero failures, zero r
 
 | Quantity | Value | Tag |
 |---|---|---|
-| G0b: Spearman(proxy rank, hardware rank), 5 configs | 0.900 (p = 0.037) | [HW] |
+| G0b: Spearman(proxy rank, hardware rank), 5 configs | 0.900 (exact permutation p: one-sided 0.042, two-sided 0.083) | [HW] |
 | H1b: CVQBoost minus best matched GBDT, 10 seeds | -0.0399, CI [-0.0571, -0.0227] | [HW] |
 | Per-seed paired BCa intervals excluding zero (proxy scores) | 6 of 10 | [SIM] |
 | Hardware minus exact proxy, identical Hamiltonians | -0.0010, CI [-0.0032, +0.0012] | [HW] |
 | Solution weight cosine, hardware versus exact proxy | 0.975 to 0.999 | [HW] |
 | Hardware objective above the exact minimum, relative | 0.013% to 0.413% | [HW] |
+| Wall time per fit: Dirac-3 billed versus exact classical solve | 4 to 5 s versus milliseconds | [HW] / [SIM] |
 
 The last three rows are the solver-fidelity component of the structural-attribution hypothesis. The two preregistered structural controls (tuned-penalty non-negative ridge, and a sparse variant) have not been run, so that hypothesis is reported as partial rather than scored.
 
@@ -59,7 +61,11 @@ The last three rows are the solver-fidelity component of the structural-attribut
 
 The selected configuration carries a degeneracy warning on all ten seeds: the modal score covers 95.1% of transactions across 814 distinct values. Ranking metrics handle ties correctly, but its alert-budget precision and calibration figures are weaker evidence than the AUPRC. The tuned 9-feature pool is health-clean (modal share 51.8%, approximately 4,000 distinct scores) and scores lower. Both are reported.
 
-## A.5 Regularization sweep
+## A.5 Weak-learner pool composition
+
+Every configuration reported here uses one- and two-feature weak learners: 13 features give 13 singles plus 78 pairs, which is the 91 variables cited throughout. Three-feature subsets are supported by the method and would give 377 variables, above the free-tier device limit available in Phase 1, so they were not run.
+
+## A.6 Regularization sweep
 
 Validation AUPRC across penalty multipliers 0, 0.001, 0.01, 0.1, 0.5, 1, 2, 4 varies only within 0.7207 to 0.7216, and the solution stays uniform (all 91 weights active, maximum weight 0.0110 against a uniform 0.0110) even at zero penalty. The near-degenerate optimum is therefore a property of the simplex constraint over correlated weak learners, not of the penalty term.
 
@@ -74,27 +80,28 @@ The protocol was frozen before any result was observed. Changes exist only as da
 | G0 | Tuned XGBoost mean AUPRC >= 0.85 | **FAIL**: 0.8296 | [SIM] |
 | G0 leakage tripwire | No cell above 0.95 AUPRC | PASS: max 0.8368 | [SIM] |
 | Shuffled-label tripwire | Collapses to base rate | PASS: 0.0023 vs 0.0017 | [SIM] |
-| G0b | Proxy-hardware rank Spearman >= 0.5 | **PASS**: 0.900 | [HW] |
+| G0b | Proxy-hardware rank Spearman >= 0.5 | **PASS**: 0.900, exact one-sided p = 0.042 | [HW] |
 | H1b (primary) | CVQBoost versus best tuned GBDT | **NULL**: -0.0399, CI excludes zero | [HW] |
 | H1a, H1c, H3, H5, H6 | Various | NOT RUN | [PROJ] |
+| Phase 2 cardinality-constrained arm | Versus time-capped MIQP, greedy, and annealing controls | PREREGISTERED, NOT RUN | [PROJ] |
 | H4 | Versus best structural control | PARTIAL: solver-fidelity component only | [HW] |
 
 Multiplicity correction across exploratory cells is not yet applicable because the exploratory family is incomplete.
 
 ## B.2 Amendment log
 
-| ID | Date | Change |
+| ID | Date (2026) | Change |
 |---|---|---|
-| A1 | 2026-08-30 | Freeze recorded with commit hash and tag |
-| A2 | 2026-09-02 | Variable-count formula corrected to the build actually used; documented device limit cited. No bound changed |
-| A3 | 2026-09-02 | Full-pair pool build added as a preregistered side-by-side option with a validation-only selection rule |
-| A4 | 2026-09-02 | Sprint 3 analysis-code additions registered |
-| A5 | 2026-09-02 | Minimum detectable effect refined to the measured paired value 0.0268 |
-| A6 | 2026-09-03 | Score-distribution health flags added to the metrics output |
-| A7 | 2026-09-03 | Protocol-sensitivity ladder added as labeled exploratory cells; G0 unchanged. Prediction persistence added as the enabling change |
-| A8 | 2026-09-04 | Review-fix registration: metered-spend accounting, provenance keying, and gate-scoring corrections |
-| A9 | 2026-09-04 | Prediction-store keying corrected after adversarial review found hardware and proxy predictions colliding on a shared configuration hash; affected figures retagged [SIM] |
-| A10 | 2026-09-04 | Hardware prediction artifacts version-controlled: regeneration cost, not file size, decides what is tracked |
+| A1 | 08-30 | Freeze recorded with commit hash and tag |
+| A2 | 09-02 | Variable-count formula corrected to the build actually used; documented device limit cited. No bound changed |
+| A3 | 09-02 | Full-pair pool build added as a preregistered side-by-side option with a validation-only selection rule |
+| A4 | 09-02 | Sprint 3 analysis-code additions registered |
+| A5 | 09-02 | Minimum detectable effect refined to the measured paired value 0.0268 |
+| A6 | 09-03 | Score-distribution health flags added to the metrics output |
+| A7 | 09-03 | Protocol-sensitivity ladder added as labeled exploratory cells; G0 unchanged. Prediction persistence added as the enabling change |
+| A8 | 09-04 | Review-fix registration: metered-spend accounting, provenance keying, and gate-scoring corrections |
+| A9 | 09-04 | Prediction-store keying corrected after adversarial review found hardware and proxy predictions colliding on a shared configuration hash; affected figures retagged [SIM] |
+| A10 | 09-04 | Hardware prediction artifacts version-controlled: regeneration cost, not file size, decides what is tracked |
 
 No amendment changed a gate's pass criterion, and no gate was rescored after observation.
 
@@ -115,8 +122,10 @@ Every quantitative claim in this proposal resolves to a row in that results stor
 Full bibliography accompanies the reproducibility package.
 
 - QCi, CVQBoost and Dirac-3 entropy computing: formulation and profiling reports.
-- Chancellor et al., 2025, financial fraud detection with entropy computing.
+- Emami, Dyk, Haycraft, Spear, Nguyen, Chancellor, 2025, Financial Fraud Detection with Entropy Computing, arXiv:2503.11273.
 - Neven et al., 2012, QBoost: the original binary formulation this work relaxes.
-- Le Borgne, Siblini, Lebichot, Bontempi, 2022, Fraud Detection Handbook: metric discipline for imbalanced fraud data.
+- Le Borgne, Siblini, Lebichot, Bontempi, 2022, Reproducible Machine Learning for Credit Card Fraud Detection: mandates step-wise average precision and rejects interpolated PR-AUC. Its reported AP figures are on simulated companion data, not the ULB benchmark, and are not used as ULB comparators here.
+- AutoXGB ULB benchmark: average precision 0.782 tuned and 0.776 baseline, computed with step-wise average precision. This is the like-for-like comparator our 0.8296 exceeds.
+- The uncorroborated 0.85 to 0.88 band traces to a widely copied tutorial computing trapezoidal PR-AUC over repeated stratified folds with no held-out test set and no deduplication; full provenance in the project's baseline-protocol research memo, included in the reproducibility package.
 - Caro et al., 2022, generalization in quantum machine learning from few training data.
 - Dal Pozzolo et al., ULB benchmark provenance and protocol.
