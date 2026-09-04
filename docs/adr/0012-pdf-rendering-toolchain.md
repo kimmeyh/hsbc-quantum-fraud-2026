@@ -62,3 +62,34 @@ None. This is document production; it touches no methodology, no data, and no re
 ## References
 
 `scripts/render-pdf.ps1`; docs/requirements-matrix.md rows B1 (page limit, format) and A5/A5b (portal upload slots); Sprint 5 plan capability pre-flight.
+
+## Amendment, 2026-09-04: per-document margins
+
+The appendix renders at `-Margin 0.9in`; the proposal and team profile at the
+1in default. The appendix carries four tables in three pages and spilled 230
+characters onto a fourth against a hard 3-page limit. 0.9in is a conventional
+margin and the guidelines set no margin requirement, only a 10pt font minimum
+(body text is 10pt, unchanged).
+
+Rebuild commands, so a rebuild does not silently produce a 4-page appendix:
+
+    .\scripts\render-pdf.ps1 -Source docs\paper\proposal.md     -Out docs\paper\out\proposal.pdf
+    .\scripts\render-pdf.ps1 -Source docs\paper\appendix.md     -Out docs\paper\out\appendix.pdf -Margin 0.9in
+    .\scripts\render-pdf.ps1 -Source docs\paper\team_profile.md -Out docs\paper\out\team_profile.pdf
+
+Then `python scripts/check-page-limits.py`, which reads the PDFs rather than
+trusting the render.
+
+## Amendment, 2026-09-04: xelatex resolution and PATH isolation
+
+Two environment defects made a valid document look broken:
+
+1. MiKTeX installs to the USER PATH. A shell started before the install does
+   not inherit it, so `--pdf-engine=xelatex` failed with "not found" on a
+   machine where xelatex was installed. The script now resolves the executable
+   itself before falling back to standard install locations.
+2. MiKTeX enumerates every PATH entry at startup and ABORTS if one cannot be
+   read: "MiKTeX cannot retrieve attributes for the directory ...". A stale
+   `C:\devtools\cursor` entry killed xelatex on a bare "Hello world" while the
+   console output looked like a mid-document LaTeX error. The script now runs
+   pandoc with a minimal PATH (TeX bin plus system32) and restores it after.
