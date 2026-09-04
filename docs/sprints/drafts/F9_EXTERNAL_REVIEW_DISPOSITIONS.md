@@ -32,7 +32,21 @@ A second independent review of the rendered proposal and appendix, supplied by t
 
 | # | Finding | Reason |
 |---|---|---|
-| 17 | Verify against the actual portal rubric | The team lead has portal access; requirements-matrix rows A5, A5b, B1-B7 already record the verified format requirements from the official PDFs. Flagged for the team lead's compliance walk at F10 |
+| 17 | Verify against the actual portal rubric | CLOSED 2026-09-04, not deferred. The team lead logged into the portal and re-downloaded all three governing documents; each is byte-identical by SHA-256 to the copies archived on 2026-08-22 and read in full during Sprint 2. Every requirements-matrix row is therefore verified against what the portal currently serves. Recorded in docs/requirements-matrix.md |
+
+## Item 16 follow-up: the IEEE-CIS scale check was REJECTED
+
+The reviewer's strategic point prompted an IEEE-CIS classical scale check. It returned AUPRC 0.861, far above our preregistration's leakage-free reproduction band of 0.64-0.67, so it was diagnosed before use rather than quoted.
+
+| Setup | AUPRC |
+|---|---|
+| Random split, timestamp feature included (the scale-check setup) | 0.8056 |
+| Random split, timestamp feature removed | 0.7961 |
+| TEMPORAL split, timestamp feature removed | 0.5818 |
+
+The timestamp feature contributes +0.0095. The random split itself contributes **+0.2143**: splitting a time-ordered dataset at random lets the model interpolate across time, which is the known leakage path on this benchmark. The honest temporal number, 0.5818, sits below the 0.64-0.67 band precisely because that band reflects the full engineered recipe (UID aggregates, D-normalization) that is Phase 2 work.
+
+Disposition: NOTHING from this check enters the paper. The record is retained in `experiments/results/ieee_scale_check.json`, marked REJECTED AS LEAKAGE ARTIFACT with the diagnosis attached, because a rejected result with its cause documented is itself evidence of the protocol working. The proposal continues to state that IEEE-CIS is Phase 2 work.
 
 ## Note on review quality
 

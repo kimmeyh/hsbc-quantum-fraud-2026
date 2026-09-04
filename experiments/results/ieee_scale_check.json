@@ -1,0 +1,49 @@
+{
+ "label": "IEEE-CIS SCALE CHECK, not a preregistered cell",
+ "caveats": [
+  "raw joined features only; no engineered UID aggregates (Phase 2)",
+  "single stratified split, not the preregistered temporal protocol",
+  "3 seeds, not the 10 used for primary cells",
+  "parameters carried from ULB tuning, not a fresh 100-trial study"
+ ],
+ "evidence_tag": "SIM",
+ "rows": 590540,
+ "features": 432,
+ "mean_auprc": 0.8610492028503322,
+ "sd_auprc": 0.0011567780418407123,
+ "mean_auc_roc": 0.9726336823468258,
+ "per_seed": [
+  {
+   "seed": 42,
+   "auprc": 0.8603473218717572,
+   "auc_roc": 0.97312511546465,
+   "prevalence": 0.0349933958749619,
+   "best_iteration": 1999
+  },
+  {
+   "seed": 43,
+   "auprc": 0.8604159392159639,
+   "auc_roc": 0.971544576692065,
+   "prevalence": 0.0349933958749619,
+   "best_iteration": 1995
+  },
+  {
+   "seed": 44,
+   "auprc": 0.8623843474632753,
+   "auc_roc": 0.9732313548837627,
+   "prevalence": 0.0349933958749619,
+   "best_iteration": 1999
+  }
+ ],
+ "wall_seconds": 756.6,
+ "VERDICT": "REJECTED AS LEAKAGE ARTIFACT -- NOT FOR PUBLICATION",
+ "diagnosis": {
+  "random_split_with_timestamp": 0.8056,
+  "random_split_no_timestamp": 0.7961,
+  "temporal_split_no_timestamp": 0.5818,
+  "leakage_from_timestamp_feature": 0.0095,
+  "leakage_from_random_splitting": 0.2143,
+  "prereg_leakage_free_band": "0.64-0.67 (full engineered recipe)",
+  "conclusion": "The 0.861 headline is an artifact of RANDOM splitting on a time-ordered dataset, which lets the model interpolate across time. The timestamp feature contributes little by comparison. Under a temporal split with raw features the score is 0.5818, below the 0.64-0.67 band because that band reflects the full engineered recipe (UID aggregates, D-normalization) which is Phase 2 work. Nothing from this check is quotable."
+ }
+}
