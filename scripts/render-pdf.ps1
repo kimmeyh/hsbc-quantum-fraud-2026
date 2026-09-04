@@ -48,7 +48,7 @@ try {
     $doc.PageSetup.PaperSize = if ($Paper -eq 'a4') { 7 } else { 1 }   # wdPaperA4 / wdPaperLetter
     $full = [System.IO.Path]::GetFullPath((Join-Path (Get-Location) $Out))
     $doc.SaveAs([ref]$full, [ref]17)                                   # wdFormatPDF
-    $pages = $doc.ComputeStatistics(2)                                 # wdStatisticPages
+    $pages = $doc.ComputeStatistics(2)   # NOTE: Word's count reflows and is NOT authoritative
     $doc.Close($false)
     Write-Host "PDF written: $full ($pages pages)"
 } finally {

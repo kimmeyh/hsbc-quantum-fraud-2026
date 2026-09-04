@@ -19,9 +19,11 @@ We also measured something we think is worth QCi's attention, and it is the reas
 
 On the continuous-variable formulation, hardware and an exact classical solve of the identical Hamiltonian are statistically indistinguishable: the difference is -0.0010 AUPRC with the confidence interval containing zero, solution weights agree to cosine 0.975 to 0.999, and hardware objective values sit 0.013% to 0.413% above the exact minimum, never below. That is excellent solver fidelity, and it is what the mathematics predicts: the objective is strictly convex on the simplex, so a classical solve returns the global optimum and no solver can beat it.
 
-A regularization sweep sharpened the point. The optimum stays nearly uniform even at zero penalty, so the flatness comes from the simplex constraint over correlated weak learners rather than from regularization. On this formulation the optimization problem is close to degenerate.
+The sharper result came from a control we ran afterwards. **The solved optimum is exactly uniform**: 1/91 on every learner, with an L1 distance from uniform of 0.000000 across all ten seeds. Scoring the same pool with uniform weights by construction gives 0.7659 AUPRC against the solved 0.7681, so the optimization step contributes 0.0022, an order of magnitude below our minimum detectable effect. On this configuration neither Dirac-3 nor the classical solver is doing useful work.
 
-We state this plainly in the submission rather than obscuring it, because it identifies precisely where the hardware is and is not the active ingredient, and because it points at the formulation where it would be.
+The cause is pool degeneracy, and we can be specific: off-diagonal Gram entries average 170,234.4 against a diagonal of 170,235, so any two weak learners agree on 99.999% of training rows. At 0.17% fraud prevalence a depth-limited tree predicts the negative class almost everywhere, and a pool of near-identical learners gives an optimizer nothing to weight. We initially attributed the flatness to the simplex constraint; a class-weighted re-solve and a uniform-weight control show that was wrong, and we have corrected it.
+
+This matters for QCi because it is a statement about how CVQBoost is configured for extreme class imbalance, not about the hardware. The device reproduced the exact optimum faithfully. The pool handed to it was the problem.
 
 ## What we would run next, and the request
 
@@ -31,9 +33,11 @@ Also outstanding from the Phase 1 grid, all costed and specified: the full-confi
 
 ## What we can offer in return
 
-Detailed feedback on eqc-models from sustained use, including the specific integration issues we hit and worked around: the pool-construction strategy that fails on Windows, the response object whose billing field is not a dictionary key, the free-tier variable arithmetic and where the documentation and the implementation diverge, and a set of guards we built around metered execution that others would need.
+Detailed feedback on eqc-models from sustained use, including the pool-degeneracy result above, which we believe is worth a note in the CVQBoost documentation for anyone applying it at low prevalence, and the specific integration issues we hit and worked around: the pool-construction strategy that fails on Windows, the response object whose billing field is not a dictionary key, the free-tier variable arithmetic and where the documentation and the implementation diverge, and a set of guards we built around metered execution that others would need.
 
-We would also share the measured cost model, since our per-fit timings are consistent across 27 fits and may be useful reference data.
+We would also share the measured cost model, since our per-fit timings are consistent across 27 fits, along with the solver-dispersion data: across 8 samples per fit, no fit returned identical draws, and the within-fit energy spread has a median of 0.019% and a maximum of 0.343%.
+
+Two questions we would value QCi's view on. First, whether relaxation schedule 4 would close the 0.013% to 0.413% residual we see between the hardware objective and the exact optimum, since the published schedules differ in accumulated photons and success probability. Second, whether a larger sum constraint would help, given that spreading 1.0 across 91 variables puts each weight near 0.011 and may approach the analog resolution floor. Both are single-fit experiments we would run on approval.
 
 ## A note on this package
 
