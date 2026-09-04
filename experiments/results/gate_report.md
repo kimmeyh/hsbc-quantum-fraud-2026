@@ -85,6 +85,13 @@ MDE(10 seeds) from this SD: 0.0258 (pilot value 0.0242; refinement is a Class-1 
 
 G0b: Spearman(proxy val AP, hardware val AP) over 5 configs = 0.900 -> **PASS** (gate >= 0.5, prereg 3)
 
+
+### H1b on hardware [HW]
+hw_b1_dct minus xgboost/matched13: mean -0.0347 CI [-0.0544, -0.0151], trails on 9/10 seeds, exceeds MDE 0.0268 (A5)
+hw_b1_dct minus lightgbm/matched13: mean -0.0353 CI [-0.0549, -0.0157], trails on 9/10 seeds, exceeds MDE 0.0268 (A5)
+hw_b1_dct minus catboost/matched13: mean -0.0399 CI [-0.0571, -0.0227], trails on 9/10 seeds, exceeds MDE 0.0268 (A5)
+hw_b1_dct minus exact proxy free/dct: mean -0.0010 CI [-0.0032, +0.0012] (H4 solver-fidelity component; NOT the preregistered H4 controls)
+
 ## A3 build side-by-side (validation AP, free config, dct pool)
 
 | Seed | sequential val AP | full-pair val AP |

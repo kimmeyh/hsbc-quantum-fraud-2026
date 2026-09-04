@@ -180,6 +180,39 @@ def main() -> int:
         lines.append("No hardware rows yet (blocks pending team-lead approval / execution).")
     lines.append("")
 
+    # ---- H1b on hardware (paired per-seed, identical splits) ----
+    hw_cells = {k: v for k, v in by_cell.items() if k[0] == "cvqboost_hw" and k[2] == "stratified"
+                and len(v) >= N_SEEDS}   # B1 cells only; G0b cells are single-seed
+    gbdt_matched = {a: {r["seed"]: r["metrics"]["auprc"] for r in by_cell.get((a, "matched13"), [])}
+                    for a in ("xgboost", "lightgbm", "catboost")}
+    complete = {a: c for a, c in gbdt_matched.items() if len(c) >= N_SEEDS}
+    if hw_cells and complete:
+        best_hw = max(hw_cells, key=lambda k: np.mean([r["metrics"]["auprc"] for r in hw_cells[k]]))
+        hwap = {r["seed"]: r["metrics"]["auprc"] for r in hw_cells[best_hw]}
+        lines += ["", "### H1b on hardware [HW]"]
+        for arm, c in complete.items():
+            seeds = sorted(set(hwap) & set(c))
+            if len(seeds) < N_SEEDS:
+                continue
+            d = [hwap[s] - c[s] for s in seeds]
+            ti = metrics.seed_mean_t_interval(d)
+            neg = sum(1 for x in d if x < 0)
+            lines.append(f"{best_hw[1]} minus {arm}/matched13: mean {ti['mean']:+.4f} "
+                         f"CI [{ti['ci95'][0]:+.4f}, {ti['ci95'][1]:+.4f}], trails on {neg}/{len(d)} seeds, "
+                         f"{'exceeds' if abs(ti['mean']) > 0.0268 else 'within'} MDE 0.0268 (A5)")
+        # hardware vs its own exact proxy (H4 solver-fidelity component)
+        for pk in [k for k in by_cell if k[0] == "cvqboost_proxy" and k[3] == "full"
+                   and k[1] == best_hw[1].replace("hw_b1_dct", "free").replace("hw_b1_lg", "tuned_free")]:
+            pxa = {r["seed"]: r["metrics"]["auprc"] for r in by_cell[pk]}
+            seeds = sorted(set(hwap) & set(pxa))
+            if len(seeds) >= N_SEEDS:
+                d = [hwap[s] - pxa[s] for s in seeds]
+                ti = metrics.seed_mean_t_interval(d)
+                lines.append(f"{best_hw[1]} minus exact proxy {pk[1]}/{pk[2]}: mean {ti['mean']:+.4f} "
+                             f"CI [{ti['ci95'][0]:+.4f}, {ti['ci95'][1]:+.4f}] (H4 solver-fidelity component; "
+                             f"NOT the preregistered H4 controls)")
+        lines.append("")
+
     # ---- A3 side-by-side ----
     lines += ["## A3 build side-by-side (validation AP, free config, dct pool)", ""]
     seq = {r["seed"]: r["val_auprc"] for r in
