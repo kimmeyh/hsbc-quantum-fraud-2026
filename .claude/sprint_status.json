@@ -1,12 +1,12 @@
 {
   "current_sprint": {
     "number": 5,
-    "name": "Scope selection pending",
+    "name": "The Paper and the QCi Package",
     "branch": "feature/20260904_Sprint_5",
-    "status": "phase_1_backlog_refinement",
+    "status": "phase_4_execution",
     "plan_doc": "docs/sprints/SPRINT_5_PLAN.md",
-    "pr": null,
-    "plan_approved": false,
+    "pr": 29,
+    "plan_approved": true,
     "github_issues": []
   },
   "last_completed_sprint": {
@@ -20,5 +20,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-03"
+  "updated": "2026-09-04"
 }

@@ -6,7 +6,11 @@ Continue without addition approvals until Manual Validation, providing your reco
 Do not stop to ask questions unless meeting the criteria in \docs\SPRINT_STOPPING_CRITERIA.md
 ---------------------------------------------------------------------------------------------------------
 Sprint 5 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
-- Add to backlog and consider for this sprint:
+
+ Then sprint five scope as you recommended: F8 + F9 + F27 + F19, with F26 and
+        F28. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.
+
+- Add to backlog and consider for future sprint:
   - Dirac-3 executions use a queuing system where only one request can run at one time. i.e. it may only take 1 QPU second, but like supercomputers of old it only runs one thing at a time and other requests are queued until all the prior requests have been completed. This means:
     - in order to read the results for a request the process must wait for a request to complete in order to read and process the output.
     - However, multiple processes could each make a request for execution and each wait for their request to complete
@@ -17,6 +21,530 @@ Sprint 5 Scope should include the below items. Please complete sprint planning (
      - It should be fully tested without calls to Dirac-3.  Then tested, when needed on a small set of calls (2 or 3) to vet the process.
      - Can you plan and draft a full sprint card for review
 
+
+
+  Candidates at a glance
+
+  - F8. Outline + Draft V1 (~1 day) Priority 30
+  - F9. Adversarial reviews V2/V3 + rubric pass (~0.5 day) Priority 32
+  - F19. Draft submission PDF(s) to QCi (~2h assemble + team-lead send) Priority 34
+  - F26. Cost-based operating-point analysis (~2h) Priority 13
+  - F27. Production-trial design section (~2h) Priority 13
+  - F28. Explainability thread: ensemble inspectability vs GBDT baseline (~3h) Priority 14
+  - F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14
+  - F23. F4 prep: QFE phase recipe + twin scaffolding (~3h) Priority 15
+  - F24. F5 prep: SPECTRA in-segment machinery + B4 request (~3h) Priority 15
+  - F4. QFE phase arms + order-matched twins (~0.5 day) Priority 16
+  - F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority 18
+  - F2b. Hardware campaign, remaining blocks (~0.5 day + approvals) Priority 20
+  - F16. Minimal CI: pytest + lint on PRs (~30m) Priority 36
+  - F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 40
+  - F17. Dirac-3 simulator for pre-hardware test runs (~2-3h) Priority HOLD
+  - F20. Soft-vote CVQBoost exploration (~3h) Priority HOLD
+  - F25. Non-convex cardinality-constrained CVQBoost on Dirac-3 (~4h + hardware) Priority HOLD
+  - F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD
+  - F6. Braket gate-based phase-active arm (~0.5 day) Priority HOLD
+  - F14. eqc-models feedback package to QCi (~2h) Priority HOLD
+
+  Paper (Stages 4-6)
+
+  F8. Outline + Draft V1 (~1 day) Priority 30
+  - Phase: Paper
+  - Platform: docs
+  - Seven rubric-mapped sections plus appendices, built on the decided production-bound spine; [HW]/[SIM]/[PROJ] tags on every number;
+    prevalence beside every AUPRC
+  - Inline addition (Sprint 4 retro improvement 1): known-answer tests for score_gates.py aggregation (~45m)
+  - Depends on: F7 (done); your outline approval
+
+  F9. Adversarial reviews V2/V3 + rubric pass (~0.5 day) Priority 32
+  - Phase: Paper
+  - Platform: docs
+  - Domain pass, quantum pass (encoding diagnostics, evidence-tag audit), rubric scoring, fix the lowest criterion
+  - Depends on: F8
+
+  F19. Draft submission PDF(s) to QCi (~2h assemble + team-lead send) Priority 34
+  - Phase: External
+  - Platform: docs
+  - The Sprint-5-end package: the F8/F9 draft plus preregistration with amendments, gate report, hardware plan, rendered as DRAFT PDFs;
+    mandatory pre-send confidentiality scan of every page; you review and send
+  - Depends on: F8, F9
+
+  Experiments
+
+  F26. Cost-based operating-point analysis (~2h) Priority 13
+  - Phase: Experiments
+  - Platform: ULB, docs (zero metered seconds)
+  - Every arm at a realistic review capacity and under asymmetric cost, so AUPRC translates into fraud caught per analyst-hour
+  - Depends on: prediction persistence (shared with A7 cell S1)
+
+  F27. Production-trial design section (~2h) Priority 13
+  - Phase: Paper
+  - Platform: docs
+  - The concrete 90-day trial: shadow mode, champion/challenger, review-capacity operating point, latency budget, calibration, drift monitoring
+    with retraining triggers, dispute and regulator explainability path
+  - Depends on: F7 (done); feeds F8
+
+  F28. Explainability thread (~3h) Priority 14
+  - Phase: Experiments + Paper
+  - Platform: ULB, docs (zero metered seconds)
+  - Weight concentration, per-learner attribution, and a worked single-decision explanation for both arms; explainability framed as the bar
+    that gates bank deployment
+  - Depends on: your input on which prior QML explainability work to cite
+
+  F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14
+  - Phase: Experiments
+  - Platform: IEEE-CIS
+  - Preregistered feature pass, leakage controls including the shuffled-label positive control, GroupKFold-by-month rolling origin, classical
+    arms plus proxy CVQBoost, H3 ladder cells
+  - Depends on: F1 (done)
+
+  F23. F4 prep (~3h) Priority 15 and F24. F5 prep (~3h) Priority 15
+  - Phase: Experiments
+  - Platform: ULB / SPECTRA, docs
+  - Scaffolding only: the QFE phase transformer with twin pre-flights, and the H5 in-segment machinery with the B4 request written and ready
+  - Depends on: F22 (done) for F23; grant status for F24's hardware path
+
+  F4 (~0.5 day) Priority 16, F5 (~0.5 day) Priority 18, F2b (~0.5 day) Priority 20
+  - Phase: Experiments
+  - Platform: ULB/IEEE-CIS, SPECTRA, Dirac-3
+  - The execution items behind the prep work; F5 and F2b's B2/B3/B4 need the QCi grant, B5 (QSVM, ~15 s) is affordable on the remaining ~380 s
+
+  Finalize
+
+  F16. Minimal CI (~30m) Priority 36 and F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 40
+  - Phase: Finalize
+  - Platform: docs
+  - F10 includes publishing the separate curated reproducibility repo and the explicit .env exclusion check
+  - Depends on: F8, F9
+
+  HOLD (post-submission / Phase 2)
+
+  F17 simulator, F20 soft votes, F25 non-convex formulation, F13 Phase 2 planning, F6 Braket arm, F14 eqc-models feedback.
+
+  Recommendation: Sprint 5 = F8 + F9 + F27 + F19, per your roadmap, with F27 folded in because the production-trial section is a paper section
+  and writing it alongside the draft is cheaper than bolting it on later. F26 and F28 are the two items I would add if you want the production
+  framing fully evidenced in V1 rather than in Sprint 6 — F26 needs the prediction-persistence fix first, F28 needs your pointer to the prior
+  explainability work.
+
+
+Done
+I would like a discussion apart from the sprint on a separate but related topic.  we may or may decide at the end of the conversation to include none of the conversation or some summaries from the conversation and/or references to one or more papers from the conversation.  The following is the text from an AI conversation I had earlier today.  I may have some of the papers in the following directory, but o ay need to find n pull them (usually from arXiv.org) if needed. 
+Conversations """
+looking for papers on Quantum Machine Learning or Quantum Computing that reference using "perfectly random numbers"
+
+Copilot said:
+
+Copilot
+I searched the available QML paper collection for the exact phrase “perfectly random numbers” and close variants such as “perfect random numbers,” “true random number generator,” “certified randomness,” and “uniformly random bits.” The exact wording does not appear to be reliably confirmed, but the following papers are the strongest substantive matches.
+
+Strongest match
+Aaronson Hung, 2023, Certified Randomness from Quantum Supremacy.pdf
+This is the clearest match to the concept you described. The paper focuses on generating cryptographically certified random bits from sampling-based quantum-computing experiments. It distinguishes merely producing unpredictable quantum measurement outcomes from proving to a remote verifier that those outputs were genuinely random and not deliberately backdoored. 1
+
+The paper proposes a protocol in which:
+
+A classical verifier generates pseudorandom quantum challenge circuits.
+A quantum server returns samples from the circuits’ output distributions.
+The verifier evaluates those samples using Linear Cross-Entropy Benchmarking.
+Samples passing the test are argued, under stated computational assumptions, to contain genuine min-entropy.
+A classical seeded randomness extractor converts them into bits described as exponentially close, in total variation distance, to uniformly random. 1
+This paper is therefore a strong reference if by “perfectly random numbers” you mean physically generated, unpredictable, certifiably random, or nearly uniform random bits.
+
+Relevant QML papers
+Ganguly, 2023, Implementing Quantum Generative Adversarial Network (qGAN) and QCBM in Finance.pdf
+This paper discusses quantum generative models that learn probability distributions. Its qGAN uses a parameterized quantum generator whose measurement outcomes supply sampling probabilities, while its Quantum Circuit Born Machine learns an approximation to a target probability distribution. 2
+
+The bibliography explicitly references Quantum Generative Adversarial Networks for learning and loading random distributions by Zoufal, Lucchi, and Woerner. That cited work is likely useful if your interest is using quantum systems to generate or load random distributions for machine-learning workflows, rather than certifying ideal randomness itself. 2
+
+Zoufal, Lucchi and Werner, 2019, Quantum Generative Adversarial Networks for learning and loading random distributions.pdf
+This paper is present in the collection and is directly concerned with learning and loading random distributions through a quantum generative model. I found it as a phrase-level candidate, but the retrieved content did not provide a sufficiently precise passage to confirm use of the exact phrase “perfectly random numbers.” 3
+
+Hu Gao, 2024, Generalization Error in Quantum Machine Learning in the Presence of Sampling Noise.pdf
+This paper is relevant to the caveat behind “perfect” randomness in practical QML. It distinguishes randomness from finite training samples from quantum sampling noise, meaning statistical fluctuations caused by repeated measurements of a quantum system. Its focus is the effect of that sampling noise on quantum reservoir computing and generalization. 4
+
+Heese et al., 2023, Explainable Quantum Machine Learning.pdf
+This paper treats QML outputs as subject to statistical uncertainty arising from finite measurement shots, hardware noise, transpilation, and the inherent uncertainty of quantum measurements. It is useful if you need a source explaining why practical quantum-generated values should not casually be described as “perfectly random” without defining the statistical or certification standard. 5
+
+Recommended terminology for a broader literature search
+The phrase “perfectly random numbers” is not standard technical terminology. More productive search terms would be:
+
+certified quantum randomness
+quantum random number generation
+device-independent randomness
+quantum randomness expansion
+quantum-proof randomness extractor
+uniform random bits
+min-entropy certification
+true random number generator
+Born-rule sampling
+quantum generative modeling of probability distributions
+Bottom line
+For a citation about quantum computing producing verifiably genuine randomness, start with Aaronson Hung, 2023, Certified Randomness from Quantum Supremacy.pdf. For randomness used inside QML as a learned or sampled distribution, the better path is Zoufal, Lucchi and Werner, 2019, Quantum Generative Adversarial Networks for learning and loading random distributions.pdf together with Ganguly, 2023, Implementing Quantum Generative Adversarial Network (qGAN) and QCBM in Finance.pdf. 132
+
+
+1
+Aaronson Hung, 2023, Certified Randomness from Quantum Supremacy.pdf
+
+2
+Ganguly, 2023, Implementing Quantum Generative Adversarial Network (qGAN) and QCBM in Finance.pdf
+
+3
+Zoufal, Lucchi and Werner, 2019, Quantum Generative Adversarial Networks for learning and loading random distributions.pdf
+
+4
+Hu Gao, 2024, Generalization Error in Quantum Machine Learning in the Presence of Sampling Noise.pdf
+
+5
+Heese et al., 2023, Explainable Quantum Machine Learning.pdf
+Show less
+
+
+
+You said:
+Were there any others or was this all that could be found (next 5 if there are 5 more)
+
+Copilot said:
+
+Copilot
+I found several additional candidates beyond the five you already had. The next 5 most relevant papers tied to randomness, random sampling, random features, or randomness-enhanced QML are:
+
+Oh Kais, 2023, Comparison of quantum advantage experiments using random circuit sampling.pdf
+Focuses on random circuit sampling, quantum advantage validation, NIST randomness tests, and statistical properties of sampled bitstrings. This is probably the closest follow-on paper to the randomness-certification theme. 1
+
+Sakurai et al., 2026, Quantum Random Features A Spectral Framework for Quantum Machine Learning.pdf
+Introduces Quantum Random Features (QRF) and Quantum Dynamical Random Features (QDRF) as QML architectures inspired by classical Random Fourier Features. 2
+
+Wu et al., 2023, Randomness-enhanced expressivity of quantum neural networks.pdf
+Specifically studies how introducing random layers into quantum neural networks increases expressivity and learning performance. 3
+
+Sahebi et al., 2025, On Dequantization of Supervised Quantum Machine Learning via Random Fourier Features.pdf
+Examines the relationship between QML models and Random Fourier Features (RFF), including frequency sampling distributions and dequantization. 4
+
+Galvis-Florez Farooq Särkkä, Quantum-assisted Gaussian process regression using random Fourier features.pdf
+Uses random Fourier feature kernels within a quantum-assisted Gaussian Process Regression framework. 5
+
+If you'd like the next 5 after these, the strongest remaining candidates are:
+
+Nakano Okada Fujii, 2025, Neural-network-assisted Monte Carlo sampling trained by Quantum Approximate Optimization Algorithm.pdf (sampling distributions) 6
+Sweke et al., 2023, Potential and limitations of random Fourier features for dequantizing quantum machine learning.pdf 7
+Wold Ribeiro Denisov, 2024, Universal spectra of noisy parameterized quantum circuits.pdf (random unitaries and pseudo-random circuits) 8
+Dees Jacquier Laizet, 2023, Unsupervised Random Quantum Networks for PDEs.pdf 9
+Liu et al., 2023, Training variational quantum algorithms with random gate activation.pdf 10
+Based on relevance to your original randomness-focused list, the first five above are the ones I would prioritize next.
+
+
+1
+Oh Kais, 2023, Comparison of quantum advantage experiments using random circuit sampling.pdf
+
+2
+Sakurai et al., 2026, Quantum Random Features A Spectral Framework for Quantum Machine Learning.pdf
+
+3
+Wu et al., 2023, Randomness-enhanced expressivity of quantum neural networks.pdf
+
+4
+Sahebi et al., 2025, On Dequantization of Supervised Quantum Machine Learning via Random Fourier Features.pdf
+
+5
+Galvis-Florez Farooq Särkkä, Quantum-assisted Gaussian process regression using random Fourier features.pdf
+
+6
+Nakano Okada Fujii, 2025, Neural-network-assisted Monte Carlo sampling trained by Quantum Approximate Optimization Algorithm.pdf
+
+7
+Sweke et al., 2023, Potential and limitations of random Fourier features for dequantizing quantum machine learning.pdf
+
+8
+Wold Ribeiro Denisov, 2024, Universal spectra of noisy parameterized quantum circuits.pdf
+
+9
+Dees Jacquier Laizet, 2023, Unsupervised Random Quantum Networks for PDEs.pdf
+
+10
+Liu et al., 2023, Training variational quantum algorithms with random gate activation.pdf
+Show less
+
+
+
+You said:
+within the discovered papers do any indicate that QML QBoost algorithm should be able to get the best predictions using less than the full dataset. possible language might include suggestion of an algorithm that is based on based on the number of features/columns.
+
+Copilot said:
+
+Copilot
+Something went wrong. Please try again later.
+
+
+You said:
+within the discovered papers do any indicate that QML QBoost algorithm should be able to get the best predictions using less than the full dataset. possible language might include suggestion of an algorithm that is based on based on the number of features/columns.
+
+Copilot said:
+
+Copilot
+Based only on the papers we've identified and the content available in them, I did not find an explicit statement that a QBoost algorithm should achieve its best prediction accuracy using less than the full dataset.
+
+However, I did find several papers that support a related idea: performance can be driven more by the frequency content, feature representation, expressivity, or sampled feature subset than by using all available data rows.
+
+Strongest Supporting Evidence
+1. Random Fourier Features / Quantum Random Features papers
+Several papers discuss obtaining good performance using a subset of features or sampled frequencies rather than a complete representation:
+
+Quantum Random Features (QRF) explicitly builds high-dimensional representations through random feature maps and compares them to Random Fourier Features (RFF). The paper's premise is that useful learning can be obtained through randomly generated feature representations without exhaustive optimization. 1
+
+On Dequantization of Supervised QML via Random Fourier Features repeatedly analyzes performance as a function of the number of sampled frequencies (D), showing that predictive performance depends on which frequencies/features are sampled rather than necessarily using a complete feature set. The paper also discusses "truncated" sampling strategies that intentionally exclude portions of the available frequency space. 2
+
+Potential and limitations of random Fourier features for dequantizing QML focuses extensively on frequency concentration and whether a model's useful information is concentrated in a smaller subset of frequencies. 3
+
+2. Evidence that lower-frequency or smaller feature subsets can be sufficient
+The Sahebi paper contains perhaps the closest language to what you're asking about:
+
+lower frequencies are, on average, more likely to appear than higher ones, and truncated sampling can outperform broader sampling when the important information is concentrated in lower frequencies. 2
+
+The paper further states:
+
+most natural datasets do not contain very high frequencies. 2
+
+That is not a dataset-size argument, but it is a strong feature-selection argument. If QBoost is selecting weak learners based on columns/features, this line of reasoning would support:
+
+identifying informative features,
+using a subset of informative features,
+avoiding unnecessary dimensions.
+3. Randomness-enhanced QNN paper
+The Wu paper argues that adding randomness improves expressivity and learning performance, with ensemble averages over random layers providing better learning behavior. 4
+
+Again, that is not a claim about fewer training examples, but it supports the idea that better feature representations can matter more than simply increasing data volume.
+
+What I did NOT find
+I did not find any of the retrieved papers stating:
+
+"Use fewer training rows than the full dataset."
+"Best performance occurs with a subset of training observations."
+"Prediction accuracy peaks before all data is used."
+"QBoost should train on a reduced sample of records."
+I also did not find an explicit statement tying optimal sample size to:
+
+number of columns,
+number of features,
+feature-to-row ratios,
+(N_{features}) versus (N_{samples}).
+Connection to QBoost (carefully qualified)
+This part is my interpretation, not a claim from the papers:
+
+QBoost is fundamentally a boosting-style feature/weak-learner selection approach. If your weak learners correspond to columns or feature combinations, then the Random Fourier Feature and Quantum Random Feature papers provide theoretical support for the notion that:
+
+Only a subset of available features may carry most of the predictive information.
+Carefully selected or sampled feature subsets can perform as well as or better than using all representational degrees of freedom.
+Frequency concentration and sparsity of useful components may be more important than exhaustively using every available feature. 231
+But none of the papers I found explicitly extend that conclusion to using fewer training records.
+
+If you're specifically looking for support of:
+"QBoost should achieve optimal performance when training-set size is related to the number of features/weak learners"
+
+then I have not yet seen that claim in the papers we've opened so far. It may exist in a dedicated QBoost, AdaBoost, boosting, or feature-selection paper rather than the randomness/QML papers we've been examining.
+
+
+1
+Sakurai et al., 2026, Quantum Random Features A Spectral Framework for Quantum Machine Learning.pdf
+
+2
+Sahebi et al., 2025, On Dequantization of Supervised Quantum Machine Learning via Random Fourier Features.pdf
+
+3
+Sweke et al., 2023, Potential and limitations of random Fourier features for dequantizing quantum machine learning.pdf
+
+4
+Wu et al., 2023, Randomness-enhanced expressivity of quantum neural networks.pdf
+Show less
+
+
+
+You said:
+did any of the papers we identified mention the quantum boost algorithm qboost
+
+Copilot said:
+
+Copilot
+Yes. Among the papers in the collection we identified, the clearest references to QBoost are in the CVQBoost-related papers:
+
+QCi - Improving credit card transaction fraud detection using CVQBoosting 202603 explicitly contains a section titled "QBoost and Dirac 3". It describes QBoost as:
+
+A quantum-enhanced ensemble learning algorithm.
+An approach that formulates the selection and weighting of weak classifiers as a combinatorial optimization problem.
+A method solved using a quantum annealer, citing Neven et al. (2012).
+The foundation on which CVQBoost is built. 1
+Chancellor et al., 2025 QCi Financial Fraud Detection with Entropy Computing 2503.11273v1 discusses QBoost as the precursor to CVQBoost and states that one advantage of QBoost is that it naturally matches problems solvable by quantum annealers. The paper then extends that idea to CVQBoost for continuous-variable optical computing hardware. 2
+
+QCI - Profiling of CVQBoost 202412 states that:
+
+"QBoost formulates boosting as a quadratic unconstrained binary optimization (QUBO) problem."
+CVQBoost extends QBoost using continuous-variable quantum optimization on the Dirac 3 platform. 3
+QML - QCi Profiling_of_CVQBoost contains the same characterization of QBoost as a boosting formulation expressed as a QUBO suitable for quantum solvers and describes CVQBoost as an extension of that framework. 4
+
+There are also indirect references in other papers. For example, Graph Algorithms with Neutral Atom Quantum Processors mentions a "QBoost-based algorithm" used within a hybrid classifier workflow, but without much algorithmic detail. 5
+
+So the answer is yes. The strongest and most detailed coverage is in the CVQBoost papers, where QBoost is presented as the original quantum boosting approach whose weak-classifier selection problem is encoded as a QUBO and solved using quantum annealing. 123
+
+
+1
+QCi - Improving credit card transaction fraud detection using CVQBoosting 202603.pdf
+
+2
+Chancellor et al., 2025 QCi Financial Fraud Detection with Entropy Computing 2503.11273v1.pdf
+
+3
+QCI - Profiling of CVQBoost 202412.pdf
+
+4
+QML - QCi Profiling_of_CVQBoost.pdf
+
+5
+Dalyak metal., 2024, Graph Algorithms with Neutral Atom Quantum Processors.pdf
+Show less
+
+
+
+You said:
+What about this article - does it say anything about features and data: 0Generalization in quantum machine learning from few training data 20220822
+
+Copilot said:
+
+Copilot
+Yes. Of all the papers we've discussed, 0Generalization in quantum machine learning from few training data 20220822.pdf is actually one of the strongest papers supporting the idea that good QML performance may not require large training datasets, although it does not specifically discuss QBoost. 12
+
+What the paper explicitly says
+The central result is that the generalization error of a quantum machine learning model depends on:
+
+n = number of training samples
+t = number of trainable gates (model complexity)
+The paper states that the generalization error scales at worst as:
+
+[ \sqrt{t/n} ]
+
+and improves to
+
+[ \sqrt{k/n} ]
+
+when only k trainable gates undergo substantial change during optimization. 23
+
+Why this is interesting for your question
+While the paper does not talk about features/columns directly, it does describe a relationship between:
+
+model complexity (number of trainable components)
+required training data
+The implication is that if the effective complexity is smaller (k ≪ t), then fewer training samples are needed to achieve similar generalization performance. 23
+
+That is conceptually close to what you were asking earlier about:
+
+"Could the optimal amount of training data be related to the number of features?"
+
+The paper does not use the word features, but it is effectively saying that the amount of data required is tied to the number of trainable degrees of freedom in the model. 23
+
+Does it support using less than the full dataset?
+Potentially yes.
+
+The authors explicitly state that:
+
+QML models can generalize well from a limited number of training points.
+Classification tasks using quantum convolutional neural networks may require only a very small training dataset.
+Quantum compiling applications that traditionally use exponentially large training datasets may be significantly sped up because of these generalization results. 21
+Does it support a QBoost-style feature selection idea?
+Not directly.
+
+The paper does not state:
+
+use only a subset of columns,
+select a subset of features,
+choose training size based on feature count,
+QBoost should stop after a certain feature ratio.
+Those conclusions are not present in the text I found. 21
+
+A paper that comes closer to your feature-selection intuition
+Among the papers we've examined, the closest conceptual match is actually:
+
+Hu Gao, 2024, Generalization Error in Quantum Machine Learning in the Presence of Sampling Noise.pdf
+
+which discusses Eigentask Learning. According to the paper, extracting low-noise feature contributions can improve learning performance, reduce overfitting, and improve generalization accuracy. 4
+
+That is much closer to:
+
+"Use only the most informative subset of features"
+
+than the Caro et al. paper is. 4
+
+My takeaway
+If you are looking for evidence supporting a thesis such as:
+
+"QBoost should not necessarily need the entire dataset because predictive performance is governed by model complexity and a small subset of informative weak learners/features."
+
+then:
+
+0Generalization in quantum machine learning from few training data 20220822.pdf provides support for the few-training-samples part via its √(complexity / samples) generalization arguments. 12
+Hu Gao, 2024, Generalization Error in Quantum Machine Learning in the Presence of Sampling Noise.pdf provides support for focusing on a subset of informative/low-noise features. 4
+The CVQBoost/QBoost papers provide support that QBoost works by selecting an optimal subset of weak classifiers, which in many practical implementations correspond to feature-derived predictors. 56
+However, I did not find a paper stating explicitly:
+
+"The optimal training set size for QBoost should be based on the number of features/columns."
+
+That specific claim does not appear in the sources we've examined. 125
+
+
+1
+0Generalization in quantum machine learning from few training data 20220822.pdf
+
+2
+Caro et al., 2022, Generalization in quantum machine learning from few training data.pdf
+
+3
+Caro et al., 2021, Generalization in quantum machine learning from few training data.pdf
+
+4
+Hu Gao, 2024, Generalization Error in Quantum Machine Learning in the Presence of Sampling Noise.pdf
+
+5
+QCi - Improving credit card transaction fraud detection using CVQBoosting 202603.pdf
+
+6
+Chancellor et al., 2025 QCi Financial Fraud Detection with Entropy Computing 2503.11273v1.pdf
+Show less
+
+
+
+You said:
+I have empirical evidence from multiple experiments when training a random sample of 250,000, 1 million, 2 million, 3 million, 5, 6, 7 million rows produced equivalent predictions (repeatedly) using CVQBoost. Similar on other datasets using CVQBoost.
+
+Copilot said:
+
+Copilot
+That observation is actually quite interesting when viewed alongside the papers you've been reviewing.
+
+Based on the papers we found, I would separate what the papers explicitly support from what your experiments may be suggesting.
+
+What the papers explicitly support
+1. QML can generalize from surprisingly small training sets
+The Caro et al. paper argues that QML models can achieve good generalization with relatively few training samples and derives bounds linking generalization error to model complexity and the number of training examples. The authors explicitly state that good generalization can be achieved from limited training data and discuss applications where only a small training set is required. 12
+
+That does not say:
+
+"250k rows should perform the same as 7 million rows."
+
+But it does provide a theoretical basis for why adding more data may eventually yield diminishing returns. 12
+
+2. Feature information may matter more than raw sample volume
+The Eigentask Learning paper discusses extracting low-noise feature contributions and reports that doing so can improve generalization and robustness. The paper's emphasis is on the quality of the features/tasks rather than simply increasing the size of the training set. 3
+
+3. QBoost is fundamentally a weak-classifier selection problem
+The CVQBoost/QBoost papers describe QBoost as selecting an optimal or near-optimal subset of weak classifiers through a combinatorial optimization process. The objective
+
+
+1
+Caro et al., 2022, Generalization in quantum machine learning from few training data.pdf
+
+2
+0Generalization in quantum machine learning from few training data 20220822.pdf
+
+3
+Hu Gao, 2024, Generalization Error in Quantum Machine Learning in the Presence of Sampling Noise.pdf
+"""
 ---------------------------------------------------------------------------------------------------------
 Sprint 4 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
 
