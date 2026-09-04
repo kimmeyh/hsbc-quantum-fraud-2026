@@ -5,7 +5,122 @@ All Sprint tasks and sub-tasks are approved.
 Continue without addition approvals until Manual Validation, providing your recommendation for Manual Validation steps.
 Do not stop to ask questions unless meeting the criteria in \docs\SPRINT_STOPPING_CRITERIA.md
 ---------------------------------------------------------------------------------------------------------
-Sprint n Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
+Sprint 5 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
+- Add to backlog and consider for this sprint:
+  - Dirac-3 executions use a queuing system where only one request can run at one time. i.e. it may only take 1 QPU second, but like supercomputers of old it only runs one thing at a time and other requests are queued until all the prior requests have been completed. This means:
+    - in order to read the results for a request the process must wait for a request to complete in order to read and process the output.
+    - However, multiple processes could each make a request for execution and each wait for their request to complete
+      OR a python program could us an asynchronous execution feature so that each request return could be processed within the execution of one python program and one process.
+     - This may be useful in the future with all the request we will be making after submission and acceptance.
+     - It would allow for queuing 4 or so requests concurrently, and then make an additional call every time one request completes.
+     - Since we cannot waste calls to Dirac-3 and we need to somewhat compensate for the risk of system reboots, network failures... we don't want to risk making 20 calls, a reboot happen and we get no results, but would allow for several calls to be executed at the same time and then wait for the results.
+     - It should be fully tested without calls to Dirac-3.  Then tested, when needed on a small set of calls (2 or 3) to vet the process.
+     - Can you plan and draft a full sprint card for review
+
+---------------------------------------------------------------------------------------------------------
+Sprint 4 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
+
+Here is what I am thinking. What do you think:
+Plan for Sprint 4 will be F22 + F21 + F2 + F7 + F19. 
+Then in Sprint 5 we will plan to do F8 and F9.
+Then in Sprint 6 (after determining we still have time for F16 and F10) we will do F3, updates to outline, draft, reviews and rubric AND any prep work we can do (at the same time, using  multiple agents) prep work for F4 and F5. Can you create backlog items for "F4 prep" and "F5 prep" now - determine what makes sense for each.
+Then in Sprint 7 (after determining we still have time for F16 and F10) we will do F4, updates to outline, draft, reviews and rubric
+Then in Sprint 8 (after determining we still have time for F16 and F10) we will do F5, updates to outline, draft, reviews and rubric
+
+  Candidates at a glance
+
+  - F22. CVQBoost proxy tuning per prereg section 6 (~2-3h + unattended solves) Priority 11
+  - F21. Baseline-protocol research: duplicates methodology + ULB feature engineering (~2h) Priority 12
+  - F2. Hardware campaign, first blocks (~0.5 day + approvals) Priority 12
+  - F19. Draft submission PDF(s) to QCi (~2h assemble + team-lead send) Priority 13
+  - F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14
+  - F4. QFE phase arms + order-matched twins (~0.5 day) Priority 16
+  - F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority 18
+  - F7. Results memo + gate review (~2h) Priority 22
+  - F8. Outline + Draft V1 (~1 day) Priority 30
+  - F9. Adversarial reviews V2/V3 + rubric pass (~0.5 day) Priority 32
+  - F16. Minimal CI: pytest + lint on PRs (~30m) Priority 34
+  - F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 40
+  - F17. Dirac-3 simulator for pre-hardware test runs (~2-3h investigation) Priority HOLD
+  - F20. Soft-vote CVQBoost exploration (~3h proxy investigation) Priority HOLD
+  - F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD
+  - F6. Braket gate-based phase-active arm (~0.5 day) Priority HOLD
+  - F14. eqc-models feedback package to QCi (~2h) Priority HOLD
+
+  Experiments
+
+  F22. CVQBoost proxy tuning per prereg section 6 (~2-3h + unattended solves) Priority 11
+  - Phase: Experiments (prerequisite for G0b and for un-quarantining lg)
+  - Platform: ULB, local proxy (zero metered seconds)
+  - The preregistered equal-budget tuning: 100 trials over weak pool composition (incl. class-weighted weak learners), schedule, k, lambda
+    alpha in {0.5, 1, 2, 4}; num_samples/relaxation_schedule fixed
+  - Expected to fix the score degeneracy (near-uniform weights under lambda=2*n_train; unweighted weak learners voting -1 on ~99.8% of rows);
+    produces the proxy config ranking G0b requires
+  - Inline: score-distribution health check (retro improvement 1, ~20m)
+  - Depends on: nothing; blocks G0b execution
+
+  F21. Baseline-protocol research: duplicates methodology + ULB feature engineering (~2h) Priority 12
+  - Phase: Experiments (re G0 FAIL)
+  - Platform: docs -> possible amendment proposal
+  - How strong published ULB baselines handle exact duplicates; leakage-free feature engineering (Amount/Time transforms, interactions); what
+    explains the 0.85-0.88 band vs our 0.8296
+  - Output: findings memo with an amendment proposal if justified (e.g., a labeled duplicate-retained sensitivity protocol as an added
+    exploratory analysis); retry only on your approval
+  - Depends on: nothing
+
+  F2. Hardware campaign, first blocks (~0.5 day + approvals) Priority 12
+  - Phase: Experiments
+  - Platform: Dirac-3
+  - Execute B1 (22 calls, ~90-140 QPU s) and G0b (5 calls, ~20-35 s) per docs/HARDWARE_REQUEST_B1_G0b.md on your per-block approval; B2/B3 if
+    the QCi grant lands; [HW] rows; frozen retry discipline
+  - Depends on: F22 (config ranking + degeneracy fix); your approval per block; grant for B2/B3
+
+  F19. Draft submission PDF(s) to QCi (~2h assemble + team-lead send) Priority 13
+  - Phase: External
+  - Platform: docs
+  - Best draft-state package at sprint end (preregistration with amendments, gate report / results memo, hardware plan), rendered as DRAFT
+    PDFs; mandatory pre-send confidentiality scan of every page; you review and send
+  - Depends on: end-of-sprint state (F7 strengthens it)
+
+  F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14
+  - Phase: Experiments
+  - Platform: IEEE-CIS
+  - Preregistered feature pass (D-normalization, UID excluded, named aggregates, V-reduction); shuffled-label positive control;
+    GroupKFold-by-month rolling origin; classical arms + proxy CVQBoost; H3 ladder cells
+  - Depends on: F1 (done)
+
+  F4. QFE phase arms + order-matched twins (~0.5 day) Priority 16
+  - Phase: Experiments
+  - Platform: ULB, IEEE-CIS
+  - Fourier Wall recipe applied identically to all arms; trained-frequency GAM/GA2M/JOINT twins in every H6 cell
+  - Depends on: F1 (done)
+
+  F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority 18
+  - Phase: Experiments
+  - Platform: SPECTRA, Dirac-3
+  - 3 strongest cells x 5 seeds; random-segment negative control machinery reused for fraud transfer
+  - Depends on: QCi grant; F2 approval pattern
+
+  F7. Results memo + gate review (~2h) Priority 22
+  - Phase: Experiments
+  - Platform: docs
+  - One-page results memo; gate table scored as committed (G0 FAIL framing = Class-2 decision here); headline promotion decision per the thesis
+    rule
+  - Depends on: F22 and whatever of F2-F4 has run
+
+  Paper
+
+  F8. Outline + Draft V1 (~1 day) Priority 30
+  - Phase: Paper
+  - Platform: docs
+  - Seven rubric-mapped sections + appendices; [HW]/[SIM]/[PROJ] tags; prevalence beside every AUPRC
+  - Depends on: F7; your outline approval
+
+  F9. Adversarial reviews V2/V3 + rubric pass (~0.5 day) Priority 32
+  - Phase: Paper
+  - Platform: docs
+  - Domain pass, quantum pass (encoding diagnostics, evidence-tag audit), rubric scoring; fix lowest criterion
+  - Depends on: F8
 
 ---------------------------------------------------------------------------------------------------------
 Sprint 3 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  

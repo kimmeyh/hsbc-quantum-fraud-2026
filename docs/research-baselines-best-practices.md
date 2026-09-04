@@ -23,10 +23,10 @@ Dataset: Kaggle `mlg-ulb/creditcardfraud`. 284,807 transactions, 492 frauds (0.1
 | Source and setting | Model | AUC-ROC | AUPRC (AP) |
 |---|---|---|---|
 | Fraud-Detection Handbook, temporal train/delay/test split, simulated companion data | Random Forest | 0.867 | 0.658 |
-| Same protocol | XGBoost | 0.862 | 0.639 |
-| Same protocol | Logistic Regression | 0.871 | 0.606 |
-| Same protocol | Decision Tree, depth 2 | 0.763 | 0.496 |
-| Commonly reported range, stratified split, tuned `scale_pos_weight`, no resampling | XGBoost / LightGBM | approx. 0.97 to 0.98 | approx. 0.85 to 0.88 |
+| Same protocol (SIMULATED data, not ULB) | XGBoost | 0.862 | 0.639 |
+| Same protocol (SIMULATED data, not ULB) | Logistic Regression | 0.871 | 0.606 |
+| Same protocol (SIMULATED data, not ULB) | Decision Tree, depth 2 | 0.763 | 0.496 |
+| Commonly reported range, stratified split, tuned `scale_pos_weight`, no resampling -- NOT CORROBORATED by primary sources (F21 research 2026-09-03: probable origin is a tutorial using trapezoidal PR-AUC, no held-out test fold, no dedupe; clean-protocol equivalent ~0.80-0.81; AutoXGB step-wise AP 0.78) | XGBoost / LightGBM | approx. 0.97 to 0.98 | approx. 0.85 to 0.88 (see docs/research-ulb-baseline-protocols.md) |
 | Pre-split resampling, leaky, do not emulate | XGBoost | 0.9997 | reported above 0.99 |
 
 Sources: [Fraud-Detection Handbook baseline modeling](https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_3_GettingStarted/BaselineModeling.html), [Impact of Sampling Techniques and Data Leakage on XGBoost](https://arxiv.org/html/2412.07437v1), [Data Leakage and Deceptive Performance](https://arxiv.org/pdf/2506.02703).

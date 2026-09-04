@@ -63,9 +63,13 @@ LAMBDA_MULT = 2.0                                      # lambda_coef = 2 * n_tra
 # ---------------------------------------------------------------- pool build
 
 def build_pool(X_tr: np.ndarray, y_pm1: np.ndarray, schedule: int,
-               weak_type: str, pair_build: str):
-    """Build the weak pool with eqc-models' own builder; return (clf, none).
-    F18: attribute round-trip assert; n<4 guard; explicit strategy."""
+               weak_type: str, pair_build: str,
+               weak_params: dict | None = None,
+               lambda_coef: float | None = None):
+    """Build the weak pool with eqc-models' own builder; return the classifier.
+    F18: attribute round-trip assert; n<4 guard; explicit strategy.
+    weak_params / lambda_coef default to the frozen starting config; the
+    section-6 tuning (F22) passes explicit values."""
     from eqc_models.ml.classifierqboost import QBoostClassifier
 
     n = X_tr.shape[1]
@@ -73,8 +77,10 @@ def build_pool(X_tr: np.ndarray, y_pm1: np.ndarray, schedule: int,
         raise ValueError(f"schedule {schedule} impossible for n={n} features "
                          "(pair cap n(n-3)/2 <= 0); use schedule 1")
     strategy = "multi_processing" if pair_build == "full" else "sequential"
-    cfg = dict(lambda_coef=LAMBDA_MULT * len(y_pm1),
+    cfg = dict(lambda_coef=(LAMBDA_MULT * len(y_pm1) if lambda_coef is None
+                            else lambda_coef),
                weak_cls_schedule=schedule, weak_cls_type=weak_type,
+               weak_cls_params=dict(weak_params or {}),
                weak_cls_strategy=strategy, **FIXED)
     clf = QBoostClassifier(**cfg)
     for k, v in cfg.items():   # F18 invariant: silent-kwarg-drop guard

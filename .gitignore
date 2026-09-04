@@ -13,3 +13,4 @@ docs/papers/*.pdf
 catboost_info/
 kaggle.json
 credentials.json
+experiments/results/*.db
