@@ -1,5 +1,7 @@
 # Quality Standards
 
+**Re-read before write (Sprint 4 retro improvement 7)**: when a file may have been touched by another process, a background job, or an earlier in-flight write, RE-READ it immediately before writing. A stale-write overwrite is a defect class, not an accident: Sprint 4 lost a corrected results memo to one and paid a full rewrite. Whole-file writes to shared documents are the highest-risk case.
+
 **Background-launch fencing rule (Sprint 3 retro improvement 5)**: before launching ANY background job that writes files, verify each output path is either gitignored or deliberately tracked -- in that turn, not after. A later `git add -A` must never be the moment output paths are first considered (Sprint 3: volatile pool/log artifacts swept into a commit before the fence landed).
 
 **Purpose**: Documentation, code, and automation standards for this repository.

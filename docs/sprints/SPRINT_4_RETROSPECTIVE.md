@@ -90,14 +90,14 @@ Team-lead feedback recorded VERBATIM (combined Product Owner / Scrum Master / Le
 
 ## Improvement Decisions
 
-Presented 2026-09-03; awaiting team-lead disposition.
+Team-lead decision 2026-09-03: "all as recommended" (blanket approval).
 
 | # | Title | Source | Type | Effort | Recommendation | Decision |
 |---|---|---|---|---|---|---|
-| 1 | Known-answer tests for score_gates.py: every reported number passes through untested aggregation code (gate verdicts, paired deltas, Spearman, cell keying) | Dev Team cat 2 | Code | 45m | Sprint 5 plan | PENDING |
-| 2 | Evidence-generating steps invalidate their own verification: any checklist walk, memo, or report is regenerated AFTER the last evidence lands, never before (workflow Phase 5) | Dev Team cat 9 | Process | 10m | Apply now | PENDING |
-| 3 | Audience-first rule for deliverables: before drafting any external-facing document, state who reads it and what they must believe; put it at the top of the task, not after the draft | Dev Team cat 7 | Process (planning + workflow) | 15m | Apply now | PENDING |
-| 4 | Plain-language companion becomes a deliverable, not a response: every validation package and every external document ships with its plain-terms version written at the same time | Dev Team cat 6 | Process | 10m | Apply now | PENDING |
-| 5 | Search-space containment check: a tuning search space must contain the incumbent config, verified before the study runs | Dev Team cat 4 | Docs (STATISTICAL_REVIEW_CHECKLIST + planning) | 10m | Apply now | PENDING |
-| 6 | External-review pass on every major evidence document before it reaches the team lead, using the fresh-context mechanism already adopted in Sprint 3 improvement 6 (this sprint's memo review found 3 real errors and 4 overclaims) | Dev Team cat 9 | Process | 10m | Apply now | PENDING |
-| 7 | Re-read before write when another process may have touched a file; treat a stale-write overwrite as a defect class, not an accident | Dev Team cat 9 | Docs (QUALITY_STANDARDS) | 10m | Apply now | PENDING |
+| 1 | Known-answer tests for score_gates.py: every reported number passes through untested aggregation code (gate verdicts, paired deltas, Spearman, cell keying) | Dev Team cat 2 | Code | 45m | Sprint 5 plan | RECORDED: F8 inline addition (master plan) |
+| 2 | Evidence-generating steps invalidate their own verification: any checklist walk, memo, or report is regenerated AFTER the last evidence lands, never before (workflow Phase 5) | Dev Team cat 9 | Process | 10m | Apply now | APPLIED: SPRINT_EXECUTION_WORKFLOW Phase 5 |
+| 3 | Audience-first rule for deliverables: before drafting any external-facing document, state who reads it and what they must believe; put it at the top of the task, not after the draft | Dev Team cat 7 | Process (planning + workflow) | 15m | Apply now | APPLIED: SPRINT_PLANNING audience-first rule |
+| 4 | Plain-language companion becomes a deliverable, not a response: every validation package and every external document ships with its plain-terms version written at the same time | Dev Team cat 6 | Process | 10m | Apply now | APPLIED: SPRINT_EXECUTION_WORKFLOW Phase 5 (strengthened to deliverable) |
+| 5 | Search-space containment check: a tuning search space must contain the incumbent config, verified before the study runs | Dev Team cat 4 | Docs (STATISTICAL_REVIEW_CHECKLIST + planning) | 10m | Apply now | APPLIED: STATISTICAL_REVIEW_CHECKLIST |
+| 6 | External-review pass on every major evidence document before it reaches the team lead, using the fresh-context mechanism already adopted in Sprint 3 improvement 6 (this sprint's memo review found 3 real errors and 4 overclaims) | Dev Team cat 9 | Process | 10m | Apply now | APPLIED: SPRINT_EXECUTION_WORKFLOW Phase 5 |
+| 7 | Re-read before write when another process may have touched a file; treat a stale-write overwrite as a defect class, not an accident | Dev Team cat 9 | Docs (QUALITY_STANDARDS) | 10m | Apply now | APPLIED: QUALITY_STANDARDS |

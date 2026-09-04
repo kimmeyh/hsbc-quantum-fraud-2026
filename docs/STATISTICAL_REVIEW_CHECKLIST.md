@@ -32,6 +32,7 @@ Derived from the FROZEN preregistration sections 5-9. Walk EVERY line with evide
 
 - [ ] Evidence tag ([HW]/[SIM]/[PROJ]) matches what actually executed
 - [ ] Data manifest verified since last staging change (`scripts/manifest.py verify`)
+- [ ] Search-space containment: any tuning search space CONTAINS the incumbent/frozen config, verified before the study runs (Sprint 4: the F22 space bounded tree depth at 1-3 while the starting config used unlimited depth, so the search could not rediscover its own baseline and it had to be carried in by hand at ranking time)
 - [ ] Config provenance checked: any config ported from another dataset has its source-data characteristics recorded (class balance, scale, n) and passes an imbalance sanity check against the target BEFORE running (Sprint 3 lesson: lambda=2*n_train from balanced SPECTRA produced degenerate scores on 0.17%-positive ULB)
 - [ ] results.json record carries all required keys (prereg s11), including config_hash, metered_seconds, retry_count
 - [ ] Any post-freeze change to frozen analysis files has its amendment line (ADR-0001)

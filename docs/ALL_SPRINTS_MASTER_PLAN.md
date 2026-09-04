@@ -139,6 +139,7 @@ A submittable paper exists after Sprint 5; every later sprint adds evidence and 
 **F8. Outline + Draft V1 (~1 day) Priority 30**
 - Phase: Paper
 - Platform: docs
+- Inline addition (Sprint 4 retro improvement 1, approved): known-answer tests for score_gates.py aggregation -- gate verdicts, paired deltas, Spearman, cell keying against hand-computed fixtures (~45m); every reported number passes through this code and it is currently untested
 - Seven rubric-mapped sections + appendices; [HW]/[SIM]/[PROJ] tags; prevalence beside every AUPRC; references from docs/references.md
 - Depends on: F7; team-lead outline approval
 

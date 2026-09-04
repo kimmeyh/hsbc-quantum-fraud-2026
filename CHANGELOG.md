@@ -6,6 +6,7 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ### 2026-09-03
 
+- **process**: Sprint 4 retro improvements applied (all as recommended): evidence-after-the-fact verification rule, external-review pass on evidence documents, audience-first deliverable rule, plain-language companion as deliverable, search-space containment check, re-read-before-write defect class; score_gates.py known-answer tests recorded into F8
 - **feat**: Prereg amendment A7 approved: protocol-sensitivity ladder (S1 metric definition, S2 duplicate-retained, S3 split ratio) as labeled exploratory cells; G0's criterion and FAIL outcome unchanged; prediction persistence added as the enabling change (also unblocks the H1b paired BCa)
 - **process**: Headline framing DECIDED (Class-2): production-bound program spine -- deployable system today, rigorously mapped search for what improves it, stated expectation with its reasons, explainability as a named advantage, concrete transfer path
 - **process**: F25 registered (Phase 2 HOLD): non-convex cardinality-constrained CVQBoost on Dirac-3's integer solver, the formulation where no exact classical proxy exists
