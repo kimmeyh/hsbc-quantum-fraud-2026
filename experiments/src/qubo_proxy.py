@@ -164,14 +164,19 @@ def _score_and_row(w, H_va, H_te, split, cols, config, weak_type, pair_build,
     p_test = np.clip((w @ H_te + 1.0) / 2.0, 0.0, 1.0)
     m = metrics.summarize(split.y_test.to_numpy(), split.y_val.to_numpy(),
                           p_val, p_test, seed=seed)
+    cfg_hash = store.config_hash(
+        {"config": config, "weak_type": weak_type, "pair_build": pair_build,
+         "fixed": FIXED, "lambda_mult": LAMBDA_MULT, "cfg": CONFIGS[config]})
+    pred_file = store.save_predictions(cfg_hash, seed, "stratified",
+                                       split.y_val.to_numpy(), p_val,
+                                       split.y_test.to_numpy(), p_test)
     row = {
         "arm": "cvqboost_proxy",
         "dataset": "ulb", "protocol": "stratified", "seed": seed,
         "config": config, "pool_variant": weak_type, "pair_build": pair_build,
         "n_weak_classifiers": int(n_pool),
-        "config_hash": store.config_hash(
-            {"config": config, "weak_type": weak_type, "pair_build": pair_build,
-             "fixed": FIXED, "lambda_mult": LAMBDA_MULT, "cfg": CONFIGS[config]}),
+        "config_hash": cfg_hash,
+        "predictions_file": pred_file,
         "features_used": cols,
         "metrics": m,
         "val_auprc": float(metrics.average_precision_score(

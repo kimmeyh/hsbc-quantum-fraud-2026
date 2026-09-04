@@ -78,3 +78,42 @@ def update_meta(**kv) -> None:
                  if RESULTS.exists() else {"meta": {}, "rows": []})
         store["meta"].update(kv)
         atomic_write_json(RESULTS, store)
+
+
+# ---------------------------------------------------------------- predictions
+
+PRED_DIR = RESULTS_DIR / "predictions"
+
+
+def prediction_path(config_hash: str, seed, protocol: str = "stratified") -> Path:
+    """One .npz per (config_hash, seed, protocol). config_hash is the key every
+    reported number traces by, so predictions key the same way (ADR-0006/0008)."""
+    return PRED_DIR / f"{config_hash}_{protocol}_{seed}.npz"
+
+
+def save_predictions(config_hash: str, seed, protocol: str,
+                     y_val, p_val, y_test, p_test) -> str:
+    """Persist per-row scores so operating points, paired bootstraps, and the
+    A7 sensitivity cells can be recomputed WITHOUT refitting (amendment A7).
+    Returns the stored path, recorded on the row for traceability."""
+    import numpy as np
+
+    PRED_DIR.mkdir(parents=True, exist_ok=True)
+    f = prediction_path(config_hash, seed, protocol)
+    tmp = f.with_suffix(f".{os.getpid()}.tmp.npz")
+    np.savez_compressed(tmp,
+                        y_val=np.asarray(y_val), p_val=np.asarray(p_val),
+                        y_test=np.asarray(y_test), p_test=np.asarray(p_test))
+    os.replace(tmp, f)
+    return str(f.relative_to(RESULTS_DIR.parent.parent)) if f.is_absolute() else str(f)
+
+
+def load_predictions(config_hash: str, seed, protocol: str = "stratified"):
+    """(y_val, p_val, y_test, p_test) or None when not persisted."""
+    import numpy as np
+
+    f = prediction_path(config_hash, seed, protocol)
+    if not f.exists():
+        return None
+    z = np.load(f)
+    return z["y_val"], z["p_val"], z["y_test"], z["p_test"]
