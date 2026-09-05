@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted (team lead, 2026-09-05)
 
 ## Date
 
@@ -213,3 +213,29 @@ ADR-0006 (feature recipe registry / representation tagging convention);
 `experiments/src/qfe.py`, `experiments/src/h6_twin_preflight.py`,
 `experiments/src/test_qfe.py`, `experiments/src/test_h6_twin_preflight.py`;
 Sprint 6 Plan Task C (`docs/sprints/SPRINT_6_PLAN.md`); card #33 (issue #33, F23).
+
+## Team-lead decisions, 2026-09-05
+
+Both open questions were put to the team lead with pros, cons and a
+recommendation. Both were decided as recommended.
+
+**1. Raw column under phase encoding: REPLACE, not augment.** The raw column is
+dropped in favour of its phase pair. Two reasons carried it. It preserves
+comparability with the FourierWall2 recipe this implements, whose own convention
+is replace. And it is the only variant that tests what H6 claims to test:
+augment confounds the representation against sheer feature count, so a win could
+come from having three columns where the comparator has one, which is precisely
+the order-mismatched comparison this ADR exists to prevent. Augment would also
+collapse the free-tier budget to k<=4, small enough to make the H6 comparison
+noisy. Binding bounds are therefore **k<=6 free tier, k<=8 device**, both
+independently re-verified.
+
+**2. Twin libraries: KEEP the statsmodels/sklearn substitutes, disclose the
+caveat.** The twin's job is to be an order-matched classical bar, not to
+reproduce a specific library's published figure, and no EBM benchmark is quoted
+anywhere in the submission, so nothing hinges on the implementation identity.
+Installing pygam and interpret would add two unvalidated dependencies with their
+own solver behaviour ten days before the deadline. The caveat stays disclosed
+here and in any H6 reporting: our GAM and GA2M are contract-equivalent
+substitutes, so our numbers are not directly comparable to published EBM
+figures.

@@ -1,5 +1,23 @@
 # Hardware Request: Block B4 (SPECTRA replication)
 
+> **STATUS: NOT APPROVED, deferred (team lead, 2026-09-05).** The request was
+> presented with its own dry-run findings and declined for now, on sequencing
+> rather than science. Three reasons: (1) every scored proxy cell shows a
+> NEGATIVE edge, in-segment trailing its matched control by 0.05-0.17 AP, so the
+> proxy cannot forecast the hardware result and the 450 seconds would buy an
+> untested expectation; (2) telecom_churn's test pocket is fragile, with 2 of 5
+> seeds below the 50-positive floor, so that cell reports unscoreable on 40% of
+> its seeds before measuring anything; (3) 450 seconds is 2.8x the entire
+> metered campaign to date (163 s over 37 fits) for a block that does not touch
+> the HSBC submission, in its final ten days.
+>
+> **Re-present when either condition changes**: telecom_churn's floor problem is
+> fixed (a larger pocket or a substitute cell) and some signal survives to
+> hardware; or the QCi 30,000-second grant lands, at which point B4 costs 1.5%
+> of the budget and the calculus changes. H5 remains a preregistered hypothesis
+> and the machinery is built and tested; only the timing is deferred.
+
+
 **Purpose**: The written request for the B4 metered Dirac-3 block, per PREREGISTRATION section 10 and Criterion H. Nothing in this document authorizes execution; the block runs only on explicit team-lead approval of this request (or its amended successor). This document is DRAFTED ONLY (Sprint 6 Task D / F24, card #34); no metered second has been spent against it.
 **Audience**: Team lead (approver); the future execution session (F5, Sprint 8).
 **Last Updated**: 2026-09-05 (drafted; awaiting the QCi grant and team-lead approval per the frozen spend priority B3 > B2 > H3 ladder > B4)
