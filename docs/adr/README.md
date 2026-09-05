@@ -31,3 +31,4 @@ Adopted from the spamfilter-multi ADR system (F15 review) with one addition: eve
 | [0010](0010-splits-and-seeds-provider.md) | Splits and seeds from one provider; seed lists are constants | Accepted | 2026-09-02 |
 | [0011](0011-secrets-and-credential-handling.md) | Secrets and credential handling | Accepted | 2026-08-30 |
 | [0012](0012-pdf-rendering-toolchain.md) | PDF rendering toolchain: pandoc to docx to Word | Accepted | 2026-09-04 |
+| [0013](0013-h6-qfe-twin-design.md) | H6 QFE representation and order-matched classical twin design | Proposed | 2026-09-05 |
