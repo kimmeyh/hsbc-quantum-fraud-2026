@@ -204,6 +204,11 @@ def run_seed(seed: int, dry_run: bool) -> dict:
         # carries only "config" raises KeyError there.
         "config_hash": cfg_hash,
         "pool_variant": "mixed",
+        # score_gates keys unknown arms by feature_set, and cost_analysis by
+        # pair_build; a row missing either raises KeyError there rather than
+        # being skipped, so the gate report cannot regenerate.
+        "feature_set": "mixed_k6",
+        "pair_build": "seq",
         "dataset": "ulb",
         "protocol": "stratified",
         "evidence_tag": "HW",
