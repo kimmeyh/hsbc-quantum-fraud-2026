@@ -1,24 +1,18 @@
 {
   "current_sprint": {
-    "number": 6,
-    "name": "The Diverse Pool",
-    "branch": "feature/20260905_Sprint_6",
-    "status": "phase_4_execution",
-    "plan_doc": "docs/sprints/SPRINT_6_PLAN.md",
+    "number": 7,
+    "name": "TBD at refinement",
+    "branch": null,
+    "status": "phase_1_backlog_refinement",
+    "plan_doc": null,
     "pr": null,
-    "plan_approved": true,
-    "github_issues": [
-      31,
-      32,
-      33,
-      34,
-      35
-    ]
+    "plan_approved": false,
+    "github_issues": []
   },
   "last_completed_sprint": {
-    "number": 5,
-    "merged_pr": 29,
-    "main_merge_pr": 30,
+    "number": 6,
+    "merged_pr": 36,
+    "main_merge_pr": null,
     "docs_triad_complete": true
   },
   "prereg": {
@@ -26,5 +20,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-04"
+  "updated": "2026-09-05"
 }

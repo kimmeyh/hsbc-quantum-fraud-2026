@@ -274,3 +274,35 @@ feedback drafted per protocol step 2.
      rather than a direction, but F3 is the roadmap commitment.
   2. The proposal is at 6/6 with a 5-page target the team lead called desirable
      but not required. Worth one deliberate trim pass in Sprint 7, or leave it?
+
+## Improvement Decisions
+
+Proposed after the combined feedback (step 5); disposed by the team lead
+2026-09-05 (step 6): "improvements all now".
+
+| # | Improvement | Type | Effort | Disposition | Status |
+|---|---|---|---|---|---|
+| 1 | `-u` on every long-running background python invocation | Tooling | 10m | APPLY NOW | Done: WINDOWS_POWERSHELL_GUIDE, with the failure it caused |
+| 2 | results.json row-schema contract test | Testing | 30m | APPLY NOW | Done: `test_row_schema.py`, 6 tests |
+| 3 | Free-tier sizing pre-check in the hardware runner | Safety | 20m | APPLY NOW | Done: `check_free_tier_size`, refuses >100 vars locally |
+| 4 | Measure page-break positions before trimming prose | Tooling | 20m | APPLY NOW | Done: `scripts/page-fill-report.py` |
+| 5 | F33 tune the mixed pool toward Loke et al. | Experiment | 4-6h | BACKLOG, priority 1 | Registered; team lead selected for Sprint 7 |
+| 6 | F34 spend-guard property tests | Testing | 1h | BACKLOG, priority 3 | Registered |
+
+Improvement 2 immediately found a real gap on first run: 27 Sprint 4 hardware
+rows lack the `metered_seconds_parsed` audit flag, which arrived with amendment
+A8. Their spend IS fully recorded (120.0 s, verified), so this is a provenance
+gap in historical rows rather than an accounting failure, and the test is scoped
+to blocks written after A8 with that reasoning recorded in the code.
+
+Improvement 4 immediately produced a finding the two previous trim cycles had
+missed: proposal page 1 sits at 70% of median fill because the title block ends
+it early, so roughly 1,400 characters are reclaimable there without cutting any
+prose.
+
+## Team lead answers to Category 16
+
+1. **Sprint 7 scope, F33 or F3?** F33 in Sprint 7, F3 in Sprint 8: "we get both
+   done easily as we are doing > 1 sprint per day". The roadmap is renumbered
+   accordingly rather than treating the two as competing for one sprint.
+2. **Trim the proposal below 6 pages?** "leave for now."

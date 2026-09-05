@@ -19,14 +19,15 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 3 | docs/sprints/SPRINT_3_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 2-3, 2026) |
 | 4 | docs/sprints/SPRINT_4_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 3-4, 2026) |
 | 5 | docs/sprints/SPRINT_5_SUMMARY.md | [OK] Complete | ~1 day (Sep 4, 2026) |
+| 6 | docs/sprints/SPRINT_6_SUMMARY.md | [OK] Complete | ~1 day (Sep 5, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 5: The Paper and the QCi Package** (Sep 4, 2026; PR #29 merged to develop, develop merged to main via PR #30).
-Delivered: F8/F9 the submission documents (proposal 6/6 pages, appendix 3/3, team profile 1/1, all verified US Letter); F27 production-trial design; F26 cost-based operating points with the budget ceiling stated; F28 explainability thread with its scope limit; F19 QCi package, six DRAFT PDFs, team lead disposition "consider it sent". **The mechanism controls settled the flat optimum**: the cause is POOL DEGENERACY measured at the learner level (off-diagonal Gram 170,234.4 vs diagonal 170,235; any two learners agree on 99.999% of rows), not the simplex constraint as Sprint 4 had attributed it. Solver dispersion recovered at zero metered cost (0 of 27 fits returned identical draws; spread median 0.019%). Three external reviews applied with written dispositions. Amendments A9 (prediction-store keying; affected figures retagged [SIM]) and A10 (hardware predictions version-controlled).
-Two defects worth carrying forward: the prediction-key collision, where the proxy backfill silently overwrote hardware predictions because hardware and proxy deliberately share a config_hash; and **"exactly uniform" was not exact** (8.0e-08, not 0), where the residual +0.0022 turned out to be TIE-BREAKING rather than optimization, which strengthens the finding to "the optimizer contributes nothing at all". All nine PDFs had also rendered 11x17 TABLOID via the old Word path, invalidating every page count; found only because the team lead asked.
-Literature find: **Loke et al., ICAART 2026** -- same Dirac-3 hardware, same algorithm, same benchmark family, AUC-PR above 0.8 against our 0.767, with a heterogeneous pool. Independent corroboration of the degeneracy diagnosis and the motivation for F31.
-Retro: docs/sprints/SPRINT_5_RETROSPECTIVE.md (7 improvements, all applied or registered; test suite 28 -> 50).
+**Sprint 6: The Diverse Pool** (Sep 5, 2026; PR #36). Four concurrent tracks.
+Delivered: **F31, the central result** -- a mixed four-family pool moves the optimum genuinely off uniform (L1 0.127 against 8.0e-08, largest weight 1.24x uniform, +0.0076 on 10 of 10 seeds), with two controls ruling out the tie-breaking that explained Sprint 5's apparent gain (rounding to 2dp leaves FEWER distinct scores than uniform yet still scores higher; the shrinkage curve is monotone). **F32**: 10 metered fits, 43.0 device seconds of a 40-50 approval, zero failures, hardware minus proxy -0.0007, and operating points now [HW] from persisted predictions (recall 0.271/0.509/0.839). Three agent tracks delivered F3, F23 and F24 prep with no rework, all respecting a no-arms constraint verified independently. Amendments A11 and A12.
+**Stated honestly**: +0.0076 is below the 0.0268 MDE, and the mixed pool's absolute AUPRC (0.7565) is BELOW the frozen pool's (0.7681). Diversity bought the optimizer headroom, not accuracy -- which is what F33 tests next.
+**Two of our own claims corrected**: the free tier refuses continuous degree-2 jobs above 100 variables, falsifying our written claim that no device ceiling bound this work (A12, established at zero metered cost); and the spend guard had two arithmetic defects, a cap above the approval and a double-count that halted the block at half its real spend.
+Retro: docs/sprints/SPRINT_6_RETROSPECTIVE.md (6 improvements, all applied or registered; suite 50 -> 115).
 
 ## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
 
@@ -34,12 +35,14 @@ Retro: docs/sprints/SPRINT_5_RETROSPECTIVE.md (7 improvements, all applied or re
 |---|---|---|---|
 | 4 | Sep 3-5 | F22, F21, F2 (per-block approval), F7 | -- |
 | 5 | Sep 4 | [DONE] F8, F9, F27, F26, F28, F19 | -- |
-| 6 | Sep 5-7 | **F31 (diverse pool, team lead approved 2026-09-04)** + F3 + paper updates (diff-scoped reviews, rubric) + F23/F24 prep in parallel agents | still time for F16 + F10 |
-| 7 | Sep 9-11 | F4 + paper updates | still time for F16 + F10 |
-| 8 | Sep 11-12 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
+| 6 | Sep 5 | [DONE] F31, F3 prep, F23, F24, F32 | -- |
+| 7 | Sep 5-6 | **F33** (tune the mixed pool toward Loke et al.) + paper updates | still time for F16 + F10 |
+| 8 | Sep 6-7 | **F3** (IEEE-CIS, scaffolding already built in Sprint 6) + paper updates | still time for F16 + F10 |
+| 9 | Sep 7-9 | F4 + paper updates | still time for F16 + F10 |
+| 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
 | Finalize | Sep 12-13 | F16, F10; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
 
-A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
+Renumbered 2026-09-05: the team lead noted the project is running more than one sprint per day, so F33 takes Sprint 7 and F3 moves to Sprint 8 rather than competing for the same hours. A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
 
 ## Next Sprint Candidates
 
@@ -55,6 +58,22 @@ A submittable paper exists after Sprint 5; every later sprint adds evidence and 
 - B2 (ULB full config, 816 vars, 11 fits, ~450 s), B3 (IEEE-CIS + H3 ladder, 16 fits, ~650 s), B4 (SPECTRA, 15 fits, ~450 s), B5 (QSVM sign-augmented, 12 fits, ~15 s); frozen spend priority B3 > B2 > ladder > B4
 - B1 + G0b already executed (Sprint 4, 120 QPU s); ~380 s of the current balance remain, so B5 is affordable now and the rest need the grant
 - Depends on: QCi grant; per-block team-lead approval (Criterion H)
+
+**F33. Tune the mixed pool toward the Loke et al. configuration (~4-6h, zero metered) Priority 1**
+- Phase: Experiments (Sprint 6 retrospective, Claude category 14; team lead selected for Sprint 7 on 2026-09-05)
+- Platform: ULB classical proxy only. ZERO metered seconds
+- **The gap this closes**: F31 established that a heterogeneous pool makes the optimizer work (L1 from uniform 0.127 against 8.0e-08, +0.0076 on 10 of 10 seeds, tie-breaking ruled out by two controls). But the mixed pool's ABSOLUTE AUPRC is 0.7565, BELOW the frozen pool's 0.7681 and well below the 0.8+ Loke et al. report on the same hardware and benchmark family. Diversity bought the optimizer headroom, not accuracy. F33 tests whether the remaining gap is learner QUALITY and tuning rather than pool composition
+- **Design**: adopt Loke et al.'s families at their reported hyperparameters (KNN, LDA, logistic regression, XGBoost) rather than our defaults; add imbalance handling AT FIT TIME (class-weighted and balanced-bootstrap learners), which the A11 mixed pool did not vary and which the Sprint 5 class-weighted control explicitly did NOT test since it reweighted only the ensemble objective; sweep the per-family learner count against the free-tier 100-variable ceiling (A12), since four families at k=6 gives 60 variables and leaves headroom
+- **Acceptance**: report absolute AUPRC against both the frozen pool (0.7681) and the Loke figure (>0.8), the solved-minus-uniform difference against the 0.0268 MDE, and the pool-diversity measures before optimization. A configuration that clears the frozen pool's absolute AUPRC while keeping a non-degenerate optimum is the result that would change the submission's headline from a direction to a finding
+- **Honesty constraints**: exploratory under a dated amendment; H1b and every frozen gate keep their committed scoring; the Loke comparison is a design comparison, never a claim to have reproduced their number
+- Depends on: F31 (done). Sequence BEFORE F3, per the team lead's 2026-09-05 decision
+
+**F34. Spend-guard property tests (~1h) Priority 3**
+- Phase: Experiments/tooling (Sprint 6 retrospective, Claude category 10)
+- Platform: N/A
+- **Why**: the metered spend guard had TWO arithmetic defects in one sprint. A cap was set at 60 s when 50 s was approved, which would have let the code authorize spend the team lead did not grant. And the pre-call projection added `_spent()` (which reads results.json) to the in-memory rows that `append_row` had ALREADY written there, double-counting every fit, so the block halted at a reported 50.0 s when 25.0 s had been spent and four approved seeds were lost. A guard whose own arithmetic is wrong is a risk, not a mitigation
+- **Design**: property tests asserting the cap never exceeds the stated approval; that spend is computed from exactly one source of truth so double-counting is structurally impossible; that unparseable billing is charged the conservative estimate and flagged rather than counted as zero (A8); and that the cap bounds the call it PRECEDES rather than the one after it
+- Depends on: nothing
 
 **F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14**
 - Phase: Experiments

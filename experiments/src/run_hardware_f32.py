@@ -104,6 +104,31 @@ def _metered(resp) -> float | None:
     return float(m.group(1)) if m else None
 
 
+FREE_TIER_MAX_VARS = 100    # established empirically 2026-09-05 (amendment A12)
+
+
+def check_free_tier_size(n_variables: int) -> None:
+    """Refuse locally what the device would refuse anyway (Sprint 6 improvement 3).
+
+    Dirac-3's free tier rejects any continuous degree-2 job above 100 variables,
+    server-side. A 312-variable submission came back:
+
+        Number of variables '312' in problem is greater than the free-tier
+        device limit '100' for polynomial with degree '2'
+
+    That refusal costs no metered seconds, but it costs a full pool build (about
+    two minutes per seed) and it surfaces as an HTTP error mid-campaign rather
+    than as a sizing decision at planning time. Compute the count and stop here.
+    """
+    if n_variables > FREE_TIER_MAX_VARS:
+        raise SystemExit(
+            f"REFUSING to submit: {n_variables} variables exceeds the free-tier "
+            f"limit of {FREE_TIER_MAX_VARS} for continuous degree-2 jobs "
+            f"(amendment A12). Reduce k or the family count, or move to a paid "
+            f"tier. Four families at k=6 gives 60 variables and fits."
+        )
+
+
 def _spent() -> float:
     if not qp.RESULTS.exists():
         return 0.0
@@ -127,6 +152,8 @@ def run_seed(seed: int, dry_run: bool) -> dict:
     pool = mp.build_mixed(X_tr, X_va, X_te, y_pm1, SCHEDULE)
     H_tr, H_va, H_te = pool["H_tr"], pool["H_va"], pool["H_te"]
     n = H_tr.shape[0]
+    if not dry_run:
+        check_free_tier_size(n)
     lam = qp.LAMBDA_MULT * len(y_pm1)
 
     # exact classical solve of the identical Hamiltonian: the ADR-0002 control

@@ -57,3 +57,24 @@ uv pip install <pkg> --python .venv\Scripts\python.exe
 # Sprint status (never regex)
 .\scripts\update-sprint-status.ps1 -Set status=phase_4_execution
 ```
+
+## Background python: always pass `-u` (Sprint 6 retro improvement 1)
+
+Python buffers stdout when its output is piped or redirected, which every
+`run_in_background` invocation does. A long-running job therefore writes NOTHING
+to its output file until it exits, so the file looks empty while the job is
+healthy. Sprint 6 lost four check cycles to this before diagnosing it: a
+20-minute mixed-pool run showed an empty output file the whole time and looked
+dead.
+
+```powershell
+# WRONG: output invisible until exit
+.\.venv\Scripts\python.exe experiments\src\mixed_pool.py
+
+# RIGHT: line-buffered, progress visible as it happens
+.\.venv\Scripts\python.exe -u experiments\src\mixed_pool.py
+```
+
+Use `-u` for anything that runs longer than a few seconds, and especially for
+metered hardware blocks, where watching progress is the difference between
+catching a problem at fit 1 and finding it at fit 10.

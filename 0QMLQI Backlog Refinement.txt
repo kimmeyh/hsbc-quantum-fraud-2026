@@ -5,9 +5,11 @@ All Sprint tasks and sub-tasks are approved.
 Continue without addition approvals until Manual Validation, providing your recommendation for Manual Validation steps.
 Do not stop to ask questions unless meeting the criteria in \docs\SPRINT_STOPPING_CRITERIA.md
 ---------------------------------------------------------------------------------------------------------
-Sprint 6 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
-Sprint 6 scope as recommened (F31, F3 prep, F23, F24,
-  F32). Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.
+Sprint 7 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
+
+
+---------------------------------------------------------------------------------------------------------
+Sprint 6 scope as recommended (F31, F3 prep, F23, F24, F32). Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.
 
 
   F31 + F32 together: yes, but sequenced, not parallel. F32 must run after F31, and that ordering is the whole point. F32 spends metered Dirac-3 seconds persisting hardware
