@@ -56,30 +56,6 @@ A submittable paper exists after Sprint 5; every later sprint adds evidence and 
 - B1 + G0b already executed (Sprint 4, 120 QPU s); ~380 s of the current balance remain, so B5 is affordable now and the rest need the grant
 - Depends on: QCi grant; per-block team-lead approval (Criterion H)
 
-**F26. Cost-based operating-point analysis (~2h) Priority 13**
-- Phase: Experiments (team-lead direction 2026-09-03: the proposal must read as production-bound)
-- Platform: ULB, docs (zero metered seconds; reuses existing rows)
-- Report every arm at a realistic review capacity (alerts/day budget) and under an asymmetric cost assumption (missed fraud vs declined-good-customer), alongside AUPRC: "fraud caught per analyst-hour" is the number a fraud team buys on
-- Uses the existing validation-chosen operating points (metrics.evaluate_at, threshold_alert_budget) and the persisted-prediction fix shared with A7 cell S1; states cost assumptions explicitly as assumptions, with a sensitivity range
-- Output: a cost table for the paper's Validation section + one paragraph translating AUPRC into operational terms
-- Depends on: prediction persistence (shared with A7 S1)
-
-**F27. Production-trial design section (~2h) Priority 13**
-- Phase: Paper (team-lead direction 2026-09-03)
-- Platform: docs
-- A concrete 90-day trial the bank could start: shadow-mode scoring against live traffic, champion/challenger vs the incumbent, the review-capacity operating point, latency budget for real-time scoring, calibration requirements for the downstream rules engine, drift monitoring with named retraining triggers, and the dispute/regulator explainability path
-- Cites measured inputs we already hold: per-fit hardware cost (4-5 QPU s), calibration data, operating points, the temporal-decay question from the Sprint 4 temporal rows
-- Names the free-tier feature constraint honestly: 13 features fit the device tier, not the problem; production sizing math included
-- Depends on: F7 memo (done); feeds F8
-
-**F28. Explainability thread: ensemble inspectability vs GBDT baseline (~3h) Priority 14**
-- Phase: Experiments + Paper (team-lead direction 2026-09-03; team lead has prior QML explainability work to cite as capability)
-- Platform: ULB, docs (zero metered seconds)
-- Structural argument plus evidence: a CVQBoost ensemble is a weighted vote over small, individually inspectable weak learners (1-3 features each), versus a 2,000-tree boosted model requiring post-hoc attribution; quantify with weight concentration, per-learner feature attribution, and a worked single-decision explanation for both arms
-- Frames explainability as the bar that actually gates deployment in banking (dispute handling, regulator review), not as a nice-to-have
-- Output: an explainability subsection for the paper with a side-by-side worked example
-- Depends on: existing pools and rows; team-lead input on which prior QML explainability work to cite
-
 **F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14**
 - Phase: Experiments
 - Platform: IEEE-CIS
@@ -151,28 +127,6 @@ A submittable paper exists after Sprint 5; every later sprint adds evidence and 
 (F7 results memo + gate review: COMPLETED Sprint 4 -> docs/RESULTS_MEMO.md. A REFRESH of the memo is folded into each later evidence sprint rather than tracked as a separate item.)
 
 ### Paper (Stages 4-6)
-
-**F8. Outline + Draft V1 (~1 day) Priority 30**
-- Phase: Paper
-- Platform: docs
-- Inline addition (Sprint 4 retro improvement 1, approved): known-answer tests for score_gates.py aggregation -- gate verdicts, paired deltas, Spearman, cell keying against hand-computed fixtures (~45m); every reported number passes through this code and it is currently untested
-- Seven rubric-mapped sections + appendices; [HW]/[SIM]/[PROJ] tags; prevalence beside every AUPRC; references from docs/references.md
-- Depends on: F7; team-lead outline approval
-
-**F9. Adversarial reviews V2/V3 + rubric pass (~0.5 day) Priority 32**
-- Phase: Paper
-- Platform: docs
-- Domain pass, quantum pass (encoding diagnostics, evidence-tag audit), rubric scoring; fix lowest criterion
-- Depends on: F8
-
-**F19. Draft submission PDF(s) to QCi (~2h assemble + team-lead send) Priority 34**
-- Phase: External (team-lead request 2026-09-02; moved 2026-09-03 to the END of Sprint 5 so the package carries the actual F8/F9 paper draft)
-- Platform: docs
-- Assemble the Sprint-5-end package: the F8/F9 paper draft (reviewed, rubric-scored) plus preregistration incl. amendments, gate report / results memo, and hardware plan, rendered as PDF(s) marked DRAFT
-- MANDATORY pre-send confidentiality scan of every page (the Stage 7 scan run early, scoped to the sent artifacts: no employer references, no account identifiers, no QPU balances tied to a named account)
-- Team lead reviews and personally sends; Claude records what was sent and when in requirements-matrix
-- Value: progress evidence for the pending QCi grant; early feedback on how Dirac-3 is represented; honors the sponsorship letter's collaborative framing
-- Depends on: F8, F9 (Sprint 5)
 
 ### Finalize (Stages 7-8)
 
