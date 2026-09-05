@@ -1,0 +1,261 @@
+{
+  "amendment": "A13",
+  "status": "LABELED EXPLORATORY -- not a gate; frozen gates unchanged",
+  "question": "Is the mixed pool's accuracy gap learner quality and tuning, or something tuning cannot reach?",
+  "comparators": {
+    "frozen_single_family": 0.7681,
+    "untuned_mixed": 0.7565,
+    "loke_reported": 0.8
+  },
+  "summary": {
+    "configuration": "balanced_shallow_knn",
+    "n_seeds": 10,
+    "ap_mean": 0.7827165660932633,
+    "ap_sd": 0.028256933997430744,
+    "ap_difference_mean": 0.004273819269872858,
+    "ap_difference_sd": 0.001801005503363459,
+    "seeds_positive": 10,
+    "exceeds_mde": false,
+    "l1_from_uniform_mean": 0.21232096501748693,
+    "gram_ratio_mean": 0.9284123329705803,
+    "vs_frozen_pool": 0.014616566093263339,
+    "vs_untuned_mixed": 0.026216566093263394,
+    "vs_loke_reported": -0.0172834339067367
+  },
+  "per_seed": [
+    {
+      "n_variables": 60,
+      "fits_free_tier": true,
+      "diversity": {
+        "n_learners": 60,
+        "gram_diagonal": 170884.0,
+        "gram_offdiagonal_mean": 158701.8847457627,
+        "gram_ratio": 0.9287112002631184,
+        "pairwise_disagreement_mean": 0.0356444097869543,
+        "pairwise_disagreement_max": 0.1503241965309801,
+        "distinct_learner_rows": 49
+      },
+      "l1_from_uniform": 0.2029404819820867,
+      "max_weight_over_uniform": 1.2188138146916674,
+      "ap_solved_val": 0.7133036306734392,
+      "ap_uniform_val": 0.7109503240642482,
+      "ap_solved_test": 0.822965833453009,
+      "ap_uniform_test": 0.8168760694583959,
+      "ap_difference": 0.00608976399461314,
+      "seed": 42,
+      "label": "balanced_shallow_knn",
+      "wall_seconds": 32.7
+    },
+    {
+      "n_variables": 60,
+      "fits_free_tier": true,
+      "diversity": {
+        "n_learners": 60,
+        "gram_diagonal": 170884.0,
+        "gram_offdiagonal_mean": 158698.81129943504,
+        "gram_ratio": 0.9286932146920428,
+        "pairwise_disagreement_mean": 0.035653359592267106,
+        "pairwise_disagreement_max": 0.16577912502048173,
+        "distinct_learner_rows": 48
+      },
+      "l1_from_uniform": 0.2113191081233357,
+      "max_weight_over_uniform": 1.2306214804220035,
+      "ap_solved_val": 0.8591049694752318,
+      "ap_uniform_val": 0.8533571023438752,
+      "ap_solved_test": 0.7514888317738952,
+      "ap_uniform_test": 0.7506646190369076,
+      "ap_difference": 0.0008242127369876284,
+      "seed": 43,
+      "label": "balanced_shallow_knn",
+      "wall_seconds": 31.6
+    },
+    {
+      "n_variables": 60,
+      "fits_free_tier": true,
+      "diversity": {
+        "n_learners": 60,
+        "gram_diagonal": 170884.0,
+        "gram_offdiagonal_mean": 158385.60903954803,
+        "gram_ratio": 0.9268603792019617,
+        "pairwise_disagreement_mean": 0.03656975419410954,
+        "pairwise_disagreement_max": 0.14569532548395403,
+        "distinct_learner_rows": 47
+      },
+      "l1_from_uniform": 0.2206311994993826,
+      "max_weight_over_uniform": 1.2363040228635647,
+      "ap_solved_val": 0.7449859943285214,
+      "ap_uniform_val": 0.7384782533908945,
+      "ap_solved_test": 0.8045560413805121,
+      "ap_uniform_test": 0.801544524579496,
+      "ap_difference": 0.0030115168010160787,
+      "seed": 44,
+      "label": "balanced_shallow_knn",
+      "wall_seconds": 31.4
+    },
+    {
+      "n_variables": 60,
+      "fits_free_tier": true,
+      "diversity": {
+        "n_learners": 60,
+        "gram_diagonal": 170884.0,
+        "gram_offdiagonal_mean": 157905.60903954803,
+        "gram_ratio": 0.92405145618986,
+        "pairwise_disagreement_mean": 0.037974271905070044,
+        "pairwise_disagreement_max": 0.1641405865967557,
+        "distinct_learner_rows": 46
+      },
+      "l1_from_uniform": 0.23607058709891734,
+      "max_weight_over_uniform": 1.2553177143522718,
+      "ap_solved_val": 0.7503734580653691,
+      "ap_uniform_val": 0.745822356549066,
+      "ap_solved_test": 0.7983140619071069,
+      "ap_uniform_test": 0.794201812619306,
+      "ap_difference": 0.004112249287800851,
+      "seed": 45,
+      "label": "balanced_shallow_knn",
+      "wall_seconds": 31.7
+    },
+    {
+      "n_variables": 60,
+      "fits_free_tier": true,
+      "diversity": {
+        "n_learners": 60,
+        "gram_diagonal": 170884.0,
+        "gram_offdiagonal_mean": 160539.75141242938,
+        "gram_ratio": 0.9394662543738992,
+        "pairwise_disagreement_mean": 0.03026682983282544,
+        "pairwise_disagreement_max": 0.14041689099037943,
+        "distinct_learner_rows": 47
+      },
+      "l1_from_uniform": 0.18269558793872845,
+      "max_weight_over_uniform": 1.2014607922911709,
+      "ap_solved_val": 0.7296508945754496,
+      "ap_uniform_val": 0.7250342690898841,
+      "ap_solved_test": 0.7394994772774032,
+      "ap_uniform_test": 0.7345433256917667,
+      "ap_difference": 0.004956151585636448,
+      "seed": 46,
+      "label": "balanced_shallow_knn",
+      "wall_seconds": 31.8
+    },
+    {
+      "n_variables": 60,
+      "fits_free_tier": true,
+      "diversity": {
+        "n_learners": 60,
+        "gram_diagonal": 170884.0,
+        "gram_offdiagonal_mean": 158427.73333333334,
+        "gram_ratio": 0.9271068873231744,
+        "pairwise_disagreement_mean": 0.0364465497260705,
+        "pairwise_disagreement_max": 0.15240162917534703,
+        "distinct_learner_rows": 48
+      },
+      "l1_from_uniform": 0.21271138933588113,
+      "max_weight_over_uniform": 1.2293236454438274,
+      "ap_solved_val": 0.803389198919262,
+      "ap_uniform_val": 0.8024943754544082,
+      "ap_solved_test": 0.7676444005533957,
+      "ap_uniform_test": 0.7646957849970275,
+      "ap_difference": 0.0029486155563681615,
+      "seed": 47,
+      "label": "balanced_shallow_knn",
+      "wall_seconds": 32.5
+    },
+    {
+      "n_variables": 60,
+      "fits_free_tier": true,
+      "diversity": {
+        "n_learners": 60,
+        "gram_diagonal": 170884.0,
+        "gram_offdiagonal_mean": 158147.2,
+        "gram_ratio": 0.9254652278738794,
+        "pairwise_disagreement_mean": 0.03726738936923148,
+        "pairwise_disagreement_max": 0.14426160436319374,
+        "distinct_learner_rows": 46
+      },
+      "l1_from_uniform": 0.221035647463965,
+      "max_weight_over_uniform": 1.2372568576884675,
+      "ap_solved_val": 0.7887154417265234,
+      "ap_uniform_val": 0.783378350850132,
+      "ap_solved_test": 0.7896947535287758,
+      "ap_uniform_test": 0.7847866326184746,
+      "ap_difference": 0.004908120910301239,
+      "seed": 48,
+      "label": "balanced_shallow_knn",
+      "wall_seconds": 31.3
+    },
+    {
+      "n_variables": 60,
+      "fits_free_tier": true,
+      "diversity": {
+        "n_learners": 60,
+        "gram_diagonal": 170884.0,
+        "gram_offdiagonal_mean": 156486.54463276837,
+        "gram_ratio": 0.9157472006318226,
+        "pairwise_disagreement_mean": 0.042126386459404114,
+        "pairwise_disagreement_max": 0.1587802251819948,
+        "distinct_learner_rows": 47
+      },
+      "l1_from_uniform": 0.2655633425354681,
+      "max_weight_over_uniform": 1.281578699602573,
+      "ap_solved_val": 0.8276891937279472,
+      "ap_uniform_val": 0.8186572796791737,
+      "ap_solved_test": 0.7683684091339261,
+      "ap_uniform_test": 0.7616073790237456,
+      "ap_difference": 0.006761030110180477,
+      "seed": 49,
+      "label": "balanced_shallow_knn",
+      "wall_seconds": 31.1
+    },
+    {
+      "n_variables": 60,
+      "fits_free_tier": true,
+      "diversity": {
+        "n_learners": 60,
+        "gram_diagonal": 170884.0,
+        "gram_offdiagonal_mean": 159070.806779661,
+        "gram_ratio": 0.9308701035770524,
+        "pairwise_disagreement_mean": 0.0345649283744469,
+        "pairwise_disagreement_max": 0.1705952576016479,
+        "distinct_learner_rows": 48
+      },
+      "l1_from_uniform": 0.19586665755697935,
+      "max_weight_over_uniform": 1.2175389063583941,
+      "ap_solved_val": 0.8141306717050327,
+      "ap_uniform_val": 0.8120034795577414,
+      "ap_solved_test": 0.8181711706156459,
+      "ap_uniform_test": 0.8149113189839129,
+      "ap_difference": 0.003259851631733035,
+      "seed": 50,
+      "label": "balanced_shallow_knn",
+      "wall_seconds": 30.8
+    },
+    {
+      "n_variables": 60,
+      "fits_free_tier": true,
+      "diversity": {
+        "n_learners": 60,
+        "gram_diagonal": 170884.0,
+        "gram_offdiagonal_mean": 160144.18079096044,
+        "gram_ratio": 0.9371514055789918,
+        "pairwise_disagreement_mean": 0.03142428067964828,
+        "pairwise_disagreement_max": 0.14642096392874698,
+        "distinct_learner_rows": 48
+      },
+      "l1_from_uniform": 0.17437564864012475,
+      "max_weight_over_uniform": 1.1917522929751814,
+      "ap_solved_val": 0.7442525533633493,
+      "ap_uniform_val": 0.7424590150256459,
+      "ap_solved_test": 0.7664626813089639,
+      "ap_uniform_test": 0.7605960012248724,
+      "ap_difference": 0.0058666800840915245,
+      "seed": 51,
+      "label": "balanced_shallow_knn",
+      "wall_seconds": 31.8
+    }
+  ],
+  "interpretation_caveats": {
+    "sweep_vs_stage2_discrepancy": "The seed-42 sweep reported VALIDATION AP (0.7133) and the comparators in `comparators` are TEST AP, so a mid-run note predicting the tuned pool was 'unlikely to clear 0.7681' compared two different quantities. Seed 42's validation fold is simply harder than its test fold (0.7133 vs 0.8230). Across ten seeds validation runs 0.0052 BELOW test on this split design. The prediction was wrong for that reason; the selection itself was sound, since it ranked candidates against each other on one consistent quantity.",
+    "feature_count_is_NOT_matched": "CRITICAL for how this is reported. The tuned pool is k=6 (60 variables, sized to the A12 free-tier ceiling). The frozen-pool comparator 0.7681 and the untuned-mixed comparator 0.7565 are both k=13. A raw '+0.0146 over the frozen pool' therefore compares different feature counts, which is exactly the order-mismatched comparison ADR-0013 identifies as how apparent wins get manufactured. The like-for-like comparator is the single-family pool at k=6, computed separately."
+  }
+}

@@ -45,7 +45,13 @@ The cause is pool degeneracy, and it is measurable: off-diagonal Gram entries av
 
 **This is a statement about how CVQBoost is configured for extreme class imbalance, not about your hardware.** The device reproduced the exact optimum faithfully every time. The pool handed to it was the problem. We think it is worth a note in the CVQBoost documentation for anyone applying it at low prevalence, and we would rather you had it from us than from a customer who hit it silently.
 
-We then tested the fix. Replacing the single family of depth-limited trees with four families (decision tree, LDA, logistic, KNN) moves the optimum genuinely off uniform: L1 distance 0.127 against 8.0e-08, largest weight 1.24 times uniform. Two controls confirm this is optimization rather than tie-breaking. The gain is +0.0076 AUPRC, still below our own detectable threshold of 0.0268, so we report it as a direction with a measured mechanism rather than a win. Loke et al. (ICAART 2026) reach AUC-PR above 0.8 on your hardware with a heterogeneous pool, which points the same way.
+We then tested the fix, in two steps, and the second one is the part we think is useful to you.
+
+First, replacing the single family of depth-limited trees with four families (decision tree, LDA, logistic, KNN) moves the optimum genuinely off uniform: L1 distance 0.127 against 8.0e-08, largest weight 1.24 times uniform, with two controls confirming this is optimization rather than tie-breaking. It bought the optimizer something to do, but no accuracy.
+
+Second, adding imbalance handling AT FIT TIME -- class weighting inside each weak learner as it is built, rather than reweighting the ensemble objective afterwards -- changes the pool materially: the Gram off-diagonal ratio falls from 0.9988 to 0.92. Against the same single-family pool rebuilt at the same size on the same splits, the tuned pool gains +0.0198 AUPRC on nine of ten seeds, reaching 0.7827 against Loke et al.'s reported 0.8 on your hardware. It remains below our own 0.0268 detectable threshold, so we report it as a direction with a measured mechanism rather than a win.
+
+**The part worth your attention: the accuracy came from the learners, not the optimizer.** On the tuned pool the solved weights beat uniform weights by only +0.0043. So for CVQBoost at low prevalence, the leverage is in how the weak learners are built, and the optimization step is close to free either way. That is a configuration statement about your library rather than a limitation of your hardware, and it is the second thing we would put in the CVQBoost documentation alongside the degeneracy finding above.
 
 ## What we would test with the access
 
