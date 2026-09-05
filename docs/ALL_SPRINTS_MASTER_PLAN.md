@@ -18,19 +18,23 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 2 | docs/sprints/SPRINT_2_SUMMARY.md | [OK] Complete | ~2 days (Aug 31 - Sep 2, 2026) |
 | 3 | docs/sprints/SPRINT_3_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 2-3, 2026) |
 | 4 | docs/sprints/SPRINT_4_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 3-4, 2026) |
+| 5 | docs/sprints/SPRINT_5_SUMMARY.md | [OK] Complete | ~1 day (Sep 4, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 4: Proxy Tuning, Baseline Research, First Hardware Blocks, Results Memo** (Sep 3-4, 2026; PR #21 merged to develop, develop merged to main via PR #22).
-Delivered: F22 section-6 proxy tuning (100 trials; validation-AP rule retained the starting config; lg quarantine lifted); F21 research showing G0's 0.85 band is uncorroborated by primary sources (G0 still FAIL as committed); **F2 first metered hardware campaign -- 27 Dirac-3 fits, 120 QPU s, 0 failures, G0b PASSED at Spearman 0.900**; H4 solver-fidelity component measured at -0.0010 [CI -0.0032, +0.0012] with the lambda sweep showing near-degeneracy is structural, not ridge-driven; H1b null as preregistered (-0.0399 vs CatBoost); F7 results memo with the production-bound framing DECIDED. Amendments A6/A7/A8. 17 review findings fixed across two reviews. Retro: docs/sprints/SPRINT_4_RETROSPECTIVE.md (7 improvements applied).
+**Sprint 5: The Paper and the QCi Package** (Sep 4, 2026; PR #29 merged to develop, develop merged to main via PR #30).
+Delivered: F8/F9 the submission documents (proposal 6/6 pages, appendix 3/3, team profile 1/1, all verified US Letter); F27 production-trial design; F26 cost-based operating points with the budget ceiling stated; F28 explainability thread with its scope limit; F19 QCi package, six DRAFT PDFs, team lead disposition "consider it sent". **The mechanism controls settled the flat optimum**: the cause is POOL DEGENERACY measured at the learner level (off-diagonal Gram 170,234.4 vs diagonal 170,235; any two learners agree on 99.999% of rows), not the simplex constraint as Sprint 4 had attributed it. Solver dispersion recovered at zero metered cost (0 of 27 fits returned identical draws; spread median 0.019%). Three external reviews applied with written dispositions. Amendments A9 (prediction-store keying; affected figures retagged [SIM]) and A10 (hardware predictions version-controlled).
+Two defects worth carrying forward: the prediction-key collision, where the proxy backfill silently overwrote hardware predictions because hardware and proxy deliberately share a config_hash; and **"exactly uniform" was not exact** (8.0e-08, not 0), where the residual +0.0022 turned out to be TIE-BREAKING rather than optimization, which strengthens the finding to "the optimizer contributes nothing at all". All nine PDFs had also rendered 11x17 TABLOID via the old Word path, invalidating every page count; found only because the team lead asked.
+Literature find: **Loke et al., ICAART 2026** -- same Dirac-3 hardware, same algorithm, same benchmark family, AUC-PR above 0.8 against our 0.767, with a heterogeneous pool. Independent corroboration of the degeneracy diagnosis and the motivation for F31.
+Retro: docs/sprints/SPRINT_5_RETROSPECTIVE.md (7 improvements, all applied or registered; test suite 28 -> 50).
 
 ## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
 
 | Sprint | Dates | Targeted scope | Gate |
 |---|---|---|---|
 | 4 | Sep 3-5 | F22, F21, F2 (per-block approval), F7 | -- |
-| 5 | Sep 5-7 | F8, F9, then F19 at sprint end (QCi package with the actual paper draft) | -- |
-| 6 | Sep 7-9 | F3 + paper updates (outline, draft, diff-scoped reviews, rubric) + F23/F24 prep in parallel agents | still time for F16 + F10 |
+| 5 | Sep 4 | [DONE] F8, F9, F27, F26, F28, F19 | -- |
+| 6 | Sep 5-7 | **F31 (diverse pool, team lead approved 2026-09-04)** + F3 + paper updates (diff-scoped reviews, rubric) + F23/F24 prep in parallel agents | still time for F16 + F10 |
 | 7 | Sep 9-11 | F4 + paper updates | still time for F16 + F10 |
 | 8 | Sep 11-12 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
 | Finalize | Sep 12-13 | F16, F10; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
@@ -82,6 +86,25 @@ A submittable paper exists after Sprint 5; every later sprint adds evidence and 
 - Preregistered feature pass (D-normalization, UID excluded, named aggregates, V-reduction); leakage controls incl. shuffled-label positive control
 - GroupKFold-by-month rolling origin; classical arms + proxy CVQBoost on the reduced set; H3 ladder cells
 - Depends on: F1
+
+**F31. Diverse weak-learner pool: replicate the Loke et al. pool construction (~6-10h, zero metered) Priority 1**
+- Phase: Experiments (Sprint 5 retrospective, Claude category 14; team lead approved 2026-09-04 for Sprint 6 entry)
+- Platform: ULB classical proxy only. ZERO metered seconds; hardware confirmation is a separate card (F32)
+- **Why this is priority 1**: every external reviewer (Claude app, Codex 5.5, Codex 5.6) independently identified pool degeneracy as the central technical weakness, and Sprint 5 measured it directly: off-diagonal Gram entries average 170,234.4 against a diagonal of 170,235, so any two of our 91 depth-limited trees agree on 99.999% of training rows. With interchangeable learners uniform weights are genuinely optimal and NO optimizer, quantum or classical, can do useful work. The optimization step currently contributes nothing: the apparent +0.0022 is tie-breaking among transactions the pool cannot separate
+- **The published target**: Loke, Sahoo, Guan, Xu, Verma and Griffin, "Improving credit card transaction fraud detection using CVQBoosting", ICAART 2026 (Singapore Management University) ran CVQBoost on the SAME Dirac-3 hardware against the SAME benchmark family with a HETEROGENEOUS pool (k-nearest neighbours, linear discriminant analysis, logistic regression, XGBoost) and reported mean AUC-PR above 0.8 against our 0.767. Same hardware, same algorithm, different pool, better result: that is the cleanest available evidence that pool construction is the binding constraint
+- **Design**: build pools mixing learner FAMILIES (KNN, LDA, logistic regression, shallow boosted variants, trees at differing depths and feature subsets) rather than one family over many feature subsets; add imbalance handling AT FIT TIME (class-weighted and balanced-bootstrap learners), which the Sprint 5 class-weighted control explicitly did NOT test since it reweighted only the ensemble objective. Report pairwise prediction disagreement, residual-error correlation, distinct-score-vector count, and the Gram off-diagonal ratio as pool-diversity measures BEFORE any optimization, then uniform-weight AP against solved AP on the same pool
+- **The decisive measurement**: does the solved optimum leave uniform? If the weight vector becomes non-degenerate and solved AP separates from uniform AP by more than the 0.0268 MDE, the optimizer has something to do and the quantum arm becomes worth a hardware run. If it stays uniform on a genuinely diverse pool, that is a stronger and more interesting negative result than the one we have
+- **Honesty constraints**: enters as a LABELED EXPLORATORY analysis under a dated amendment; the frozen H1b result stands unchanged and is not rescored; the Loke et al. comparison is a design comparison, never a claim that we reproduced their number
+- Depends on: nothing (classical only, reuses the qubo_proxy build/solve path)
+
+**F32. Hardware prediction persistence, so operating points carry [HW] (~2h + 40-50 metered device seconds) Priority 2**
+- Phase: Experiments (Sprint 5 retrospective, Claude category 14; external review finding 20)
+- Platform: Dirac-3. REQUIRES explicit team-lead approval with call count and expected seconds stated (Criterion H)
+- **The gap**: every operating-point figure in the proposal and appendix (recall at 0.05%/0.1%/0.5% budgets, precision at budget) is computed from the EXACT CLASSICAL PROXY and tagged [SIM], because Dirac-3 solution weights were not persisted during the Sprint 4 campaign. The substitution is licensed by measurement (hardware minus proxy is -0.0010 AUPRC with the interval containing zero) but aggregate AP similarity does NOT establish transaction-level or top-k equivalence, which is what an alert budget actually depends on
+- **Design**: one fit per seed on the selected configuration with weights and per-transaction scores persisted (store.prediction_path already keys by arm after the A9 fix, so hardware and proxy predictions can coexist). Report hardware AP, recall at each budget, alert-set Jaccard overlap against the proxy, and cutoff tie behaviour. Three repetitions per seed would additionally quantify draw-to-draw variability at ~120-150 metered seconds
+- **Cost**: ~40-50 metered device seconds for one job per seed at the measured 4-5s per fit; ~120-150 for three repetitions
+- **Why it matters to the submission**: it converts the operational table, which is the table a bank actually reads, from [SIM] to [HW]
+- Depends on: team-lead hardware approval; best sequenced AFTER F31 so the metered time is spent on a pool worth measuring
 
 **F29. Sample-size insensitivity of the CVQBoost optimum (~2h proxy, zero metered) Priority 15**
 - Phase: Experiments (team-lead observation 2026-09-04; run "if we have time before submission", include only if the evidence supports it)

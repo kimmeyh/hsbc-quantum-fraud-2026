@@ -1,18 +1,18 @@
 {
   "current_sprint": {
-    "number": 5,
-    "name": "The Paper and the QCi Package",
-    "branch": "feature/20260904_Sprint_5",
-    "status": "phase_5_awaiting_manual_validation",
-    "plan_doc": "docs/sprints/SPRINT_5_PLAN.md",
-    "pr": 29,
-    "plan_approved": true,
+    "number": 6,
+    "name": "TBD at refinement",
+    "branch": "feature/20260905_Sprint_6",
+    "status": "phase_1_backlog_refinement",
+    "plan_doc": null,
+    "pr": null,
+    "plan_approved": false,
     "github_issues": []
   },
   "last_completed_sprint": {
-    "number": 4,
-    "merged_pr": null,
-    "main_merge_pr": 22,
+    "number": 5,
+    "merged_pr": 29,
+    "main_merge_pr": 30,
     "docs_triad_complete": true
   },
   "prereg": {

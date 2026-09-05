@@ -273,3 +273,31 @@ team lead's response was received.
      document is currently at exactly 6 of 6 with no headroom.
   3. Is the QCi package sent this sprint or held? It has been ready across two
      sprints and the sending decision is the team lead's alone.
+
+## Improvement Decisions
+
+Proposed after the combined feedback (protocol step 5); disposed by the team
+lead 2026-09-04 (protocol step 6): "all as recommended".
+
+| # | Improvement | Type | Effort | Disposition | Status |
+|---|---|---|---|---|---|
+| 1 | Artifact-verification tests in the pytest suite (page geometry, page count) | Testing | 20m | APPLY NOW | Done: `experiments/src/test_submission_artifacts.py` |
+| 2 | Stale-claim scan as a test | Testing | 20m | APPLY NOW | Done: `test_no_retired_claims` |
+| 3 | Submission-requirements test (guidelines 4.1 and 4.3 elements) | Testing | 30m | APPLY NOW | Done: `test_team_profile_has_required_fields`, `test_proposal_covers_every_required_section` |
+| 4 | Per-document render config so the appendix margin cannot be lost | Tooling | 15m | APPLY NOW | Done: `scripts/render-all.ps1` |
+| 5 | F31 diverse weak-learner pool experiment | Experiment | 6-10h | BACKLOG, priority 1 | Registered; team lead approved Sprint 6 entry |
+| 6 | F32 hardware prediction persistence | Experiment | 2h + 40-50 metered s | BACKLOG, priority 2 | Registered; needs Criterion H approval |
+| 7 | Risk/defect class: verification that measures the wrong artifact | Process | 10m | APPLY NOW | Done: `docs/QUALITY_STANDARDS.md` |
+
+The new tests were verified to FAIL on the defects they cover before being
+trusted to pass: a deliberately re-rendered 11x17 team profile failed the
+geometry assertion, and its LaTeX-hyphenated phone number failed the
+required-fields assertion. Suite went from 28 to 50 passing.
+
+## Team lead answers to Category 16
+
+1. **Does F31 enter Sprint 6?** Yes.
+2. **Trim the proposal below 6 pages?** "I am OK with 5 as a goal but 6 is
+   acceptable as all the content is valuable." So a 5-page target, not a
+   requirement, and no content is cut merely to hit it.
+3. **Is the QCi package sent?** "Consider it sent."
