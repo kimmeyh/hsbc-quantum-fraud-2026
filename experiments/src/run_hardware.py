@@ -259,9 +259,14 @@ def run_cell(spec) -> dict:
     p_val = np.clip((clf.predict_raw(Xva) + 1.0) / 2.0, 0.0, 1.0)
     p_test = np.clip((clf.predict_raw(Xte) + 1.0) / 2.0, 0.0, 1.0)
     m = metrics.summarize(split.y_test.to_numpy(), split.y_val.to_numpy(), p_val, p_test, seed=spec["seed"])
+    pred_file = store.save_predictions(spec["proxy_hash"], row_seed, spec["protocol"],
+                                       split.y_val.to_numpy(), p_val,
+                                       split.y_test.to_numpy(), p_test,
+                                       arm="cvqboost_hw")
     s_px_val = np.clip((w_px @ qp.h_matrix(clf, Xva) + 1.0) / 2.0, 0.0, 1.0)
     row.update({
         "status": "ok" if metered is not None else "ok_unmetered",
+        "predictions_file": pred_file,
         "metered_seconds": metered if metered is not None else UNPARSEABLE_CALL_CHARGE_S,
         "metered_seconds_parsed": metered is not None,
         "n_weak_classifiers": len(clf.h_list),

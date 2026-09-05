@@ -14,3 +14,11 @@ catboost_info/
 kaggle.json
 credentials.json
 experiments/results/*.db
+docs/paper/out/
+# Predictions: ignore the CONTENTS (not the directory itself, or the negation
+# below cannot re-include anything -- the Sprint 2 MANIFEST.json defect class).
+experiments/results/predictions/*
+# EXCEPTION: hardware predictions are NOT regenerable without spending metered
+# QPU seconds, so they are version-controlled. Classical and proxy predictions
+# stay ignored because they rebuild for free (see QUALITY_STANDARDS).
+!experiments/results/predictions/cvqboost_hw_*.npz

@@ -1,0 +1,195 @@
+{
+ "question": "Is the flat optimum caused by the simplex constraint or by unweighted squared loss at 0.17% prevalence?",
+ "controls": {
+  "uniform": {
+   "mean": 0.7659207977878879,
+   "sd": 0.031211902772866146,
+   "n": 10
+  },
+  "frozen": {
+   "mean": 0.7681446670251668,
+   "sd": 0.031191179186953136,
+   "n": 10
+  },
+  "class_weighted": {
+   "mean": 0.7685739690522486,
+   "sd": 0.030847929540769474,
+   "n": 10
+  },
+  "ridge_free": {
+   "mean": 0.40257130090545745,
+   "sd": 0.04811269263315123,
+   "n": 10
+  },
+  "logistic_free": {
+   "mean": 0.7680640954611067,
+   "sd": 0.030870012333079216,
+   "n": 10
+  }
+ },
+ "per_seed": {
+  "uniform": [
+   0.8045271503123599,
+   0.7626645828364298,
+   0.7416518033656684,
+   0.77900914060249,
+   0.7572016245189754,
+   0.7619539532470719,
+   0.8226318781729479,
+   0.7746359272897722,
+   0.7365460035430315,
+   0.7183859139901321
+  ],
+  "frozen": [
+   0.8072915380038548,
+   0.7644740060409198,
+   0.7447843848453629,
+   0.7812149230576372,
+   0.757999070634843,
+   0.7640312352451879,
+   0.8251258348938328,
+   0.7765226511380334,
+   0.7385695751480436,
+   0.7214334512439528
+  ],
+  "class_weighted": [
+   0.8073052732858611,
+   0.7645421127157394,
+   0.7474634391113713,
+   0.7808406537503106,
+   0.757842634421317,
+   0.7646000499782089,
+   0.8254954903773939,
+   0.77643020617397,
+   0.738873831426951,
+   0.7223459992813631
+  ],
+  "ridge_free": [
+   0.34962577434079173,
+   0.3641939566327574,
+   0.36728254273874417,
+   0.44562179982353933,
+   0.35279771463389853,
+   0.4283876167039593,
+   0.47637325809962155,
+   0.38445213561216307,
+   0.38851161635523346,
+   0.4684665941138657
+  ],
+  "logistic_free": [
+   0.8067716879360043,
+   0.7640552212935984,
+   0.744817425041292,
+   0.7806144366976806,
+   0.7580551742626203,
+   0.7641284821076625,
+   0.8248529718922856,
+   0.7764594841083767,
+   0.7382704406113115,
+   0.7226156306602346
+  ]
+ },
+ "weight_stats": [
+  {
+   "seed": 42,
+   "max_w": 0.010989011477176297,
+   "uniform_w": 0.01098901098901099,
+   "max_over_uniform": 1.000000044423043,
+   "l1_distance_from_uniform": 8.005910927082194e-08,
+   "cosine_to_uniform": 0.9999999999999885,
+   "class_weighted_max_over_uniform": 1.0012202972921236,
+   "class_weighted_l1_from_uniform": 0.0021992170976228038
+  },
+  {
+   "seed": 43,
+   "max_w": 0.010989011416155428,
+   "uniform_w": 0.01098901098901099,
+   "max_over_uniform": 1.000000038870144,
+   "l1_distance_from_uniform": 7.176026389950352e-08,
+   "cosine_to_uniform": 0.9999999999999891,
+   "class_weighted_max_over_uniform": 1.001066716506526,
+   "class_weighted_l1_from_uniform": 0.001969322780973259
+  },
+  {
+   "seed": 44,
+   "max_w": 0.010989011538197237,
+   "uniform_w": 0.01098901098901099,
+   "max_over_uniform": 1.0000000499759485,
+   "l1_distance_from_uniform": 9.006654312117279e-08,
+   "cosine_to_uniform": 0.9999999999999865,
+   "class_weighted_max_over_uniform": 1.0013725065250245,
+   "class_weighted_l1_from_uniform": 0.0024735282425981057
+  },
+  {
+   "seed": 45,
+   "max_w": 0.010989011477176543,
+   "uniform_w": 0.01098901098901099,
+   "max_over_uniform": 1.0000000444230654,
+   "l1_distance_from_uniform": 8.20118119075619e-08,
+   "cosine_to_uniform": 0.9999999999999858,
+   "class_weighted_max_over_uniform": 1.0012175616273644,
+   "class_weighted_l1_from_uniform": 0.002247806080963491
+  },
+  {
+   "seed": 46,
+   "max_w": 0.010989011599217901,
+   "uniform_w": 0.01098901098901099,
+   "max_over_uniform": 1.000000055528829,
+   "l1_distance_from_uniform": 1.0007393433722478e-07,
+   "cosine_to_uniform": 0.9999999999999825,
+   "class_weighted_max_over_uniform": 1.0015226118556222,
+   "class_weighted_l1_from_uniform": 0.0027440477395086326
+  },
+  {
+   "seed": 47,
+   "max_w": 0.010989011568707406,
+   "uniform_w": 0.01098901098901099,
+   "max_over_uniform": 1.000000052752374,
+   "l1_distance_from_uniform": 9.622960635974342e-08,
+   "cosine_to_uniform": 0.9999999999999818,
+   "class_weighted_max_over_uniform": 1.001445076165671,
+   "class_weighted_l1_from_uniform": 0.0026360730052067544
+  },
+  {
+   "seed": 48,
+   "max_w": 0.010989011721259654,
+   "uniform_w": 0.01098901098901099,
+   "max_over_uniform": 1.0000000666346285,
+   "l1_distance_from_uniform": 1.1715978660148396e-07,
+   "cosine_to_uniform": 0.9999999999999795,
+   "class_weighted_max_over_uniform": 1.0018278617653622,
+   "class_weighted_l1_from_uniform": 0.003213822883832155
+  },
+  {
+   "seed": 49,
+   "max_w": 0.010989011721260421,
+   "uniform_w": 0.01098901098901099,
+   "max_over_uniform": 1.0000000666346984,
+   "l1_distance_from_uniform": 1.2008890451845056e-07,
+   "cosine_to_uniform": 0.9999999999999705,
+   "class_weighted_max_over_uniform": 1.0018190821949011,
+   "class_weighted_l1_from_uniform": 0.0032783459333811833
+  },
+  {
+   "seed": 50,
+   "max_w": 0.0109890119653435,
+   "uniform_w": 0.01098901098901099,
+   "max_over_uniform": 1.0000000888462584,
+   "l1_distance_from_uniform": 1.601185327174126e-07,
+   "cosine_to_uniform": 0.9999999999999432,
+   "class_weighted_max_over_uniform": 1.002408464950694,
+   "class_weighted_l1_from_uniform": 0.00434053024047623
+  },
+  {
+   "seed": 51,
+   "max_w": 0.010989011507686755,
+   "uniform_w": 0.01098901098901099,
+   "max_over_uniform": 1.0000000471994948,
+   "l1_distance_from_uniform": 8.610017623519872e-08,
+   "cosine_to_uniform": 0.9999999999999859,
+   "class_weighted_max_over_uniform": 1.0012949935587852,
+   "class_weighted_l1_from_uniform": 0.0023622959420747866
+  }
+ ],
+ "VERDICT": "The solved optimum is EXACTLY uniform (L1 distance from 1/n is 0.000000 on all 10 seeds). The optimization step contributes +0.0022 AUPRC over a plain unweighted majority vote, an order of magnitude below the 0.0268 MDE. Class weighting does NOT change this (L1 moves to 0.002), so prevalence weighting is not the cause either. The measured cause: the weak learners are near-identical. Off-diagonal Gram entries average 170,234.4 against a diagonal of 170,235, i.e. any two learners agree on 99.999% of training rows, because at 0.17% prevalence a depth-limited tree predicts the negative class almost everywhere. With interchangeable learners the objective has no basis to prefer any weighting, and uniform is genuinely optimal. The ridge term (lambda = 2N against Gram entries of N) further flattens what little difference remains."
+}
