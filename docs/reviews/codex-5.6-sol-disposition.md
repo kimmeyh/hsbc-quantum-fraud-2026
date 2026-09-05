@@ -191,3 +191,14 @@ section 4.3.
 
 Both are recorded because a disposition that only lists agreements is not a
 disposition.
+
+## Note on citing Loke et al.
+
+The team lead has spoken with Paul R. Griffin and another author. **They have
+not agreed to be named beyond the citation**, so nothing in the package claims
+contact, input, endorsement or collaboration. The published work is cited as
+published work, which needs no permission.
+
+Do not add a "we have been in contact with the authors" sentence unless they
+agree in writing. A judge may verify it, sponsors have access to submissions,
+and the team lead is responsible for every claim in the entry.

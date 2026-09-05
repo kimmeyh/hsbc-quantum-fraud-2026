@@ -35,7 +35,7 @@ The test fold holds about 95 frauds in 56,746 transactions, so the 0.05% and 0.1
 
 ## A.3 Hardware campaign and score health
 
-27 metered fits, 120 QPU seconds, zero failures, zero retries, 4 to 5 s per fit at 25 to 91 variables; the exact classical solve takes milliseconds. The selected configuration carries a score-degeneracy warning on all ten seeds (95.1% of transactions share one score across 814 distinct values), so its threshold-dependent figures are weak evidence while its ranking metrics are sound.
+27 metered fits, 120 metered device seconds, zero failures, zero retries, 4 to 5 s per fit at 25 to 91 variables; the exact classical solve takes milliseconds. The selected configuration carries a score-degeneracy warning on all ten seeds (95.1% of transactions share one score across 814 distinct values), so its threshold-dependent figures are weak evidence while its ranking metrics are sound.
 
 | Quantity | Value | Tag |
 |---|---|---|
