@@ -51,7 +51,13 @@ BLOCK_CAP_S = 50.0          # the TOP of the approved 40-50 s envelope, not abov
                             # team lead did not grant, so the code caps at the grant.
 EXPECTED_CALL_S = 6.0       # measured 4-5 s/fit; bound the NEXT call
 UNPARSEABLE_CALL_CHARGE_S = 10.0   # conservative charge when billing cannot be read
-K_FEATURES = mp.K_FEATURES
+# k=6, NOT mp.K_FEATURES (13). The Dirac-3 FREE TIER refuses any continuous
+# degree-2 job above 100 variables, server-side, before billing: a 312-variable
+# mixed pool at k=13 was rejected with "Number of variables '312' ... greater
+# than the free-tier device limit '100'". Four families at k=6 give 60
+# variables, which fits, and a seed-42 check confirms the optimizer still does
+# real work there (L1 from uniform 0.0204, max weight 1.040x, AP +0.0036).
+K_FEATURES = 6
 SCHEDULE = 2
 
 
@@ -232,7 +238,12 @@ def main() -> int:
           f"({'DRY RUN' if dry else 'METERED'})")
     rows = []
     for seed in SEEDS:
-        spent = _spent() + sum(r.get("metered_seconds", 0.0) for r in rows)
+        # _spent() reads results.json, and append_row has ALREADY written every
+        # completed fit there, so adding the in-memory rows double-counts. That
+        # bug halted the first run at a reported 50.0s when 25.0s had been spent.
+        # A cap that overstates spend is the safe direction, but it still loses
+        # approved work, so read one source of truth.
+        spent = _spent()
         if not dry and spent + EXPECTED_CALL_S >= BLOCK_CAP_S:
             print(f"  STOP before seed {seed}: spent {spent:.1f}s + expected "
                   f"{EXPECTED_CALL_S}s would reach the {BLOCK_CAP_S}s cap")
