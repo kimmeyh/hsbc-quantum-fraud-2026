@@ -2,6 +2,11 @@
 title: "Dirac-3 Expanded Access: The Commercial Case"
 subtitle: "30,000 QPU seconds, what QCi gets back, and what we would test"
 date: "September 2026"
+# STATUS, NOT RENDERED: not yet sent. Team lead 2026-09-05 -- target Monday
+# night 2026-09-07 so it lands Tuesday. Until the send is confirmed, this
+# letter and all of docs/paper/out/qci_package/ stay LIVE and are refreshed
+# with every new result. Sprint 7 (F33) completes before that date, so its
+# outcome belongs here whichever way it goes.
 ---
 
 # To QCi
