@@ -23,9 +23,15 @@ Common post reboot and Claude Code crashed prompts:
 claude --continue
 Please review the "Sprint Execution Docs", Sprint plan and sprint checklist to determine what steps in the current sprint have been completed and not completed, then the next steps.
 
+-----------------------------
+--Attach all 3 challenge documents and the 3 proposal documents
 
-
-
-
-
+Using current primary sources, perform an adversarial pre-submission review of the three attached PDFs for the 2026 Global Quantum + AI Challenge HSBC credit-card-fraud problem. Act as an expert in machine learning, data science, statistics, optimization mathematics, quantum photonics, QCi Dirac-3 hardware, eqc_models, QBoostClassifier, and CVQBoost. Verify every material technical or factual claim that can be checked, including the mathematics, statistical inference, fraud-evaluation methodology, hardware characteristics and limits, software/API behavior and versions, regulatory wording, challenge requirements and judging rubric, reproducibility requirements, and PDF presentation. Clearly distinguish verified facts, reasonable interpretations, and unsupported or overstated claims. Rank substantive findings by importance, cite the exact locations in the attached PDFs and current primary-source evidence, and give specific replacement wording or experiments for material problems. Evaluate whether the work actually supports each quantum-related claim rather than assuming that it does. Finish with a clear submit-now or revise-first recommendation and identify the single highest-priority technical change before submission.
+What I want:
+Rank every finding by expected effect on the rubric score divided by effort. For each finding give:
+1. The file and the exact section, table, or line to change.
+2. The claim as written and the claim as it should read.
+3. Effort tag: EDIT ONLY, CLASSICAL RUN, or NEEDS QPU SECONDS (with an estimate of seconds).
+4. Whether the finding is a factual error a judge can disprove, a statistical error, a mis-attributed mechanism, or a presentation issue.
+5. Please do output with "tables" as they are nearly impossible to copy/paste well to other systems, and that is a requirement.
 

@@ -1,46 +1,65 @@
 ---
-title: "Progress Update and Phase 2 Request"
-subtitle: "Dirac-3 evaluation for the 2026 Global Quantum + AI Challenge, HSBC problem statement"
+title: "Dirac-3 Expanded Access: The Commercial Case"
+subtitle: "30,000 QPU seconds, what QCi gets back, and what we would test"
 date: "September 2026"
 ---
 
-# Cover note for QCi
+# To QCi
 
-**From**: Harold Kimmey, team lead, Claude Shannon's Fraud Catchers
-**Enclosed, all marked DRAFT**: concept proposal, appendices, frozen preregistration with its amendment log, generated gate report, and the hardware run plan.
+**From**: Harold Kimmey
+**Request**: 30,000 QPU seconds of Dirac-3 access
+**Enclosed, all marked DRAFT**: concept proposal, appendices, frozen preregistration with its twelve amendments, generated gate report, and the hardware run plans.
 
-## Where the work stands
+We have worked together for three years. This note is written the way I would want one written to me: the commercial case first, then what else you get, then the science.
 
-We completed the first metered Dirac-3 campaign under a preregistered protocol: 27 fits, 120 metered device seconds, zero failures and zero retries, 4 to 5 seconds per fit at 25 to 91 variables. The proxy-fidelity gate passed at Spearman 0.900, so the classical stand-in we develop against is demonstrably faithful to the device.
+## Why this is worth 30,000 seconds to QCi
 
-We also measured something we think is worth QCi's attention, and it is the reason for the request below.
+**The named account is the return.** This work is a Phase 1 entry to the 2026 Global Quantum + AI Challenge under HSBC's problem statement, judged by a panel that includes enterprise representatives. Finalists advance to a Phase 2 PoC sprint with HSBC engagement. A submission that runs on Dirac-3, names Dirac-3, and reports measured device numbers puts your hardware in front of a tier-one bank's fraud organization with an independent party doing the measuring. That is a sales conversation you cannot buy at the price of 30,000 seconds, and it is one your own marketing cannot have on your behalf.
 
-## The finding
+**The cost basis is small and known.** Our measured rate is 4 to 5 seconds per fit across 37 metered fits with zero failures. 30,000 seconds is roughly 6,600 fits, and our entire campaign to date has consumed 163 seconds. We are not asking for capacity you would otherwise sell at volume; we are asking for headroom to run a grid that a free tier cannot hold.
 
-On the continuous-variable formulation, hardware and an exact classical solve of the identical Hamiltonian are statistically indistinguishable: the difference is -0.0010 AUPRC with the confidence interval containing zero, solution weights agree to cosine 0.975 to 0.999, and hardware objective values sit 0.013% to 0.413% above the exact minimum, never below. That is excellent solver fidelity, and it is what the mathematics predicts: the objective is strictly convex on the simplex, so a classical solve returns the global optimum and no solver can beat it.
+**A credible negative is worth more to you than an uncritical positive.** We published a null against our own hypothesis. That is why the numbers in this package will survive a reviewer who wants to attack them, and it is why a later positive from the same protocol will be believed. A vendor-favourable result from a protocol nobody trusts moves no procurement decision.
 
-The sharper result came from a control we ran afterwards. **The solved optimum is uniform to seven decimal places**: 1/91 on every learner, with an L1 distance from uniform between 7.2e-08 and 1.6e-07 across all ten seeds. Scoring the same pool with uniform weights by construction gives 0.7659 AUPRC against the solved 0.7681, and that residual 0.0022 is not a gain either: uniform weights leave 95.3% of test rows tied on one score, and perturbations of order 1e-07 split those ties, raising the distinct-score count from 78 to 151. Average precision is rank-based, so it moves; rounding the solved scores back to six decimals returns the metric to the uniform value. On this configuration neither Dirac-3 nor the classical solver is doing useful work at all.
+**What you can reuse regardless of outcome.** Everything below is yours: the finding, the integration write-ups, the cost model, and the measured device behaviour. If our arm never beats the classical baseline, you still keep all of it.
 
-The cause is pool degeneracy, and we can be specific: off-diagonal Gram entries average 170,234.4 against a diagonal of 170,235, so any two weak learners agree on 99.999% of training rows. At 0.17% fraud prevalence a depth-limited tree predicts the negative class almost everywhere, and a pool of near-identical learners gives an optimizer nothing to weight. We initially attributed the flatness to the simplex constraint; a class-weighted re-solve and a uniform-weight control show that was wrong, and we have corrected it. We note the scope of that control precisely: it rules out weighting in the ensemble objective, not imbalance handling during weak-learner fitting, which is a different intervention.
+## What else we are trying to get from the 30,000 seconds
 
-Loke et al. (ICAART 2026) point the same way from the other direction. Running CVQBoost on Dirac-3 against the same benchmark family with a heterogeneous pool of k-nearest neighbours, linear discriminant analysis, logistic regression and XGBoost, they report mean AUC-PR above 0.8 where our single-family pool of depth-limited trees gives 0.767. We read that as independent evidence that pool construction, not the solver, is the binding constraint on this problem.
+Beyond the challenge itself, three things we cannot obtain on the free tier:
 
-This matters for QCi because it is a statement about how CVQBoost is configured for extreme class imbalance, not about the hardware. The device reproduced the exact optimum faithfully. The pool handed to it was the problem.
+1. **A paid-tier sizing curve.** We established empirically that the free tier refuses any continuous degree-2 job above 100 variables: a 312-variable submission came back with "Number of variables '312' in problem is greater than the free-tier device limit '100'". Our frozen configuration is 91 variables, sitting under that ceiling by accident rather than design. Every scaling statement we can currently make is therefore bounded by a tier limit rather than by the device. We would like to characterise how solution quality and time behave from 100 to several thousand variables, and to publish it.
+2. **The integer solver on a problem that needs it.** Our continuous formulation is convex, so a classical solve returns the global optimum in milliseconds and no solver can beat it. The problem it relaxes -- cardinality-constrained selection of weak learners -- is NP-hard and is native to Dirac-3's integer mode. That is the first experiment where your hardware is not competing against an easy classical answer.
+3. **Enough repetition to characterise the stochasticity honestly.** Across 8 samples per fit, no fit has returned identical draws, and the within-fit energy spread is a median 0.019% and maximum 0.343%. That is a good number for you. With headroom we can turn it into a proper distribution across configurations and sizes rather than a footnote.
 
-## What we would run next, and the request
+## What we found, since it bears on how CVQBoost gets configured
 
-The continuous relaxation is classically solvable. The problem it relaxes is not: selecting the best sparse subset of weak learners under a cardinality constraint is NP-hard in general and is the native problem class for Dirac-3's integer solver. That is the Phase 2 experiment we would run first, against time-capped MIQP, greedy and annealing controls, since NP-hardness bears on worst-case general instances and does not by itself establish an advantage on the finite instances we would test.
+The first campaign showed excellent solver fidelity: hardware and an exact classical solve of the identical Hamiltonian differ by -0.0010 AUPRC with the interval containing zero, weight cosine 0.975 to 0.999, and hardware objective values always above the exact minimum, never below.
 
-Also outstanding from the Phase 1 grid, all costed and specified: the full-configuration ULB block, the IEEE-CIS block with its feature-ladder cells, a segment-replication block, and a sign-augmented QSVM block. Together with the non-convex work these are the basis of our expanded-access request.
+The sharper result came from the control we ran afterwards. On the frozen configuration **the solved optimum is uniform to seven decimal places**, and the apparent 0.0022 AUPRC gain over uniform weights turned out to be tie-breaking: uniform weights leave 95.3% of test rows tied on one score, weight perturbations of order 1e-07 split those ties, and average precision is rank-based. Rounding the scores back returns the metric exactly.
 
-## What we can offer in return
+The cause is pool degeneracy, and it is measurable: off-diagonal Gram entries average 170,234.4 against a diagonal of 170,235, so any two weak learners agree on 99.999% of training rows. At 0.17% fraud prevalence a depth-limited tree predicts the negative class almost everywhere, and a pool of near-identical learners gives an optimizer nothing to weight.
 
-Detailed feedback on eqc-models from sustained use, including the pool-degeneracy result above, which we believe is worth a note in the CVQBoost documentation for anyone applying it at low prevalence, and the specific integration issues we hit and worked around: the pool-construction strategy that fails on Windows, the response object whose billing field is not a dictionary key, the free-tier variable arithmetic and where the documentation and the implementation diverge, and a set of guards we built around metered execution that others would need.
+**This is a statement about how CVQBoost is configured for extreme class imbalance, not about your hardware.** The device reproduced the exact optimum faithfully every time. The pool handed to it was the problem. We think it is worth a note in the CVQBoost documentation for anyone applying it at low prevalence, and we would rather you had it from us than from a customer who hit it silently.
 
-We would also share the measured cost model, since our per-fit timings are consistent across 27 fits, along with the solver-dispersion data: across 8 samples per fit, no fit returned identical draws, and the within-fit energy spread has a median of 0.019% and a maximum of 0.343%.
+We then tested the fix. Replacing the single family of depth-limited trees with four families (decision tree, LDA, logistic, KNN) moves the optimum genuinely off uniform: L1 distance 0.127 against 8.0e-08, largest weight 1.24 times uniform. Two controls confirm this is optimization rather than tie-breaking. The gain is +0.0076 AUPRC, still below our own detectable threshold of 0.0268, so we report it as a direction with a measured mechanism rather than a win. Loke et al. (ICAART 2026) reach AUC-PR above 0.8 on your hardware with a heterogeneous pool, which points the same way.
 
-Two questions we would value QCi's view on. First, whether relaxation schedule 4 would close the 0.013% to 0.413% residual we see between the hardware objective and the exact optimum, since the published schedules differ in accumulated photons and success probability. Second, whether a larger sum constraint would help, given that spreading 1.0 across 91 variables puts each weight near 0.011 and may approach the analog resolution floor. Both are single-fit experiments we would run on approval.
+## What we would test with the access
+
+In priority order, each with a preregistered protocol already written:
+
+1. **Cardinality-constrained selection on the integer solver**, against time-capped MIQP, greedy and annealing controls. A win against a certified-optimal classical solve is a result; a win against no control is not.
+2. **The paid-tier sizing curve**, 100 to several thousand variables, published.
+3. **The full ULB and IEEE-CIS grids**, which the 100-variable ceiling currently forecloses. IEEE-CIS is 590,540 transactions and several hundred features, the regime where CVQBoost's published runtime claim actually lives.
+4. **Segment replication (block B4)**, 15 fits at roughly 450 seconds, and a sign-augmented QSVM block.
+
+## What we give back
+
+- The pool-degeneracy finding above, written up for your documentation.
+- Integration notes from sustained use of eqc-models: the pool-construction strategy that fails on Windows, the response object whose billing field is not a dictionary key, the free-tier variable arithmetic and where the documentation and implementation diverge, and the guards we built around metered execution that any serious user would need.
+- The measured cost model: per-fit timings consistent across 37 fits, and the solver-dispersion data above.
+- Named attribution in a submission to a tier-one bank, and in whatever is published afterwards.
+
+Two questions we would value your view on, both single-fit experiments we would run on approval. First, whether relaxation schedule 4 would close the 0.013% to 0.413% residual we see between the hardware objective and the exact minimum. Second, whether a larger sum constraint would help, given that spreading 1.0 across 91 variables puts each weight near 0.011 and may approach the analog resolution floor.
 
 ## A note on this package
 
-Everything enclosed is DRAFT and pre-submission. The results are as measured; the preregistration and its ten dated amendments show exactly what was decided before any result was seen. We would welcome correction on anything QCi believes we have characterized wrongly about Dirac-3, especially the convexity argument, before this becomes a public submission.
+Everything enclosed is DRAFT and pre-submission. The results are as measured; the preregistration and its twelve dated amendments show exactly what was decided before any result was seen, including the gate we failed and the two claims we had to correct. We would welcome correction on anything we have characterised wrongly about Dirac-3 -- especially the convexity argument and the free-tier ceiling -- before this becomes a public submission.

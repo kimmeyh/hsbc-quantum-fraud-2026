@@ -5,8 +5,98 @@ All Sprint tasks and sub-tasks are approved.
 Continue without addition approvals until Manual Validation, providing your recommendation for Manual Validation steps.
 Do not stop to ask questions unless meeting the criteria in \docs\SPRINT_STOPPING_CRITERIA.md
 ---------------------------------------------------------------------------------------------------------
+Sprint 7 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
+
+
+---------------------------------------------------------------------------------------------------------
+Sprint 6 scope as recommended (F31, F3 prep, F23, F24, F32). Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.
+
+
+  F31 + F32 together: yes, but sequenced, not parallel. F32 must run after F31, and that ordering is the whole point. F32 spends metered Dirac-3 seconds persisting hardware
+  predictions — spending them on the current degenerate pool measures a pool we already know contributes nothing. Run F31 first, and F32 then measures a pool worth
+  measuring. The metered call is also a hard stop for your approval regardless (Criterion H), so it is naturally a second step.
+
+  There is a real risk worth naming: if F31 shows the optimum still uniform on a diverse pool, F32's value drops sharply, and you may prefer not to spend the seconds at
+  all. So F32 is conditional on the F31 result, not merely sequenced after it.
+
+  F3 prep in parallel: yes, and this is the best parallel candidate. The data is already local. An agent can do the preregistered feature pass, leakage controls, and the
+  GroupKFold-by-month rolling-origin scaffolding without touching anything F31 uses. What it must not do is run arms — that is F3 proper, and results outside the frozen
+  protocol would be a Class 1 violation.
+
+  F23 and F24 in parallel: yes. Both cards are explicitly marked subagent-parallel, both are prep-only, both are zero metered seconds, and their dependencies (F1, F22) are
+  done. They touch different areas — F23 is the phase transformer and twin scaffolding, F24 is in-segment machinery and the B4 request draft. No file conflicts with each
+  other or with F31.
+
+  F29 in parallel: technically yes, but I recommend against it. It reuses the same qubo_proxy build/solve path F31 modifies, so they would collide, and its own card says it
+  should run "after F8 so it cannot displace paper work." More importantly, F29 asks whether the optimum is insensitive to sample size — on a degenerate pool that question
+  is nearly meaningless, since the optimum is uniform regardless. It becomes genuinely interesting after F31, on a pool where the optimum is non-trivial.
+
+  Recommended Sprint 6 shape
+
+  │    Track    │                            Work                            │        Runs where        │ Metered │
+  │ Main        │ F31 diverse pool                                           │ Main loop                │ Zero    │
+  │ Agent A     │ F3 prep (features, leakage controls, temporal scaffolding) │ Parallel                 │ Zero    │
+  │ Agent B     │ F23 QFE recipe + twin scaffolding                          │ Parallel                 │ Zero    │
+  │ Agent C     │ F24 SPECTRA machinery + B4 draft                           │ Parallel                 │ Zero    │
+  │ Conditional │ F32 hardware persistence                                   │ After F31, your approval │ 40-50s  │
+
+
+Sprint 6 Candidates at a glance
+
+  - F31. Diverse weak-learner pool: replicate the Loke et al. pool construction (~6-10h, zero metered) Priority 10
+  - F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 12
+  - F32. Hardware prediction persistence, so operating points carry [HW] (~2h + 40-50 metered s) Priority 20
+  - F23. F4 prep: QFE phase recipe + twin scaffolding (~3h, subagent-parallel) Priority 30
+  - F24. F5 prep: SPECTRA in-segment machinery + B4 request (~3h, subagent-parallel) Priority 32
+  - F29. Sample-size insensitivity of the CVQBoost optimum (~2h proxy, zero metered) Priority 40
+  - F16. Minimal CI: pytest + lint on PRs with smoke fixture (~30m) Priority 50
+  - F17. Dirac-3 simulator for pre-hardware test runs — Priority HOLD
+  - F20. Soft-vote CVQBoost exploration — Priority HOLD
+  - F25. Non-convex cardinality-constrained CVQBoost — Priority HOLD
+  - F30. Concurrent Dirac-3 submission — Priority HOLD
+
+  Experiments
+
+  F31. Diverse weak-learner pool: replicate the Loke et al. pool construction (~6-10h, zero metered) Priority 10
+  - Phase: Experiments
+  - Platform: ULB classical proxy only; zero metered seconds
+  - You already approved this for Sprint 6. Every external reviewer named pool degeneracy as the central weakness, and Sprint 5 measured it: any two of our 91 trees agree
+    on 99.999% of training rows, so the optimizer provably cannot contribute
+  - Loke et al. give a published target on the same hardware and benchmark family: AUPR >0.8 against our 0.767, differing only in pool heterogeneity
+  - The decisive measurement: does the solved optimum leave uniform? Either answer is publishable, and a non-degenerate optimum is what would justify further hardware time
+  - Depends on: nothing
+
+  F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 12
+  - Phase: Experiments
+  - Platform: IEEE-CIS
+  - The targeted roadmap put F3 in Sprint 6. It is the second-largest evidence gap: 590,540 transactions and several hundred features, where the model form has room to
+    differ
+  - Also supplies the temporal protocol that our single time-ordered split cannot
+  - Depends on: nothing; competes with F31 for the same sprint hours
+
+  F32. Hardware prediction persistence (~2h + 40-50 metered device seconds) Priority 20
+  - Phase: Experiments
+  - Platform: Dirac-3 — requires Criterion H approval
+  - Moves the operating-point table from [SIM] to [HW]
+  - Depends on: best sequenced after F31, so metered time is spent on a pool worth measuring
+
+  Paper and Finalize
+
+  F16. Minimal CI (~30m) Priority 50
+  - Phase: Finalize
+  - Platform: docs/CI
+  - Now more valuable than when registered: 50 tests exist including artifact verification, and CI would run them on every push
+  - Depends on: nothing
+
+  ---
+
+  My recommendation: F31 alone, plus a paper-update pass.
+
+
 Sprint 5 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
 
+
+---------------------------------------------------------------------------------------------------------
  Then sprint five scope as you recommended: F8 + F9 + F27 + F19, with F26 and
         F28. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.
 
@@ -33,6 +123,7 @@ Done - added to backlog
   - F26. Cost-based operating-point analysis (~2h) Priority 13
   - F27. Production-trial design section (~2h) Priority 13
   - F28. Explainability thread: ensemble inspectability vs GBDT baseline (~3h) Priority 14
+
   - F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14
   - F23. F4 prep: QFE phase recipe + twin scaffolding (~3h) Priority 15
   - F24. F5 prep: SPECTRA in-segment machinery + B4 request (~3h) Priority 15
