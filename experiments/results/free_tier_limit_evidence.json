@@ -1,0 +1,15 @@
+{
+  "finding": "The Dirac-3 free tier enforces a HARD 100-variable limit on continuous degree-2 jobs, refused server-side at submission with zero metered spend.",
+  "date": "2026-09-05",
+  "how_observed": "F32 submitted a 312-variable mixed-pool job. The API returned HTTP 400 before any billing occurred.",
+  "verbatim_api_message": "Number of variables '312' in problem is greater than the free-tier device limit '100' for polynomial with degree '2'",
+  "metered_seconds_spent": 0.0,
+  "why_it_matters": "The proposal stated that QCi's documented 949 limit is a sum over num_levels applying to integer-encoded jobs, that our sum-constrained continuous jobs are not bound by it, and that 'the binding constraint here was our own budget rather than a device ceiling'. The first two clauses remain correct. The CONCLUSION is wrong: a separate free-tier ceiling of 100 variables binds continuous degree-2 jobs directly, and it is what actually limited this work. The frozen 91-variable pool sat just under it, which is why no run had hit it before.",
+  "consequences": {
+    "frozen_pool_91_vars": "fits, 91 < 100",
+    "mixed_pool_4_families_k13_312_vars": "REFUSED",
+    "largest_mixed_pool_that_fits": "4 families at k=6 = 60 variables (qubo_vars(6,2,sequential)=15 per family). An earlier version of this record said 84, which was wrong; every F32 row records n_variables 60. Corrected 2026-09-05 after PR #36 review finding 10.",
+    "sprint_5_A2_note": "A2's variable arithmetic is unaffected; what was wrong is the inference about which ceiling binds."
+  },
+  "correction_status": "proposal and appendix corrected 2026-09-05"
+}

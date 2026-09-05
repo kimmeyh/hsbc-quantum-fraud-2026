@@ -4,9 +4,19 @@ Manual Validation complete
 ---------------------------------------------------------------------------------------------------------
 Sprint n Manual Validation Feedback 
 
+
 ---------------------------------------------------------------------------------------------------------
 Sprint 5 Manual Validation Feedback 
-
+  1. Read docs/paper/out/proposal.pdf (3 pages). This is the submission.
+  2. Section 7, Team Capability — the one section that is genuinely yours. Confirm or amend the capability lines and the AI-tool disclosure
+     wording.
+  3. Read the adversarial review (docs/sprints/drafts/F9_ADVERSARIAL_REVIEW.md). It scored Validation lowest at 3 of 5 and its fixes are
+     applied; worth seeing what a skeptical reader sees.
+  4. Decide on the QCi package (docs/paper/out/qci_package/, six PDFs). The cover note invites QCi to correct our convexity characterization
+     before it becomes public, which I think is the right posture. You send it, not me.
+  5. Two gaps I added rather than hid: fairness testing is absent and untestable on this anonymized benchmark, and label latency is unmodeled
+     in the trial design. Confirm you want them stated plainly.
+  6. Optional: pytest experiments/src -q (28 tests), or spot-check any figure against experiments/results/gate_report.md.
 ---------------------------------------------------------------------------------------------------------
 Sprint 4 Manual Validation Feedback 
 

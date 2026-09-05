@@ -1,0 +1,543 @@
+[
+ {
+  "dataset": "spectra_telecom_churn",
+  "config_hash": "fa22671e965a8b46",
+  "seed": 42,
+  "n_features": 17,
+  "n_weak_classifiers": 816,
+  "n_vars_expected": 816,
+  "overall": {
+   "auc_roc": 0.9032151508478309,
+   "auprc": 0.7591261630016529
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 42,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "unscoreable",
+    "n": 101,
+    "n_positives": 46,
+    "reason": "n_positives 46 < 50"
+   },
+   "random_control": {
+    "status": "not_computed",
+    "reason": "in-segment cell already unscoreable"
+   },
+   "edge": null
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_telecom_churn",
+  "config_hash": "fa22671e965a8b46",
+  "seed": 43,
+  "n_features": 17,
+  "n_weak_classifiers": 816,
+  "n_vars_expected": 816,
+  "overall": {
+   "auc_roc": 0.9048805329222638,
+   "auprc": 0.7367054116442084
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 43,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "scored",
+    "n": 124,
+    "n_positives": 52,
+    "auc_roc": 0.8031517094017093,
+    "auprc": 0.7591320661147485
+   },
+   "random_control": {
+    "status": "scored",
+    "n": 124,
+    "n_positives": 52,
+    "auc_roc": 0.8985042735042734,
+    "auprc": 0.8562498243030424
+   },
+   "edge": {
+    "auc_roc": -0.0953525641025641,
+    "auprc": -0.09711775818829393
+   }
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_telecom_churn",
+  "config_hash": "fa22671e965a8b46",
+  "seed": 44,
+  "n_features": 17,
+  "n_weak_classifiers": 816,
+  "n_vars_expected": 816,
+  "overall": {
+   "auc_roc": 0.9025407399251266,
+   "auprc": 0.7639946345367299
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 44,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "scored",
+    "n": 110,
+    "n_positives": 52,
+    "auc_roc": 0.7868037135278515,
+    "auprc": 0.8065896942121347
+   },
+   "random_control": {
+    "status": "scored",
+    "n": 110,
+    "n_positives": 52,
+    "auc_roc": 0.9502652519893899,
+    "auprc": 0.9466388139699449
+   },
+   "edge": {
+    "auc_roc": -0.16346153846153844,
+    "auprc": -0.1400491197578102
+   }
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_telecom_churn",
+  "config_hash": "fa22671e965a8b46",
+  "seed": 45,
+  "n_features": 17,
+  "n_weak_classifiers": 816,
+  "n_vars_expected": 816,
+  "overall": {
+   "auc_roc": 0.8829969444101889,
+   "auprc": 0.6967907356994614
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 45,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "unscoreable",
+    "n": 114,
+    "n_positives": 49,
+    "reason": "n_positives 49 < 50"
+   },
+   "random_control": {
+    "status": "not_computed",
+    "reason": "in-segment cell already unscoreable"
+   },
+   "edge": null
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_telecom_churn",
+  "config_hash": "fa22671e965a8b46",
+  "seed": 46,
+  "n_features": 17,
+  "n_weak_classifiers": 816,
+  "n_vars_expected": 816,
+  "overall": {
+   "auc_roc": 0.90231704142174,
+   "auprc": 0.706033556214851
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 46,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "scored",
+    "n": 125,
+    "n_positives": 57,
+    "auc_roc": 0.8346233230134159,
+    "auprc": 0.7599632636300666
+   },
+   "random_control": {
+    "status": "scored",
+    "n": 125,
+    "n_positives": 57,
+    "auc_roc": 0.9241486068111455,
+    "auprc": 0.8967167950847454
+   },
+   "edge": {
+    "auc_roc": -0.08952528379772962,
+    "auprc": -0.13675353145467883
+   }
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_energy_steel",
+  "config_hash": "d82b1280000c175d",
+  "seed": 42,
+  "n_features": 17,
+  "n_weak_classifiers": 816,
+  "n_vars_expected": 816,
+  "overall": {
+   "auc_roc": 0.9663154700468133,
+   "auprc": 0.9015001687073795
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 42,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "scored",
+    "n": 1228,
+    "n_positives": 927,
+    "auc_roc": 0.8133263089235092,
+    "auprc": 0.9333929040902678
+   },
+   "random_control": {
+    "status": "scored",
+    "n": 1228,
+    "n_positives": 927,
+    "auc_roc": 0.964146838836385,
+    "auprc": 0.9855322292765216
+   },
+   "edge": {
+    "auc_roc": -0.15082052991287576,
+    "auprc": -0.05213932518625386
+   }
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_energy_steel",
+  "config_hash": "d82b1280000c175d",
+  "seed": 43,
+  "n_features": 17,
+  "n_weak_classifiers": 816,
+  "n_vars_expected": 816,
+  "overall": {
+   "auc_roc": 0.9648727140435266,
+   "auprc": 0.8929742799730962
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 43,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "scored",
+    "n": 1286,
+    "n_positives": 950,
+    "auc_roc": 0.8070206766917294,
+    "auprc": 0.9256211330008294
+   },
+   "random_control": {
+    "status": "scored",
+    "n": 1286,
+    "n_positives": 950,
+    "auc_roc": 0.9492606516290727,
+    "auprc": 0.9764585049431785
+   },
+   "edge": {
+    "auc_roc": -0.1422399749373433,
+    "auprc": -0.05083737194234916
+   }
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_energy_steel",
+  "config_hash": "d82b1280000c175d",
+  "seed": 44,
+  "n_features": 17,
+  "n_weak_classifiers": 816,
+  "n_vars_expected": 816,
+  "overall": {
+   "auc_roc": 0.9651129228243656,
+   "auprc": 0.8926600159468925
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 44,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "scored",
+    "n": 1250,
+    "n_positives": 918,
+    "auc_roc": 0.7799859568994933,
+    "auprc": 0.9086316921833568
+   },
+   "random_control": {
+    "status": "scored",
+    "n": 1250,
+    "n_positives": 918,
+    "auc_roc": 0.9662506234086673,
+    "auprc": 0.9853719636478797
+   },
+   "edge": {
+    "auc_roc": -0.18626466650917395,
+    "auprc": -0.07674027146452289
+   }
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_energy_steel",
+  "config_hash": "d82b1280000c175d",
+  "seed": 45,
+  "n_features": 17,
+  "n_weak_classifiers": 816,
+  "n_vars_expected": 816,
+  "overall": {
+   "auc_roc": 0.96986276422429,
+   "auprc": 0.9091773585399354
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 45,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "scored",
+    "n": 1255,
+    "n_positives": 946,
+    "auc_roc": 0.8015387562689437,
+    "auprc": 0.9294622043936268
+   },
+   "random_control": {
+    "status": "scored",
+    "n": 1255,
+    "n_positives": 946,
+    "auc_roc": 0.9624376526611794,
+    "auprc": 0.9839380248896719
+   },
+   "edge": {
+    "auc_roc": -0.16089889639223576,
+    "auprc": -0.054475820496045047
+   }
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_energy_steel",
+  "config_hash": "d82b1280000c175d",
+  "seed": 46,
+  "n_features": 17,
+  "n_weak_classifiers": 816,
+  "n_vars_expected": 816,
+  "overall": {
+   "auc_roc": 0.9708562428297088,
+   "auprc": 0.9150628092089007
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 46,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "scored",
+    "n": 1259,
+    "n_positives": 949,
+    "auc_roc": 0.8153710187293925,
+    "auprc": 0.9321498555371879
+   },
+   "random_control": {
+    "status": "scored",
+    "n": 1259,
+    "n_positives": 949,
+    "auc_roc": 0.9728372820286211,
+    "auprc": 0.98964150245159
+   },
+   "edge": {
+    "auc_roc": -0.15746626329922853,
+    "auprc": -0.05749164691440212
+   }
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_oilgas_gasturbine",
+  "config_hash": "3f963271f7dbeb08",
+  "seed": 42,
+  "n_features": 15,
+  "n_weak_classifiers": 560,
+  "n_vars_expected": 560,
+  "overall": {
+   "auc_roc": 0.9143145913241273,
+   "auprc": 0.8520087129100287
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 42,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "scored",
+    "n": 1319,
+    "n_positives": 753,
+    "auc_roc": 0.7133398091966644,
+    "auprc": 0.7908181692543912
+   },
+   "random_control": {
+    "status": "scored",
+    "n": 1319,
+    "n_positives": 753,
+    "auc_roc": 0.9153656281822063,
+    "auprc": 0.9406025710124084
+   },
+   "edge": {
+    "auc_roc": -0.20202581898554195,
+    "auprc": -0.14978440175801722
+   }
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_oilgas_gasturbine",
+  "config_hash": "3f963271f7dbeb08",
+  "seed": 43,
+  "n_features": 15,
+  "n_weak_classifiers": 560,
+  "n_vars_expected": 560,
+  "overall": {
+   "auc_roc": 0.9063063768262754,
+   "auprc": 0.8412746373442164
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 43,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "scored",
+    "n": 1305,
+    "n_positives": 754,
+    "auc_roc": 0.6965512427368613,
+    "auprc": 0.7884245123363215
+   },
+   "random_control": {
+    "status": "scored",
+    "n": 1305,
+    "n_positives": 754,
+    "auc_roc": 0.9033009671347489,
+    "auprc": 0.930491339040393
+   },
+   "edge": {
+    "auc_roc": -0.20674972439788764,
+    "auprc": -0.14206682670407156
+   }
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_oilgas_gasturbine",
+  "config_hash": "3f963271f7dbeb08",
+  "seed": 44,
+  "n_features": 15,
+  "n_weak_classifiers": 560,
+  "n_vars_expected": 560,
+  "overall": {
+   "auc_roc": 0.8986772079916382,
+   "auprc": 0.8240287577293498
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 44,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "scored",
+    "n": 1341,
+    "n_positives": 785,
+    "auc_roc": 0.6672730605324657,
+    "auprc": 0.7590533554896993
+   },
+   "random_control": {
+    "status": "scored",
+    "n": 1341,
+    "n_positives": 785,
+    "auc_roc": 0.8875429592631627,
+    "auprc": 0.9255854398037082
+   },
+   "edge": {
+    "auc_roc": -0.22026989873069702,
+    "auprc": -0.1665320843140089
+   }
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_oilgas_gasturbine",
+  "config_hash": "3f963271f7dbeb08",
+  "seed": 45,
+  "n_features": 15,
+  "n_weak_classifiers": 560,
+  "n_vars_expected": 560,
+  "overall": {
+   "auc_roc": 0.9071347334202056,
+   "auprc": 0.833179053167973
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 45,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "scored",
+    "n": 1280,
+    "n_positives": 765,
+    "auc_roc": 0.6962040738625548,
+    "auprc": 0.7940673901420101
+   },
+   "random_control": {
+    "status": "scored",
+    "n": 1280,
+    "n_positives": 765,
+    "auc_roc": 0.9133472936100007,
+    "auprc": 0.9414852240121487
+   },
+   "edge": {
+    "auc_roc": -0.21714321974744588,
+    "auprc": -0.14741783387013863
+   }
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ },
+ {
+  "dataset": "spectra_oilgas_gasturbine",
+  "config_hash": "3f963271f7dbeb08",
+  "seed": 46,
+  "n_features": 15,
+  "n_weak_classifiers": 560,
+  "n_vars_expected": 560,
+  "overall": {
+   "auc_roc": 0.9070098583183301,
+   "auprc": 0.8438984439529589
+  },
+  "in_segment": {
+   "label": "target",
+   "seed": 46,
+   "min_test_positives": 50,
+   "in_segment": {
+    "status": "scored",
+    "n": 1315,
+    "n_positives": 756,
+    "auc_roc": 0.7093922442759653,
+    "auprc": 0.8009721753975475
+   },
+   "random_control": {
+    "status": "scored",
+    "n": 1315,
+    "n_positives": 756,
+    "auc_roc": 0.8996862310815801,
+    "auprc": 0.9329141851467562
+   },
+   "edge": {
+    "auc_roc": -0.19029398680561482,
+    "auprc": -0.13194200974920867
+   }
+  },
+  "evidence_tag": "PROJ",
+  "metered_seconds": 0
+ }
+]
