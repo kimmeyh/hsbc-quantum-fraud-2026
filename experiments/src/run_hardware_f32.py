@@ -18,9 +18,14 @@ this is the configuration where hardware-versus-proxy agreement is a meaningful
 question.
 
 SPEND: team lead pre-approved 40-50 metered device seconds on 2026-09-04,
-conditional on the F31 outcome, with no further stop. This runner enforces that
-envelope in code: one fit per seed, a hard block cap, and a pre-call projection
-so the cap bounds the call it precedes rather than being noticed after the fact.
+conditional on the F31 outcome, with no further stop. The runner bounds that
+envelope with one fit per seed and TWO checks: a hard stop once recorded spend
+reaches the cap, and a pre-call projection at the measured 4-5 s/fit rate so the
+cap normally bounds the call it precedes. The projection is not a guarantee -- a
+single call billing far above the expected rate can still carry the block past
+the cap by that call's excess -- so the hard stop is what makes a runaway
+terminate rather than continue. A failed call is recorded and charged rather
+than dropped, because spend the store cannot see is spend the cap cannot bound.
 
 Usage: python experiments/src/run_hardware_f32.py [--dry-run]
 """
@@ -152,8 +157,9 @@ def run_seed(seed: int, dry_run: bool) -> dict:
     pool = mp.build_mixed(X_tr, X_va, X_te, y_pm1, SCHEDULE)
     H_tr, H_va, H_te = pool["H_tr"], pool["H_va"], pool["H_te"]
     n = H_tr.shape[0]
-    if not dry_run:
-        check_free_tier_size(n)
+    # Unconditional: this is free local arithmetic, and --dry-run is exactly
+    # the mode that should surface a sizing error before any campaign starts.
+    check_free_tier_size(n)
     lam = qp.LAMBDA_MULT * len(y_pm1)
 
     # exact classical solve of the identical Hamiltonian: the ADR-0002 control
@@ -188,18 +194,52 @@ def run_seed(seed: int, dry_run: bool) -> dict:
                 self.h_list.extend(h)
                 self.ind_list.extend(ind)
 
+    # weak_cls_type is REQUIRED by the constructor but IGNORED here: the
+    # overridden _build_weak_classifiers_sq installs the pre-built four-family
+    # pool. The value is persisted on the response object, where "dct" is the
+    # frozen arm's single-family marker, so anyone reconstructing provenance
+    # from the saved JSON alone would misread this as a dct pool (finding 12).
+    # The row's pool_variant/feature_set carry the truth; see also
+    # weak_cls_families below, written into the saved response for that reason.
     cfg = dict(lambda_coef=lam, weak_cls_schedule=SCHEDULE, weak_cls_type="dct",
                weak_cls_params={}, weak_cls_strategy="sequential", **qp.FIXED)
     clf = _MixedQBoost(api_url=os.environ["QCI_API_URL"],
                        api_token=os.environ["QCI_TOKEN"], **cfg)
 
     t0 = time.time()
-    resp = clf.fit(X_tr, y_pm1)          # ONE metered call
+    try:
+        resp = clf.fit(X_tr, y_pm1)      # ONE metered call
+    except Exception as e:               # noqa: BLE001
+        # The device may have BILLED before the failure (timeout, response parse
+        # error, network drop). _spent() reads results.json only, so a run that
+        # dies here without a row makes those seconds invisible to the cap and a
+        # rerun re-spends against a budget that silently reset. Record a failed
+        # row charged the conservative estimate, exactly as run_hardware.py does.
+        store.append_row({
+            "arm": "cvqboost_hw_mixed", "dataset": "ulb", "block": BLOCK,
+            "seed": seed, "protocol": "stratified", "config": "mixed_free_sched2",
+            "config_hash": store.config_hash({"pool": "mixed",
+                "families": list(mp.FAMILIES), "k": K_FEATURES,
+                "schedule": SCHEDULE, "lambda_mult": qp.LAMBDA_MULT,
+                "n_variables": n}),
+            "pool_variant": "mixed", "feature_set": "mixed_k6", "pair_build": "seq",
+            "evidence_tag": "HW", "status": "failed",
+            "error": f"{type(e).__name__}: {str(e)[:300]}",
+            "metered_seconds": UNPARSEABLE_CALL_CHARGE_S,
+            "metered_seconds_parsed": False,
+            "n_variables": n, "metrics": None,
+        })
+        raise
     wall = time.time() - t0
 
     RESP_DIR.mkdir(parents=True, exist_ok=True)
     (RESP_DIR / f"f32_mixed_stratified_{seed}.json").write_text(
-        json.dumps(resp, default=str, indent=1))
+        json.dumps({"_pool_provenance": {
+                        "weak_cls_families": list(mp.FAMILIES),
+                        "n_variables": n, "k_features": K_FEATURES,
+                        "note": ("weak_cls_type in the job config reads 'dct' but is "
+                                 "ignored; the pool is the four families listed here")},
+                    "response": resp}, default=str, indent=1))
 
     energies = np.asarray(resp.get("results", {}).get("energies", []), dtype=float)
     w_hw = np.asarray(clf.params, dtype=np.float64)
@@ -255,8 +295,12 @@ def run_seed(seed: int, dry_run: bool) -> dict:
             "proxy_ap_test": float(AP(y_te, px_test)),
             "hw_minus_proxy_ap": float(AP(y_te, p_test) - AP(y_te, px_test)),
             "n_solver_draws": int(len(energies)),
-            "energy_spread_pct": float(abs(energies.max() - energies.min()) /
-                                       max(abs(energies.min()), 1e-12) * 100.0),
+            # A response without energies must not crash AFTER the device billed
+            # and predictions were written; run_hardware.py guards the same field.
+            "energy_spread_pct": (
+                float(abs(energies.max() - energies.min()) /
+                      max(abs(energies.min()), 1e-12) * 100.0)
+                if energies.size else None),
         },
     }
 
@@ -276,6 +320,10 @@ def main() -> int:
         # A cap that overstates spend is the safe direction, but it still loses
         # approved work, so read one source of truth.
         spent = _spent()
+        if not dry and spent >= BLOCK_CAP_S:
+            print(f"  STOP before seed {seed}: {spent:.1f}s spent has reached "
+                  f"the {BLOCK_CAP_S}s cap")
+            break
         if not dry and spent + EXPECTED_CALL_S >= BLOCK_CAP_S:
             print(f"  STOP before seed {seed}: spent {spent:.1f}s + expected "
                   f"{EXPECTED_CALL_S}s would reach the {BLOCK_CAP_S}s cap")

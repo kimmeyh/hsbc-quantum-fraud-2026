@@ -24,25 +24,24 @@ Values are means and t-intervals across ten overlapping resplits: they describe 
 
 The test fold holds about 95 frauds in 56,746 transactions, so the 0.05% and 0.1% budgets fund 28 and 57 alerts, capping recall at 0.295 and 0.600. Every column is a ranking measure under a budget; only 0.5% is uncapped by the positive count. CVQBoost figures are proxy-derived [SIM]: Dirac-3 weights were not persisted (A.4).
 
-| Arm | R@0.05% (cap 0.295) | R@0.1% (cap 0.600) | R@0.5% |
+| Arm | R@0.05% (cap .295) | R@0.1% (cap .600) | R@0.5% |
 |---|---|---|---|
-| CatBoost, 30 features | 0.294 (99.7% of cap) | 0.593 (98.8%) | 0.855 |
-| CatBoost, 13 features | 0.286 (96.9%) | 0.580 (96.7%) | 0.849 |
-| CVQBoost, exact proxy [SIM] | 0.283 (95.9%) | 0.565 (94.2%) | 0.819 |
-| CVQBoost mixed pool [HW] | 0.271 | 0.509 | 0.839 |
-| Logistic regression | 0.241 (81.7%) | 0.513 (85.5%) | 0.839 |
+| CatBoost, 30 feat | .294 (99.7% of cap) | .593 (98.8%) | .855 |
+| CatBoost, 13 feat | .286 (96.9%) | .580 (96.7%) | .849 |
+| CVQBoost proxy [SIM] | .283 (95.9%) | .565 (94.2%) | .819 |
+| CVQBoost mixed k=6 [HW] | .271 | .509 | .839 |
+| Logistic regression | .241 (81.7%) | .513 (85.5%) | .839 |
 
 ## A.3 Hardware campaign and score health
 
-27 metered fits, 120 metered device seconds, zero failures, zero retries, 4 to 5 s per fit at 25 to 91 variables; the exact classical solve takes milliseconds. The selected configuration carries a score-degeneracy warning on all ten seeds (95.1% of transactions share one score across 814 distinct values), so its threshold-dependent figures are weak evidence while its ranking metrics are sound.
+37 metered fits over two campaigns, 163 device seconds, zero failures, zero retries, 4 to 5 s per fit; the classical solve takes milliseconds. The selected configuration carries a score-degeneracy warning on all ten seeds (95.1% of transactions share one score across 814 distinct values), so its threshold-dependent figures are weak evidence while its ranking metrics are sound.
 
 | Quantity | Value | Tag |
 |---|---|---|
 | G0b Spearman, proxy versus hardware ranking, 5 configs | 0.900 (exact permutation p: one-sided 0.042) | [HW] |
 | H1b, CVQBoost minus best matched GBDT, 10 seeds | -0.0399 [-0.0571, -0.0227], 9 of 10 seeds negative | [HW] |
 | Per-seed paired BCa intervals excluding zero (proxy scores) | 6 of 10 | [SIM] |
-| Solver draws per fit / fits with identical draws | 8 / 0 of 27 | [HW] |
-| Within-fit energy spread, median and maximum | 0.019%, 0.343% | [HW] |
+| Solver draws per fit; identical-draw fits; within-fit energy spread | 8; 0 of 27; median 0.019%, max 0.343% | [HW] |
 
 ## A.4 Solver fidelity and the mechanism controls
 
@@ -57,7 +56,9 @@ Hardware minus exact proxy on identical Hamiltonians: -0.0010 [-0.0032, +0.0012]
 
 The +0.0022 is tie-breaking. Uniform weights leave 95.3% of test rows tied on one score (78 distinct values); weights differing by order 1e-07 split those into 151, and average precision is rank-based. Rounding the solved scores to six decimals returns the metric to the uniform value (seed 42: 0.8073 solved, 0.8043 rounded, 0.8049 uniform).
 
-**Mixed-pool test (exploratory, A11).** Four families (dct, lda, lg, knn), identical splits: gram ratio 0.9975 vs 0.999994, L1 from uniform 0.127 vs 8.0e-08, solved-minus-uniform +0.0076 on 10/10 seeds [SIM]. Rounding to 2dp leaves 96 distinct scores vs uniform's 123 yet scores higher, and the shrinkage curve is monotone: optimization, not tie-breaking. Below the 0.0268 MDE; its absolute AUPRC (0.7565) is below the frozen pool's. Ten metered fits: hardware minus proxy -0.0007, cosine 0.977-0.983, recall 0.271/0.509/0.839 at the 0.05/0.1/0.5% budgets [HW].
+**Mixed-pool test (exploratory, A11).** Four families (dct, lda, lg, knn) at **k=13, 312 variables**, identical splits: gram ratio 0.9975 vs 0.999994, L1 from uniform 0.127 vs 8.0e-08, solved-minus-uniform +0.0076 on 10/10 seeds, absolute AUPRC 0.7565, below the frozen pool's 0.7681 and below the 0.0268 MDE [SIM]. The two mechanism controls are **seed 42 only**: rounding to 2dp leaves 96 distinct scores vs uniform's 123 yet scores higher, and the shrinkage curve is monotone, so this is optimization rather than tie-breaking.
+
+**Hardware (F32) ran a DIFFERENT, smaller configuration.** The free-tier ceiling of 100 variables (A12) forecloses k=13, so the metered block used **k=6, 60 variables**: ten fits, 43.0 device seconds, AUPRC 0.7630, hardware minus proxy -0.0007, cosine 0.977-0.983, recall 0.271/0.509/0.839 [HW]. It measures solver fidelity and supplies hardware operating points; it does NOT confirm the k=13 mechanism, which the free tier cannot run. That configuration's own mechanism is a single-seed spot check (L1 0.0204), an order of magnitude weaker.
 
 The cause is pool degeneracy: off-diagonal Gram entries average 170,234.4 against a diagonal of 170,235, so any two learners agree on 99.999% of training rows, because at 0.17% prevalence a depth-limited tree predicts the negative class almost everywhere. With interchangeable learners uniform is genuinely optimal. A penalty sweep from 0 to 4 times n_train leaves it uniform even at zero penalty, ruling out the penalty term. Phase 2: the first requirement is pool diversity, not a better solver.
 

@@ -36,6 +36,28 @@ LOW_CARD_THRESHOLD = 12   # train-distinct-value ceiling below which a column
 DAY_SECONDS = 86400.0
 
 
+def _reject_nan(x, where: str) -> None:
+    """Fail loudly rather than encode NaN as a maximum (PR #36 review finding 4).
+
+    np.argsort sorts NaN LAST, so a missing value receives the largest rank and
+    therefore the largest phase -- indistinguishable from a genuine maximum
+    observation, and strictly above it ([1,2,3,nan,5] gave NaN +2.5133 against
+    5.0's +1.2566). ULB is dense so this never fired, but IEEE-CIS is NaN-heavy
+    and is the stated Sprint 8 target for the same H6 arms. Silently encoding
+    missingness as "largest value seen" would corrupt every phase feature built
+    on such a column, so the transformer refuses the input instead.
+    """
+    import numpy as _np
+    arr = _np.asarray(x, dtype=float)
+    n_nan = int(_np.isnan(arr).sum())
+    if n_nan:
+        raise ValueError(
+            f"{where}: {n_nan} NaN value(s) in the phase input. np.argsort ranks "
+            "NaN last, so they would encode as the LARGEST phase, above any real "
+            "observation. Impute or drop the column before phase encoding."
+        )
+
+
 def _rank_phase(values: np.ndarray, ranks_ref: np.ndarray | None = None) -> np.ndarray:
     """phi = 2*pi*(rank - 0.5)/n - pi, rank in {1..n} (average rank on ties).
 
@@ -137,6 +159,7 @@ class FourierWallPhaseEncoder:
         return self
 
     def _fit_rank_phase(self, name: str, col: np.ndarray) -> None:
+        _reject_nan(col, f"fit({name})")
         # Step 1: log magnitude BEFORE phase (sign-preserved log1p of |x|).
         log_mag = np.sign(col) * np.log1p(np.abs(col))
         # Step 2: rank phase on the log-magnitude column, TRAIN ranks only.
@@ -173,10 +196,19 @@ class FourierWallPhaseEncoder:
         col_index = {c: i for i, c in enumerate(cols)}
         out = {}
 
+        missing = [n for n in self.phase_states_ if n not in col_index]
+        if missing:
+            # Silently emitting a narrower output lets train- and test-side
+            # feature matrices differ in width, or worse, misalign by position
+            # in a caller that stacks them. Fail at the boundary (finding 5).
+            raise ValueError(
+                f"transform is missing {len(missing)} fitted column(s): "
+                f"{missing[:5]}. Fit and transform must see the same schema."
+            )
+
         for name, state in self.phase_states_.items():
-            if name not in col_index:
-                continue
             raw = arr[:, col_index[name]].astype(np.float64)
+            _reject_nan(raw, f"transform({name})")
             log_mag = np.sign(raw) * np.log1p(np.abs(raw))
             phi = self._interpolated_rank_phase(log_mag, state)
             cos, sin = np.cos(phi), np.sin(phi)

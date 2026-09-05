@@ -101,13 +101,14 @@ def segment_feature_cols(X) -> list[str]:
 def matched_random_segment(in_pocket_mask: np.ndarray, rng: np.random.Generator,
                            y: np.ndarray) -> np.ndarray:
     """Draw a random segment of the SAME SIZE as in_pocket==1 and the SAME BASE
-    RATE (positive count), from the full row pool. This is the negative
+    RATE (positive count), from the COMPLEMENT of the segment. This is the negative
     control prereg H5(ii) requires: a genuine in-segment structural effect
     should beat this control, not just beat "the rest of the data" (which
     differs in both size and prevalence from the segment by construction).
 
     Construction: sample n_pos positives and n_neg negatives uniformly at
-    random WITHOUT replacement from the full label-stratified pools, matching
+    random WITHOUT replacement from the label-stratified COMPLEMENT pools
+    (rows outside the segment), matching
     the segment's exact size and exact positive count. This can only be
     matched exactly when the segment's size and base rate are jointly
     feasible against the full pool (asserted below); SPECTRA's pockets are a
@@ -119,10 +120,19 @@ def matched_random_segment(in_pocket_mask: np.ndarray, rng: np.random.Generator,
     n_pos = int(y[in_pocket_mask].sum())
     n_neg = n_total - n_pos
 
-    pos_idx = np.flatnonzero(y == 1)
-    neg_idx = np.flatnonzero(y == 0)
-    assert n_pos <= len(pos_idx), "matched control needs more positives than exist"
-    assert n_neg <= len(neg_idx), "matched control needs more negatives than exist"
+    # Sample from the COMPLEMENT, never the full pool. Drawing from all rows
+    # lets the control share rows with the segment it controls for (~20% overlap
+    # measured on a 400-row segment in 2000 rows), and since the reported edge is
+    # in-segment minus control, shared rows pull that difference toward zero and
+    # bias H5(i) AGAINST detecting a real in-segment effect. The module contract
+    # always said "complement pool"; the code did not implement it.
+    outside = ~in_pocket_mask
+    pos_idx = np.flatnonzero((y == 1) & outside)
+    neg_idx = np.flatnonzero((y == 0) & outside)
+    assert n_pos <= len(pos_idx), ("matched control needs more positives than exist "
+                                   "OUTSIDE the segment")
+    assert n_neg <= len(neg_idx), ("matched control needs more negatives than exist "
+                                   "OUTSIDE the segment")
 
     chosen_pos = rng.choice(pos_idx, size=n_pos, replace=False)
     chosen_neg = rng.choice(neg_idx, size=n_neg, replace=False)

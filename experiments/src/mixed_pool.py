@@ -84,13 +84,23 @@ def diversity(H: np.ndarray, max_pairs: int = 4000, seed: int = 0) -> dict:
     diag = float(np.mean(np.diag(G)))
     off = float((G.sum() - np.trace(G)) / (n * n - n)) if n > 1 else float("nan")
 
+    # Enumerate DISTINCT pairs, or sample distinct pairs without replacement
+    # when there are too many. The previous version drew indices independently,
+    # so `max_pairs` read as enumeration while actually producing duplicates and
+    # discarded self-pairs (1117 of 1770 covered at n=60), biasing the reported
+    # mean and especially the max (PR #36 review finding 11).
     rng = np.random.default_rng(seed)
-    pairs = min(max_pairs, n * (n - 1) // 2)
-    dis = []
-    for _ in range(pairs):
-        i, j = rng.integers(0, n, 2)
-        if i != j:
-            dis.append(float((H[i] != H[j]).mean()))
+    all_pairs = n * (n - 1) // 2
+    if all_pairs <= max_pairs:
+        idx = [(i, j) for i in range(n) for j in range(i + 1, n)]
+    else:
+        seen, idx = set(), []
+        while len(idx) < max_pairs:
+            i, j = sorted(rng.integers(0, n, 2))
+            if i != j and (i, j) not in seen:
+                seen.add((i, j))
+                idx.append((i, j))
+    dis = [float((H[i] != H[j]).mean()) for i, j in idx]
     return {
         "n_learners": int(n),
         "gram_diagonal": diag,

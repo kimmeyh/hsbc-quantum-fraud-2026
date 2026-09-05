@@ -113,14 +113,19 @@ def test_matched_random_segment_is_reproducible_given_the_same_rng_state():
 
 
 def test_matched_random_segment_feasibility_is_a_pool_subset_invariant():
-    """`in_pocket_mask` always indexes into the SAME `y` array it derives
-    n_pos/n_neg from, so the pocket's positive and negative counts are
-    mathematically guaranteed to be subsets of the pool's -- the function's
-    internal feasibility asserts can never fire for any (y, in_pocket) pair
-    that came from one consistent dataframe. This is documented behavior,
-    not a gap: callers must never pass a `y` from one fold with an
-    `in_pocket` mask from another. Exercised here across many random
-    pockets/base rates to confirm no misuse-free input ever raises."""
+    """Feasibility against the COMPLEMENT pool (revised, PR #36 finding 3).
+
+    The control is drawn from rows OUTSIDE the segment, so matching is no longer
+    automatic: a pocket holding more than half the positives (or negatives)
+    cannot be size- and rate-matched from what remains, and the function's
+    asserts SHOULD fire there. That is a real constraint of a valid control, not
+    a defect -- the previous version could always match only because it was
+    allowed to reuse the segment's own rows.
+
+    SPECTRA pockets are a small fraction of each split, so this holds in
+    practice; the test exercises the feasible regime and confirms the
+    infeasible one raises rather than silently returning an overlapping control.
+    """
     rng_data = np.random.default_rng(11)
     for trial in range(20):
         n = rng_data.integers(20, 500)
@@ -128,13 +133,24 @@ def test_matched_random_segment_feasibility_is_a_pool_subset_invariant():
         y = (rng_data.random(n) < rate).astype(int)
         if y.sum() == 0 or y.sum() == n:
             continue
-        pocket_size = int(rng_data.integers(1, n))
+        # feasible regime: pocket at most a third of the rows, as SPECTRA's are
+        pocket_size = int(rng_data.integers(1, max(2, n // 3)))
         pocket_idx = rng_data.choice(n, size=pocket_size, replace=False)
         in_pocket = np.zeros(n, dtype=bool)
         in_pocket[pocket_idx] = True
+        n_pos, n_neg = int(y[in_pocket].sum()), int((~y.astype(bool))[in_pocket].sum())
+        if n_pos > int(y.sum()) - n_pos or n_neg > int((y == 0).sum()) - n_neg:
+            continue                      # genuinely infeasible against the complement
         control = seg.matched_random_segment(in_pocket, np.random.default_rng(trial), y)
         assert control.sum() == in_pocket.sum()
         assert y[control].sum() == y[in_pocket].sum()
+        assert not (control & in_pocket).any(), "control must be disjoint"
+
+    # and the infeasible case must RAISE rather than return an overlapping control
+    y_small = np.array([1, 1, 1, 0])
+    pocket = np.array([True, True, False, False])   # 2 of 3 positives in-segment
+    with pytest.raises(AssertionError):
+        seg.matched_random_segment(pocket, np.random.default_rng(0), y_small)
 
 
 # --------------------------------------------------- >=50 rule enforcement
@@ -251,3 +267,28 @@ def test_frozen_cells_variable_counts_fit_device_ceiling():
         n = cell["config"]["n_features"]
         v = data.qubo_vars(n, 3, pair_build="sequential")
         assert v <= 949, f"{cell['dataset']}: {v} vars exceeds device ceiling"
+
+
+def test_matched_control_is_disjoint_from_the_segment():
+    """PR #36 review finding 3. The control was drawn from the FULL pool, so it
+    shared rows with the segment it controls for (~20% overlap on a 400-row
+    segment in 2000 rows). The reported edge is in-segment minus control, so
+    shared rows pull it toward zero and bias H5(i) against detecting a real
+    effect. Size, base rate and reproducibility were all tested; disjointness
+    was not, which is why the defect shipped.
+    """
+    import numpy as np
+    from spectra_segment import matched_random_segment
+
+    rng = np.random.default_rng(0)
+    n = 2000
+    y = (rng.random(n) < 0.25).astype(int)
+    in_pocket = np.zeros(n, dtype=bool)
+    in_pocket[rng.choice(n, size=400, replace=False)] = True
+
+    control = matched_random_segment(in_pocket, rng, y)
+
+    overlap = int((control & in_pocket).sum())
+    assert overlap == 0, f"control shares {overlap} rows with the segment"
+    assert control.sum() == in_pocket.sum(), "control must match segment size"
+    assert y[control].sum() == y[in_pocket].sum(), "control must match positive count"

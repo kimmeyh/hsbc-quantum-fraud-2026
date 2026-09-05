@@ -8,7 +8,7 @@
   "consequences": {
     "frozen_pool_91_vars": "fits, 91 < 100",
     "mixed_pool_4_families_k13_312_vars": "REFUSED",
-    "largest_mixed_pool_that_fits": "4 families at k=6 = 84 variables",
+    "largest_mixed_pool_that_fits": "4 families at k=6 = 60 variables (qubo_vars(6,2,sequential)=15 per family). An earlier version of this record said 84, which was wrong; every F32 row records n_variables 60. Corrected 2026-09-05 after PR #36 review finding 10.",
     "sprint_5_A2_note": "A2's variable arithmetic is unaffected; what was wrong is the inference about which ceiling binds."
   },
   "correction_status": "proposal and appendix corrected 2026-09-05"

@@ -53,6 +53,14 @@ def verify_checksums() -> dict:
     for fname in ("train_transaction.csv", "train_identity.csv"):
         key = f"ieee-cis/{fname}"
         path = data.IEEE_CIS_DIR / fname
+        if not path.exists():
+            # The docstring promises a report, not an exception. _sha256 would
+            # raise FileNotFoundError here, so an absent file crashed a function
+            # callers are told is safe to call (PR #36 review finding 13).
+            report[key] = {"sha256": None, "manifest_sha256": None,
+                           "matches_manifest": False, "status": "FILE MISSING",
+                           "path": str(path)}
+            continue
         digest = _sha256(path)
         recorded = manifest_entry_for(key)
         report[key] = {
