@@ -2,7 +2,7 @@
 
 Owners: **H** = Harold (only you can do it), **C** = Claude (I do it), **H+C** = decision or review done together.
 Mark items `[x]` as they complete. This list is the working agenda; `docs/requirements-matrix.md` is the final acceptance gate.
-Last reconciled: 2026-09-03 (Sprint 4, hardware executed).
+Last reconciled: 2026-09-04 (Sprint 4 close).
 
 ## Standing rule: Dirac-3 hardware budget
 
@@ -52,8 +52,8 @@ All development and debugging runs use the local proxy (the classical solve of t
 - [ ] **C**: IEEE-CIS reduced Deotte recipe implemented per prereg section 5 (UID excluded, named aggregates, leakage controls, shuffled-label positive control)
 - [ ] **C**: Temporal protocols: IEEE-CIS GroupKFold-by-month rolling origin; ULB temporal sensitivity split; classical-refit fairness control on any drift claim
 - [x] **H+C**: B1 + G0b approved and executed 2026-09-03 (27 fits, 120 QPU s, 0 failures; G0b PASS Spearman 0.900). B2/B3/B4/B5 remain gated on the QCi grant, spend priority B3 > B2 > H3 ladder > B4
-- [ ] **C**: results.json per schema, CIs per spec, one-page results memo
-- [ ] **H+C**: Gate review Sep 4: score gates as committed; decide headline promotion per the thesis decision rule
+- [x] **C**: results.json per schema (147 rows: 120 [SIM], 27 [HW]), CIs per spec, one-page results memo (docs/RESULTS_MEMO.md, Sprint 4)
+- [x] **H+C**: Gate review done 2026-09-03/04: G0 FAIL as committed, G0b PASS (0.900), H1b null, H4 partial; headline framing DECIDED (production-bound program spine). Gate table refreshes with each later evidence sprint
 
 ## Stages 4 to 5: Outline and draft (Sep 4 to 6)
 

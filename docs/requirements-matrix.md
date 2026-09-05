@@ -78,3 +78,15 @@ Scoring guide: 5 = flagship demonstration; 4 = convincing with minor gaps. Targe
 | E4 | Classical ceiling stated plainly | TODO |
 | E5 | Under the page limit | TODO |
 | E6 | Reproducibility repo linked as supplementary material | TODO |
+
+## Portal document verification (2026-09-04)
+
+The external review asked whether our format and rubric assumptions match what the portal currently serves. The team lead re-downloaded all three governing documents from the logged-in portal on 2026-09-04; each is BYTE-IDENTICAL (SHA-256) to the copy archived in `docs/source/` on 2026-08-22 and read in full during Sprint 2:
+
+| Document | SHA-256 (first 16) | Status |
+|---|---|---|
+| Phase 1 Submission Guidelines | 74db5b7b01b16515 | unchanged since 2026-08-22 |
+| Assessment Criteria | 646aa97ca06c8283 | unchanged since 2026-08-22 |
+| Terms and Conditions | 3d3a8323aade01f7 | unchanged since 2026-08-22 |
+
+Consequence: every row in this matrix (page limits, format, minimum font, file size, section structure, upload mechanism, judging weights) was derived from the current documents and requires no revision. The portal dashboard additionally confirms the HSBC problem statement is listed and shows status "Not submitted", and that no files have yet been uploaded.

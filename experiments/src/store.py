@@ -78,3 +78,51 @@ def update_meta(**kv) -> None:
                  if RESULTS.exists() else {"meta": {}, "rows": []})
         store["meta"].update(kv)
         atomic_write_json(RESULTS, store)
+
+
+# ---------------------------------------------------------------- predictions
+
+PRED_DIR = RESULTS_DIR / "predictions"
+
+
+def prediction_path(config_hash: str, seed, protocol: str = "stratified",
+                    arm: str = "") -> Path:
+    """One .npz per (arm, config_hash, seed, protocol).
+
+    ARM IS PART OF THE KEY. Hardware and its exact proxy deliberately share a
+    config_hash (they solve the identical Hamiltonian over the identical pool --
+    that identity is what G0b and H4 rest on), so keying by hash alone made the
+    proxy backfill silently OVERWRITE the hardware predictions, and a cost table
+    then reported one vector under two evidence tags. Caught by adversarial
+    review, Sprint 5."""
+    prefix = f"{arm}_" if arm else ""
+    return PRED_DIR / f"{prefix}{config_hash}_{protocol}_{seed}.npz"
+
+
+def save_predictions(config_hash: str, seed, protocol: str,
+                     y_val, p_val, y_test, p_test, arm: str = "") -> str:
+    """Persist per-row scores so operating points, paired bootstraps, and the
+    A7 sensitivity cells can be recomputed WITHOUT refitting (amendment A7).
+    Returns the stored path, recorded on the row for traceability."""
+    import numpy as np
+
+    PRED_DIR.mkdir(parents=True, exist_ok=True)
+    f = prediction_path(config_hash, seed, protocol, arm)
+    tmp = f.with_suffix(f".{os.getpid()}.tmp.npz")
+    np.savez_compressed(tmp,
+                        y_val=np.asarray(y_val), p_val=np.asarray(p_val),
+                        y_test=np.asarray(y_test), p_test=np.asarray(p_test))
+    os.replace(tmp, f)
+    return str(f.relative_to(RESULTS_DIR.parent.parent)) if f.is_absolute() else str(f)
+
+
+def load_predictions(config_hash: str, seed, protocol: str = "stratified",
+                     arm: str = ""):
+    """(y_val, p_val, y_test, p_test) or None when not persisted."""
+    import numpy as np
+
+    f = prediction_path(config_hash, seed, protocol, arm)
+    if not f.exists():
+        return None
+    z = np.load(f)
+    return z["y_val"], z["p_val"], z["y_test"], z["p_test"]

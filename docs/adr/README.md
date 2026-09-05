@@ -30,3 +30,4 @@ Adopted from the spamfilter-multi ADR system (F15 review) with one addition: eve
 | [0009](0009-metrics-single-implementation.md) | One metrics implementation, known-answer tested, used by every arm | Accepted | 2026-09-02 |
 | [0010](0010-splits-and-seeds-provider.md) | Splits and seeds from one provider; seed lists are constants | Accepted | 2026-09-02 |
 | [0011](0011-secrets-and-credential-handling.md) | Secrets and credential handling | Accepted | 2026-08-30 |
+| [0012](0012-pdf-rendering-toolchain.md) | PDF rendering toolchain: pandoc to docx to Word | Accepted | 2026-09-04 |

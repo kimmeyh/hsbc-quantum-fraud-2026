@@ -155,14 +155,20 @@ def stage_refit(df, tuned: dict, dedupe_count: int, smoke: bool) -> None:
                                        split.X_val[cols], split.y_val, seed)
                 p_val = model.predict_proba(split.X_val[cols])[:, 1]
                 p_test = model.predict_proba(split.X_test[cols])[:, 1]
+                cfg_hash = store.config_hash(
+                    {"arm": arm, "fs": fs, "params": cfg["params"]})
+                pred_file = store.save_predictions(
+                    cfg_hash, seed, "stratified",
+                    split.y_val.to_numpy(), p_val, split.y_test.to_numpy(), p_test,
+                    arm=arm)
                 row = {
                     "arm": arm,
                     "dataset": "ulb",
                     "protocol": "stratified",
                     "seed": seed,
                     "feature_set": fs,
-                    "config_hash": store.config_hash(
-                        {"arm": arm, "fs": fs, "params": cfg["params"]}),
+                    "config_hash": cfg_hash,
+                    "predictions_file": pred_file,
                     "features_used": cols,
                     "early_stopping": es,
                     "metrics": metrics.summarize(
