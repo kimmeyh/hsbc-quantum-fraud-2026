@@ -120,3 +120,25 @@ def test_prediction_paths_are_arm_keyed():
     a = store.prediction_path("deadbeef", 42, "stratified", "cvqboost_hw")
     b = store.prediction_path("deadbeef", 42, "stratified", "cvqboost_proxy")
     assert a != b, "same path for two arms: the A9 collision would recur"
+
+
+def test_metered_billing_takes_the_conservative_reading():
+    """PR #36 Copilot finding. The F32 runner returned the FIRST device-usage
+    value found depth-first; the frozen runner collects all matches and returns
+    max(). A response nesting a per-sample runtime alongside a larger total
+    would then under-charge _spent(), which is the single source of truth for
+    the block cap, and a cap that under-counts is a cap that can be breached.
+    """
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import run_hardware_f32 as f32
+
+    # larger value nested deeper, as a per-sample list
+    assert f32._metered({"job_info": {"job_result": {"device_usage_s": 4}},
+                         "results": {"run_time": [9, 9, 9]}}) == 9.0
+    # larger value at the shallower key
+    assert f32._metered({"job_info": {"job_result": {"device_usage_s": 12}},
+                         "results": {"run_time": [3]}}) == 12.0
+    # the real F32 response shape still bills correctly
+    assert f32._metered({"job_info": {"job_result": {"device_usage_s": 4}}}) == 4.0
+    # unbillable stays None so the caller charges the conservative estimate
+    assert f32._metered(object()) is None

@@ -84,26 +84,37 @@ def _metered(resp) -> float | None:
     flags the row, because a spend guard that reads unparseable billing as zero
     goes blind (Sprint 4 review finding, amendment A8).
     """
-    keys = ("device_usage_s", "device_usage", "total_device_usage_s", "runtime_s")
+    keys = ("device_usage_s", "device_usage", "total_device_usage_s", "runtime_s",
+            "run_time")
+    found = []
 
     def walk(o):
         if isinstance(o, dict):
             for k, v in o.items():
-                if k in keys and isinstance(v, (int, float)):
-                    return float(v)
-                r = walk(v)
-                if r is not None:
-                    return r
+                if k in keys:
+                    # A usage key can hold a scalar OR a per-sample list
+                    # (Dirac-3 returns run_time as one entry per draw). Take the
+                    # max of a list rather than ignoring it, or the conservative
+                    # reading silently skips the larger value.
+                    if isinstance(v, (int, float)):
+                        found.append(float(v))
+                    elif isinstance(v, (list, tuple)) and v and all(
+                            isinstance(x, (int, float)) for x in v):
+                        found.append(float(max(v)))
+                walk(v)
         elif isinstance(o, (list, tuple)):
             for v in o:
-                r = walk(v)
-                if r is not None:
-                    return r
-        return None
+                walk(v)
 
-    got = walk(resp if isinstance(resp, (dict, list, tuple)) else getattr(resp, "__dict__", {}))
-    if got is not None:
-        return got
+    walk(resp if isinstance(resp, (dict, list, tuple)) else getattr(resp, "__dict__", {}))
+    if found:
+        # MAX, not first-found. A response can nest more than one usage key (a
+        # per-sample runtime alongside a larger total), and returning whichever
+        # depth-first search reached first can UNDER-charge _spent(), the single
+        # source of truth for the cap. On a metered cost-safety path the
+        # conservative reading is the correct one; the frozen runner does the
+        # same (run_hardware.py:_metered). PR #36 Copilot review.
+        return max(found)
     import re
     m = re.search(r"device_usage_s['\"]?\s*[:=]\s*([0-9.]+)", repr(resp))
     return float(m.group(1)) if m else None
