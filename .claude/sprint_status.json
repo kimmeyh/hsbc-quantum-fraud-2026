@@ -2,7 +2,7 @@
   "current_sprint": {
     "number": 7,
     "name": "TBD at refinement",
-    "branch": null,
+    "branch": "feature/20260905_Sprint_7",
     "status": "phase_1_backlog_refinement",
     "plan_doc": null,
     "pr": null,
@@ -12,7 +12,7 @@
   "last_completed_sprint": {
     "number": 6,
     "merged_pr": 36,
-    "main_merge_pr": null,
+    "main_merge_pr": 37,
     "docs_triad_complete": true
   },
   "prereg": {

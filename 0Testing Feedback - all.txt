@@ -6,6 +6,10 @@ Sprint n Manual Validation Feedback
 
 
 ---------------------------------------------------------------------------------------------------------
+Sprint 7 Manual Validation Feedback 
+
+
+---------------------------------------------------------------------------------------------------------
 Sprint 5 Manual Validation Feedback 
   1. Read docs/paper/out/proposal.pdf (3 pages). This is the submission.
   2. Section 7, Team Capability — the one section that is genuinely yours. Confirm or amend the capability lines and the AI-tool disclosure

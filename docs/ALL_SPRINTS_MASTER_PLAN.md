@@ -82,25 +82,6 @@ Renumbered 2026-09-05: the team lead noted the project is running more than one 
 - GroupKFold-by-month rolling origin; classical arms + proxy CVQBoost on the reduced set; H3 ladder cells
 - Depends on: F1
 
-**F31. Diverse weak-learner pool: replicate the Loke et al. pool construction (~6-10h, zero metered) Priority 1**
-- Phase: Experiments (Sprint 5 retrospective, Claude category 14; team lead approved 2026-09-04 for Sprint 6 entry)
-- Platform: ULB classical proxy only. ZERO metered seconds; hardware confirmation is a separate card (F32)
-- **Why this is priority 1**: every external reviewer (Claude app, Codex 5.5, Codex 5.6) independently identified pool degeneracy as the central technical weakness, and Sprint 5 measured it directly: off-diagonal Gram entries average 170,234.4 against a diagonal of 170,235, so any two of our 91 depth-limited trees agree on 99.999% of training rows. With interchangeable learners uniform weights are genuinely optimal and NO optimizer, quantum or classical, can do useful work. The optimization step currently contributes nothing: the apparent +0.0022 is tie-breaking among transactions the pool cannot separate
-- **The published target**: Loke, Sahoo, Guan, Xu, Verma and Griffin, "Improving credit card transaction fraud detection using CVQBoosting", ICAART 2026 (Singapore Management University) ran CVQBoost on the SAME Dirac-3 hardware against the SAME benchmark family with a HETEROGENEOUS pool (k-nearest neighbours, linear discriminant analysis, logistic regression, XGBoost) and reported mean AUC-PR above 0.8 against our 0.767. Same hardware, same algorithm, different pool, better result: that is the cleanest available evidence that pool construction is the binding constraint
-- **Design**: build pools mixing learner FAMILIES (KNN, LDA, logistic regression, shallow boosted variants, trees at differing depths and feature subsets) rather than one family over many feature subsets; add imbalance handling AT FIT TIME (class-weighted and balanced-bootstrap learners), which the Sprint 5 class-weighted control explicitly did NOT test since it reweighted only the ensemble objective. Report pairwise prediction disagreement, residual-error correlation, distinct-score-vector count, and the Gram off-diagonal ratio as pool-diversity measures BEFORE any optimization, then uniform-weight AP against solved AP on the same pool
-- **The decisive measurement**: does the solved optimum leave uniform? If the weight vector becomes non-degenerate and solved AP separates from uniform AP by more than the 0.0268 MDE, the optimizer has something to do and the quantum arm becomes worth a hardware run. If it stays uniform on a genuinely diverse pool, that is a stronger and more interesting negative result than the one we have
-- **Honesty constraints**: enters as a LABELED EXPLORATORY analysis under a dated amendment; the frozen H1b result stands unchanged and is not rescored; the Loke et al. comparison is a design comparison, never a claim that we reproduced their number
-- Depends on: nothing (classical only, reuses the qubo_proxy build/solve path)
-
-**F32. Hardware prediction persistence, so operating points carry [HW] (~2h + 40-50 metered device seconds) Priority 2**
-- Phase: Experiments (Sprint 5 retrospective, Claude category 14; external review finding 20)
-- Platform: Dirac-3. REQUIRES explicit team-lead approval with call count and expected seconds stated (Criterion H)
-- **The gap**: every operating-point figure in the proposal and appendix (recall at 0.05%/0.1%/0.5% budgets, precision at budget) is computed from the EXACT CLASSICAL PROXY and tagged [SIM], because Dirac-3 solution weights were not persisted during the Sprint 4 campaign. The substitution is licensed by measurement (hardware minus proxy is -0.0010 AUPRC with the interval containing zero) but aggregate AP similarity does NOT establish transaction-level or top-k equivalence, which is what an alert budget actually depends on
-- **Design**: one fit per seed on the selected configuration with weights and per-transaction scores persisted (store.prediction_path already keys by arm after the A9 fix, so hardware and proxy predictions can coexist). Report hardware AP, recall at each budget, alert-set Jaccard overlap against the proxy, and cutoff tie behaviour. Three repetitions per seed would additionally quantify draw-to-draw variability at ~120-150 metered seconds
-- **Cost**: ~40-50 metered device seconds for one job per seed at the measured 4-5s per fit; ~120-150 for three repetitions
-- **Why it matters to the submission**: it converts the operational table, which is the table a bank actually reads, from [SIM] to [HW]
-- Depends on: team-lead hardware approval; best sequenced AFTER F31 so the metered time is spent on a pool worth measuring
-
 **F29. Sample-size insensitivity of the CVQBoost optimum (~2h proxy, zero metered) Priority 15**
 - Phase: Experiments (team-lead observation 2026-09-04; run "if we have time before submission", include only if the evidence supports it)
 - Platform: ULB proxy (zero metered seconds); IEEE-CIS as a second regime if F3 lands first
@@ -110,24 +91,6 @@ Renumbered 2026-09-05: the team lead noted the project is running more than one 
 - **Honesty constraints**: enters as a LABELED EXPLORATORY analysis under a dated amendment, never as a headline or a preregistered result; prior-work evidence gets the same provenance disclosure as the FourierWall2 material; and the paper must connect it to the near-degeneracy finding rather than let a reviewer discover the link, since "the optimum is insensitive to sample size" and "the optimum is nearly degenerate" are adjacent claims
 - **Why it could matter to the submission**: training cost, retraining cadence, and data-retention footprint are production concerns a bank weighs directly; a measured "this arm reaches its ceiling at a fraction of the data" is practical evidence in the production-bound framing (F27), if it holds
 - Depends on: nothing (reuses qubo_proxy build/solve); best run after F8 so it cannot displace paper work
-
-**F23. F4 prep: QFE phase recipe + twin scaffolding (~3h, subagent-parallel) Priority 15**
-- Phase: Experiments (team-lead roadmap 2026-09-03: prep in Sprint 6 alongside F3, execution F4 in Sprint 7)
-- Platform: ULB (IEEE-CIS later), docs
-- Implement the exact Fourier Wall phase recipe as a fitted, train-only transformer: rank phase phi = 2*pi*(rank - 1/2)/n - pi, log magnitudes first, calendar cycles (ULB Time -> daily cycle), train-only whitening, low-cardinality columns excluded from encoded blocks; known-answer tests (phase range, rank invariance, no test leakage)
-- Capability pre-flights for the three twin families the H6 bar requires: trained-frequency GAM, GA2M, and the JOINT twin (supervised coarse-to-fine cosine frequency scan fit by logistic regression); pin dependencies; ADR candidate recording the twin design (Fourier Wall: omitting the twin manufactures fake quantum wins)
-- Freeze the H6 cell list (arms x representation), the results.json representation tag, and the A2 variable-count implications of phase blocks for CVQBoost (n changes -> free-tier/device bounds re-checked)
-- No arm is RUN in prep; execution is F4. Zero metered seconds
-- Depends on: F1 (done); F22 (tuned proxy config so H6 sits on a tuned CVQBoost)
-
-**F24. F5 prep: SPECTRA in-segment machinery + B4 request (~3h, subagent-parallel) Priority 15**
-- Phase: Experiments (team-lead roadmap 2026-09-03: prep in Sprint 6, execution F5 in Sprint 8)
-- Platform: SPECTRA, Dirac-3 (request only)
-- In-segment evaluation machinery per H5: in_pocket segment metrics, matched random-segment negative control (same size and base rate), the >= 50-test-positives-per-cell rule, 5-seed splits, leak-free contract enforced (target/target_real/in_pocket never features); tests
-- Identify the 3 strongest in-segment cells from the FourierWall2 evidence (experiments/reference/fourierwall2/) and freeze them with config hashes; prove via scripts/manifest.py whether the staged SPECTRA files match or differ from the FourierWall2-era files (ADR-0003 requirement for B4)
-- Proxy dry run on the 3 cells (zero metered) to set expected values; write the B4 hardware request (15 fits, ~450 QPU s) in the HARDWARE_REQUEST template, ready for grant arrival
-- Named fallback for Sprint 8 if no grant: proxy-only replication labeled [SIM], or the sprint re-scopes to an F4 extension -- decided by the team lead at Sprint 8 refinement
-- Depends on: F1 (done); QCi grant status for the hardware path
 
 **F4. QFE phase arms + order-matched twins (~0.5 day) Priority 16**
 - Phase: Experiments
