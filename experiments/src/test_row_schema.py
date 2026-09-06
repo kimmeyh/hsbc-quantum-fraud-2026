@@ -207,3 +207,41 @@ def test_master_plan_keeps_its_required_sections():
         "script most likely deleted past a '## ' heading; recover from git "
         "history rather than rewriting from memory."
     )
+
+
+def test_ieee_fold_builders_deduplicate():
+    """Amendment A17 extended to the IEEE-CIS path (F3 Task A).
+
+    Section 4 item 7 removes exact duplicates before splitting and reports the
+    count PER DATASET. The ULB loaders do it; the Sprint 6 IEEE scaffolding did
+    not, in code written in the same sprint and style as the three modules A17
+    records. On IEEE-CIS the effect is nil -- 6 duplicate rows, none of them
+    fraud -- but a protocol step is not optional because its effect is small,
+    and "it would not have mattered" is only knowable after checking.
+    """
+    import re
+    src_dir = Path(__file__).resolve().parent
+    offenders = []
+    for f in src_dir.glob("ieee_*.py"):
+        if f.name.startswith("test_"):
+            continue
+        text = f.read_text(encoding="utf-8")
+        for m in re.finditer(r"data\.load_ieee_cis_train\(\)", text):
+            line_no = text[:m.start()].count("\n") + 1
+            lines = text.splitlines()
+            # Look at the loading line AND the two after it: the deduplication
+            # is often the next statement rather than a chained call, e.g.
+            #     raw = data.load_ieee_cis_train()
+            #     df, n = dedupe_ieee(raw)
+            window = "\n".join(lines[line_no - 1:line_no + 2])
+            if ".drop_duplicates" in window or "dedupe_ieee(" in window:
+                continue
+            # ieee_baseline is a LABELED scale check, explicitly not a protocol
+            # run; its own docstring scopes the reduced recipe out.
+            if f.name == "ieee_baseline.py":
+                continue
+            offenders.append(f"{f.name}:{line_no}")
+    assert not offenders, (
+        f"IEEE fold builders loading without deduplication: {offenders}. "
+        "Route through ieee_loader.dedupe_ieee and report the count."
+    )

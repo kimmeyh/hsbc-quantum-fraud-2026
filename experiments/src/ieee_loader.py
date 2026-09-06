@@ -44,6 +44,30 @@ def manifest_entry_for(logical_key: str) -> dict | None:
     return entries.get(logical_key)
 
 
+
+def dedupe_ieee(df):
+    """Remove exact duplicates before splitting, per section 4 item 7.
+
+    The protocol says "exact duplicates removed before splitting; counts
+    reported PER DATASET". The ULB loaders implement it; this path did not, and
+    that is the same omission amendment A17 recorded for the exploratory pool
+    modules, in code written in the same sprint.
+
+    On IEEE-CIS the effect is nil rather than merely small: 6 rows sit in
+    duplicate feature-groups and NONE is a fraud, against ULB's 1,854 rows at a
+    tenfold fraud enrichment where removal moved a result across the MDE. We
+    still do it, and still report the count, because "it would not have
+    mattered" is a conclusion only available after checking.
+
+    TransactionID is excluded from the duplicate key: it is a unique row
+    identifier, so including it would make every row unique and the check
+    vacuous. Returns (deduplicated_df, n_removed).
+    """
+    key = [c for c in df.columns if c != "TransactionID"]
+    before = len(df)
+    out = df.drop_duplicates(subset=key).reset_index(drop=True)
+    return out, before - len(out)
+
 def verify_checksums() -> dict:
     """Recompute sha256 for train_transaction.csv and train_identity.csv
     and compare against MANIFEST.json. Returns a dict keyed by logical
@@ -78,11 +102,18 @@ def load_report() -> dict:
     600MB+ file -- exercised manually / in the manually-run path, never
     from the automated test suite (see test_ieee_features.py, which uses
     a small sampled fixture instead)."""
-    df = data.load_ieee_cis_train()
+    raw = data.load_ieee_cis_train()
+    df, n_dupes = dedupe_ieee(raw)
     rows, cols = df.shape
     prevalence = float(df["isFraud"].mean())
     return {
+        "rows_raw": len(raw),
         "rows": rows,
+        # Section 4 item 7 asks for the count, not just the action, so the
+        # report carries it whether or not it is interesting. On IEEE-CIS it is
+        # 6 rows and none of them fraud; on ULB the same step removes 1,854 rows
+        # at a tenfold fraud enrichment and moved a result across the MDE (A17).
+        "exact_duplicates_removed": n_dupes,
         "cols": cols,
         "fraud_count": int(df["isFraud"].sum()),
         "fraud_prevalence": round(prevalence, 6),
