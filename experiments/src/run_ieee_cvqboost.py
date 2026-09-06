@@ -68,6 +68,26 @@ def _progress(stage: str, **fields) -> None:
 
 OUT = Path(__file__).resolve().parents[1] / "results" / "ieee_cvqboost.json"
 K_FEATURES = 6            # four families x (6 + C(6,2)) = 60 vars, under A12's 100
+
+# Pool construction is subsampled on IEEE-CIS. This is a COST decision with a
+# protocol consequence, so it is stated rather than hidden.
+#
+# WHY: the H matrix requires every weak learner to predict on every training
+# row. KNN has no training cost but its predict is O(n_train x n_query), so at
+# 495,902 training rows the 21 KNN learners alone are ~5e11 distance
+# computations per fold, single-threaded. The first attempt spent 84 minutes
+# without finishing ONE fold and was killed by its own timeout.
+#
+# WHY THIS IS DEFENSIBLE: the weights are a 60-dimensional quantity fitted from
+# the Gram matrix of learner agreements. That matrix converges long before
+# half a million rows -- F31 measured its structure stably on ULB's 170k. The
+# preregistration's H1c row ladder {25k, 50k, 100k, 200k, 400k} already treats
+# subsampling at fixed feature count as an accepted device.
+#
+# WHAT IT COSTS: the weak learners see a sample, not the full fold. Reported
+# with every figure, and the sample is drawn from the TRAINING rows only, so it
+# cannot touch the evaluation month.
+POOL_SUBSAMPLE_N = 100_000
 SCHEDULE = 2
 SEED = 42
 # The ULB A5 MDE (0.0268) is NOT reused here. It was computed from pilot SEED
@@ -158,25 +178,50 @@ def run(smoke: bool = False) -> dict:
         X_tr = Xtr_num[cols].fillna(0.0).to_numpy(np.float32)
         X_ev = (Xev_all.select_dtypes(include=[np.number])
                 .reindex(columns=cols).fillna(0.0).to_numpy(np.float32))
-        y_pm1 = np.where(y_tr == 1, 1, -1).astype(np.float64)
+        y_pm1_full = np.where(y_tr == 1, 1, -1).astype(np.float64)
+
+        # Subsample the POOL-CONSTRUCTION rows (training only; the evaluation
+        # month is untouched and every AP below is computed on all of it).
+        if len(y_tr) > POOL_SUBSAMPLE_N:
+            rs = np.random.default_rng(SEED)
+            idx = rs.choice(len(y_tr), size=POOL_SUBSAMPLE_N, replace=False)
+            X_pool, y_pool = X_tr[idx], y_pm1_full[idx]
+        else:
+            idx = np.arange(len(y_tr))
+            X_pool, y_pool = X_tr, y_pm1_full
+        _progress("pool_rows", fold=fi, train_rows=int(len(y_tr)),
+                  pool_rows=int(len(y_pool)),
+                  pool_fraud=float((y_pool > 0).mean()))
+        y_pm1 = y_pool
 
         # FROZEN arm: single family, library defaults.
-        clf = qp.build_pool(X_tr, y_pm1, schedule=SCHEDULE, weak_type="dct",
+        t0 = time.time()
+        clf = qp.build_pool(X_pool, y_pool, schedule=SCHEDULE, weak_type="dct",
                             pair_build="seq")
-        H_tr, H_ev = qp.h_matrix(clf, X_tr), qp.h_matrix(clf, X_ev)
-        w = _solve(H_tr, y_pm1)
+        H_tr, H_ev = qp.h_matrix(clf, X_pool), qp.h_matrix(clf, X_ev)
+        w = _solve(H_tr, y_pool)
         frozen_ap = float(AP(y_ev, _score(w, H_ev)))
         frozen_n = H_tr.shape[0]
+        _progress("frozen_built", fold=fi, n_learners=int(frozen_n),
+                  seconds=round(time.time() - t0, 1), ap=round(frozen_ap, 4))
 
         # TUNED arm: the F33 selected configuration, same fold and features.
         sel = tp.CANDIDATES["balanced_shallow_knn"]
         H_tr_t, H_ev_t, prov = [], [], []
         for fam, wp in sel.items():
-            c = qp.build_pool(X_tr, y_pm1, schedule=SCHEDULE, weak_type=fam,
+            t1 = time.time()
+            c = qp.build_pool(X_pool, y_pool, schedule=SCHEDULE, weak_type=fam,
                               pair_build="seq", weak_params=wp)
-            H_tr_t.append(qp.h_matrix(c, X_tr))
+            h_tr_f = qp.h_matrix(c, X_pool)
+            H_tr_t.append(h_tr_f)
             H_ev_t.append(qp.h_matrix(c, X_ev))
             prov.append({"family": fam, "params": dict(wp)})
+            # Per-family heartbeat: the first attempt went silent for 84 minutes
+            # inside this loop, so the cost was invisible until a CPU counter
+            # revealed it. One line per family makes it obvious.
+            _progress("family_built", fold=fi, family=fam,
+                      n_learners=int(h_tr_f.shape[0]),
+                      seconds=round(time.time() - t1, 1))
         H_tr_t, H_ev_t = np.vstack(H_tr_t), np.vstack(H_ev_t)
         w_t = _solve(H_tr_t, y_pm1)
         n_t = H_tr_t.shape[0]
@@ -187,6 +232,7 @@ def run(smoke: bool = False) -> dict:
         rows.append({
             "fold": fi, "eval_month": int(fold.eval_month),
             "n_train": int(len(y_tr)), "n_eval": int(len(y_ev)),
+            "pool_rows": int(len(y_pm1)),
             "eval_prevalence": float(y_ev.mean()),
             "k_features": K_FEATURES, "features": cols,
             "frozen": {"n_variables": int(frozen_n), "ap": frozen_ap},
@@ -227,6 +273,14 @@ def run(smoke: bool = False) -> dict:
         "smoke": smoke,
         "rows_after_dedupe": len(df),
         "exact_duplicates_removed": n_dupes,
+        "pool_subsample": {
+            "n": POOL_SUBSAMPLE_N,
+            "applies_to": "weak-learner construction only; every AP is "
+                          "computed on the full evaluation month",
+            "reason": "KNN H-matrix build is O(n_train x n_query); the "
+                      "unsubsampled first attempt did not finish one fold "
+                      "in 84 minutes",
+        },
         "scope_decision": ("both pools per the team lead 2026-09-05: frozen for "
                            "continuity with every prior result, tuned as the "
                            "configuration F33 measured the accuracy to live in"),
