@@ -181,3 +181,29 @@ def test_every_fold_builder_deduplicates():
         "the duplicates inflates any metric by letting identical transactions "
         "appear in both train and test."
     )
+
+
+def test_master_plan_keeps_its_required_sections():
+    """A card-pruning script deleted the Targeted roadmap section twice.
+
+    The prune walks from a shipped card's `**F##.` header to the next card
+    header, and a `## ` section heading falling inside that span went with it.
+    The loss was silent: the file still parsed, still listed cards, and nothing
+    failed. It went unnoticed for a full sprint.
+    """
+    plan = Path(__file__).resolve().parents[2] / "docs" / "ALL_SPRINTS_MASTER_PLAN.md"
+    if not plan.exists():
+        pytest.skip("master plan not present")
+    text = plan.read_text(encoding="utf-8")
+    required = [
+        "## Past Sprint Summary",
+        "## Last Completed Sprint",
+        "## Targeted roadmap",
+        "## Next Sprint Candidates",
+    ]
+    missing = [h for h in required if h not in text]
+    assert not missing, (
+        f"master plan is missing required section(s): {missing}. A pruning "
+        "script most likely deleted past a '## ' heading; recover from git "
+        "history rather than rewriting from memory."
+    )

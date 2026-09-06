@@ -30,6 +30,23 @@ Delivered: **F33** -- a tuned four-family pool reaches 0.7827 AUPRC (SD 0.0283) 
 **Two corrections to our own interpretation**, both registered as A14: a mid-run prediction compared sweep VALIDATION AP against TEST AP comparators (validation runs ~0.005 below test on this design), and the k=6 tuned arm was initially set against k=13 comparators -- the order-mismatched comparison ADR-0013 warns of, which the Sprint 7 plan itself had invited by naming the k=13 figure as an acceptance criterion.
 Retro: docs/sprints/SPRINT_7_RETROSPECTIVE.md (4 improvements, all applied or registered; suite 125 -> 132).
 
+## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
+
+| Sprint | Dates | Targeted scope | Gate |
+|---|---|---|---|
+| 4 | Sep 3-5 | [DONE] F22, F21, F2 (per-block approval), F7 | -- |
+| 5 | Sep 4 | [DONE] F8, F9, F27, F26, F28, F19 | -- |
+| 6 | Sep 5 | [DONE] F31, F3 prep, F23, F24, F32 | -- |
+| 7 | Sep 5-6 | [DONE] F33, F34, QCi/paper update | -- |
+| 8 | Sep 6-7 | **F3** (IEEE-CIS; scaffolding built and tested in Sprint 6) + paper updates | still time for F16 + F10 |
+| 9 | Sep 7-9 | F4 + paper updates | still time for F16 + F10 |
+| 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
+| Finalize | Sep 12-13 | F16, F10; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
+
+Renumbered 2026-09-05: the team lead noted the project is running more than one sprint per day, so F33 took Sprint 7 and F3 moved to Sprint 8 rather than competing for the same hours. A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
+
+RESTORED 2026-09-06: this section was destroyed by a card-pruning script during the Sprint 7 close-out (commit c40038d) and again in the Sprint 8 sweep before the loss was noticed. Both scripts deleted from a shipped card's header until the next card header, and a `## ` section heading that fell inside that span went with it. The prune step now stops at any `## ` heading, and this recovery came from commit be1198c.
+
 ## Deferred to Phase 2 (team lead, 2026-09-05)
 
 **Does F33 change the Phase 2 priority?** Held until after the submission is
@@ -59,22 +76,6 @@ now would be deciding without the evidence that Phase 2 exists to gather.
 - B2 (ULB full config, 816 vars, 11 fits, ~450 s), B3 (IEEE-CIS + H3 ladder, 16 fits, ~650 s), B4 (SPECTRA, 15 fits, ~450 s), B5 (QSVM sign-augmented, 12 fits, ~15 s); frozen spend priority B3 > B2 > ladder > B4
 - B1 + G0b already executed (Sprint 4, 120 QPU s); ~380 s of the current balance remain, so B5 is affordable now and the rest need the grant
 - Depends on: QCi grant; per-block team-lead approval (Criterion H)
-
-**F33. Tune the mixed pool toward the Loke et al. configuration (~4-6h, zero metered) Priority 1**
-- Phase: Experiments (Sprint 6 retrospective, Claude category 14; team lead selected for Sprint 7 on 2026-09-05)
-- Platform: ULB classical proxy only. ZERO metered seconds
-- **The gap this closes**: F31 established that a heterogeneous pool makes the optimizer work (L1 from uniform 0.127 against 8.0e-08, +0.0076 on 10 of 10 seeds, tie-breaking ruled out by two controls). But the mixed pool's ABSOLUTE AUPRC is 0.7565, BELOW the frozen pool's 0.7681 and well below the 0.8+ Loke et al. report on the same hardware and benchmark family. Diversity bought the optimizer headroom, not accuracy. F33 tests whether the remaining gap is learner QUALITY and tuning rather than pool composition
-- **Design**: adopt Loke et al.'s families at their reported hyperparameters (KNN, LDA, logistic regression, XGBoost) rather than our defaults; add imbalance handling AT FIT TIME (class-weighted and balanced-bootstrap learners), which the A11 mixed pool did not vary and which the Sprint 5 class-weighted control explicitly did NOT test since it reweighted only the ensemble objective; sweep the per-family learner count against the free-tier 100-variable ceiling (A12), since four families at k=6 gives 60 variables and leaves headroom
-- **Acceptance**: report absolute AUPRC against both the frozen pool (0.7681) and the Loke figure (>0.8), the solved-minus-uniform difference against the 0.0268 MDE, and the pool-diversity measures before optimization. A configuration that clears the frozen pool's absolute AUPRC while keeping a non-degenerate optimum is the result that would change the submission's headline from a direction to a finding
-- **Honesty constraints**: exploratory under a dated amendment; H1b and every frozen gate keep their committed scoring; the Loke comparison is a design comparison, never a claim to have reproduced their number
-- Depends on: F31 (done). Sequence BEFORE F3, per the team lead's 2026-09-05 decision
-
-**F34. Spend-guard property tests (~1h) Priority 3**
-- Phase: Experiments/tooling (Sprint 6 retrospective, Claude category 10)
-- Platform: N/A
-- **Why**: the metered spend guard had TWO arithmetic defects in one sprint. A cap was set at 60 s when 50 s was approved, which would have let the code authorize spend the team lead did not grant. And the pre-call projection added `_spent()` (which reads results.json) to the in-memory rows that `append_row` had ALREADY written there, double-counting every fit, so the block halted at a reported 50.0 s when 25.0 s had been spent and four approved seeds were lost. A guard whose own arithmetic is wrong is a risk, not a mitigation
-- **Design**: property tests asserting the cap never exceeds the stated approval; that spend is computed from exactly one source of truth so double-counting is structurally impossible; that unparseable billing is charged the conservative estimate and flagged rather than counted as zero (A8); and that the cap bounds the call it PRECEDES rather than the one after it
-- Depends on: nothing
 
 **F35. Interpretation-layer tests (~2h) Priority 2**
 - Phase: Experiments/tooling (Sprint 7 retrospective, Claude category 14)

@@ -2,7 +2,7 @@
   "current_sprint": {
     "number": 8,
     "name": "TBD at refinement",
-    "branch": null,
+    "branch": "feature/20260906_Sprint_8",
     "status": "phase_1_backlog_refinement",
     "plan_doc": null,
     "pr": null,
@@ -12,7 +12,7 @@
   "last_completed_sprint": {
     "number": 7,
     "merged_pr": 41,
-    "main_merge_pr": null,
+    "main_merge_pr": 42,
     "docs_triad_complete": true
   },
   "prereg": {
@@ -20,5 +20,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-05"
+  "updated": "2026-09-06"
 }
