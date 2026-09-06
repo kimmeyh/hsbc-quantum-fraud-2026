@@ -42,6 +42,28 @@ import ieee_loader
 import ieee_splits
 import store
 
+PROGRESS = Path(__file__).resolve().parents[1] / "results" / "ieee_progress.json"
+
+
+def _progress(stage: str, **fields) -> None:
+    """Write a heartbeat after every stage, and print it.
+
+    A 5-6 hour run that prints nothing is indistinguishable from a hung one, and
+    Python buffers stdout when piped so even prints can be invisible until exit.
+    This writes a small JSON file the caller can poll at any moment, and flushes
+    the print so `-u` runs show it live. Stages are emitted well inside 30
+    minutes: per fold, and per control step within a fold.
+    """
+    import datetime as _dt
+    rec = {"stage": stage, "at": _dt.datetime.now().isoformat(timespec="seconds"), **fields}
+    try:
+        PROGRESS.parent.mkdir(parents=True, exist_ok=True)
+        PROGRESS.write_text(json.dumps(rec, indent=2, default=str) + "\n")
+    except Exception:                      # noqa: BLE001 - never fail a run on telemetry
+        pass
+    print(f"[{rec['at']}] {stage}: " +
+          ", ".join(f"{k}={v}" for k, v in fields.items()), flush=True)
+
 OUT = Path(__file__).resolve().parents[1] / "results" / "ieee_classical.json"
 LABEL = "isFraud"
 SEED = 42
@@ -60,20 +82,40 @@ ARMS = {
                      subsample=0.8, colsample_bytree=0.8, n_jobs=-1,
                      verbose=-1),
     "catboost": dict(depth=6, iterations=400, learning_rate=0.05,
-                     verbose=0, thread_count=-1),
+                     verbose=0, thread_count=-1,
+                     auto_class_weights="Balanced"),
 }
+
+# Section 7: "Weighting only in house protocol (scale_pos_weight /
+# auto_class_weights; EXACTLY ONE MECHANISM PER LIBRARY). No resampling on top
+# of weighting, ever." The first version of this runner applied no weighting at
+# all, which would have made the IEEE arms a different estimator from the ULB
+# arms and any cross-dataset comparison false (F3 pre-run audit finding 1).
+# scale_pos_weight is fold-dependent, so it is computed per fold below;
+# CatBoost takes its one mechanism in ARMS above.
+def _weight_kwargs(arm: str, y_tr) -> dict:
+    import numpy as _np
+    pos = float((_np.asarray(y_tr) == 1).sum())
+    neg = float(len(y_tr) - pos)
+    spw = (neg / pos) if pos > 0 else 1.0
+    if arm == "xgboost":
+        return {"scale_pos_weight": spw}
+    if arm == "lightgbm":
+        return {"scale_pos_weight": spw}
+    return {}                      # catboost: auto_class_weights, already set
 
 
 def _fit_predict(arm: str, X_tr, y_tr, X_ev):
+    cfg = dict(ARMS[arm], **_weight_kwargs(arm, y_tr))
     if arm == "xgboost":
         from xgboost import XGBClassifier
-        m = XGBClassifier(**ARMS[arm])
+        m = XGBClassifier(**cfg)
     elif arm == "lightgbm":
         from lightgbm import LGBMClassifier
-        m = LGBMClassifier(**ARMS[arm])
+        m = LGBMClassifier(**cfg)
     else:
         from catboost import CatBoostClassifier
-        m = CatBoostClassifier(**ARMS[arm])
+        m = CatBoostClassifier(**cfg)
     t0 = time.time()
     m.fit(X_tr, y_tr)
     return m.predict_proba(X_ev)[:, 1], round(time.time() - t0, 1)
@@ -122,17 +164,22 @@ def run(smoke: bool = False) -> dict:
     ieee_splits.assert_no_temporal_leakage(df, folds)
     if smoke:
         folds = folds[:1]
+    _progress("folds_ready", n_folds=len(folds), rows=len(df),
+              duplicates_removed=n_dupes)
 
-    rows, control_records = [], []
+    rows, control_records, shuffled = [], [], []
     for fi, fold in enumerate(folds):
         parts = ieee_splits.split_xy(df, fold)
         tr_df, ev_df = parts["X_train"], parts["X_eval"]
         y_tr, y_ev = parts["y_train"].to_numpy(), parts["y_eval"].to_numpy()
+        _progress("fold_start", fold=fi, eval_month=int(fold.eval_month),
+                  n_train=len(y_tr), n_eval=len(y_ev))
 
         # Feature recipe fitted on THIS fold's training months only.
         pipe = ieee_features.IEEEFeaturePipeline()
         Xtr = _numeric(pipe.fit_transform(tr_df))
         Xev = _numeric(pipe.transform(ev_df)).reindex(columns=Xtr.columns)
+        _progress("features_built", fold=fi, n_features=Xtr.shape[1])
 
         # Section 4 item 4, also training-rows-only.
         day_tr = ieee_features.add_day(tr_df).to_numpy()
@@ -141,8 +188,29 @@ def run(smoke: bool = False) -> dict:
         ctrl["fold"] = fi
         ctrl["eval_month"] = int(fold.eval_month)
         control_records.append(ctrl)
+        _progress("item4_done", fold=fi,
+                  start=ctrl["n_features_start"],
+                  after_time_consistency=ctrl["n_after_time_consistency"],
+                  after_adversarial=ctrl["n_after_adversarial"],
+                  adversarial_rounds=ctrl.get("adversarial_rounds"),
+                  hit_round_cap=ctrl.get("adversarial_hit_round_cap"))
 
         Xtr_k, Xev_k = Xtr[keep], Xev[keep]
+
+        # Section 5 item 6: the shuffled-label positive control must be RUN and
+        # REPORTED, not merely tested on a fixture. A pipeline that scores well
+        # on shuffled labels has leaked, and the whole fold's numbers are void.
+        rng = np.random.default_rng(SEED)
+        y_shuf = rng.permutation(y_tr)
+        p_shuf, _ = _fit_predict("lightgbm", Xtr_k, y_shuf, Xev_k)
+        shuf_ap = float(average_precision_score(y_ev, p_shuf))
+        base = float(y_ev.mean())
+        shuffled.append({"fold": fi, "shuffled_auprc": shuf_ap,
+                         "base_rate": base,
+                         "collapses_to_base_rate": shuf_ap < base * 2.0})
+        _progress("shuffled_control", fold=fi, shuffled_auprc=round(shuf_ap, 4),
+                  base_rate=round(base, 4))
+
         for arm in ARMS:
             p, secs = _fit_predict(arm, Xtr_k, y_tr, Xev_k)
             rows.append({
@@ -157,9 +225,10 @@ def run(smoke: bool = False) -> dict:
                 "fit_seconds": secs,
                 "evidence_tag": "SIM",
             })
-            print(f"  fold {fi} ({fold.eval_month}) {arm:9s} "
-                  f"AUPRC {rows[-1]['auprc']:.4f}  AUC {rows[-1]['auc_roc']:.4f}  "
-                  f"({secs}s, {len(keep)} feats)")
+            _progress("arm_done", fold=fi, arm=arm,
+                      auprc=round(rows[-1]["auprc"], 4),
+                      auc=round(rows[-1]["auc_roc"], 4),
+                      fit_seconds=secs, n_features=len(keep))
 
     out = {
         "dataset": "ieee-cis",
@@ -174,6 +243,7 @@ def run(smoke: bool = False) -> dict:
             "3.5%, a 20x difference. Reported as-is; the section 6 100-trial "
             "search on this dataset is a separate job."),
         "item4_controls": control_records,
+        "shuffled_label_control": shuffled,
         "per_fold": rows,
     }
 

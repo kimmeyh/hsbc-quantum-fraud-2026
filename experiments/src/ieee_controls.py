@@ -111,14 +111,40 @@ def adversarial_auc(X: pd.DataFrame, day, early_frac: float = 0.5, seed: int = 0
     clf = HistGradientBoostingClassifier(max_iter=60, random_state=seed).fit(Xtr, ytr)
     auc = _auc(yte, clf.predict_proba(Xte)[:, 1])
 
-    # Permutation importance on the adversarial task names the feature carrying
-    # the period signal. Computed on the held-out adversarial split, which is
-    # still entirely inside the training fold.
-    from sklearn.inspection import permutation_importance
-    imp = permutation_importance(clf, Xte, yte, n_repeats=3, random_state=seed,
-                                 scoring="roc_auc")
-    top = str(X.columns[int(np.argmax(imp.importances_mean))])
+    # Attribution by a SINGLE-PASS ranking, not permutation importance.
+    #
+    # The check above is cheap: one fit, one AUC. The attribution was not:
+    # permutation_importance with n_repeats=3 over ~400 columns is 1,200 model
+    # scorings per round, and the loop runs up to 20 rounds per fold. That cost
+    # about 3 CPU-hours for ONE smoke fold against 12 seconds of actual model
+    # fitting (F3 pre-run audit finding 5).
+    #
+    # A per-round ranking only has to name the single feature to drop next, and
+    # the AUC check re-validates after every drop -- so a cheaper ranking that
+    # is occasionally wrong costs one extra round, not a wrong answer.
+    top = _rank_top_feature(clf, Xte, yte, X.columns, seed)
     return auc, top
+
+
+def _rank_top_feature(clf, Xte, yte, columns, seed: int) -> str | None:
+    """Name the feature carrying the most period signal, cheaply.
+
+    Single-feature AUC against the early/late label: one pass over the columns,
+    no refitting. A feature that alone separates early from late rows IS the
+    drift, which is the quantity the adversarial filter is chasing.
+    """
+    best, best_auc = None, -1.0
+    y = np.asarray(yte)
+    for col in columns:
+        v = np.nan_to_num(np.asarray(Xte[col], dtype=float),
+                          nan=0.0, posinf=0.0, neginf=0.0)
+        if np.std(v) == 0.0:
+            continue
+        a = _auc(y, v)
+        a = max(a, 1.0 - a)          # direction is irrelevant; separation is not
+        if a > best_auc:
+            best, best_auc = str(col), a
+    return best
 
 
 def drop_adversarial_features(X: pd.DataFrame, day, max_auc: float = ADVERSARIAL_MAX_AUC,
@@ -132,13 +158,25 @@ def drop_adversarial_features(X: pd.DataFrame, day, max_auc: float = ADVERSARIAL
     when it hits the bound, because that itself says the data is drifting hard.
     """
     cols = list(X.columns)
+    dropped, rounds, final_auc = [], 0, None
     for _ in range(max_rounds):
         if not cols:
             break
+        rounds += 1
         auc, top = adversarial_auc(X[cols], day, seed=seed)
+        final_auc = auc
         if auc <= max_auc or top is None:
             break
         cols.remove(top)
+        dropped.append(top)
+    # A loop that stops at its bound is EVIDENCE, not a nuisance: it says the
+    # data carries more drift than max_rounds drops can remove. Reported rather
+    # than silently absorbed, and the caller records it.
+    drop_adversarial_features.last_run = {
+        "rounds": rounds, "hit_round_cap": rounds >= max_rounds and
+        (final_auc is not None and final_auc > max_auc),
+        "final_adversarial_auc": final_auc, "dropped": dropped,
+    }
     return cols
 
 
@@ -152,7 +190,11 @@ def apply_item4_controls(X_train: pd.DataFrame, y_train, day_train, seed: int = 
     n_start = len(X_train.columns)
     tc = time_consistent_features(X_train, y_train, day_train)
     adv = drop_adversarial_features(X_train[tc], day_train, seed=seed)
+    run_info = getattr(drop_adversarial_features, "last_run", {})
     return {
+        "adversarial_rounds": run_info.get("rounds"),
+        "adversarial_hit_round_cap": run_info.get("hit_round_cap"),
+        "final_adversarial_auc": run_info.get("final_adversarial_auc"),
         "n_features_start": n_start,
         "n_after_time_consistency": len(tc),
         "n_after_adversarial": len(adv),

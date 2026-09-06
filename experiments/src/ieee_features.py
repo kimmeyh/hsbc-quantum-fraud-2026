@@ -241,4 +241,14 @@ class IEEEFeaturePipeline:
         # high-cardinality string would leak the same identity information
         # the UID exclusion rule is meant to prevent.
         drop = [c for c in ("card1_addr1", "card1_addr1_P_emaildomain") if c in df.columns]
+        # Section 5 item 5: "no identifier column enters any model raw."
+        # TransactionID is a row key and TransactionDT is the raw clock -- a
+        # model given the clock can memorise WHEN fraud occurred in the training
+        # months, which is the leak rolling-origin evaluation exists to prevent.
+        # Both survived into the feature matrix until the F3 pre-run audit. The
+        # adversarial control happened to remove them, but it stops at a round
+        # cap, so that was luck rather than compliance: on a fold where twenty
+        # other features ranked higher, the raw clock would have gone in.
+        # Dropping here makes it a property of the recipe instead.
+        drop += [c for c in ("TransactionID", "TransactionDT") if c in df.columns]
         return df.drop(columns=drop)

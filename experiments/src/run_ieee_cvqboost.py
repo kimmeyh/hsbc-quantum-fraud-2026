@@ -50,11 +50,34 @@ import qubo_proxy as qp
 import store
 import tuned_pool as tp
 
+PROGRESS = Path(__file__).resolve().parents[1] / "results" / "ieee_cvq_progress.json"
+
+
+def _progress(stage: str, **fields) -> None:
+    """Heartbeat, so a long run is distinguishable from a hung one."""
+    import datetime as _dt
+    import json as _json
+    rec = {"stage": stage, "at": _dt.datetime.now().isoformat(timespec="seconds"), **fields}
+    try:
+        PROGRESS.parent.mkdir(parents=True, exist_ok=True)
+        PROGRESS.write_text(_json.dumps(rec, indent=2, default=str) + "\n")
+    except Exception:                      # noqa: BLE001
+        pass
+    print(f"[{rec['at']}] {stage}: " +
+          ", ".join(f"{k}={v}" for k, v in fields.items()), flush=True)
+
 OUT = Path(__file__).resolve().parents[1] / "results" / "ieee_cvqboost.json"
 K_FEATURES = 6            # four families x (6 + C(6,2)) = 60 vars, under A12's 100
 SCHEDULE = 2
 SEED = 42
-MDE = 0.0268
+# The ULB A5 MDE (0.0268) is NOT reused here. It was computed from pilot SEED
+# variance over ten stratified splits at 0.17% prevalence; IEEE-CIS is three
+# temporal FOLDS at 3.5%. Section 8 item 3 asks for an MDE computed from the
+# design in question, and three folds cannot support one credibly. Differences
+# are therefore reported DESCRIPTIVELY, with the fold spread stated, rather
+# than against a threshold that does not apply (F3 pre-run audit finding 4).
+ULB_MDE_DO_NOT_REUSE = 0.0268
+MDE = None
 
 
 def _top_k_numeric(X, y, k: int) -> list[str]:
@@ -124,8 +147,12 @@ def run(smoke: bool = False) -> dict:
 
         day_tr = ieee_features.add_day(tr_df).to_numpy()
         Xtr_num = Xtr_all.select_dtypes(include=[np.number])
+        _progress("item4_start", fold=fi, n_features=Xtr_num.shape[1])
         ctrl = ieee_controls.apply_item4_controls(Xtr_num, y_tr, day_tr, seed=SEED)
         surviving = ctrl["features"] or list(Xtr_num.columns)
+        _progress("item4_done", fold=fi, kept=len(surviving),
+                  rounds=ctrl.get("adversarial_rounds"),
+                  hit_round_cap=ctrl.get("adversarial_hit_round_cap"))
 
         cols = _top_k_numeric(Xtr_num[surviving], y_tr, K_FEATURES)
         X_tr = Xtr_num[cols].fillna(0.0).to_numpy(np.float32)
@@ -173,9 +200,10 @@ def run(smoke: bool = False) -> dict:
                                            "n_after_adversarial")},
             "evidence_tag": "SIM",
         })
-        print(f"  fold {fi} ({fold.eval_month}): frozen AP {frozen_ap:.4f} "
-              f"({frozen_n} vars)  tuned AP {tuned_ap:.4f} ({n_t} vars)  "
-              f"delta {tuned_ap - frozen_ap:+.4f}")
+        _progress("fold_done", fold=fi, eval_month=int(fold.eval_month),
+                  frozen_ap=round(frozen_ap, 4), tuned_ap=round(tuned_ap, 4),
+                  delta=round(tuned_ap - frozen_ap, 4),
+                  frozen_vars=int(frozen_n), tuned_vars=int(n_t))
 
     fa = np.array([r["frozen"]["ap"] for r in rows])
     ta = np.array([r["tuned"]["ap"] for r in rows])
@@ -191,7 +219,7 @@ def run(smoke: bool = False) -> dict:
                              protocol="rolling_origin", split="test",
                              dataset="ieee-cis")
     headline = cmp.reported_difference(tuned_arm, float(ta.mean()),
-                                       frozen_arm, float(fa.mean()), mde=MDE)
+                                       frozen_arm, float(fa.mean()))
 
     out = {
         "dataset": "ieee-cis",
@@ -216,7 +244,15 @@ def run(smoke: bool = False) -> dict:
         "n_folds": len(rows),
         "matched_comparison": headline,
         "ulb_reference": {"paired_delta": 0.0319, "folds_positive": "10/10",
-                          "note": "ULB, k=6, 10 seeds, exceeded the MDE"},
+                          "note": "ULB, k=6, 10 seeds, exceeded the ULB MDE"},
+        "mde_note": (
+            "No MDE is applied to these figures. The ULB value of 0.0268 comes "
+            "from pilot seed variance over ten stratified splits at 0.17% "
+            "prevalence; this design is three temporal folds at 3.5%. Borrowing "
+            "it would test against a threshold computed for a different dataset "
+            "and a different split design. Three folds cannot support a credible "
+            "MDE of their own, so differences are reported descriptively with "
+            "the fold spread stated."),
         "per_fold": rows,
     }
     store.atomic_write_json(OUT, _jsonable(out))
@@ -233,7 +269,7 @@ def main() -> int:
     print(f"tuned  mean AP {o['tuned_mean_ap']:.4f}")
     print(f"paired delta   {o['paired_delta_mean']:+.4f} "
           f"({o['folds_positive']}/{o['n_folds']} folds positive)")
-    print(o["matched_comparison"]["reporting_guidance"])
+    print("no MDE applied; see mde_note in the results file")
     print(f"ULB reference: +0.0319, 10/10 seeds")
     return 0
 
