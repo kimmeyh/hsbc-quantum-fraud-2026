@@ -142,3 +142,42 @@ def test_metered_billing_takes_the_conservative_reading():
     assert f32._metered({"job_info": {"job_result": {"device_usage_s": 4}}}) == 4.0
     # unbillable stays None so the caller charges the conservative estimate
     assert f32._metered(object()) is None
+
+
+def test_every_fold_builder_deduplicates():
+    """PR #41 / amendment A17. The frozen protocol removes 1,081 exact duplicates
+    BEFORE splitting. The exploratory pool modules were written as standalone
+    code and called data.load_ulb() directly, training on 284,807 rows against
+    every comparator's 283,726 -- invisible for two sprints because those arms
+    were only compared against each other.
+
+    Asserted on the SOURCE because the alternative is loading the 150MB dataset
+    in a unit test; the check is narrow enough that a rename cannot silently
+    defeat it (a fold builder that stops calling load_ulb no longer matches).
+    """
+    import re
+    src_dir = Path(__file__).resolve().parent
+    offenders = []
+    for f in src_dir.glob("*.py"):
+        if f.name.startswith("test_"):
+            continue
+        text = f.read_text(encoding="utf-8")
+        for m in re.finditer(r"data\.load_ulb\(\)", text):
+            line_no = text[:m.start()].count("\n") + 1
+            line = text.splitlines()[line_no - 1]
+            # Two legitimate forms: chained .drop_duplicates(), or passed to the
+            # _dedupe helper (run_classical, backfill_predictions). Anything else
+            # splits on the raw 284,807 rows.
+            if ".drop_duplicates" in line or "_dedupe(" in line:
+                continue
+            # run_classical's --smoke path subsamples before use and dedupes
+            # downstream; it is the argparse entry point, not a fold builder.
+            if f.name == "run_classical.py":
+                continue
+            offenders.append(f"{f.name}:{line_no}")
+    assert not offenders, (
+        "fold builders calling data.load_ulb() without .drop_duplicates(): "
+        f"{offenders}. The protocol deduplicates before splitting; training on "
+        "the duplicates inflates any metric by letting identical transactions "
+        "appear in both train and test."
+    )

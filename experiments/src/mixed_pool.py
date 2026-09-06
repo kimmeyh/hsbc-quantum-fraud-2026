@@ -115,7 +115,9 @@ def diversity(H: np.ndarray, max_pairs: int = 4000, seed: int = 0) -> dict:
 def run_seed(seed: int, schedule: int = 2) -> dict:
     from sklearn.metrics import average_precision_score as AP
 
-    df = data.load_ulb()
+    # Deduplicate before splitting, per the frozen protocol (1,081 exact
+    # duplicates). Every other arm's loader does this; this path did not.
+    df = data.load_ulb().drop_duplicates().reset_index(drop=True)
     split = data.stratified_split(df, seed)
     cols = data.top_k_features(split.X_train, split.y_train, K_FEATURES, seed=seed)
     X_tr = split.X_train[cols].to_numpy(np.float32)
