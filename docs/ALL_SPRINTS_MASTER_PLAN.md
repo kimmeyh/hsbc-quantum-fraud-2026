@@ -44,6 +44,21 @@ Retro: docs/sprints/SPRINT_6_RETROSPECTIVE.md (6 improvements, all applied or re
 
 Renumbered 2026-09-05: the team lead noted the project is running more than one sprint per day, so F33 takes Sprint 7 and F3 moves to Sprint 8 rather than competing for the same hours. A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
 
+## Deferred to Phase 2 (team lead, 2026-09-05)
+
+**Does F33 change the Phase 2 priority?** Held until after the submission is
+approved. The open question, recorded now so it is not re-derived later: F33
+measured the optimizer contributing only +0.0043 over uniform weights even on a
+well-constructed pool, while fit-time learner tuning moved absolute accuracy by
++0.0198 at matched size. That is an argument that the leverage in this
+formulation sits in pool construction rather than in the optimization step, and
+it bears directly on whether the cardinality-constrained integer experiment (F25)
+remains the first Phase 2 experiment or yields to pool work. Both readings are
+defensible on the current evidence: the integer formulation is the one where a
+classical solve is NOT trivially available, so a small optimizer contribution on
+a CONVEX problem does not predict a small one on an NP-hard problem. Deciding
+now would be deciding without the evidence that Phase 2 exists to gather.
+
 ## Next Sprint Candidates
 
 ### Experiments (Stage 3 of the master timeline; submission-ready Sep 8)
