@@ -48,6 +48,7 @@ import data
 import mechanism_controls as mc
 import mixed_pool as mp
 import qubo_proxy as qp
+import comparators as cmp
 import store
 
 SWEEP_OUT = Path(__file__).resolve().parents[1] / "results" / "tuned_pool_sweep.json"
@@ -57,9 +58,12 @@ TUNING_SEED = 42
 MDE = 0.0268
 FREE_TIER_MAX_VARS = 100          # amendment A12, established empirically
 
-# Comparators, so every number below has something to be measured against.
-FROZEN_POOL_AP = 0.7681           # single-family dct, 91 vars, Sprint 4/5
-MIXED_POOL_AP = 0.7565            # F31 four-family untuned, 312 vars
+# Comparators. The k of each is part of its identity: differencing across
+# different k reports the feature count as if it were the treatment effect.
+FROZEN_POOL_AP = 0.7681           # single-family dct, k=13, 91 vars (Sprint 4/5)
+MIXED_POOL_AP = 0.7565            # F31 four-family untuned, k=13, 312 vars
+FROZEN_K6_AP = 0.7629             # single-family dct rebuilt at k=6, 10 seeds
+                                  # (tuned_vs_frozen_k6.json). THE MATCHED ONE.
 LOKE_REPORTED_AP = 0.80           # ICAART 2026, heterogeneous pool, same hardware
 
 # Candidate configurations. Each is (label, {family: weak_params}).
@@ -115,7 +119,14 @@ def build_tuned(X_tr, X_va, X_te, y_pm1, params: dict, k_schedule: int = 2) -> d
 
 
 def _fold(seed: int, k: int):
-    df = data.load_ulb()
+    # DEDUPLICATE BEFORE SPLITTING. The frozen protocol removes 1,081 exact
+    # duplicates before any split, and every other arm's loader does so
+    # (qubo_proxy, run_classical, run_hardware, pilot_variance). This path did
+    # not, so it trained on 284,807 rows against every comparator's 283,726 --
+    # a protocol violation, and the reason a regeneration of the matched
+    # comparator disagreed with its own committed figures on all ten seeds
+    # (PR #41 review finding 5 follow-through).
+    df = data.load_ulb().drop_duplicates().reset_index(drop=True)
     split = data.stratified_split(df, seed)
     cols = data.top_k_features(split.X_train, split.y_train, k, seed=seed)
     return (split,
@@ -173,6 +184,11 @@ def sweep() -> int:
     best = max(feasible or rows, key=lambda r: r["ap_solved_val"])
     store.atomic_write_json(SWEEP_OUT, {
         "stage": "sweep", "seed": TUNING_SEED,
+        # Finding 8: stage 2 reads its parameters from this file, so an edit to
+        # CANDIDATES between the two stages would silently run a stale config
+        # under a label that no longer matches the source. Both artifacts carry
+        # this hash and stage 2 refuses a mismatch.
+        "candidates_hash": store.config_hash(CANDIDATES),
         "selection_rule": "highest VALIDATION AP among free-tier-feasible configs; "
                           "test AP is NOT read at this stage",
         "selected": best["label"], "candidates": rows,
@@ -189,6 +205,15 @@ def main() -> int:
     if not SWEEP_OUT.exists():
         raise SystemExit("run --sweep first: stage 2 uses the configuration it selected")
     sel = json.loads(SWEEP_OUT.read_text())
+    current = store.config_hash(CANDIDATES)
+    recorded = sel.get("candidates_hash")
+    if recorded is not None and recorded != current:
+        raise SystemExit(
+            "CANDIDATES has changed since the sweep ran "
+            f"(sweep {recorded[:12]}, current {current[:12]}). Stage 2 would run "
+            "the OLD parameters under a label that no longer matches the source, "
+            "and the paper quotes this run. Re-run --sweep."
+        )
     label = sel["selected"]
     params = next(c["params"] for c in sel["candidates"] if c["label"] == label)
     print(f"stage 2: '{label}' over {len(SEEDS)} seeds\n")
@@ -219,12 +244,30 @@ def main() -> int:
         "exceeds_mde": bool(abs(d.mean()) > MDE),
         "l1_from_uniform_mean": float(l1.mean()),
         "gram_ratio_mean": float(np.mean([r["diversity"]["gram_ratio"] for r in rows])),
-        "vs_frozen_pool": float(ap.mean() - FROZEN_POOL_AP),
-        "vs_untuned_mixed": float(ap.mean() - MIXED_POOL_AP),
-        "vs_loke_reported": float(ap.mean() - LOKE_REPORTED_AP),
     }
+
+    # PR #41 review findings 2 and 3. This module previously computed
+    # vs_frozen_pool and vs_untuned_mixed by raw subtraction and persisted them,
+    # even though both constants are k=13 figures and this arm runs at k=6 --
+    # exactly the order-mismatched comparison comparators.py was written to
+    # forbid, in the one module that actually differences across
+    # configurations. The guard was dead code: nothing imported it. Route the
+    # comparison through it so a mismatch RAISES instead of serializing a
+    # misleading number, and record why the cross-k differences are absent.
+    tuned_arm = cmp.ArmSpec(label=f"tuned {label}", k=6, protocol="stratified",
+                            split="test")
+    matched = cmp.ArmSpec(label="frozen single-family k=6", k=6,
+                          protocol="stratified", split="test")
+    summary["matched_comparison"] = cmp.reported_difference(
+        tuned_arm, float(ap.mean()), matched, FROZEN_K6_AP, mde=MDE)
+    summary["cross_k_comparisons_withheld"] = (
+        "vs_frozen_pool and vs_untuned_mixed are NOT reported: both constants "
+        "are k=13 figures and this arm is k=6, so the difference would carry the "
+        "feature-count effect as if it were the treatment. comparators.py "
+        "refuses them. The matched k=6 comparison above is what the paper uses.")
     store.atomic_write_json(OUT, {
         "amendment": "A13",
+        "candidates_hash": current,
         "status": "LABELED EXPLORATORY -- not a gate; frozen gates unchanged",
         "question": "Is the mixed pool's accuracy gap learner quality and tuning, "
                     "or something tuning cannot reach?",
@@ -236,9 +279,11 @@ def main() -> int:
 
     print(f"\n{label} over {summary['n_seeds']} seeds")
     print(f"  AP                {summary['ap_mean']:.4f} (SD {summary['ap_sd']:.4f})")
-    print(f"  vs frozen pool    {summary['vs_frozen_pool']:+.4f}  (0.7681)")
-    print(f"  vs untuned mixed  {summary['vs_untuned_mixed']:+.4f}  (0.7565)")
-    print(f"  vs Loke reported  {summary['vs_loke_reported']:+.4f}  (~0.80)")
+    mc_ = summary["matched_comparison"]
+    print(f"  vs frozen k=6     {mc_['difference']:+.4f}  (matched: {FROZEN_K6_AP})")
+    print(f"                    {mc_['reporting_guidance']}")
+    print(f"  vs Loke reported  {ap.mean() - LOKE_REPORTED_AP:+.4f}  (~0.80, "
+          f"different protocol; context only, not a matched difference)")
     print(f"  solved - uniform  {summary['ap_difference_mean']:+.4f} "
           f"({summary['seeds_positive']}/{len(rows)} positive)  "
           f"{'EXCEEDS' if summary['exceeds_mde'] else 'BELOW'} the {MDE} MDE")

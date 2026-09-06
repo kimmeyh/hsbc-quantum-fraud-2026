@@ -145,6 +145,26 @@ def check_free_tier_size(n_variables: int) -> None:
         )
 
 
+def should_stop(spent: float, expected: float, cap: float) -> str | None:
+    """Pure cap decision, so it can be tested by VALUE rather than by grepping
+    the source (PR #41 review finding 7).
+
+    Two conditions, in order, because they fail differently:
+      - recorded spend has already reached the cap: a hard stop, the only thing
+        that bounds a call billing far above the expected rate;
+      - the next call is PROJECTED to reach it: the normal guard, which bounds
+        the call it precedes rather than reporting after the fact.
+
+    Returns a reason string when the block must stop, or None to proceed.
+    """
+    if spent >= cap:
+        return (f"{spent:.1f}s spent has reached the {cap}s cap")
+    if spent + expected >= cap:
+        return (f"spent {spent:.1f}s + expected {expected}s would reach "
+                f"the {cap}s cap")
+    return None
+
+
 def _spent() -> float:
     if not qp.RESULTS.exists():
         return 0.0
@@ -156,7 +176,9 @@ def _spent() -> float:
 def run_seed(seed: int, dry_run: bool) -> dict:
     from sklearn.metrics import average_precision_score as AP
 
-    df = data.load_ulb()
+    # Deduplicate before splitting, per the frozen protocol (1,081 exact
+    # duplicates). Every other arm's loader does this; this path did not.
+    df = data.load_ulb().drop_duplicates().reset_index(drop=True)
     split = data.stratified_split(df, seed)
     cols = data.top_k_features(split.X_train, split.y_train, K_FEATURES, seed=seed)
     X_tr = split.X_train[cols].to_numpy(np.float32)
@@ -331,13 +353,9 @@ def main() -> int:
         # A cap that overstates spend is the safe direction, but it still loses
         # approved work, so read one source of truth.
         spent = _spent()
-        if not dry and spent >= BLOCK_CAP_S:
-            print(f"  STOP before seed {seed}: {spent:.1f}s spent has reached "
-                  f"the {BLOCK_CAP_S}s cap")
-            break
-        if not dry and spent + EXPECTED_CALL_S >= BLOCK_CAP_S:
-            print(f"  STOP before seed {seed}: spent {spent:.1f}s + expected "
-                  f"{EXPECTED_CALL_S}s would reach the {BLOCK_CAP_S}s cap")
+        stop = None if dry else should_stop(spent, EXPECTED_CALL_S, BLOCK_CAP_S)
+        if stop:
+            print(f"  STOP before seed {seed}: {stop}")
             break
         r = run_seed(seed, dry)
         rows.append(r)

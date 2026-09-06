@@ -1,69 +1,95 @@
 {
-  "note": "paired frozen-vs-tuned at matched k=6",
-  "per_seed": [
-    {
-      "seed": 42,
-      "frozen_k6": 0.8093093201877277,
-      "tuned_k6": 0.822965833453009,
-      "delta": 0.013656513265281278
-    },
-    {
-      "seed": 43,
-      "frozen_k6": 0.7507175762218937,
-      "tuned_k6": 0.7514888317738952,
-      "delta": 0.0007712555520015263
-    },
-    {
-      "seed": 44,
-      "frozen_k6": 0.7892113764719645,
-      "tuned_k6": 0.8045560413805121,
-      "delta": 0.015344664908547578
-    },
-    {
-      "seed": 45,
-      "frozen_k6": 0.7600647226810415,
-      "tuned_k6": 0.7983140619071069,
-      "delta": 0.038249339226065326
-    },
-    {
-      "seed": 46,
-      "frozen_k6": 0.7341935448761402,
-      "tuned_k6": 0.7394994772774032,
-      "delta": 0.0053059324012629805
-    },
-    {
-      "seed": 47,
-      "frozen_k6": 0.7042986357648344,
-      "tuned_k6": 0.7676444005533957,
-      "delta": 0.06334576478856124
-    },
-    {
-      "seed": 48,
-      "frozen_k6": 0.7774707342190076,
-      "tuned_k6": 0.7896947535287758,
-      "delta": 0.012224019309768241
-    },
-    {
-      "seed": 49,
-      "frozen_k6": 0.7461141210052348,
-      "tuned_k6": 0.7683684091339261,
-      "delta": 0.022254288128691346
-    },
-    {
-      "seed": 50,
-      "frozen_k6": 0.8233550555747833,
-      "tuned_k6": 0.8181711706156459,
-      "delta": -0.005183884959137353
-    },
-    {
-      "seed": 51,
-      "frozen_k6": 0.7343028982167383,
-      "tuned_k6": 0.7664626813089639,
-      "delta": 0.03215978309222556
-    }
-  ],
-  "mean_delta": 0.019812767571326773,
-  "sd": 0.02029436547152604,
-  "n_positive": 9,
-  "exceeds_mde": false
+ "note": "paired frozen-vs-tuned at matched k=6",
+ "generator": "experiments/src/matched_comparator.py",
+ "design": "per seed: same split, same top-k feature selection, same solver; ONLY the pool composition varies",
+ "frozen_arm": {
+  "family": "dct",
+  "params": {},
+  "k": 6,
+  "schedule": 2,
+  "mean_ap": 0.7381153851818263
+ },
+ "per_seed": [
+  {
+   "seed": 42,
+   "frozen_k6": 0.7695289369563404,
+   "tuned_k6": 0.8073258338604213,
+   "delta": 0.037796896904080945
+  },
+  {
+   "seed": 43,
+   "frozen_k6": 0.7342691937553362,
+   "tuned_k6": 0.7687128585473628,
+   "delta": 0.03444366479202665
+  },
+  {
+   "seed": 44,
+   "frozen_k6": 0.704559891215237,
+   "tuned_k6": 0.7762016084567606,
+   "delta": 0.07164171724152357
+  },
+  {
+   "seed": 45,
+   "frozen_k6": 0.7445138762637926,
+   "tuned_k6": 0.7760231445855114,
+   "delta": 0.03150926832171874
+  },
+  {
+   "seed": 46,
+   "frozen_k6": 0.7230748946856085,
+   "tuned_k6": 0.7542544180494647,
+   "delta": 0.03117952336385621
+  },
+  {
+   "seed": 47,
+   "frozen_k6": 0.7347613077223422,
+   "tuned_k6": 0.7674294329440253,
+   "delta": 0.032668125221683164
+  },
+  {
+   "seed": 48,
+   "frozen_k6": 0.8119804230891033,
+   "tuned_k6": 0.8143599876036132,
+   "delta": 0.0023795645145098243
+  },
+  {
+   "seed": 49,
+   "frozen_k6": 0.7519309215505582,
+   "tuned_k6": 0.7693464647879527,
+   "delta": 0.01741554323739447
+  },
+  {
+   "seed": 50,
+   "frozen_k6": 0.7286742931917252,
+   "tuned_k6": 0.7427201267470552,
+   "delta": 0.014045833555330067
+  },
+  {
+   "seed": 51,
+   "frozen_k6": 0.6778601133882199,
+   "tuned_k6": 0.7238360343159308,
+   "delta": 0.045975920927710856
+  }
+ ],
+ "mean_delta": 0.03190560580798345,
+ "sd": 0.018915213104998864,
+ "n_positive": 10,
+ "exceeds_mde": true,
+ "headline": {
+  "difference": 0.031905605807983406,
+  "arm": "tuned four-family",
+  "arm_value": 0.7700209909898097,
+  "comparator": "frozen single-family",
+  "comparator_value": 0.7381153851818263,
+  "matched_on": {
+   "k": 6,
+   "protocol": "stratified",
+   "schedule": 2,
+   "dataset": "ulb"
+  },
+  "split": "test",
+  "mde": 0.0268,
+  "exceeds_mde": true,
+  "reporting_guidance": "exceeds the MDE; may be reported as a measured effect"
+ }
 }

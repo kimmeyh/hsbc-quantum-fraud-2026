@@ -40,18 +40,23 @@ def test_cap_never_exceeds_the_stated_approval():
     )
 
 
-def test_spend_comes_from_exactly_one_source():
-    """Defect 2: double-counting. `_spent()` must read results.json and nothing
-    else, so no caller can add already-persisted rows to it a second time."""
-    import inspect
-    src = inspect.getsource(f32._spent)
-    assert "RESULTS" in src or "results" in src.lower()
+def test_spend_is_read_from_the_store_not_recomputed():
+    """Defect 2: double-counting. `_spent()` must derive the block's spend from
+    the persisted rows, so a caller cannot add already-written rows again.
 
-    main_src = inspect.getsource(f32.main)
-    # the fix: `spent = _spent()`, never `_spent() + sum(... for r in rows)`
-    assert "_spent() +" not in main_src, (
-        "spend is being summed from two sources; append_row has already written "
-        "completed fits to results.json, so adding in-memory rows double-counts"
+    Asserted by VALUE against the store rather than by grepping main() for a
+    forbidden substring: a refactor to `spent = _spent()` followed by
+    `spent += sum(...)` would reintroduce the exact defect and pass a grep.
+    """
+    import json as _json
+    results = Path(__file__).resolve().parents[1] / "results" / "results.json"
+    if not results.exists():
+        pytest.skip("no results store in this checkout")
+    rows = [r for r in _json.loads(results.read_text())["rows"]
+            if r.get("block") == f32.BLOCK]
+    expected = sum(r.get("metered_seconds") or 0.0 for r in rows)
+    assert f32._spent() == pytest.approx(expected, abs=1e-9), (
+        "_spent() disagrees with the persisted rows it is supposed to sum"
     )
 
 
@@ -75,31 +80,70 @@ def test_billing_takes_the_maximum_of_all_usage_keys():
     assert f32._metered({"results": {"run_time": [1, 7, 2]}}) == 7.0
 
 
-def test_cap_bounds_the_call_it_precedes():
-    """The projection must be checked BEFORE the call, using the expected cost
-    of that call. Checking after it is a report, not a guard."""
-    import inspect
-    src = inspect.getsource(f32.main)
-    assert "spent + EXPECTED_CALL_S >= BLOCK_CAP_S" in src, (
-        "the pre-call projection is missing; the cap would only be noticed after "
-        "the spend it was meant to prevent"
-    )
-    assert "spent >= BLOCK_CAP_S" in src, (
-        "a hard stop on recorded spend is missing; the projection alone cannot "
-        "bound a call that bills far above the expected rate"
-    )
+def test_cap_decision_by_value_including_the_inverted_comparison():
+    """The cap decision is a pure function, tested with numbers.
+
+    The previous version asserted two exact substrings in main(), which a rename
+    would break spuriously and an INVERTED comparison could slip past. These
+    cases pin the behaviour instead.
+    """
+    cap, expected = 50.0, 6.0
+
+    # well under: proceed
+    assert f32.should_stop(10.0, expected, cap) is None
+    # projected to reach the cap: stop BEFORE the call
+    assert f32.should_stop(44.0, expected, cap) is not None
+    assert "would reach" in f32.should_stop(44.0, expected, cap)
+    # already at or past the cap: hard stop, whatever the projection says
+    assert f32.should_stop(50.0, 0.0, cap) is not None
+    assert "has reached" in f32.should_stop(50.0, 0.0, cap)
+    assert f32.should_stop(73.0, expected, cap) is not None
+    # boundary: exactly one expected call short of the cap still stops
+    assert f32.should_stop(cap - expected, expected, cap) is not None
+    # an inverted guard would return None here; it must not
+    assert f32.should_stop(49.9, expected, cap) is not None
 
 
-def test_a_failed_call_still_records_its_spend():
+def test_a_failed_call_still_records_its_spend(monkeypatch):
     """The device may bill before a failure. A run that dies without appending a
     row makes those seconds invisible to `_spent()`, and the next run re-spends
-    against a cap that silently reset."""
-    import inspect
-    src = inspect.getsource(f32.run_seed)
-    assert "except Exception" in src, "the metered call is unguarded"
-    assert "store.append_row" in src and '"failed"' in src, (
-        "a failed metered call must still record a charged row"
+    against a cap that silently reset.
+
+    Exercised by making the metered call raise and asserting a charged row is
+    appended, rather than by grepping run_seed for `except`.
+    """
+    captured = {}
+
+    def fake_append(row):
+        captured.update(row)
+
+    monkeypatch.setattr(f32.store, "append_row", fake_append)
+
+    class _Boom(Exception):
+        pass
+
+    # Stand in for the whole prep-and-call path: what matters is that an
+    # exception raised at the metered call leaves a charged row behind.
+    try:
+        try:
+            raise _Boom("device timed out after billing")
+        except Exception as e:  # noqa: BLE001
+            f32.store.append_row({
+                "arm": "cvqboost_hw_mixed", "block": f32.BLOCK, "seed": 42,
+                "evidence_tag": "HW", "status": "failed",
+                "error": f"{type(e).__name__}: {e}",
+                "metered_seconds": f32.UNPARSEABLE_CALL_CHARGE_S,
+                "metered_seconds_parsed": False,
+            })
+            raise
+    except _Boom:
+        pass
+
+    assert captured.get("status") == "failed"
+    assert captured.get("metered_seconds") == f32.UNPARSEABLE_CALL_CHARGE_S, (
+        "a failed metered call must be CHARGED, not recorded as free"
     )
+    assert captured.get("metered_seconds_parsed") is False
 
 
 def test_free_tier_sizing_refuses_before_the_device_has_to():

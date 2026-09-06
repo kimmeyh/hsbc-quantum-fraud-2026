@@ -20,14 +20,16 @@ rather than pool composition. Scope: F33 + F34 + the QCi/paper update.
    while both earlier comparators are k=13, so the frozen single-family pool was
    rebuilt AT k=6 on the SAME splits for a paired per-seed test: **+0.0198**
    (SD 0.0203), positive on 9 of 10 seeds, **still below the 0.0268 MDE**. The
-   frozen pool scores 0.7688 at k=6 against 0.7681 at k=13, so the advantage is
-   not a feature-count artifact -- measured rather than assumed.
+   frozen pool scores 0.7629 at k=6 against 0.7681 at k=13, so six features are
+   slightly WORSE for it and part of any raw cross-k gap is feature count. The
+   +0.0198 is paired at matched k=6, which is why it is the reported figure.
 3. **The finding worth carrying forward: the accuracy came from the learners,
    not the optimizer.** Solved-minus-uniform on the tuned pool is +0.0043. Adding
-   imbalance handling AT FIT TIME (class weighting inside each weak learner as it
-   is built, rather than reweighting the ensemble objective afterwards -- the one
-   intervention no earlier control varied) drops the Gram off-diagonal ratio from
-   0.9988 to 0.92 and lifts absolute accuracy, while the optimization step stays
+   imbalance handling AT FIT TIME (class weighting in the tree and logistic
+   learners; LDA and KNN accept none) drops the Gram off-diagonal ratio from
+   0.9988 to 0.92 and lifts absolute accuracy. The selected arm also tightened the
+   KNN neighbourhood, so the accuracy figure carries two interventions while the
+   diversity figure is attributable to class weighting alone (A16), while the optimization step stays
    nearly free either way. For CVQBoost at low prevalence the leverage is pool
    construction.
 4. **F34, eight spend-guard property tests.** Each asserts the property whose
