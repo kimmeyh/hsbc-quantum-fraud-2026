@@ -241,3 +241,38 @@ response was received.
   2. The QCi letter is held for team-lead feedback before the Monday send. Is
      there anything in the F33 account that should be framed differently for a
      vendor audience?
+
+## Improvement Decisions
+
+Proposed after the combined feedback (step 5); disposed by the team lead
+2026-09-05 (step 6): "implement all now".
+
+| # | Improvement | Type | Effort | Disposition | Status |
+|---|---|---|---|---|---|
+| 1 | Comparator-matching assertion in the analysis modules | Testing | 30m | APPLY NOW | Done: `comparators.py` + 7 tests |
+| 2 | `page-fill-report` as the mandatory first step on an over-limit document | Process | 10m | APPLY NOW | Done: QUALITY_STANDARDS |
+| 3 | Write edit scripts to a file when they carry LaTeX or regex escapes | Process | 5m | APPLY NOW | Done: QUALITY_STANDARDS |
+| 4 | F35 interpretation-layer tests | Testing | 2h | BACKLOG, priority 2 | Registered |
+
+Improvement 1 was written against the two comparisons that actually went wrong
+rather than in the abstract: `test_refuses_the_sprint7_feature_count_mismatch`
+reconstructs the k=6-against-k=13 difference and asserts the guard refuses it,
+and `test_refuses_validation_against_test` does the same for the mid-run
+prediction. Both fail without the guard.
+
+A note on improvement 1's scope: it catches the mismatch at COMPUTATION time.
+The Sprint 6 defect (k=13 [SIM] mechanism evidence and k=6 [HW] hardware
+evidence presented as one narrative) happened at DOCUMENT time and this does not
+catch it. That is what F35 is for, and F35's card states honestly that some of
+it will end as a human checklist rather than an assertion.
+
+## Team lead answers to Category 16
+
+1. **Should Sprint 8's IEEE-CIS arms use the tuned or the frozen pool?** Both.
+   Recorded on the F3 card: the frozen arm is the preregistered comparator and
+   must be carried for continuity, while the tuned arm is where F33 measured the
+   accuracy to live. Running only one would either break comparability with
+   every prior result or omit the configuration the evidence now favours.
+2. **Should anything in the F33 account be framed differently for QCi?** "good
+   as is." The letter stands; team-lead feedback on the wider package is still
+   expected before the Monday send, and card #40 stays open for it.

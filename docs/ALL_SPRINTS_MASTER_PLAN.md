@@ -20,29 +20,15 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 4 | docs/sprints/SPRINT_4_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 3-4, 2026) |
 | 5 | docs/sprints/SPRINT_5_SUMMARY.md | [OK] Complete | ~1 day (Sep 4, 2026) |
 | 6 | docs/sprints/SPRINT_6_SUMMARY.md | [OK] Complete | ~1 day (Sep 5, 2026) |
+| 7 | docs/sprints/SPRINT_7_SUMMARY.md | [OK] Complete | ~1 day (Sep 5, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 6: The Diverse Pool** (Sep 5, 2026; PR #36). Four concurrent tracks.
-Delivered: **F31, the central result** -- a mixed four-family pool moves the optimum genuinely off uniform (L1 0.127 against 8.0e-08, largest weight 1.24x uniform, +0.0076 on 10 of 10 seeds), with two controls ruling out the tie-breaking that explained Sprint 5's apparent gain (rounding to 2dp leaves FEWER distinct scores than uniform yet still scores higher; the shrinkage curve is monotone). **F32**: 10 metered fits, 43.0 device seconds of a 40-50 approval, zero failures, hardware minus proxy -0.0007, and operating points now [HW] from persisted predictions (recall 0.271/0.509/0.839). Three agent tracks delivered F3, F23 and F24 prep with no rework, all respecting a no-arms constraint verified independently. Amendments A11 and A12.
-**Stated honestly**: +0.0076 is below the 0.0268 MDE, and the mixed pool's absolute AUPRC (0.7565) is BELOW the frozen pool's (0.7681). Diversity bought the optimizer headroom, not accuracy -- which is what F33 tests next.
-**Two of our own claims corrected**: the free tier refuses continuous degree-2 jobs above 100 variables, falsifying our written claim that no device ceiling bound this work (A12, established at zero metered cost); and the spend guard had two arithmetic defects, a cap above the approval and a double-count that halted the block at half its real spend.
-Retro: docs/sprints/SPRINT_6_RETROSPECTIVE.md (6 improvements, all applied or registered; suite 50 -> 115).
-
-## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
-
-| Sprint | Dates | Targeted scope | Gate |
-|---|---|---|---|
-| 4 | Sep 3-5 | F22, F21, F2 (per-block approval), F7 | -- |
-| 5 | Sep 4 | [DONE] F8, F9, F27, F26, F28, F19 | -- |
-| 6 | Sep 5 | [DONE] F31, F3 prep, F23, F24, F32 | -- |
-| 7 | Sep 5-6 | **F33** (tune the mixed pool toward Loke et al.) + paper updates | still time for F16 + F10 |
-| 8 | Sep 6-7 | **F3** (IEEE-CIS, scaffolding already built in Sprint 6) + paper updates | still time for F16 + F10 |
-| 9 | Sep 7-9 | F4 + paper updates | still time for F16 + F10 |
-| 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
-| Finalize | Sep 12-13 | F16, F10; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
-
-Renumbered 2026-09-05: the team lead noted the project is running more than one sprint per day, so F33 takes Sprint 7 and F3 moves to Sprint 8 rather than competing for the same hours. A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
+**Sprint 7: Direction into Result** (Sep 5, 2026; PR #41).
+Delivered: **F33** -- a tuned four-family pool reaches 0.7827 AUPRC (SD 0.0283) over ten seeds against 0.7565 untuned and ~0.80 reported by Loke et al. The MATCHED comparison is the one reported: the frozen single-family pool rebuilt at the same k=6 on the same splits gives a PAIRED +0.0198 (SD 0.0203), 9 of 10 seeds positive, still BELOW the 0.0268 MDE. **F34** -- eight spend-guard property tests, each asserting the property whose violation caused a real defect, verified to fail on the originals. Amendments A13 (registered before the run) and A14.
+**The finding**: the accuracy came from the LEARNERS, not the optimizer. Solved-minus-uniform on the tuned pool is +0.0043. Fit-time class weighting -- inside each weak learner as it is built, the one intervention no earlier control varied -- drops the Gram ratio from 0.9988 to 0.92 and lifts absolute accuracy, while the optimization step stays nearly free. For CVQBoost at low prevalence the leverage is pool construction.
+**Two corrections to our own interpretation**, both registered as A14: a mid-run prediction compared sweep VALIDATION AP against TEST AP comparators (validation runs ~0.005 below test on this design), and the k=6 tuned arm was initially set against k=13 comparators -- the order-mismatched comparison ADR-0013 warns of, which the Sprint 7 plan itself had invited by naming the k=13 figure as an acceptance criterion.
+Retro: docs/sprints/SPRINT_7_RETROSPECTIVE.md (4 improvements, all applied or registered; suite 125 -> 132).
 
 ## Deferred to Phase 2 (team lead, 2026-09-05)
 
@@ -90,9 +76,19 @@ now would be deciding without the evidence that Phase 2 exists to gather.
 - **Design**: property tests asserting the cap never exceeds the stated approval; that spend is computed from exactly one source of truth so double-counting is structurally impossible; that unparseable billing is charged the conservative estimate and flagged rather than counted as zero (A8); and that the cap bounds the call it PRECEDES rather than the one after it
 - Depends on: nothing
 
+**F35. Interpretation-layer tests (~2h) Priority 2**
+- Phase: Experiments/tooling (Sprint 7 retrospective, Claude category 14)
+- Platform: N/A
+- **Why**: across three sprints the defects that travelled furthest were claims about what a number MEANS, not errors in the number. Sprint 5 reported a weight vector "exactly uniform" at 0.000000 when it was 8.0e-08, and the gain it implied was tie-breaking. Sprint 6 presented k=13 [SIM] mechanism evidence and k=6 [HW] hardware evidence as one narrative. Sprint 7 differenced a k=6 arm against k=13 comparators and compared sweep VALIDATION AP against TEST AP. Every one was caught by reading; none by a test
+- **Already partly built**: `comparators.py` (improvement 1) refuses a difference whose arms mismatch on k, protocol, schedule or dataset, and refuses validation against test. F35 extends that from the computation to the DOCUMENT
+- **Design**: assert that every quantitative claim in docs/paper/*.md that quotes a difference names its comparator's configuration; that no figure tagged [HW] appears in a sentence whose mechanism evidence is [SIM] without the distinction stated; that a difference quoted below the A5 MDE carries directional language rather than win language; and that rounding in prose never asserts more precision than the stored value supports (the Sprint 5 "0.000000" case)
+- **Honest limit**: some of this is genuinely hard to test mechanically and will end up as a checklist rather than an assertion. The parts that CAN be asserted are worth asserting, and the parts that cannot belong in STATISTICAL_REVIEW_CHECKLIST where a human walks them
+- Depends on: nothing (comparators.py already landed)
+
 **F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14**
 - Phase: Experiments
 - Platform: IEEE-CIS
+- **Scope decision (team lead, 2026-09-05)**: run BOTH pool configurations, the frozen single-family arm and the F33 tuned four-family arm. The frozen arm is the preregistered comparator and must be carried for continuity; the tuned arm is where F33 measured the accuracy to live. Running only one would either break comparability with every prior result or omit the configuration the evidence now favours
 - Preregistered feature pass (D-normalization, UID excluded, named aggregates, V-reduction); leakage controls incl. shuffled-label positive control
 - GroupKFold-by-month rolling origin; classical arms + proxy CVQBoost on the reduced set; H3 ladder cells
 - Depends on: F1

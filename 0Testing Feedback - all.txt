@@ -8,6 +8,14 @@ Sprint n Manual Validation Feedback
 ---------------------------------------------------------------------------------------------------------
 Sprint 7 Manual Validation Feedback 
 
+❯ 1. good 2. good for now, will provide feedback and update today/tomorrow 3. good 4. we can hold off on this until phase 2 (after submission is approved).
+
+  Recommended Manual Validation steps
+
+  1. Read the revised proposal section 3 — the F33 paragraph, particularly the "accuracy came from the learners, not the optimizer" framing.
+  2. Read the QCi letter's revised findings section (DRAFT_qci_cover.pdf) — it now carries the two-step account and sends Monday night.
+  3. Confirm the +0.0198 is framed as directional, not a win. It's below MDE and I've written it that way, but that's your call to confirm.
+  4. Decide whether F33 changes the Phase 2 priority. The integer-solver experiment still looks right to me, but "optimization is nearly free here" is an argument worth weighing.
 
 ---------------------------------------------------------------------------------------------------------
 Sprint 5 Manual Validation Feedback 
