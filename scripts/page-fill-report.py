@@ -58,30 +58,59 @@ UNDERFILL_SLACK_PT = 36.0
 FOLIO_GAP_PT = 30.0
 
 
+def _is_folio(text):
+    """Is this text run a page number rather than content?
+
+    Identified by WHAT IT IS, not by where it sits. An earlier version dropped
+    whatever run was lowest when it sat more than FOLIO_GAP_PT below the run
+    above it, which has the right shape for a folio -- and also for a section
+    heading opening at the foot of a page, a short final paragraph after a
+    table, or a lone caption. Probing found a heading at -645pt silently
+    dropped on a page whose body ended at -600pt, which makes the page look
+    fuller than it is and HIDES reclaimable space: the same class of error as
+    the character counting this module was rewritten to remove.
+
+    A folio is a short run of digits, or roman numerals for front matter.
+    A heading is neither, so it survives.
+    """
+    t = text.strip()
+    if not t or len(t) > 6:
+        return False
+    return t.isdigit() or (set(t.lower()) <= set("ivxlcdm") and t.isalpha())
+
+
 def text_extent(page):
     """Return (top, bottom) of the page's text block in PDF user space.
 
     pypdf reports each text run's position through the visitor; the lowest
-    baseline seen is where the text block ends, which is what decides whether
-    the page had room for more.
+    CONTENT baseline is where the text block ends, which is what decides
+    whether the page had room for more.
     """
-    ys = []
+    runs = []
 
     def visit(text, cm, tm, font, size):
         if text.strip():
-            ys.append(tm[5])
+            runs.append((tm[5], text))
 
     page.extract_text(visitor_text=visit)
-    if not ys:
+    if not runs:
         return None
 
-    ys = sorted(set(ys), reverse=True)
-    # Drop the page-number folio. It sits at the same depth on every page, well
-    # below the body, so without this the folio IS the deepest baseline
-    # everywhere and every page reports 0pt free -- including a nearly empty
-    # last page, which is the one case that matters most.
+    ys = sorted({y for y, _ in runs}, reverse=True)
+
+    # Drop the page-number folio, which sits at the same depth on every page
+    # well below the body. Without this the folio IS the deepest baseline
+    # everywhere, so every page reports 0pt free -- including a nearly empty
+    # last page, the one case that matters most.
+    #
+    # Both conditions are required: the run must LOOK like a page number AND
+    # sit clear of the body. A body line that happens to be the number "2"
+    # inside a table would satisfy the first test but not the second.
     if len(ys) >= 2 and (ys[-2] - ys[-1]) > FOLIO_GAP_PT:
-        ys = ys[:-1]
+        lowest = ys[-1]
+        if all(_is_folio(t) for y, t in runs if y == lowest):
+            ys = ys[:-1]
+
     return max(ys), min(ys)
 
 

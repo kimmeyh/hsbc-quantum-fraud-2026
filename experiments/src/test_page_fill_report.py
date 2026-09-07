@@ -118,3 +118,37 @@ def test_short_page_is_detected_as_underfilled():
     free = short_bottom - full_bottom
     assert free > mod.UNDERFILL_SLACK_PT, (
         "a page ending 380pt early must register as underfilled")
+
+
+def test_a_real_trailing_element_is_not_mistaken_for_a_folio():
+    """Regression: the first folio rule dropped content, not just page numbers.
+
+    It removed whatever run sat lowest when the gap above it exceeded
+    FOLIO_GAP_PT. A page number has that shape -- and so does a section heading
+    opening at the foot of a page, a short final paragraph after a table, or a
+    lone caption. Dropping one makes the page look FULLER than it is, hiding
+    reclaimable space: the same class of error as the character counting this
+    module was rewritten to remove.
+    """
+    mod = _load()
+    page = FakePage(_body(0.0, -600.0) + [("Appendix C. Reproduction", -645.0)])
+    _, bottom = mod.text_extent(page)
+    assert bottom == pytest.approx(-645.0), (
+        "a heading below a gap is content, not a folio")
+
+
+def test_folio_is_still_dropped_when_a_trailing_heading_is_present():
+    """The narrower rule must not lose its original purpose."""
+    mod = _load()
+    page = FakePage(_body(0.0, -600.0)
+                    + [("Appendix C. Reproduction", -645.0), ("3", -685.0)])
+    _, bottom = mod.text_extent(page)
+    assert bottom == pytest.approx(-645.0), "folio dropped, heading kept"
+
+
+def test_roman_numeral_folio_is_recognised():
+    """Front matter numbers pages i, ii, iii."""
+    mod = _load()
+    page = FakePage(_body(0.0, -600.0) + [("iv", -685.0)])
+    _, bottom = mod.text_extent(page)
+    assert bottom == pytest.approx(-600.0)
