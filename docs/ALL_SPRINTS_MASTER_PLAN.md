@@ -39,7 +39,7 @@ Retro: docs/sprints/SPRINT_7_RETROSPECTIVE.md (4 improvements, all applied or re
 | 6 | Sep 5 | [DONE] F31, F3 prep, F23, F24, F32 | -- |
 | 7 | Sep 5-6 | [DONE] F33, F34, QCi/paper update | -- |
 | 8 | Sep 6-7 | **F3** (IEEE-CIS; scaffolding built and tested in Sprint 6) + paper updates | still time for F16 + F10 |
-| 9 | Sep 7-9 | F4 + paper updates | still time for F16 + F10 |
+| 9 | Sep 7-9 | F4 + paper updates + **QCi package send** (team lead 2026-09-07: moved from Sep 7 to Sprint 9) | still time for F16 + F10 |
 | 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
 | Finalize | Sep 12-13 | F16, F10, **F37 (repo public)**, **F38 (appendix to 3 pages)** -- both SUBMISSION BLOCKERS; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
 
