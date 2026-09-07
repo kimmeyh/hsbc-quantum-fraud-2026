@@ -22,3 +22,6 @@ experiments/results/predictions/*
 # QPU seconds, so they are version-controlled. Classical and proxy predictions
 # stay ignored because they rebuild for free (see QUALITY_STANDARDS).
 !experiments/results/predictions/cvqboost_hw_*.npz
+
+# Smoke-run output; evidence lives in ieee_classical.json only.
+experiments/results/*_smoke.json

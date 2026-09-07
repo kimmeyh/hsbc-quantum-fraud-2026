@@ -65,6 +65,14 @@ def _progress(stage: str, **fields) -> None:
           ", ".join(f"{k}={v}" for k, v in fields.items()), flush=True)
 
 OUT = Path(__file__).resolve().parents[1] / "results" / "ieee_classical.json"
+# A smoke run writes HERE, never to OUT. Copilot's review test calls
+# run(smoke=True), and while OUT was the only destination that call replaced
+# the full 590,537-row 3-fold evidence file -- which every reported IEEE figure
+# traces to -- with a 1-fold 65,616-row smoke result. Running the test suite
+# destroyed evidence silently. A file that might be either a full run or a
+# smoke run has no usable provenance, so the two destinations are separate and
+# only a full run can reach OUT.
+SMOKE_OUT = Path(__file__).resolve().parents[1] / "results" / "ieee_classical_smoke.json"
 LABEL = "isFraud"
 SEED = 42
 
@@ -255,7 +263,7 @@ def run(smoke: bool = False) -> dict:
                            "min": float(np.min(vals)), "max": float(np.max(vals)),
                            "n_folds": len(vals)}
     out["by_arm"] = by_arm
-    store.atomic_write_json(OUT, _jsonable(out))
+    store.atomic_write_json(SMOKE_OUT if smoke else OUT, _jsonable(out))
     return out
 
 

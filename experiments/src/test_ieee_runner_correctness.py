@@ -182,3 +182,31 @@ def test_ulb_mde_is_not_reused_for_ieee():
     assert mod.ULB_MDE_DO_NOT_REUSE == 0.0268
     assert getattr(mod, "MDE", None) is None, (
         "MDE must stay None until one is computed from THIS design")
+
+
+# --- Defect 5: a smoke run overwriting the evidence file -------------------
+
+def test_smoke_runs_do_not_write_to_the_evidence_file():
+    """A smoke run must never be able to replace committed evidence.
+
+    Found when the shuffled-label test above (which correctly EXECUTES the
+    pipeline) replaced ieee_classical.json -- the full 590,537-row, 3-fold run
+    that every reported IEEE figure traces to -- with a 1-fold, 65,616-row
+    smoke result. Running the test suite destroyed evidence silently.
+
+    A file that might hold either a full run or a smoke run has no usable
+    provenance, which is the same reason every results row carries an evidence
+    tag. Asserted on the paths rather than by running, so this test is fast and
+    cannot itself cause the damage it guards against.
+    """
+    run_ieee = importlib.import_module("run_ieee")
+
+    assert run_ieee.OUT != run_ieee.SMOKE_OUT, (
+        "smoke output must have its own destination")
+    assert run_ieee.OUT.name == "ieee_classical.json"
+    assert "smoke" in run_ieee.SMOKE_OUT.name
+
+    # The write must actually branch on the mode, not merely have two paths.
+    src = Path(run_ieee.__file__).read_text(encoding="utf-8")
+    assert "SMOKE_OUT if smoke else OUT" in src, (
+        "the write call must select its destination from the run mode")
