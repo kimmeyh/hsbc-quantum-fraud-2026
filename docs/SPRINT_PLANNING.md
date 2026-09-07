@@ -51,6 +51,47 @@ Inputs: sprint goal (1-2 sentences), refined candidates (BACKLOG_REFINEMENT.md f
 
 Minutes, from recorded actuals of comparable step-types; `[no-history]` + timebox where uncalibrated. Re-estimate after plan-to-branch-state verification findings (workflow 3.2.2.1/3.2.2.2). Record actuals at task completion; recompute at retro Category 3.
 
+### Runtime is estimated SEPARATELY from implementation (Sprint 8 improvement 1)
+
+Any task that produces results by running over a dataset carries TWO numbers in
+the plan's task table: **Est** (time to write the code) and **Runtime** (expected
+wall-clock of the run itself, computed from the ACTUAL row count, not assumed
+from a smaller run).
+
+Sprint 8 Task C was estimated at 120 minutes, which covered writing the runner.
+The run then consumed 84 minutes without finishing a single fold and was killed
+by its own timeout. The cause was a KNN H-matrix build that is
+O(n_train x n_query) at 495,902 rows. The task had been audited for protocol
+compliance and never once sized for runtime: those are different questions and
+only one was asked.
+
+Rules:
+
+- State the dominant cost and its complexity in the task row, e.g. "KNN H-build
+  O(n_train x n_query), 495,902 x 56,746".
+- If the runtime cannot be estimated, say `[unbounded]` and add a PILOT on a
+  subsample as a preceding task. Never let an unsized run start.
+- Any run expected to exceed 30 minutes must emit heartbeat progress to a file
+  before it is launched, not after it worries someone.
+
+### A card justified by a measurement must name what would disprove it (Sprint 8 improvement 2)
+
+If a card's rationale rests on a measurement, the card states a **Premise
+falsifier**: the specific observation that would show the premise is wrong. If
+no such observation can be named, the premise is unverified and the card does
+not start.
+
+F36 is the worked counter-example, and it cost a full card. Its premise was that
+the appendix wasted page space to table break-waste. Its dry run removed all
+five tables and observed the document shrink to 3 pages, which was read as
+confirmation. It could not have been anything else: removing tables removes
+their content AND their space, so the document was always going to shrink. The
+check could only confirm. Direct measurement later showed every page already
+filled its text block, with zero free space anywhere.
+
+A check that cannot fail is not evidence. Write the falsifier first, and if the
+dry run cannot produce the failing observation, redesign the dry run.
+
 ## Risk assessment per sprint plan
 
 Each plan lists its top risks with mitigation: for this project always consider hardware budget (Criterion H), leakage, deadline (submission-ready Sep 8), grant timing, and context/session continuity.
