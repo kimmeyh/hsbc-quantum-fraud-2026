@@ -218,3 +218,43 @@ def test_h6_deduplicates_before_splitting():
         assert "drop_duplicates" in window, (
             f"load_ulb() at line {i + 1} is not followed by drop_duplicates(); "
             f"this is the A17 protocol violation")
+
+
+def test_gam_twin_handles_test_values_outside_the_training_range(toy):
+    """The crash that killed the first full run, after 3.2 hours and 8 cells.
+
+    statsmodels raises NotImplementedError when a spline is asked to evaluate
+    beyond its outermost knots. The original code built a SECOND BSplines on
+    the test data, which hid the problem until a seed happened to produce
+    out-of-range rows -- and worse, meant coefficients learned against the
+    training basis were being applied to a basis whose knots came from the
+    TEST distribution. A silent scoring error on every cell, whose only
+    symptom was an eventual crash.
+
+    The existing gam test used a fixture whose test rows sat inside the
+    training range, so it passed against the broken code. This one does not.
+    """
+    X_tr, y_tr, X_te, _ = toy
+    # Push test rows well outside every training column's range.
+    X_far = X_te.copy()
+    X_far[0] = X_tr.max(axis=0) + 10.0
+    X_far[1] = X_tr.min(axis=0) - 10.0
+
+    s = run_h6._fit_gam(X_tr, y_tr, X_far)
+    assert s.shape == (len(X_far),)
+    assert np.isfinite(s).all(), "out-of-range rows must still score"
+
+
+def test_gam_twin_uses_the_fitted_basis_not_a_new_one():
+    """Guard the correctness half, which the crash only hinted at.
+
+    A second BSplines built on test data has knots placed by the test
+    distribution. Predicting through it applies training coefficients to a
+    different basis, which is wrong even when it does not raise.
+    """
+    src = Path(run_h6.__file__).read_text(encoding="utf-8")
+    gam_src = src[src.index("def _fit_gam"):src.index("def _fit_ga2m")]
+    assert "bs.transform(" in gam_src, (
+        "test data must go through the FITTED basis via bs.transform()")
+    assert gam_src.count("BSplines(") == 1, (
+        "a second BSplines means knots are being refitted on test data")

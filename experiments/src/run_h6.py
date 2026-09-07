@@ -102,8 +102,21 @@ def _fit_gam(X_tr, y_tr, X_te, max_terms: int = 6):
     bs = BSplines(Xs_tr, df=df, degree=[3] * Xs_tr.shape[1])
     gam = GLMGam(y_tr, exog=np.ones((len(y_tr), 1)), smoother=bs,
                  family=sm.families.Binomial()).fit()
-    bs_te = BSplines(Xs_te, df=df, degree=[3] * Xs_te.shape[1])
-    return np.asarray(gam.predict(np.ones((len(X_te), 1)), exog_smooth=bs_te.basis))
+
+    # Transform test data through the FITTED basis, never a new one. Building
+    # a second BSplines on test data places knots by the TEST distribution, so
+    # coefficients learned against the training basis get applied to a
+    # different basis -- a silent scoring error, not just the
+    # NotImplementedError it eventually raised on a seed whose test rows fell
+    # outside the training knots.
+    #
+    # Clip to the training range first: a spline has no basis beyond its
+    # outermost knots, so the honest reading is that this twin does not
+    # extrapolate past what it saw. Dropping the offending rows instead would
+    # change the test set for one arm and make the comparison unfair.
+    lo, hi = Xs_tr.min(axis=0), Xs_tr.max(axis=0)
+    basis_te = bs.transform(np.clip(Xs_te, lo, hi))
+    return np.asarray(gam.predict(np.ones((len(X_te), 1)), exog_smooth=basis_te))
 
 
 def _fit_ga2m(X_tr, y_tr, X_te):
