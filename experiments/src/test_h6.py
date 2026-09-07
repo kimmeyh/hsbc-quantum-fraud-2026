@@ -263,3 +263,46 @@ def test_gam_twin_uses_the_fitted_basis_not_a_new_one():
     assert "exog_smooth=np.clip" in gam_src, (
         "exog_smooth takes RAW values that predict() transforms itself -- "
         "passing a pre-built basis double-transforms it")
+
+
+# --- crash resilience (the 3h 12m lesson) ---------------------------------
+
+def test_checkpoint_writes_full_cells_not_just_deltas(tmp_path, monkeypatch):
+    """A crash must cost the current cell and nothing before it.
+
+    The first full run lost 8 cells and 3h 12m because results were written
+    only at the end. Worse, the heartbeat had recorded ONLY the delta, so those
+    cells could not even be audited afterwards: the per-arm scores needed to
+    check whether a defective twin had been the best classical arm were gone.
+    That is why they had to be discarded rather than salvaged.
+
+    So the checkpoint must carry the WHOLE cell, per-arm scores included.
+    """
+    ckpt = tmp_path / "h6_cells_partial.json"
+    monkeypatch.setattr(run_h6, "CHECKPOINT", ckpt)
+
+    cells = [{
+        "seed": 42, "representation": "baseline", "delta": -0.0666,
+        "scores": {"xgboost": 0.81, "gam": 0.42, "ga2m": 0.79,
+                   "joint": 0.55, "cvqboost": 0.74},
+        "best_classical_arm": "xgboost", "best_classical_ap": 0.81,
+    }]
+    run_h6._checkpoint(cells, smoke=False)
+
+    assert ckpt.exists(), "no checkpoint written"
+    import json
+    got = json.loads(ckpt.read_text(encoding="utf-8"))
+    assert got["n"] == 1
+    cell = got["cells"][0]
+    assert cell["scores"]["gam"] == 0.42, (
+        "per-arm scores must survive; without them a completed cell cannot be "
+        "audited after a defect is found in one of the arms")
+    assert cell["best_classical_arm"] == "xgboost"
+
+
+def test_checkpoint_is_skipped_for_smoke_runs(tmp_path, monkeypatch):
+    """Smoke output must not masquerade as a partial real run."""
+    ckpt = tmp_path / "h6_cells_partial.json"
+    monkeypatch.setattr(run_h6, "CHECKPOINT", ckpt)
+    run_h6._checkpoint([{"seed": 42, "delta": -0.01}], smoke=True)
+    assert not ckpt.exists()
