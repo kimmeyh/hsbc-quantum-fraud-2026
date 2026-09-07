@@ -262,10 +262,10 @@ def run(smoke: bool = False) -> dict:
     # the violation was invisible for two sprints because those arms were only
     # ever compared against each other. This module is new code, which is
     # exactly the condition that produced A17.
-    raw = data.load_ulb()
-    df = raw.drop_duplicates().reset_index(drop=True)
-    _progress("loaded", rows_raw=len(raw), rows=len(df),
-              exact_duplicates_removed=len(raw) - len(df), seeds=len(seeds))
+    n_raw = 284_807                       # asserted by the loader
+    df = data.load_ulb().drop_duplicates().reset_index(drop=True)
+    _progress("loaded", rows_raw=n_raw, rows=len(df),
+              exact_duplicates_removed=n_raw - len(df), seeds=len(seeds))
 
     cells = []
     for seed in seeds:
