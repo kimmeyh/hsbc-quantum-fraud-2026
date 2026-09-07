@@ -39,45 +39,10 @@ Rank every finding by expected effect on the rubric score divided by effort. For
 2. The claim as written and the claim as it should read.
 3. Effort tag: EDIT ONLY, CLASSICAL RUN, or NEEDS QPU SECONDS (with an estimate of seconds).
 4. Whether the finding is a factual error a judge can disprove, a statistical error, a mis-attributed mechanism, or a presentation issue.
-5. Please do output with "tables" as they are nearly impossible to copy/paste well to other systems, and that is a requirement.
+5. Please do output with NO "tables" as they are nearly impossible to copy/paste well to other systems, and that is a requirement.
+
+-----------------------------
+--Attach all 3 challenge documents and the QCi specific documents: DRAFT_qci_cover.pdf, DRAFT_hardware_plan.pdf, DRAFT_preregistration.pdf, DRAFT_gate_report.pdf
+
 
 ------------------Temp
-claude --resume "QI Submittion"
-
-  State for your return
-
-  PR #41 — feature/20260905_Sprint_7 → develop, ready for review, not yet merged
-
-  ┌────────────────┬─────────────────────────────────────────────┐
-  │                │                                             │
-  ├────────────────┼─────────────────────────────────────────────┤
-  │ Claude review  │ Complete, 9 findings, all fixed             │
-  ├────────────────┼─────────────────────────────────────────────┤
-  │ Copilot review │ Failed to run — retry next sprint           │
-  ├────────────────┼─────────────────────────────────────────────┤
-  │ Tests          │ 133 passing                                 │
-  ├────────────────┼─────────────────────────────────────────────┤
-  │ PDFs           │ All 9 US Letter; proposal 6/6, appendix 3/3 │
-  ├────────────────┼─────────────────────────────────────────────┤
-  │ Gate report    │ Byte-identical — no frozen figure moved     │
-  └────────────────┴─────────────────────────────────────────────┘
-
-  One thing to decide when you're back: I haven't posted replies on the Claude review threads or resolved them yet, because I wanted the corrected figures settled first.
-  That's the remaining step before the PR is properly handed over. It's quick.
-
-  The headline from this round, since it changed the submission:
-
-  The F33 result now reads +0.0319, 10 of 10 seeds, exceeding our 0.0268 MDE — the first difference in this project to clear its own threshold. It got there because
-  correcting a protocol violation removed an inflation that was masking it. Duplicates are 10× enriched in fraud, so deduplication strips memorizable positives, and the
-  tree-based frozen arm lost twice what the tuned pool did.
-
-  I've written into both the paper and the QCi letter that a result improving after a self-reported violation should invite scepticism, with the generator and per-seed
-  values committed so anyone can check it.
-
-  Two process guards added so this class is caught rather than reviewed: a test that fails on any fold builder skipping deduplication, and a standard requiring a figure's
-  generator to be committed alongside the figure. That second one is what would have caught A17 two sprints ago.
-
-  Note on the Copilot gap: I recorded it in the retrospective rather than letting it pass silently. A failed review isn't a clean review, and PR #41 carries one completed
-  review, not two — worth knowing when you apply your merge-readiness rule.
-
-  See you after the reboot.

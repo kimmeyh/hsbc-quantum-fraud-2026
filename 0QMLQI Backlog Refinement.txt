@@ -5,8 +5,89 @@ All Sprint tasks and sub-tasks are approved.
 Continue without addition approvals until Manual Validation, providing your recommendation for Manual Validation steps.
 Do not stop to ask questions unless meeting the criteria in \docs\SPRINT_STOPPING_CRITERIA.md
 ---------------------------------------------------------------------------------------------------------
+Sprint n Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
+
+---------------------------------------------------------------------------------------------------------
+Sprint 8 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
+
+  Candidates at a glance
+
+  - F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 10
+  - F35. Interpretation-layer tests (~2h) Priority 20
+  - F29. Sample-size insensitivity of the CVQBoost optimum (~2h) Priority 30
+  - F4. QFE phase arms + order-matched twins (~0.5 day) Priority 40
+  - F16. Minimal CI: pytest + lint on PRs (~30m) Priority 50
+  - F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 60
+  - F5, F17, F20, F25, F30, F13, F6, F14 — Priority HOLD
+
+  Experiments
+
+  F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 10
+  - Phase: Experiments | Platform: IEEE-CIS
+  - The roadmap commitment for this sprint. Scaffolding was built and tested in Sprint 6: loader, preregistered feature pass, rolling-origin splitter, 38 tests. 590,540
+    rows verified, prevalence 3.499%, checksums matching
+  - Your Sprint 7 decision applies: run BOTH pool configurations, frozen and tuned, recorded on the card
+  - Second-largest evidence gap, and supplies the temporal protocol our single time-ordered split cannot
+  - Depends on: nothing; scaffolding done
+
+  F35. Interpretation-layer tests (~2h) Priority 20
+  - Phase: Experiments/tooling
+  - Registered after three consecutive sprints where the defect that travelled furthest was a claim about what a number means. Sprint 7 alone produced two: a fabricated
+    comparator figure, and a cross-k comparison
+  - comparators.py catches mismatches at computation time; F35 extends that to document time
+  - Depends on: nothing
+
+  Finalize
+
+  F16. Minimal CI (~30m) Priority 50
+  - 134 tests exist. CI would run them on every push rather than when I remember
+
+  ---
+
+  My recommendation: F3 alone.
+---------------------------------------------------------------------------------------------------------
 Sprint 7 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
 
+
+
+ Candidates at a glance
+
+  - F33. Tune the mixed pool toward the Loke et al. configuration (~4-6h) Priority 10
+  - F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 12
+  - F29. Sample-size insensitivity of the CVQBoost optimum (~2h) Priority 20
+  - F34. Spend-guard property tests (~1h) Priority 30
+  - F4. QFE phase arms + order-matched twins (~0.5 day) Priority 40
+  - F16. Minimal CI: pytest + lint on PRs (~30m) Priority 50
+  - F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 60
+  - F5, F17, F20, F25, F30, F13, F6, F14 — Priority HOLD
+
+  Experiments
+
+  F33. Tune the mixed pool toward the Loke et al. configuration (~4-6h, zero metered) Priority 10
+  - Phase: Experiments | Platform: ULB classical proxy
+  - You already selected this for Sprint 7. F31 showed the optimizer works on a diverse pool but bought no accuracy: 0.7565 against the frozen pool's 0.7681 and Loke's >0.8
+  - Adopts their families at their hyperparameters, adds imbalance handling at fit time (which no control has yet varied), sweeps per-family learner count against the
+    100-variable ceiling
+  - This is the difference between "a direction" and "a result" — and it lands before the QCi letter goes out Monday
+  - Depends on: F31 (done)
+
+  F29. Sample-size insensitivity of the CVQBoost optimum (~2h, zero metered) Priority 20
+  - Phase: Experiments | Platform: ULB proxy
+  - Deferred from Sprint 6 because a degenerate pool makes the question meaningless. F31 changed that — there is now a non-trivial optimum to test insensitivity against
+  - Depends on: F31 (done); would need F33's tuned pool to be most meaningful
+
+  Tooling
+
+  F34. Spend-guard property tests (~1h) Priority 30
+  - Registered after the guard carried two arithmetic defects in one sprint, plus a third (first-found billing) that Copilot caught
+  - Small, and the metered path is where mistakes cost real money
+
+  F16. Minimal CI (~30m) Priority 50
+  - 117 tests exist; CI would run them on every push rather than when I remember
+
+  ---
+
+  My recommendation: F33 alone, plus the QCi letter update.
 
 ---------------------------------------------------------------------------------------------------------
 Sprint 6 scope as recommended (F31, F3 prep, F23, F24, F32). Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.
