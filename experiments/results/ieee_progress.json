@@ -1,0 +1,10 @@
+{
+  "stage": "arm_done",
+  "at": "2026-09-06T18:03:59",
+  "fold": 2,
+  "arm": "catboost",
+  "auprc": 0.4927,
+  "auc": 0.8996,
+  "fit_seconds": 23.7,
+  "n_features": 183
+}
