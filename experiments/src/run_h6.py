@@ -80,6 +80,29 @@ def _progress(stage: str, **fields) -> None:
           + ", ".join(f"{k}={v}" for k, v in fields.items()), flush=True)
 
 
+CHECKPOINT = Path(__file__).resolve().parents[1] / "results" / "h6_cells_partial.json"
+
+
+def _checkpoint(cells: list[dict], smoke: bool) -> None:
+    """Write every completed cell IN FULL after each one.
+
+    The first full run lost 8 cells and 3h 12m to a crash on the ninth, because
+    results were written only by _summarize() at the end. Worse, the heartbeat
+    recorded only the delta, so the completed cells could not even be audited
+    afterwards -- the per-arm scores needed to check whether a defective twin
+    had been the best classical arm were simply gone.
+
+    This writes the whole cell record, per-arm scores included, so a crash
+    costs the CURRENT cell and nothing before it.
+    """
+    if smoke:
+        return
+    try:
+        store.atomic_write_json(CHECKPOINT, {"cells": cells, "n": len(cells)})
+    except Exception:                                          # noqa: BLE001
+        pass
+
+
 # --------------------------------------------------------------- the twins --
 # Each twin is the primitive proven in h6_twin_preflight.py (Sprint 6), which
 # established that pygam and interpret are NOT installed and are not needed.
@@ -114,9 +137,13 @@ def _fit_gam(X_tr, y_tr, X_te, max_terms: int = 6):
     # outermost knots, so the honest reading is that this twin does not
     # extrapolate past what it saw. Dropping the offending rows instead would
     # change the test set for one arm and make the comparison unfair.
+    # `exog_smooth` takes RAW values, which predict() transforms itself through
+    # the fitted smoother -- it is not a basis. Passing a pre-built basis makes
+    # predict transform it a second time, and passing raw test values makes it
+    # transform points outside the fitted knots. Clip, then hand over raw.
     lo, hi = Xs_tr.min(axis=0), Xs_tr.max(axis=0)
-    basis_te = bs.transform(np.clip(Xs_te, lo, hi))
-    return np.asarray(gam.predict(np.ones((len(X_te), 1)), exog_smooth=basis_te))
+    return np.asarray(gam.predict(np.ones((len(X_te), 1)),
+                                  exog_smooth=np.clip(Xs_te, lo, hi)))
 
 
 def _fit_ga2m(X_tr, y_tr, X_te):
@@ -291,6 +318,7 @@ def run(smoke: bool = False) -> dict:
                            np.asarray(X_te), np.asarray(y_te), seed, "baseline"))
         _progress("cell_done", seed=seed, representation="baseline",
                   delta=round(cells[-1]["delta"], 4))
+        _checkpoint(cells, smoke)
 
         # QFE representation: the SAME features plus the phase block. The
         # encoder is fitted on TRAIN ONLY -- fitting it on the full frame would
@@ -312,6 +340,7 @@ def run(smoke: bool = False) -> dict:
                            seed, "qfe"))
         _progress("cell_done", seed=seed, representation="qfe",
                   delta=round(cells[-1]["delta"], 4))
+        _checkpoint(cells, smoke)
 
     return _summarize(cells, smoke)
 

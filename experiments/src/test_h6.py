@@ -254,7 +254,12 @@ def test_gam_twin_uses_the_fitted_basis_not_a_new_one():
     """
     src = Path(run_h6.__file__).read_text(encoding="utf-8")
     gam_src = src[src.index("def _fit_gam"):src.index("def _fit_ga2m")]
-    assert "bs.transform(" in gam_src, (
-        "test data must go through the FITTED basis via bs.transform()")
     assert gam_src.count("BSplines(") == 1, (
-        "a second BSplines means knots are being refitted on test data")
+        "a second BSplines means knots are being refitted on TEST data, so "
+        "training coefficients get applied to a different basis")
+    assert "np.clip(" in gam_src, (
+        "test values must be clipped to the training range; a spline has no "
+        "basis beyond its outermost knots and statsmodels raises there")
+    assert "exog_smooth=np.clip" in gam_src, (
+        "exog_smooth takes RAW values that predict() transforms itself -- "
+        "passing a pre-built basis double-transforms it")
