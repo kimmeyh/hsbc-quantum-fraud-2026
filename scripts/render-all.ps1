@@ -37,6 +37,7 @@ if ($QciPackage) {
         @{ Source = 'experiments\PREREGISTRATION.md';    Out = 'docs\paper\out\qci_package\DRAFT_preregistration.pdf'; Margin = '1in'   }
         @{ Source = 'experiments\results\gate_report.md';Out = 'docs\paper\out\qci_package\DRAFT_gate_report.pdf';     Margin = '1in'   }
         @{ Source = 'docs\HARDWARE_REQUEST_B1_G0b.md';   Out = 'docs\paper\out\qci_package\DRAFT_hardware_plan.pdf';   Margin = '1in'   }
+        @{ Source = 'docs\QCI_EQC_MODELS_FEEDBACK.md'; Out = 'docs\paper\out\qci_package\DRAFT_eqc_models_feedback.pdf'; Margin = '1in' }
     )
 }
 

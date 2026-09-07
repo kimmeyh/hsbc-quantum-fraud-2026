@@ -12,7 +12,7 @@ date: "September 2026"
 # To QCi
 
 **Request**: 30,000 QPU seconds of Dirac-3 access  
-**Enclosed, all marked DRAFT**: concept proposal, appendices, frozen preregistration with its seventeen amendments, generated gate report, and the hardware run plans.
+**Enclosed, all marked DRAFT**: concept proposal, appendices, frozen preregistration with its seventeen amendments, generated gate report, the hardware run plans, and the eqc-models integration feedback.
 
 We have worked together for three years. This note is written the way I would want one written to me: the commercial case first, then what else you get, then the science.
 
@@ -96,7 +96,9 @@ In priority order, each with a preregistered protocol already written:
 ## What we give back
 
 - The pool-degeneracy finding above, written up for your documentation.
-- Integration notes from sustained use of eqc-models: the pool-construction strategy that fails on Windows, the response object whose billing field is not a dictionary key, the free-tier variable arithmetic and where the documentation and implementation diverge, and the guards we built around metered execution that any serious user would need.
+- **Integration feedback, enclosed as a document rather than a promise**
+  (`eqc-models and Dirac-3: Integration Feedback`). Every finding cites the
+  file and line that establishes it, so you can check any of them: the pool-construction strategy that fails on Windows, the response object whose billing field is not a dictionary key, the free-tier variable arithmetic and where the documentation and implementation diverge, and the guards we built around metered execution that any serious user would need.
 - The measured cost model: per-fit timings consistent across 37 fits, and the solver-dispersion data above.
 - **A validated classical proxy for Dirac-3's CVQBoost path, which may be the most reusable thing here.** It reads the Hamiltonian eqc-models actually constructs (J = HH^T + lambda*I, C = -2Hy, sum constraint 1.0, w >= 0) and solves that identical objective classically by accelerated projected gradient on the simplex. Because it builds its pools through eqc-models' own builders, the problem it solves is the same problem, not a reimplementation that has drifted. Two things that buys: it is how we could measure hardware-minus-exact at -0.0010 AUPRC with weight cosine 0.975 to 0.999, since without an exact solve of the SAME Hamiltonian there is nothing to compare a device result against; and it let us develop against the free tier while spending 163 metered seconds in total. For QCi it is a test oracle for CVQBoost regressions and a way for evaluating customers to size a problem before they spend on it. It is yours, and we would be glad to have your correction on whether we have read the Hamiltonian right.
 - Named attribution in a submission to a tier-one bank, and in whatever is published afterwards.
