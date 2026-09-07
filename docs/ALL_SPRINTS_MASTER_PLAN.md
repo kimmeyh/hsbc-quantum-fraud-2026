@@ -155,13 +155,7 @@ docs/reviews/f36-float-tables-outcome.md.
 - **Honest limit**: some of this is genuinely hard to test mechanically and will end up as a checklist rather than an assertion. The parts that CAN be asserted are worth asserting, and the parts that cannot belong in STATISTICAL_REVIEW_CHECKLIST where a human walks them
 - Depends on: nothing (comparators.py already landed)
 
-**F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14**
-- Phase: Experiments
-- Platform: IEEE-CIS
-- **Scope decision (team lead, 2026-09-05)**: run BOTH pool configurations, the frozen single-family arm and the F33 tuned four-family arm. The frozen arm is the preregistered comparator and must be carried for continuity; the tuned arm is where F33 measured the accuracy to live. Running only one would either break comparability with every prior result or omit the configuration the evidence now favours
-- Preregistered feature pass (D-normalization, UID excluded, named aggregates, V-reduction); leakage controls incl. shuffled-label positive control
-- GroupKFold-by-month rolling origin; classical arms + proxy CVQBoost on the reduced set; H3 ladder cells
-- Depends on: F1
+(F3 IEEE-CIS: COMPLETED in Sprint 8, all four tasks, merged via PR #47; history in SPRINT_8_SUMMARY.md. Removed from candidates per convention.)
 
 **F29. Sample-size insensitivity of the CVQBoost optimum (~2h proxy, zero metered) Priority 15**
 - Phase: Experiments (team-lead observation 2026-09-04; run "if we have time before submission", include only if the evidence supports it)
