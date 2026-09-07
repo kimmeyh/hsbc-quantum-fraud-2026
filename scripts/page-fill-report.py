@@ -30,6 +30,7 @@ block, so that is what this measures.
 """
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -56,6 +57,7 @@ UNDERFILL_SLACK_PT = 36.0
 # the text block. Normal leading at 10pt is about 12pt; the folio sits far
 # lower, so 30pt separates the two without any ambiguity.
 FOLIO_GAP_PT = 30.0
+FOLIO_TEXT_RE = re.compile(r"^\s*(?:\d+|[ivxlcdm]+)\s*$", re.IGNORECASE)
 
 
 def text_extent(page):
@@ -65,23 +67,25 @@ def text_extent(page):
     baseline seen is where the text block ends, which is what decides whether
     the page had room for more.
     """
-    ys = []
+    runs = []
 
     def visit(text, cm, tm, font, size):
-        if text.strip():
-            ys.append(tm[5])
+        stripped = text.strip()
+        if stripped:
+            runs.append((tm[5], stripped))
 
     page.extract_text(visitor_text=visit)
-    if not ys:
+    if not runs:
         return None
 
-    ys = sorted(set(ys), reverse=True)
-    # Drop the page-number folio. It sits at the same depth on every page, well
-    # below the body, so without this the folio IS the deepest baseline
-    # everywhere and every page reports 0pt free -- including a nearly empty
-    # last page, which is the one case that matters most.
-    if len(ys) >= 2 and (ys[-2] - ys[-1]) > FOLIO_GAP_PT:
-        ys = ys[:-1]
+    runs = sorted(set(runs), key=lambda item: item[0], reverse=True)
+    # Drop the page-number folio only when it looks like one. A large gap by
+    # itself is not enough, because a footer or other real bottom-of-page text
+    # can sit well below the body too.
+    if len(runs) >= 2 and (runs[-2][0] - runs[-1][0]) > FOLIO_GAP_PT:
+        if FOLIO_TEXT_RE.match(runs[-1][1]):
+            runs = runs[:-1]
+    ys = [y for y, _ in runs]
     return max(ys), min(ys)
 
 

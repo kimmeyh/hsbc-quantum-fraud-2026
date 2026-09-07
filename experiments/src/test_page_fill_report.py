@@ -82,6 +82,15 @@ def test_folio_is_excluded_from_the_text_block():
     assert bottom == pytest.approx(-200.0, abs=12.0)
 
 
+def test_real_footer_text_is_not_dropped_as_a_folio():
+    """A low footer note is content, not a page-number folio."""
+    mod = _load()
+    page = FakePage(_body(0.0, -200.0) + [("Confidential", -685.0)])
+    top, bottom = mod.text_extent(page)
+    assert top == pytest.approx(0.0)
+    assert bottom == pytest.approx(-685.0, abs=12.0)
+
+
 def test_table_page_is_not_underfilled_despite_few_characters():
     """The exact false positive that cost card F36.
 
