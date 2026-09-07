@@ -67,7 +67,11 @@ def _progress(stage: str, **fields) -> None:
           ", ".join(f"{k}={v}" for k, v in fields.items()), flush=True)
 
 OUT = Path(__file__).resolve().parents[1] / "results" / "ieee_cvqboost.json"
-K_FEATURES = 6            # four families x (6 + C(6,2)) = 60 vars, under A12's 100
+K_FEATURES = 6            # four families x C(6,2) = 4 x 15 = 60 vars, under A12's 100
+#                         Sequential pair build: pairs only, no single-feature
+#                         learners, so each family contributes C(6,2)=15 and not
+#                         6 + C(6,2)=21. The committed results record
+#                         n_variables: 15 per family, confirming the derivation.
 
 # Pool construction is subsampled on IEEE-CIS. This is a COST decision with a
 # protocol consequence, so it is stated rather than hidden.

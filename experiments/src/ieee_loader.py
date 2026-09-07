@@ -110,9 +110,14 @@ def load_report() -> dict:
         "rows_raw": len(raw),
         "rows": rows,
         # Section 4 item 7 asks for the count, not just the action, so the
-        # report carries it whether or not it is interesting. On IEEE-CIS it is
-        # 6 rows and none of them fraud; on ULB the same step removes 1,854 rows
-        # at a tenfold fraud enrichment and moved a result across the MDE (A17).
+        # report carries it whether or not it is interesting.
+        #
+        # This field is rows REMOVED, which is not the same as rows
+        # PARTICIPATING in duplicate groups, and the two are easy to conflate:
+        # on IEEE-CIS 6 rows form 3 duplicate pairs, so 3 are removed
+        # (590,540 -> 590,537), none of them fraud. On ULB 1,854 rows form the
+        # duplicate groups and 1,081 are removed, at a tenfold fraud
+        # enrichment, which moved a result across the MDE (A17).
         "exact_duplicates_removed": n_dupes,
         "cols": cols,
         "fraud_count": int(df["isFraud"].sum()),

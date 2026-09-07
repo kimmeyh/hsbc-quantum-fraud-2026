@@ -58,11 +58,13 @@ We flag one thing about that number rather than let you find it. It reached sign
 
 We ran the preregistered IEEE-CIS protocol as well: 590,540 transactions, 3.5%
 prevalence, rolling-origin evaluation by month, with the shuffled-label control
-collapsing on every fold. Tuned classical arms reach 0.5739 AUPRC. The CVQBoost
-arm, held to the six features the 100-variable ceiling permits, reaches 0.0571.
+collapsing on every fold. Classical arms reach 0.5739 AUPRC -- on
+hyperparameters carried from our tuned ULB settings as a hypothesis, not a
+per-dataset search, so treat that as a floor. The CVQBoost arm, held to the six
+features the 100-variable ceiling permits, reaches 0.0571.
 
 That gap is not a hardware result, and the control that establishes it matters
-more than the number: a tuned LightGBM given the SAME six features falls from
+more than the number: the same LightGBM given the SAME six features falls from
 0.5424 to 0.0734. Every model is starved at six features, and the quantum arm
 attains 85% of that constrained ceiling. All of this is a classical proxy solve
 of the identical Hamiltonian, marked [SIM]; no metered time was spent.

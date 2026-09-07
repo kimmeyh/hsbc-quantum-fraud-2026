@@ -106,6 +106,9 @@ collapses on every fold (0.030/0.022/0.032 vs base rates 0.035/0.034/0.042).
 AUPRC is not comparable across datasets -- its baseline IS the prevalence -- so
 0.5739 at 3.5% is a 16x lift against ULB's 490x at 0.17%.
 
+Arms use ULB-tuned hyperparameters carried as a hypothesis; the section 6
+per-dataset search is unspent on IEEE-CIS, so these are floors.
+
 | Arm | Mean AUPRC | Features |
 |---|---|---|
 | LightGBM | 0.5739 [0.5424, 0.6293] | ~182 |
@@ -113,7 +116,7 @@ AUPRC is not comparable across datasets -- its baseline IS the prevalence -- so
 | CatBoost | 0.4795 [0.4696, 0.4927] | ~182 |
 | CVQBoost tuned / frozen [SIM] | 0.0571 / 0.0523 | 6 |
 
-**Matched-feature control.** A tuned LightGBM given the SAME six features
+**Matched-feature control.** The same LightGBM given the SAME six features
 CVQBoost is limited to falls from 0.5424 to 0.0734: every model is starved there
 and CVQBoost attains 85% of that ceiling. Gram ratios 0.950-0.973 rule out the
 A.4 degeneracy mode.
