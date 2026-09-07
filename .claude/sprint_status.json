@@ -1,18 +1,16 @@
 {
   "current_sprint": {
-    "number": 8,
-    "name": "The Second Dataset",
-    "branch": "feature/20260906_Sprint_8",
-    "status": "phase_8_delivery_cycle",
-    "plan_doc": "docs/sprints/SPRINT_8_PLAN.md",
-    "pr": 47,
-    "plan_approved": true,
+    "number": 9,
+    "name": "Representation, and Paying What We Promised",
+    "branch": "feature/20260907_Sprint_9",
+    "status": "phase_3_planning_awaiting_approval",
+    "plan_doc": "docs/sprints/SPRINT_9_PLAN.md",
+    "pr": null,
+    "plan_approved": false,
     "github_issues": [
-      43,
-      44,
-      45,
-      46,
-      48
+      50,
+      51,
+      52
     ]
   },
   "last_completed_sprint": {
