@@ -4,17 +4,23 @@ author: "Claude Shannon's Fraud Catchers"
 date: "September 2026"
 header-includes: |
   \usepackage{titling}
-  \setlength{\droptitle}{-5em}
+  \setlength{\droptitle}{-9em}
+  \usepackage{ltablex}
+  \keepXColumns
+  \renewcommand{\topfraction}{0.95}
+  \renewcommand{\bottomfraction}{0.95}
+  \renewcommand{\textfraction}{0.05}
+  \renewcommand{\floatpagefraction}{0.75}
 ---
 
 # Appendix A. Results
 
-ULB benchmark, 284,807 transactions, 1,081 exact duplicates removed before splitting, 60/20/20 stratified, seeds 42-51, test-fold prevalence 0.00167. Features are anonymized principal components plus amount and elapsed time; no merchant, device, geography or cardholder attributes exist, which bounds both feature engineering and the fairness testing a deployment would require. The PCA transform is unpublished, so no model fitted here maps onto raw bank traffic without re-derivation. AUPRC is step-wise average precision throughout.
+ULB benchmark, 284,807 transactions, 1,081 exact duplicates removed before splitting, 60/20/20 stratified, seeds 42-51, test-fold prevalence 0.00167. Features are anonymized principal components plus amount and elapsed time; no merchant, device, geography or cardholder attributes exist, which bounds both feature engineering and the fairness testing a deployment would require. The PCA transform is unpublished, so no model fitted here transfers to raw bank traffic. AUPRC is step-wise average precision throughout.
 
 ## A.1 Detection quality (mean over 10 seeds, test AUPRC)
 
 | Arm | Features | AUPRC | Seed SD | 95% interval | Tag |
-|---|---|---|---|---|---|
+|----------------------|--------|-------|-------|----------------|-----|
 | CatBoost | 30 | 0.8368 | 0.0304 | [0.8150, 0.8585] | [SIM] |
 | XGBoost | 30 | 0.8296 | 0.0286 | [0.8092, 0.8501] | [SIM] |
 | CatBoost | 13 | 0.8070 | 0.0321 | [0.7841, 0.8300] | [SIM] |
@@ -28,7 +34,7 @@ Values are means and t-intervals across ten overlapping resplits: they describe 
 The test fold holds about 95 frauds in 56,746 transactions, so the 0.05% and 0.1% budgets fund 28 and 57 alerts, capping recall at 0.295 and 0.600. Every column is a ranking measure under a budget; only 0.5% is uncapped by the positive count. CVQBoost figures are proxy-derived [SIM]: Dirac-3 weights were not persisted (A.4).
 
 | Arm | R@0.05% (cap .295) | R@0.1% (cap .600) | R@0.5% |
-|---|---|---|---|
+|------------------------|--------------------|----------------|--------|
 | CatBoost, 30 feat | .294 (99.7% of cap) | .593 (98.8%) | .855 |
 | CatBoost, 13 feat | .286 (96.9%) | .580 (96.7%) | .849 |
 | CVQBoost proxy [SIM] | .283 (95.9%) | .565 (94.2%) | .819 |
@@ -40,55 +46,134 @@ The test fold holds about 95 frauds in 56,746 transactions, so the 0.05% and 0.1
 37 metered fits over two campaigns, 163 device seconds, zero failures, zero retries, 4 to 5 s per fit; the classical solve takes milliseconds. The selected configuration carries a score-degeneracy warning on all ten seeds (95.1% of transactions share one score across 814 distinct values), so its threshold-dependent figures are weak evidence while its ranking metrics are sound.
 
 | Quantity | Value | Tag |
-|---|---|---|
-| G0b Spearman, proxy versus hardware ranking, 5 configs | 0.900 (exact permutation p: one-sided 0.042) | [HW] |
-| H1b, CVQBoost minus best matched GBDT, 10 seeds | -0.0399 [-0.0571, -0.0227], 9 of 10 seeds negative | [HW] |
+|----------------------------------|------------------------------|-----|
+| G0b Spearman, proxy versus hardware ranking | 0.900 (exact permutation p: one-sided 0.042) | [HW] |
+| H1b, CVQBoost minus best matched GBDT | -0.0399 [-0.0571, -0.0227], 9 of 10 seeds negative | [HW] |
 | Per-seed paired BCa intervals excluding zero | 6 of 10 | [SIM] |
 | Solver draws; identical draws; energy spread | 8; 0 of 27; median 0.019%, max 0.343% | [HW] |
 
 ## A.4 Solver fidelity and the mechanism controls
 
-Hardware minus exact proxy on identical Hamiltonians: -0.0010 [-0.0032, +0.0012]; solution weight cosine 0.975 to 0.999; hardware objective 0.013% to 0.413% above the exact minimum, never below [HW]. That agreement also bounds any effect of Dirac-3's continuous-variable resolution: quantization coarse enough to drive the flat optimum could not reproduce it. The solved weight vector is **uniform to seven decimal places** on all ten seeds (L1 from 1/91 of 7.2e-08 to 1.6e-07), so we ran the controls that demands, all classical at zero metered cost.
+Hardware minus exact proxy on identical Hamiltonians: -0.0010 [-0.0032, +0.0012];
+weight cosine 0.975 to 0.999; hardware objective 0.013% to 0.413% above the exact
+minimum, never below [HW]. That agreement bounds any effect of Dirac-3's
+continuous-variable resolution: quantization coarse enough to drive the flat
+optimum could not reproduce it.
 
-| Control | AUPRC | What it isolates |
+**The frozen pool's optimum is uniform to seven decimal places** on all ten seeds
+(L1 from 1/91 of 7.2e-08 to 1.6e-07). Controls, all classical at zero metered
+cost: uniform weights by construction give 0.7659, the solved objective 0.7681,
+class-weighted 0.7686, and a free-sign logistic stack 0.7681 -- so the
+non-negative simplex form costs nothing detectable and objective weighting is
+ruled out (though not imbalance at fit time). The +0.0022 is TIE-BREAKING:
+uniform weights leave 95.3% of test rows tied on one score (78 distinct values)
+and weights differing by 1e-07 split those into 151, so rounding the solved
+scores to six decimals returns the metric to the uniform value. The cause is
+pool degeneracy -- off-diagonal Gram entries average 170,234.4 against a
+diagonal of 170,235, because at 0.17% prevalence a depth-limited tree predicts
+the negative class almost everywhere. A penalty sweep from 0 to 4x n_train
+leaves it uniform even at zero penalty.
+
+**Mixed pool (exploratory, A11).** Four families at k=13, 312 variables, same
+splits: gram ratio 0.9975, L1 from uniform 0.126, solved-minus-uniform +0.0076 on
+10/10 seeds, absolute AUPRC 0.7466 -- below the frozen pool's 0.7681 at k=13 and
+below the 0.0268 MDE [SIM]. Its two mechanism controls are seed 42 only.
+
+**Tuned pool (exploratory, A13/A14/A16).** Fit-time class weighting in the tree
+and logistic learners (LDA and KNN accept none) PLUS closer distance-weighted
+neighbours: two interventions, not one. Gram ratio falls 0.9988 to 0.92. Selected
+on validation AP at seed 42, then ten seeds: AUPRC 0.7700 (SD 0.0270). Against
+the single-family pool rebuilt at the SAME k=6 on the SAME splits, the paired
+difference is **+0.0319 (SD 0.0189), 10 of 10 seeds, EXCEEDING the MDE** -- the
+first difference in this project to do so. The matched comparator matters:
+quoting the k=13 figure against a k=6 arm is the order-mismatched comparison
+ADR-0013 warns of, and the frozen pool scores 0.7381 at k=6, 0.0300 below its
+k=13 figure (generator: `matched_comparator.py`). Solved minus uniform is +0.0047
+(SD 0.0038): the accuracy came from the learners, not the optimizer.
+
+**Hardware (F32) ran a smaller configuration.** The A12 ceiling forecloses k=13,
+so the metered block used k=6, 60 variables: ten fits, 43.0 device seconds, AUPRC
+0.7630, hardware minus proxy -0.0007, cosine 0.977-0.983, recall
+0.271/0.509/0.839 [HW]. It measures solver fidelity and supplies hardware
+operating points; it does NOT confirm the k=13 mechanism, whose own k=6 spot
+check is a single seed (L1 0.0204).
+
+## A.5 IEEE-CIS: the second dataset and the feature ladder
+
+590,540 transactions, 3 duplicates removed, 3.5% prevalence, GroupKFold-by-month
+rolling origin, reduced Deotte recipe, UID excluded. Shuffled-label control
+collapses on every fold (0.030/0.022/0.032 vs base rates 0.035/0.034/0.042).
+AUPRC is not comparable across datasets -- its baseline IS the prevalence -- so
+0.5739 at 3.5% is a 16x lift against ULB's 490x at 0.17%.
+
+| Arm | Mean AUPRC | Features |
 |---|---|---|
-| Uniform weights by construction | 0.7659 | The pool with NO optimization |
-| Frozen objective, solved | 0.7681 | The +0.0022 is tie-breaking, not optimization (see below) |
-| Class-weighted objective, re-solved | 0.7686 | Rules out objective weighting, not imbalance at fit time |
-| Logistic stack, free signs | 0.7681 | Cost of the non-negative simplex form: none detectable |
+| LightGBM | 0.5739 [0.5424, 0.6293] | ~182 |
+| XGBoost | 0.5028 [0.4689, 0.5260] | ~182 |
+| CatBoost | 0.4795 [0.4696, 0.4927] | ~182 |
+| CVQBoost tuned / frozen [SIM] | 0.0571 / 0.0523 | 6 |
 
-The +0.0022 is tie-breaking. Uniform weights leave 95.3% of test rows tied on one score (78 distinct values); weights differing by order 1e-07 split those into 151, and average precision is rank-based. Rounding the solved scores to six decimals returns the metric to the uniform value (seed 42: 0.8073 solved, 0.8043 rounded, 0.8049 uniform).
+**Matched-feature control.** A tuned LightGBM given the SAME six features
+CVQBoost is limited to falls from 0.5424 to 0.0734: every model is starved there
+and CVQBoost attains 85% of that ceiling. Gram ratios 0.950-0.973 rule out the
+A.4 degeneracy mode.
 
-**Mixed-pool test (exploratory, A11).** Four families (dct, lda, lg, knn) at **k=13, 312 variables**, identical splits: gram ratio 0.9975 vs 0.999994, L1 from uniform 0.126 vs 8.0e-08, solved-minus-uniform +0.0076 on 10/10 seeds, absolute AUPRC 0.7466, below the frozen pool's 0.7681 at k=13 and below the 0.0268 MDE [SIM]. The two mechanism controls are **seed 42 only**: rounding to 2dp leaves 96 distinct scores vs uniform's 123 yet scores higher, and the shrinkage curve is monotone, so this is optimization rather than tie-breaking.
+**H3 ladder (scoreable, 12 cells).** delta = CVQBoost minus matched GBDT:
+-0.0169 (k=5), -0.0764 (k=9), -0.0564 (k=13), -0.1031 (k=17, exceeds the free
+tier). Slope -0.006 per feature: lifting the ceiling raises CVQBoost 2.8x and the
+GBDT 3.6x, so the ceiling limits absolute performance without being why the arm
+trails. Scope: one family set, schedule 2, continuous convex formulation. The
+integer cardinality problem, three-feature subsets and the phase representation
+are unrun.
 
-**Tuned pool (exploratory, A13/A14/A16).** Fit-time class weighting in the tree and logistic learners (LDA and KNN accept none), plus closer distance-weighted neighbours in the selected configuration: two interventions, not one. Gram ratio falls 0.9988 to 0.92; L1 from uniform rises to 0.212. Selected on validation AP from four candidates at seed 42, then run over ten seeds: AUPRC 0.7700 (SD 0.0270). Against the single-family pool rebuilt at the SAME k=6 on the SAME splits, the PAIRED difference is **+0.0319 (SD 0.0189), positive on 10 of 10 seeds, EXCEEDING the 0.0268 MDE** -- the first difference in this project to do so. The matched comparator matters: quoting the k=13 figure (0.7681) against a k=6 arm is the order-mismatched comparison ADR-0013 warns of. The frozen pool scores 0.7381 at k=6, 0.0300 below its k=13 figure, so a raw cross-k comparison would be inflated (generator: `matched_comparator.py`). Solved minus uniform on the tuned pool is +0.0047 (SD 0.0038, 10/10 seeds): the accuracy came from the learners, not the optimizer.
-
-**Hardware (F32) ran a DIFFERENT, smaller configuration.** The free-tier ceiling of 100 variables (A12) forecloses k=13, so the metered block used **k=6, 60 variables**: ten fits, 43.0 device seconds, AUPRC 0.7630, hardware minus proxy -0.0007, cosine 0.977-0.983, recall 0.271/0.509/0.839 [HW]. It measures solver fidelity and supplies hardware operating points; it does NOT confirm the k=13 mechanism, which the free tier cannot run. That configuration's own mechanism is a single-seed spot check (L1 0.0204), an order of magnitude weaker.
-
-The cause is pool degeneracy: off-diagonal Gram entries average 170,234.4 against a diagonal of 170,235, so any two learners agree on 99.999% of training rows, because at 0.17% prevalence a depth-limited tree predicts the negative class almost everywhere. With interchangeable learners uniform is genuinely optimal. A penalty sweep from 0 to 4 times n_train leaves it uniform even at zero penalty, ruling out the penalty term. Phase 2: the first requirement is pool diversity, not a better solver.
+**Two qualifications.** The adversarial control never converged, hitting its
+20-round cap on every fold (final AUCs 0.945/0.888/0.887 against a target near
+0.5), so drift is spread across the feature set. And our protocol run (0.574)
+sits below the published leakage-free band (0.64-0.67) while our own labelled
+scale check on a stratified random split reached 0.861 -- the random-versus-
+temporal gap Sprint 5 measured at +0.2143 on ULB.
 
 # Appendix B. Preregistration registry
 
 ## B.1 Gates, scored as committed
 
 | Gate | Criterion | Outcome | Tag |
-|---|---|---|---|
+|------------------|------------------------------|------------------------|-----|
 | G0 | Tuned XGBoost mean AUPRC >= 0.85 | **FAIL**: 0.8296 | [SIM] |
 | G0 leakage tripwire | No cell above 0.95 | PASS: 0.8368 | [SIM] |
 | Shuffled-label tripwire | Collapses to base rate | PASS: 0.0023 / 0.0017 | [SIM] |
 | G0b | Proxy-hardware rank Spearman >= 0.5 | **PASS**: 0.900 | [HW] |
 | H1b (primary) | CVQBoost versus best tuned GBDT | **NULL**: -0.0399, interval excludes zero | [HW] |
-| H4 | Versus best structural control | PARTIAL: solver fidelity only; both controls unrun | [HW] |
-| H1a, H1c, H3, H5, H6, Phase 2 cardinality arm | Cardinality arm preregistered against time-capped MIQP, greedy and annealing controls | NOT RUN | [PROJ] |
+| H4 | Versus best structural control | PARTIAL: solver fidelity only, controls unrun | [HW] |
+| H1a, H1c, H3, H5, H6, Phase 2 cardinality arm | Preregistered against MIQP, greedy and annealing controls | NOT RUN | [PROJ] |
 
 H1b is the sole confirmatory endpoint, reported unadjusted. All other completed analyses are exploratory and carry no family-wise confirmatory claim.
 
 ## B.2 Amendments
 
-A1 freeze. A2 variable-count formula corrected. A3 full-pair build, validation-only selection. A4 analysis code registered. A5 MDE refined to 0.0268. A6 score-health flags. A7 protocol-sensitivity ladder as exploratory cells. A8 metered-spend accounting and gate scoring. A9 prediction-store keying corrected, figures retagged [SIM]. A10 hardware predictions version-controlled. A11 mixed-family pool, exploratory. A12 free-tier ceiling of 100 variables established empirically when a 312-variable job was refused server-side, correcting our inference that no device ceiling bound this work. No amendment changed a gate criterion; no gate was rescored after observation.
+Seventeen dated amendments, A1 to A17, each with rationale and approval; full
+text in the repository. Three changed a reported figure, named here so they are
+easy to find. **A15**: the
+frozen pool's k=6 AUPRC was published as 0.7688, a five-seed mean carried into a
+ten-seed writeup; the true value 0.7629 inverted the argument it carried.
+**A17**: three exploratory fold builders skipped the deduplication section 4
+mandates, so every A11/A13 figure was recomputed, moving the tuned-pool result
+from below to above the MDE -- a direction that should invite checking rather
+than acceptance. **A12**: the free-tier 100-variable ceiling, established when a
+312-variable job was refused server-side.
+
+No amendment changed a gate criterion; no gate was rescored after observation.
 
 # Appendix C. Reproduction and references
 
-Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A10. Environment: Python 3.12.10, eqc-models 0.21.0, qci-client 5.0.2, scikit-learn 1.9.0, numpy 1.26.4, scipy 1.17.1, xgboost 3.4.1, catboost 1.2.10, lightgbm 4.7.0. ULB SHA-256 begins `76274b691b16a6c4` (12-file manifest). The results store holds 147 rows, each with a configuration hash and evidence tag; 27 QCi job identifiers, raw responses and Dirac-3 parameters (`num_samples` 8, `relaxation_schedule` 2, `sum_constraint` 1.0, penalty 2 x n_train) are retained. Every figure regenerates from the repository.
+Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A17. The
+repository at `github.com/kimmeyh/hsbc-quantum-fraud-2026` carries the pinned
+environment, both dataset checksums, the preregistration in full, the full
+reference list, and the results store, whose every row holds a configuration
+hash and evidence tag. All 37 QCi job identifiers, their raw responses and the
+Dirac-3 parameters are retained there. Every figure in this submission
+regenerates from that repository.
 
-References. Loke et al., 2026, CVQBoosting for card fraud, ICAART: same Dirac-3 hardware and benchmark family, AUC-PR above 0.8 with a heterogeneous pool (KNN, LDA, logistic regression, XGBoost) against our 0.767, the sharpest external evidence for A.4. Emami et al., 2025, arXiv:2503.11273: competitive AUC plus runtime scaling. Neven et al., 2012, QBoost. Le Borgne et al., 2022 (simulated-data AP, never a ULB comparator). AutoXGB ULB, AP 0.782 under its own protocol: illustrative, not like-for-like.
+Comparisons. Loke et al., 2026 (ICAART): same Dirac-3 hardware, AUC-PR above 0.8
+with a heterogeneous pool against our 0.767 single-family. AutoXGB ULB 0.782 is
+its own protocol, not like-for-like.

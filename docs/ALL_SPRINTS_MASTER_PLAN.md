@@ -41,7 +41,7 @@ Retro: docs/sprints/SPRINT_7_RETROSPECTIVE.md (4 improvements, all applied or re
 | 8 | Sep 6-7 | **F3** (IEEE-CIS; scaffolding built and tested in Sprint 6) + paper updates | still time for F16 + F10 |
 | 9 | Sep 7-9 | F4 + paper updates | still time for F16 + F10 |
 | 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
-| Finalize | Sep 12-13 | F16, F10; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
+| Finalize | Sep 12-13 | F16, F10, **F37 (make the repository public -- SUBMISSION BLOCKER)**; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
 
 Renumbered 2026-09-05: the team lead noted the project is running more than one sprint per day, so F33 took Sprint 7 and F3 moved to Sprint 8 rather than competing for the same hours. A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
 
@@ -76,6 +76,28 @@ now would be deciding without the evidence that Phase 2 exists to gather.
 - B2 (ULB full config, 816 vars, 11 fits, ~450 s), B3 (IEEE-CIS + H3 ladder, 16 fits, ~650 s), B4 (SPECTRA, 15 fits, ~450 s), B5 (QSVM sign-augmented, 12 fits, ~15 s); frozen spend priority B3 > B2 > ladder > B4
 - B1 + G0b already executed (Sprint 4, 120 QPU s); ~380 s of the current balance remain, so B5 is affordable now and the rest need the grant
 - Depends on: QCi grant; per-block team-lead approval (Criterion H)
+
+**F36. Pandoc Lua filter: floating tables for the submission PDFs (~75m) Priority 1**
+- Phase: Finalize/tooling (team lead 2026-09-06: "register the pandoc Lua filter now - believe it is worth it now"; full card at docs/sprints/drafts/F36_CARD_DRAFT.md)
+- Platform: docs/tooling
+- **The measured problem**: the appendix content FITS three pages and renders on four. Page fills are 2,695 / 3,807 / 2,550 / 1,788 = 10,840 characters against a three-page capacity of 11,421 at page-2 density -- 581 characters UNDER, yet needing a fourth page. pandoc 3.1.2 emits pipe tables as bare `longtable`, which breaks across pages but never FLOATS: it starts exactly where written, so a table that does not fit defers itself AND everything after it. Five tables of 35 rows leave pages 1 and 3 about 1,100 characters below page 2
+- **Dry run already run, before building anything**: rendering the appendix with all five tables removed gives 3 pages, while the tables' own text is only ~1,400 characters. The gap is break waste, not length, which is what floats recover. `ltablex` was tried and cannot work here: a float must sit inside `\begin{table}` and longtable cannot
+- **Design**: a Lua filter wrapping each Table node in `\begin{table}[htbp]`, converting longtable to tabular inside the float (our tables are 6-9 rows and none needs to break), adding `\caption{}` and `\label{}` so a moved table stays referenceable, and leaving already-captioned tables alone. Prose changes from "the table below" to "Table 3"
+- **Completion is EFFECTIVENESS, not execution**: the card is complete only when appendix.pdf renders at 3 pages with the filter and 4 without, from identical markdown. If the filter is correct and the page count does not move, the card FAILS and floats were not the binding constraint -- worth knowing rather than papering over
+- **Seven falsifiable acceptance criteria**: page count drops; no table row lost; numbering sequential; no unresolved `??` references; idempotent; the other eight PDFs unchanged at their current page counts; and every numeric value in every rendered PDF identical before and after
+- **Why now rather than post-submission**: roughly two hours across Sprints 5-8 have gone into trimming prose to satisfy page limits, repeatedly cutting content that did not need to go. `page-fill-report.py` has correctly said "FIX THE BREAK" several times with no way to act on it except deleting text
+- Risk: it runs on every submission render eight days out. Mitigated by making it opt-in via one `--lua-filter` flag, so removal reverts to today's behaviour
+- Depends on: nothing
+
+**F37. Make the repository public (~45m) Priority 1 -- SUBMISSION BLOCKER**
+- Phase: Finalize (team lead 2026-09-06: "It must be public upon submission ... if not already in the backlog item for final submission, please add making the repository public")
+- Platform: repo/admin
+- **Why it blocks**: `docs/paper/appendix.md` Appendix C cites `github.com/kimmeyh/hsbc-quantum-fraud-2026` for the pinned environment, both dataset checksums, the preregistration in full, the full reference list, and all 37 QCi job identifiers with their raw responses and Dirac-3 parameters. That citation is what lets the appendix meet its hard 3-page limit: the material was moved OUT of the PDF and INTO the repository. An anonymous request to the GitHub API returned 404 on 2026-09-06, so the repository is private today and the citation is currently a dead link
+- **Must happen BEFORE the confidentiality scan is meaningful**: the repo root holds team-lead `0*` working files, which CLAUDE.md says to commit but never read. Those and anything else not intended for publication have to be resolved before the visibility flip, not after
+- Steps: (1) run `scripts/confidentiality-scan.ps1` over the full history, not just the tip; (2) resolve every `0*` root working file with the team lead -- remove, or confirm publishable; (3) confirm the QCi job records and any hardware-response payloads carry no account or credential material; (4) confirm both dataset licences permit redistribution of derived checksums and results (ULB and IEEE-CIS raw data are NOT redistributed, only checksums); (5) flip visibility; (6) verify anonymously -- `curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/kimmeyh/hsbc-quantum-fraud-2026` must return 200, and the appendix URL must resolve in a logged-out browser
+- **Acceptance**: an anonymous fetch of the repository URL succeeds AND `experiments/requirements.txt`, `experiments/PREREGISTRATION.md` and the results store are all reachable without authentication. Verified logged out, not from an authenticated session
+- Risk: history rewriting after publication is not reliable, so anything published is published. The scan and the `0*` resolution are the whole cost of this card; the visibility flip itself is one click
+- Depends on: nothing. Can run any time before Sep 13, and EARLIER is safer -- it is the one submission step that cannot be undone
 
 **F35. Interpretation-layer tests (~2h) Priority 2**
 - Phase: Experiments/tooling (Sprint 7 retrospective, Claude category 14)

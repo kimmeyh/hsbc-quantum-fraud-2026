@@ -19,10 +19,16 @@ param(
     [Parameter(Mandatory)][string]$Source,
     [Parameter(Mandatory)][string]$Out,
     [ValidateSet('letter','a4')][string]$Paper = 'letter',
-    [string]$Margin = '1in'
+    [string]$Margin = '1in',
+    # Opt-in pandoc Lua filters, passed straight through. F36 uses this for
+    # float-tables.lua. Kept as a parameter rather than hard-wired so that
+    # removing one line in render-all.ps1 reverts to the previous behaviour,
+    # which matters eight days from the deadline.
+    [string[]]$LuaFilter = @()
 )
 $ErrorActionPreference = 'Stop'
 
+$root = Split-Path -Parent $PSScriptRoot
 $src = (Resolve-Path $Source).Path
 $outDir = Split-Path -Parent $Out
 if ($outDir -and -not (Test-Path $outDir)) { New-Item -ItemType Directory -Force $outDir | Out-Null }
@@ -67,7 +73,13 @@ $origPath = $env:PATH
 $geom = if ($Paper -eq 'a4') { 'a4paper' } else { 'letterpaper' }
 try {
     $env:PATH = $safePath
-    & $pandoc $src -o $Out --pdf-engine=$xelatex -V "geometry:$geom" -V "geometry:margin=$Margin" -V fontsize=10pt
+    $filterArgs = @()
+    foreach ($f in $LuaFilter) {
+        $fp = if ([System.IO.Path]::IsPathRooted($f)) { $f } else { Join-Path $root $f }
+        if (-not (Test-Path $fp)) { throw "Lua filter not found: $f" }
+        $filterArgs += "--lua-filter=$fp"
+    }
+    & $pandoc $src -o $Out --pdf-engine=$xelatex @filterArgs -V "geometry:$geom" -V "geometry:margin=$Margin" -V fontsize=10pt
 } finally {
     $env:PATH = $origPath
 }
