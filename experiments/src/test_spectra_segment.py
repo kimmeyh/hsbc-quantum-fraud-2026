@@ -67,6 +67,16 @@ def test_segment_feature_cols_excludes_in_pocket_and_passes_leak_guard():
     assert set(cols) == {"x1", "x2"}
 
 
+# SPECTRA CSVs are gitignored like the other raw datasets. Skip where they are
+# absent (clean checkout, CI) and run normally where they are present.
+import data as _data
+
+_SPECTRA_PRESENT = all(
+    (_data.SPECTRA_DIR / f"spectra_{_n}.csv").exists() for _n in _data.SPECTRA_NAMES)
+
+
+@pytest.mark.skipif(not _SPECTRA_PRESENT,
+                    reason="SPECTRA CSVs not on disk (expected on a clean checkout)")
 def test_real_spectra_loader_feature_list_never_contains_labels():
     """End-to-end guard using the real frozen loader (data.py), not the toy
     fixture: data.spectra_features must never emit a label/flag column."""
