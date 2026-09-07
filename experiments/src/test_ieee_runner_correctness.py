@@ -119,20 +119,32 @@ def test_identifier_columns_never_reach_the_feature_matrix():
 
 # --- Defect 3: the shuffled-label control never run ------------------------
 
+@pytest.mark.slow
 def test_shuffled_label_control_is_run_and_recorded_per_fold():
     """Section 5 item 6: the control must be RUN, not declared.
 
     If a model scores well on shuffled labels the fold has leaked and its
     numbers are void. A control that is never executed cannot report that.
+
+    This EXECUTES the pipeline rather than grepping the source for the key,
+    because a grep passes on code that names the key and never runs the
+    control. That costs about 90 seconds, hence the slow marker: `-m "not
+    slow"` skips it during rapid iteration, and the full suite runs it.
     """
     run_ieee = importlib.import_module("run_ieee")
-    src = Path(run_ieee.__file__).read_text(encoding="utf-8")
+    out = run_ieee.run(smoke=True)
+    control = out.get("shuffled_label_control")
+    assert control, "the control's results must be written to the output record"
 
-    assert "shuffled_label_control" in src, (
-        "the control's results must be written to the output record")
-    # It has to actually permute something, not just name a key.
-    assert any(tok in src for tok in ("permutation", "shuffle", "permuted")), (
-        "the control must actually permute the labels")
+    # per_fold holds one row per ARM per fold; the control is one per FOLD.
+    # Comparing the two lengths directly fails on correct code.
+    n_folds = len({r["fold"] for r in out["per_fold"]})
+    assert len(control) == n_folds, (
+        "the control must be recorded for every fold")
+    assert all(r["collapses_to_base_rate"] for r in control), (
+        "shuffled labels should collapse to the base rate on every fold")
+    assert all("shuffled_auprc" in r for r in control), (
+        "the control must actually store the measured AUPRC")
 
 
 def test_shuffled_control_output_key_survives_in_committed_results():
