@@ -4,7 +4,34 @@ Manual Validation complete
 ---------------------------------------------------------------------------------------------------------
 Sprint n Manual Validation Feedback 
 
+---------------------------------------------------------------------------------------------------------
+Sprint 8 Manual Validation Feedback 
 
+Thoughts on QCi letter:  
+- QCi doesn't know we drafted everything """Since drafting""", you can write as it is a new proposal that they have not seen yet. 
+- Would the proxy we wrote be of any value to QCi?
+- Note that the QCi package will not be sent until sprint 9.
+- do not need to state it is from Harold Kimmey as that will be obvious from the email address it is sent from
+- can you add a salutation I used for previous letter 
+"""Thank you for considering the request.
+ 
+Best regards,
+Harold Kimmey
+Team Lead, Claude Shannon's Fraud Catchers
+kimmeyharold@aol.com | 216-357-9227
+"""
+- I have more feedback on the letter, but need time to put it together. Can you make these adjustments now.
+
+
+Doesn't sound right. Named in the winning is valuable, proxy, documented experimentation, ability to use all of what I create.
+Proxy, simulator
+
+add to backlog for future sprint:  We need to create a "fact database" - a simple table (json, sqlite or simpler) that we can rely on for
+  creating the content in all the documents. It states facts that we can confirm with confidence intervals between 0.0% and 99.9%. There are likely over 1,000 and this
+  makes it difficult to keep track of and ensure all of them are correct every time and if we need to update the baseline facts it should be here and then all other
+  sources use this as the basis for these facts.  you can look up cycorp and cyc.com and research how they do it (if that helps). We don't have to duplicate exactly what
+  they have done (like we don't hae to use LISP), but something functionally representative so we can keep what we know effectively and ensure correctness as much as
+  reasonably possible.  We may hold this until after submission.  | 
 ---------------------------------------------------------------------------------------------------------
 Sprint 7 Manual Validation Feedback 
 

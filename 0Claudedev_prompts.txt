@@ -39,5 +39,10 @@ Rank every finding by expected effect on the rubric score divided by effort. For
 2. The claim as written and the claim as it should read.
 3. Effort tag: EDIT ONLY, CLASSICAL RUN, or NEEDS QPU SECONDS (with an estimate of seconds).
 4. Whether the finding is a factual error a judge can disprove, a statistical error, a mis-attributed mechanism, or a presentation issue.
-5. Please do output with "tables" as they are nearly impossible to copy/paste well to other systems, and that is a requirement.
+5. Please do output with NO "tables" as they are nearly impossible to copy/paste well to other systems, and that is a requirement.
 
+-----------------------------
+--Attach all 3 challenge documents and the QCi specific documents: DRAFT_qci_cover.pdf, DRAFT_hardware_plan.pdf, DRAFT_preregistration.pdf, DRAFT_gate_report.pdf
+
+
+------------------Temp

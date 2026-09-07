@@ -1,0 +1,246 @@
+{
+  "dataset": "ieee-cis",
+  "protocol": "GroupKFold-by-month rolling origin",
+  "smoke": false,
+  "rows_after_dedupe": 590537,
+  "exact_duplicates_removed": 3,
+  "pool_subsample": {
+    "n": 100000,
+    "applies_to": "weak-learner construction only; every AP is computed on the full evaluation month",
+    "reason": "KNN H-matrix build is O(n_train x n_query); the unsubsampled first attempt did not finish one fold in 84 minutes"
+  },
+  "scope_decision": "both pools per the team lead 2026-09-05: frozen for continuity with every prior result, tuned as the configuration F33 measured the accuracy to live in",
+  "prediction_recorded_in_advance": "F33 attributed the tuned pool's gain to FIT-TIME CLASS WEIGHTING, an intervention for extreme imbalance. IEEE-CIS is 3.5% prevalence against ULB's 0.17%, so that mechanism has far less to do here and the tuned advantage is expected to SHRINK. A smaller gap supports the mechanism; it does not contradict F33.",
+  "frozen_mean_ap": 0.05227635490949025,
+  "tuned_mean_ap": 0.05712672552078326,
+  "paired_delta_mean": 0.004850370611292999,
+  "paired_delta_sd": 0.006426058759154398,
+  "folds_positive": 2,
+  "n_folds": 3,
+  "matched_comparison": {
+    "difference": 0.004850370611293009,
+    "arm": "tuned four-family",
+    "arm_value": 0.05712672552078326,
+    "comparator": "frozen single-family",
+    "comparator_value": 0.05227635490949025,
+    "matched_on": {
+      "k": 6,
+      "protocol": "rolling_origin",
+      "schedule": 2,
+      "dataset": "ieee-cis"
+    },
+    "split": "test"
+  },
+  "ulb_reference": {
+    "paired_delta": 0.0319,
+    "folds_positive": "10/10",
+    "note": "ULB, k=6, 10 seeds, exceeded the ULB MDE"
+  },
+  "mde_note": "No MDE is applied to these figures. The ULB value of 0.0268 comes from pilot seed variance over ten stratified splits at 0.17% prevalence; this design is three temporal folds at 3.5%. Borrowing it would test against a threshold computed for a different dataset and a different split design. Three folds cannot support a credible MDE of their own, so differences are reported descriptively with the fold spread stated.",
+  "per_fold": [
+    {
+      "fold": 0,
+      "eval_month": 4,
+      "n_train": 410600,
+      "n_eval": 85302,
+      "pool_rows": 100000,
+      "eval_prevalence": 0.03472368760404211,
+      "k_features": 6,
+      "features": [
+        "V121",
+        "V109",
+        "V123",
+        "V114",
+        "V115",
+        "V108"
+      ],
+      "frozen": {
+        "n_variables": 15,
+        "ap": 0.05392799079178785
+      },
+      "tuned": {
+        "n_variables": 60,
+        "ap": 0.06209324217248323,
+        "ap_uniform": 0.061064463791478465,
+        "solved_minus_uniform": 0.0010287783810047635,
+        "provenance": [
+          {
+            "family": "dct",
+            "params": {
+              "max_depth": 3,
+              "class_weight": "balanced",
+              "random_state": 0
+            }
+          },
+          {
+            "family": "lda",
+            "params": {}
+          },
+          {
+            "family": "lg",
+            "params": {
+              "max_iter": 300,
+              "class_weight": "balanced"
+            }
+          },
+          {
+            "family": "knn",
+            "params": {
+              "n_neighbors": 3,
+              "weights": "distance"
+            }
+          }
+        ],
+        "gram_ratio": 0.9716342598870056
+      },
+      "item4": {
+        "n_features_start": 231,
+        "n_after_time_consistency": 201,
+        "n_after_adversarial": 181
+      },
+      "evidence_tag": "SIM"
+    },
+    {
+      "fold": 1,
+      "eval_month": 5,
+      "n_train": 495902,
+      "n_eval": 86524,
+      "pool_rows": 100000,
+      "eval_prevalence": 0.03401368406453701,
+      "k_features": 6,
+      "features": [
+        "V123",
+        "V118",
+        "V120",
+        "V115",
+        "V108",
+        "V26"
+      ],
+      "frozen": {
+        "n_variables": 15,
+        "ap": 0.04783429644294345
+      },
+      "tuned": {
+        "n_variables": 60,
+        "ap": 0.056776392286352166,
+        "ap_uniform": 0.05488427974137996,
+        "solved_minus_uniform": 0.0018921125449722076,
+        "provenance": [
+          {
+            "family": "dct",
+            "params": {
+              "max_depth": 3,
+              "class_weight": "balanced",
+              "random_state": 0
+            }
+          },
+          {
+            "family": "lda",
+            "params": {}
+          },
+          {
+            "family": "lg",
+            "params": {
+              "max_iter": 300,
+              "class_weight": "balanced"
+            }
+          },
+          {
+            "family": "knn",
+            "params": {
+              "n_neighbors": 3,
+              "weights": "distance"
+            }
+          }
+        ],
+        "gram_ratio": 0.9499214463276837
+      },
+      "item4": {
+        "n_features_start": 228,
+        "n_after_time_consistency": 202,
+        "n_after_adversarial": 182
+      },
+      "evidence_tag": "SIM"
+    },
+    {
+      "fold": 2,
+      "eval_month": 6,
+      "n_train": 582426,
+      "n_eval": 8111,
+      "pool_rows": 100000,
+      "eval_prevalence": 0.0417950930834669,
+      "k_features": 6,
+      "features": [
+        "V114",
+        "V123",
+        "V120",
+        "V118",
+        "V115",
+        "V108"
+      ],
+      "frozen": {
+        "n_variables": 15,
+        "ap": 0.05506677749373946
+      },
+      "tuned": {
+        "n_variables": 60,
+        "ap": 0.05251054210351437,
+        "ap_uniform": 0.05002980043508636,
+        "solved_minus_uniform": 0.002480741668428009,
+        "provenance": [
+          {
+            "family": "dct",
+            "params": {
+              "max_depth": 3,
+              "class_weight": "balanced",
+              "random_state": 0
+            }
+          },
+          {
+            "family": "lda",
+            "params": {}
+          },
+          {
+            "family": "lg",
+            "params": {
+              "max_iter": 300,
+              "class_weight": "balanced"
+            }
+          },
+          {
+            "family": "knn",
+            "params": {
+              "n_neighbors": 3,
+              "weights": "distance"
+            }
+          }
+        ],
+        "gram_ratio": 0.972681581920904
+      },
+      "item4": {
+        "n_features_start": 227,
+        "n_after_time_consistency": 203,
+        "n_after_adversarial": 183
+      },
+      "evidence_tag": "SIM"
+    }
+  ],
+  "matched_feature_control": {
+    "question": "Both CVQBoost arms scored near 0.05 against a 3.5% base rate while the classical arms scored 0.47-0.63 on the SAME folds. Is that the 6-feature restriction, or a defect in the CVQBoost path?",
+    "design": "LightGBM given the EXACT six features CVQBoost selected on fold 0 (V121, V109, V123, V114, V115, V108), same fold, same pipeline, same evaluation month.",
+    "lightgbm_181_features": 0.5424,
+    "lightgbm_6_features": 0.0734,
+    "cvqboost_tuned_6_features": 0.0621,
+    "cvqboost_frozen_6_features": 0.0539,
+    "verdict": "THE RESTRICTION, not a defect. A strong GBDT collapses from 0.5424 to 0.0734 on the same six columns -- a 7x fall. CVQBoost reaches 85% of that constrained ceiling (0.0621/0.0734), so it is behaving correctly on a starved feature set rather than failing. The pool is also NOT degenerate here: gram ratios 0.950-0.973, healthier than ULB's tuned pool at 0.9244, so this is not the Sprint 5 failure mode.",
+    "what_binds": "The A12 free-tier ceiling of 100 continuous degree-2 variables forces k=6 (four families x 15 learners = 60 variables). IEEE-CIS spreads its signal across 181 surviving engineered features, so 6 of 181 discards most of it. On ULB the same k cost little because 30 PCA components carry concentrated signal. This is a HARDWARE ACCESS limit, not an algorithmic one.",
+    "honesty_note": "This finding is convenient for us -- it attributes a poor result to a tier limit rather than to the method, and it strengthens the case for the QCi access request. That is precisely why the control was run before the interpretation was written, and why the control is a CLASSICAL model: if the six features were adequate and only CVQBoost failed, LightGBM would have scored well on them. It did not."
+  },
+  "transfer_prediction_outcome": {
+    "recorded_before_the_run": "F33 attributed the tuned pool's gain to fit-time class weighting, an intervention for extreme imbalance; IEEE-CIS is 3.5% prevalence against ULB's 0.17%, so the tuned advantage was expected to SHRINK.",
+    "ulb_paired_delta": 0.0319,
+    "ieee_paired_delta": 0.0049,
+    "folds_positive": "2 of 3",
+    "verdict": "HALF RIGHT. The advantage shrank as predicted, by roughly 6x, which supports the class-weighting mechanism. The prediction did NOT anticipate a negative fold: fold 2 came in at -0.0026. With three folds and no applicable MDE, +0.0049 across 2 of 3 is not a directional finding, and is reported as indistinguishable from zero."
+  }
+}
