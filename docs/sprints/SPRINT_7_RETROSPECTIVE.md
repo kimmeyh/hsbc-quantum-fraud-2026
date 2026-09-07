@@ -276,3 +276,22 @@ it will end as a human checklist rather than an assertion.
 2. **Should anything in the F33 account be framed differently for QCi?** "good
    as is." The letter stands; team-lead feedback on the wider package is still
    expected before the Monday send, and card #40 stays open for it.
+
+## Review status at sprint close
+
+**Claude review**: complete. 9 findings, all addressed in commit on
+`feature/20260905_Sprint_7`. Three were HIGH and one of them (finding 5, a
+missing generator) led to amendment A17, a two-sprint protocol violation that no
+test would have caught.
+
+**Copilot review**: FAILED TO RUN. Requested via the web UI 2026-09-06 02:58
+(confirmed on the PR timeline), returned "Copilot encountered an error and was
+unable to review this pull request" with zero inline comments. Re-requested; the
+second attempt also did not produce a review within the session. Team lead
+decision 2026-09-06: leave it, retry on the next sprint's PR.
+
+Recorded because a failed review is not a clean review, and the distinction
+matters at merge time: PR #41 carries ONE completed review, not two. The
+merge-readiness rule (team lead, 2026-09-04) requires every review complete and
+every finding addressed; on this PR that means the Claude review only, with the
+Copilot gap known and accepted rather than overlooked.

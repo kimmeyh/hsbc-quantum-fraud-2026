@@ -1,0 +1,11 @@
+{
+  "stage": "fold_done",
+  "at": "2026-09-06T20:33:42",
+  "fold": 2,
+  "eval_month": 6,
+  "frozen_ap": 0.0551,
+  "tuned_ap": 0.0525,
+  "delta": -0.0026,
+  "frozen_vars": 15,
+  "tuned_vars": 60
+}
