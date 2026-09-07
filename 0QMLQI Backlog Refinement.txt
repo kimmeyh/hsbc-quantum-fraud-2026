@@ -8,6 +8,129 @@ Do not stop to ask questions unless meeting the criteria in \docs\SPRINT_STOPPIN
 Sprint n Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
 
 ---------------------------------------------------------------------------------------------------------
+Sprint 9 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
+F4, F16, F14
+
+
+ Backlog Refinement — 2026-09-07 (Refinement Pass 2)
+
+  Calendar: 5 days to evidence freeze (Sep 12), 6 to target submit (Sep 13), 8 to hard deadline (Sep 15).
+  Velocity: Sprints 5–7 at ~1 day each; Sprint 8 at ~1.5 days.
+  Stale-item review: F3 removed as shipped. No other candidate stale. F29's precondition ("if F3 lands first") is now satisfied.
+
+  Candidates at a glance
+
+  - F38. Appendix back to 3 pages (~30m) Priority 1 — SUBMISSION BLOCKER
+  - F37. Make the repository public (~45m) Priority 1 — SUBMISSION BLOCKER
+  - F35. Interpretation-layer tests (~2h) Priority 2
+  - F29. Sample-size insensitivity of the CVQBoost optimum (~2h proxy, zero metered) Priority 15
+  - F4. QFE phase arms + order-matched twins (~0.5 day) Priority 16
+  - F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority 18
+  - F2b. Hardware campaign, remaining blocks (~0.5 day + approvals) Priority 20
+  - F16. Minimal CI: pytest + lint on PRs with smoke fixture (~30m) Priority 36
+  - F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 40
+  - F39. Fact database: one source of truth for every asserted fact (~1-2 days) Priority HOLD
+  - F17. Dirac-3 simulator for pre-hardware test runs (~2-3h investigation) Priority HOLD
+  - F20. Soft-vote CVQBoost exploration (~3h proxy investigation) Priority HOLD
+  - F25. Non-convex CVQBoost: cardinality-constrained selection (~4h + hardware) Priority HOLD
+  - F30. Concurrent Dirac-3 submission with bounded in-flight requests (~4h + 1h dry run) Priority HOLD
+  - F14. eqc-models feedback package to QCi (~2h) Priority HOLD
+  - F6. Braket gate-based phase-active arm (~0.5 day) Priority HOLD
+  - F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD
+
+ Why not F5
+
+  F5 is blocked, not deprioritized. Its card reads: Depends on: QCi grant; F2 approval pattern. It runs on SPECTRA + Dirac-3 and needs metered seconds we do not have. It
+  cannot be scheduled until the grant lands. That is the same reason F2b sits at Priority 20.
+
+  I should have said "blocked" in the slate rather than leaving it looking like a choice I made.
+
+  Why not F16 and F10 — I was wrong to skip these
+
+  F16 (CI, 30 minutes) — I under-rated this. Sprint 8 shipped a bug where running the test suite destroyed the evidence file. I caught it from git status by luck. CI
+  running the suite on every PR is exactly the tripwire for that class of defect, and 30 minutes is cheap. My only hesitation is that CI catches problems on future PRs, and
+  there are maybe three PRs left before submission.
+
+  F10 is not optional — it is the submission itself. "Verification, confidentiality scan, compliance walk, submission." It is already scheduled in Finalize (Sep 12–13). Its
+  dependencies list F8 and F9, both shipped. I listed it at Priority 40 without noting it is the terminal step, which made it look deferrable. It is not.
+
+  One real link: F10's confidentiality scan and F37's confidentiality scan are the same work. F37 needs a scan over full history before the repo goes public. Doing F37
+  early means F10's scan is largely done.
+
+  Which items help the QCi letter most
+
+  F14 — eqc-models feedback package (~2h). This is the direct answer.
+
+  The letter promises it under "What we give back": integration notes, the pool-construction strategy that fails on Windows, the billing field that is not a dictionary key,
+  the free-tier variable arithmetic where docs and implementation diverge. It is currently HOLD, described as "assemble after the hardware campaign."
+
+  That is now backwards. The letter is the ask; the feedback package is the thing that makes the ask credible. Sending a letter that promises deliverables, with none
+  attached, is weaker than sending one where a reviewer can see the work already exists.
+
+  F17 — your instinct is directionally right but the timing is wrong.
+
+  A simulator would strengthen the technical conversation with QCi. But two things argue against it now:
+  - Its card says "team lead: prioritize for after submission", and its own note says pre-submission value is low
+  - We already have most of its value. The proxy solves the identical Hamiltonian eqc-models constructs, and the letter now offers it as a named deliverable. What the proxy
+    does not do is model Dirac-3's stochastic sampling or its analog resolution floor — real gaps, but Phase 2 questions.
+
+  F17 is 2-3 hours of investigation with "build TBD" — an unbounded tail five days from evidence freeze.
+
+  Revised recommendation
+
+  ┌─────────┬────────┬──────────────────────────────────────────────────────────────┐
+  │  Item   │ Effort │                            Change                            │
+  ├─────────┼────────┼──────────────────────────────────────────────────────────────┤
+  │ F14     │ ~2h    │ HOLD → Sprint 9. Makes the letter's promises concrete        │
+  ├─────────┼────────┼──────────────────────────────────────────────────────────────┤
+  │ F37     │ ~45m   │ Finalize → Sprint 9. Unreversible; its scan overlaps F10's   │
+  ├─────────┼────────┼──────────────────────────────────────────────────────────────┤
+  │ F4      │ ~0.5d  │ Unchanged — the roadmap's Sprint 9 item                      │
+  ├─────────┼────────┼──────────────────────────────────────────────────────────────┤
+  │ F16     │ ~30m   │ Sprint 9 if time permits — catches the Sprint 8 defect class │
+  ├─────────┼────────┼──────────────────────────────────────────────────────────────┤
+  │ F10     │ ~0.5d  │ Stays Finalize. Not optional — it is the submission          │
+  ├─────────┼────────┼──────────────────────────────────────────────────────────────┤
+  │ F5, F2b │ —      │ Blocked on the grant. Not schedulable                        │
+  ├─────────┼────────┼──────────────────────────────────────────────────────────────┤
+  │ F17     │ —      │ Stays HOLD. Proxy already covers most of its value           │
+  └─────────┴────────┴──────────────────────────────────────────────────────────────┘
+
+  F14 plus F37 is under three hours combined, and both make the QCi package stronger — which, since the letter has not sent yet, is the highest-leverage thing available
+  this sprint.
+  ---
+
+  My recommendation for Sprint 9
+
+  Take F4 + the QCi send, and pull F37 forward.
+
+  The roadmap has F4 for Sprint 9. I would add one change: move F37 (repo public) out of Finalize and into Sprint 9.
+
+  Three reasons:
+  1. It is the one submission step that cannot be undone. Anything published is published.
+  2. Its real cost is the confidentiality scan over full history and resolving the 0* root working files — both need your input, and both are worse under deadline pressure.
+  3. Appendix C already cites the repository. Until it is public, the submission contains a dead link.
+
+  F38 (appendix to 3 pages) is 30 minutes and can stay in Finalize, but note its verdict changed during Sprint 8: it is now a genuine length problem needing ~76pt cut, not
+  a break problem.
+
+  Two judgment calls worth your attention
+
+  F29 is now cheap and newly relevant. Its precondition is met, it is 2 hours of proxy work at zero metered cost, and Sprint 8's H3 ladder makes it more interesting than
+  when it was written — we now know feature count is not what binds, so sample size is a live question. It is Priority 15, below F4. I would run it only if Sprint 9
+  finishes early.
+
+  F35 (interpretation-layer tests) sits at Priority 2 and I would not run it before submission. It targets exactly the error class Sprint 8 hit twice — the k=6-vs-k=13
+  mismatch, the "tuned arms" overstatement. But it is 2 hours of test infrastructure five days from freeze, and both instances were caught by review. Better in Phase 2.
+
+  What I did not include
+
+  F2b requires the QCi grant, which has not arrived. If your letter lands and access is granted before Sep 12, B3 (IEEE-CIS + H3 ladder on hardware) becomes the
+  highest-value item on this board — it would convert [SIM] results to [HW]. That is contingent, so it stays at Priority 20 rather than being planned.
+
+  Your call on scope. Once you select, I will write the Sprint 9 plan and present it for approval.
+
+---------------------------------------------------------------------------------------------------------
 Sprint 8 Scope should include the below items. Please complete sprint planning (/docs/sprint_planning.md) for the below items and present for approval.  
 
   Candidates at a glance
