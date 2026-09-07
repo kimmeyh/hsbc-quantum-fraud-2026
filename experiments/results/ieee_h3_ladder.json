@@ -1,0 +1,203 @@
+{
+  "hypothesis": "H3 regime dose-response, EXPLORATORY",
+  "dataset": "ieee-cis",
+  "protocol": "GroupKFold-by-month rolling origin",
+  "ladder": [
+    5,
+    9,
+    13,
+    17
+  ],
+  "scoreable": true,
+  "scoring_rule": "prereg: scored only if at least 3 ladder cells per dataset run; otherwise reported descriptively",
+  "ceiling_note": "The A12 free-tier limit of 100 continuous degree-2 variables is a DEVICE limit and does not bind a classical proxy solve, so the full ladder runs. Each cell records whether it would fit the free tier, which turns the constraint into a measurement: the ladder shows what the ceiling costs.",
+  "delta_by_k": {
+    "5": {
+      "mean": -0.01685613978168342,
+      "n_folds": 3
+    },
+    "9": {
+      "mean": -0.07641381769219781,
+      "n_folds": 3
+    },
+    "13": {
+      "mean": -0.05635639097249765,
+      "n_folds": 3
+    },
+    "17": {
+      "mean": -0.10310320982434103,
+      "n_folds": 3
+    }
+  },
+  "slope_delta_vs_k": -0.005967094585206817,
+  "cells": [
+    {
+      "fold": 0,
+      "eval_month": 4,
+      "k": 5,
+      "n_variables": 10,
+      "fits_free_tier": true,
+      "cvqboost_ap": 0.05380456796311706,
+      "gbdt_ap": 0.07372164202441207,
+      "delta_auprc": -0.01991707406129501,
+      "seconds": 0.8,
+      "evidence_tag": "SIM"
+    },
+    {
+      "fold": 0,
+      "eval_month": 4,
+      "k": 9,
+      "n_variables": 36,
+      "fits_free_tier": true,
+      "cvqboost_ap": 0.10665934183018763,
+      "gbdt_ap": 0.16041592976808242,
+      "delta_auprc": -0.053756587937894784,
+      "seconds": 0.9,
+      "evidence_tag": "SIM"
+    },
+    {
+      "fold": 0,
+      "eval_month": 4,
+      "k": 13,
+      "n_variables": 78,
+      "fits_free_tier": true,
+      "cvqboost_ap": 0.20393393504991758,
+      "gbdt_ap": 0.17761286602876403,
+      "delta_auprc": 0.026321069021153554,
+      "seconds": 2.6,
+      "evidence_tag": "SIM"
+    },
+    {
+      "fold": 0,
+      "eval_month": 4,
+      "k": 17,
+      "n_variables": 136,
+      "fits_free_tier": false,
+      "cvqboost_ap": 0.21466866510766908,
+      "gbdt_ap": 0.3008069574694847,
+      "delta_auprc": -0.08613829236181564,
+      "seconds": 7.5,
+      "evidence_tag": "SIM"
+    },
+    {
+      "fold": 1,
+      "eval_month": 5,
+      "k": 5,
+      "n_variables": 10,
+      "fits_free_tier": true,
+      "cvqboost_ap": 0.046449828714054814,
+      "gbdt_ap": 0.061801410004987296,
+      "delta_auprc": -0.015351581290932483,
+      "seconds": 0.5,
+      "evidence_tag": "SIM"
+    },
+    {
+      "fold": 1,
+      "eval_month": 5,
+      "k": 9,
+      "n_variables": 36,
+      "fits_free_tier": true,
+      "cvqboost_ap": 0.07993662865676943,
+      "gbdt_ap": 0.13692029109798093,
+      "delta_auprc": -0.0569836624412115,
+      "seconds": 0.9,
+      "evidence_tag": "SIM"
+    },
+    {
+      "fold": 1,
+      "eval_month": 5,
+      "k": 13,
+      "n_variables": 78,
+      "fits_free_tier": true,
+      "cvqboost_ap": 0.07803312502766131,
+      "gbdt_ap": 0.141535937032846,
+      "delta_auprc": -0.06350281200518469,
+      "seconds": 1.5,
+      "evidence_tag": "SIM"
+    },
+    {
+      "fold": 1,
+      "eval_month": 5,
+      "k": 17,
+      "n_variables": 136,
+      "fits_free_tier": false,
+      "cvqboost_ap": 0.12499487422850021,
+      "gbdt_ap": 0.2269184112533931,
+      "delta_auprc": -0.10192353702489289,
+      "seconds": 2.4,
+      "evidence_tag": "SIM"
+    },
+    {
+      "fold": 2,
+      "eval_month": 6,
+      "k": 5,
+      "n_variables": 10,
+      "fits_free_tier": true,
+      "cvqboost_ap": 0.05228273393558601,
+      "gbdt_ap": 0.06758249792840877,
+      "delta_auprc": -0.015299763992822762,
+      "seconds": 0.4,
+      "evidence_tag": "SIM"
+    },
+    {
+      "fold": 2,
+      "eval_month": 6,
+      "k": 9,
+      "n_variables": 36,
+      "fits_free_tier": true,
+      "cvqboost_ap": 0.05506677749373946,
+      "gbdt_ap": 0.1735679801912266,
+      "delta_auprc": -0.11850120269748714,
+      "seconds": 0.8,
+      "evidence_tag": "SIM"
+    },
+    {
+      "fold": 2,
+      "eval_month": 6,
+      "k": 13,
+      "n_variables": 78,
+      "fits_free_tier": true,
+      "cvqboost_ap": 0.07010028278294245,
+      "gbdt_ap": 0.20198771271640428,
+      "delta_auprc": -0.13188742993346184,
+      "seconds": 1.3,
+      "evidence_tag": "SIM"
+    },
+    {
+      "fold": 2,
+      "eval_month": 6,
+      "k": 17,
+      "n_variables": 136,
+      "fits_free_tier": false,
+      "cvqboost_ap": 0.08844287397887227,
+      "gbdt_ap": 0.20969067406518682,
+      "delta_auprc": -0.12124780008631456,
+      "seconds": 2.0,
+      "evidence_tag": "SIM"
+    }
+  ],
+  "interpretation": {
+    "headline": "On this configuration the H3 slope is NEGATIVE (-0.00597 delta-AUPRC per feature): the quantum-minus-classical gap widens as the feature budget grows. Reported as a measured boundary on one configuration, not as a conclusion about the method.",
+    "what_the_ladder_shows": "Both arms improve with k. CVQBoost rises 0.0508 -> 0.1427 across k=5..17; the matched GBDT rises 0.0677 -> 0.2458. More features help CVQBoost, and help the GBDT roughly twice as much.",
+    "contradicts_a_reading_offered_before_the_run": "Before this ran, the natural reading of Task C was that the free-tier ceiling was suppressing a result and lifting it would close the gap. The ladder does not support that. Lifting the ceiling from k=6 to k=17 improves CVQBoost's absolute AUPRC by about 2.8x, but the gap to a matched classical model grows from -0.017 to -0.103. On IEEE-CIS the ceiling is a limit on ABSOLUTE performance, not the reason the quantum arm trails.",
+    "why_this_is_the_more_useful_result": "A widening gap is a boundary statement, which the preregistration names as the pre-committed fallback headline if the compound falsification criterion is met. It says where this method does NOT compete: a wide, engineered feature space where a GBDT exploits interactions that a weighted vote over one- and two-feature weak learners cannot represent. That is a sharper claim than 'we were starved by a tier limit', and it is testable.",
+    "relationship_to_ulb": "ULB is the opposite regime: 30 anonymized PCA components where the same k captures most of the available signal, and where the tuned pool beat the frozen one by +0.0319 at matched size. The two datasets together are a regime map rather than a contradiction -- concentrated low-dimensional signal versus wide engineered feature spaces.",
+    "honesty_note": "This result is inconvenient: it removes the comfortable explanation that a vendor tier limit was hiding a good outcome on IEEE-CIS. It is reported because the preregistration commits to the measured regime map as a legitimate headline, and because a claim that survives only while the ladder stays unrun is not worth submitting. It is equally not a verdict: most of the preregistered search space is unrun, and the formulation most likely to change this answer -- the cardinality-constrained integer problem -- has never been executed on hardware.",
+    "scoreable": true,
+    "scoring_basis": "12 cells, 3 folds x 4 rungs; prereg requires >= 3 cells",
+    "scope_of_this_result": {
+      "what_it_covers": "ONE weak-learner family set (dct/lda/lg/knn) at schedule 2, on ONE dataset, under ONE variable regime, with the continuous convex formulation. Four rungs, three temporal folds, proxy solve.",
+      "what_it_does_not_cover": [
+        "the integer / cardinality-constrained formulation (F25), which is the NP-hard problem the continuous relaxation relaxes and the one where a classical solve is not trivially available",
+        "the QFE phase representation with order-matched twins (F4/F23)",
+        "segment specialization (F5/F24)",
+        "soft-vote multi-level weak outputs (F20)",
+        "three-feature subsets (schedule 3), never run at any point",
+        "paid-tier variable counts above the free-tier ceiling of 100",
+        "weak-learner families beyond the four tested"
+      ],
+      "phase_1_framing": "Phase 1 asks for a concept proposal, an honest feasibility assessment and a validation plan. It does not ask for a verdict on quantum advantage, and this result is not one. It is a measured boundary on a small part of the search space, which is what a Phase 1 entry is supposed to produce: evidence about where to look next, gathered under a protocol frozen in advance.",
+      "what_it_changes_about_the_plan": "It sharpens the Phase 2 priority rather than closing it. A widening gap in a wide engineered feature space is consistent with the continuous convex formulation being the wrong tool there -- a weighted vote over one- and two-feature weak learners cannot represent the interactions a GBDT exploits. The formulations that could address that, the cardinality-constrained selection and the three-feature subsets, are exactly the ones not yet run."
+    }
+  }
+}
