@@ -21,14 +21,39 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 5 | docs/sprints/SPRINT_5_SUMMARY.md | [OK] Complete | ~1 day (Sep 4, 2026) |
 | 6 | docs/sprints/SPRINT_6_SUMMARY.md | [OK] Complete | ~1 day (Sep 5, 2026) |
 | 7 | docs/sprints/SPRINT_7_SUMMARY.md | [OK] Complete | ~1 day (Sep 5, 2026) |
+| 8 | docs/sprints/SPRINT_8_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 6-7, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 7: Direction into Result** (Sep 5, 2026; PR #41).
-Delivered: **F33** -- a tuned four-family pool reaches 0.7827 AUPRC (SD 0.0283) over ten seeds against 0.7565 untuned and ~0.80 reported by Loke et al. The MATCHED comparison is the one reported: the frozen single-family pool rebuilt at the same k=6 on the same splits gives a PAIRED +0.0198 (SD 0.0203), 9 of 10 seeds positive, still BELOW the 0.0268 MDE. **F34** -- eight spend-guard property tests, each asserting the property whose violation caused a real defect, verified to fail on the originals. Amendments A13 (registered before the run) and A14.
-**The finding**: the accuracy came from the LEARNERS, not the optimizer. Solved-minus-uniform on the tuned pool is +0.0043. Fit-time class weighting -- inside each weak learner as it is built, the one intervention no earlier control varied -- drops the Gram ratio from 0.9988 to 0.92 and lifts absolute accuracy, while the optimization step stays nearly free. For CVQBoost at low prevalence the leverage is pool construction.
-**Two corrections to our own interpretation**, both registered as A14: a mid-run prediction compared sweep VALIDATION AP against TEST AP comparators (validation runs ~0.005 below test on this design), and the k=6 tuned arm was initially set against k=13 comparators -- the order-mismatched comparison ADR-0013 warns of, which the Sprint 7 plan itself had invited by naming the k=13 figure as an acceptance criterion.
-Retro: docs/sprints/SPRINT_7_RETROSPECTIVE.md (4 improvements, all applied or registered; suite 125 -> 132).
+**Sprint 8: The Second Dataset** (Sep 6-7, 2026; PR #47, main merge PR #49).
+Delivered **F3** on IEEE-CIS under its preregistered protocol: 590,540
+transactions, 3.5% prevalence, GroupKFold-by-month rolling origin, four tasks
+(protocol compliance, classical arms, CVQBoost proxy arms, H3 ladder). ZERO
+metered Dirac-3 seconds; every result is [SIM].
+**The findings**: classical arms reach 0.5739 AUPRC against CVQBoost's 0.0571 --
+but the matched-feature control settles what that means, since the same LightGBM
+on the SAME six features falls from 0.5424 to 0.0734, so every model is starved
+and the quantum arm attains 85% of that constrained ceiling. The H3 ladder (12
+cells, scoreable) then answered the ceiling question AGAINST our own interest:
+slope -0.006 AUPRC per feature, so lifting the ceiling does not close the gap.
+That contradicts a claim made mid-sprint after Task C, and the contradiction is
+recorded rather than smoothed.
+**The preregistered compound falsification criterion is now stated** (appendix
+B.1): two of its three conditions are measured and both went against the theory,
+H5 is unrun, so it has not fired but has not been survived either. The
+submission had been silent on it.
+**A card FAILED and is recorded as failed**: F36 (#48) built a pandoc Lua filter
+for appendix page space that was never wasted. The premise came from
+`page-fill-report.py` counting CHARACTERS, which makes any table-heavy page look
+short; measured as vertical extent every page was already full. The filter also
+costs gate_report.pdf a page, so it is retained UNREGISTERED and opt-in. Full
+writeup: docs/reviews/f36-float-tables-outcome.md.
+**Four protocol defects passed a smoke test** and were found only because the
+team lead asked for a full sweep (docs/reviews/f3-preflight-audit.md): no class
+weighting, ID columns entering the model raw, the shuffled-label control never
+run, and an MDE borrowed from a different design.
+Retro: docs/sprints/SPRINT_8_RETROSPECTIVE.md (16 categories all Very Good; 6
+improvements, all approved and applied; suite 145 -> 156).
 
 ## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
 
@@ -38,7 +63,7 @@ Retro: docs/sprints/SPRINT_7_RETROSPECTIVE.md (4 improvements, all applied or re
 | 5 | Sep 4 | [DONE] F8, F9, F27, F26, F28, F19 | -- |
 | 6 | Sep 5 | [DONE] F31, F3 prep, F23, F24, F32 | -- |
 | 7 | Sep 5-6 | [DONE] F33, F34, QCi/paper update | -- |
-| 8 | Sep 6-7 | **F3** (IEEE-CIS; scaffolding built and tested in Sprint 6) + paper updates | still time for F16 + F10 |
+| 8 | Sep 6-7 | [DONE] **F3** (IEEE-CIS, all four tasks) + paper updates; F36 attempted and FAILED | -- |
 | 9 | Sep 7-9 | F4 + paper updates + **QCi package send** (team lead 2026-09-07: moved from Sep 7 to Sprint 9) | still time for F16 + F10 |
 | 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
 | Finalize | Sep 12-13 | F16, F10, **F37 (repo public)**, **F38 (appendix to 3 pages)** -- both SUBMISSION BLOCKERS; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
@@ -78,24 +103,16 @@ now would be deciding without the evidence that Phase 2 exists to gather.
 - Depends on: QCi grant; per-block team-lead approval (Criterion H)
 
 **F36. Pandoc Lua filter: floating tables for the submission PDFs -- CLOSED 2026-09-07, FAILED**
-- **VERDICT: the filter works; the problem it was built for did not exist.** The premise below is preserved as written because it is wrong in an instructive way. It rests on a CHARACTER-COUNT page-fill measurement, and a table-heavy page always looks short by that measure. Measured as vertical extent, every page cited below was already full: 724 / 680 / 680 / 682pt of a 792pt page, zero free space anywhere. The appendix was over its limit because it had too much content
+- **VERDICT: the filter works; the problem it was built for did not exist.** The premise (preserved in the review doc, because it is wrong in an instructive way) rested on a CHARACTER-COUNT page-fill measurement, and a table-heavy page always looks short by that measure. Measured as vertical extent, every page cited below was already full: 724 / 680 / 680 / 682pt of a 792pt page, zero free space anywhere. The appendix was over its limit because it had too much content
 - **Failed criterion 1** (appendix 3 pages with the filter, 4 without): 4 and 4. **Failed criterion 6** (other documents unchanged), which is worse: floating tables in a table-dense document COSTS a page, taking gate_report.pdf from 3 to 4. Criteria 2, 3, 4, 5 and 7 pass
 - Filter RETAINED but UNREGISTERED at `scripts/pandoc/float-tables.lua`, opt-in through `render-pdf.ps1 -LuaFilter`, which nothing passes. `render-all.ps1` is unchanged. Do not enable it without reading `docs/reviews/f36-float-tables-outcome.md`
 - **What the card actually produced, and it is worth more than the filter**: `scripts/page-fill-report.py` now measures vertical extent in points instead of counting characters, and excludes the page-number folio, which sat at the same depth on every page and so made every page report zero free space -- including a nearly empty last page, the one case the tool exists to flag. `experiments/src/test_page_fill_report.py` covers both defects and all four tests fail against the previous implementation
 - **The appendix DID reach 3 pages**, by the team lead's two suggestions: set pipe-table column widths from the longest cell each column holds (every table used `|---|---|`, giving "30" and "[SIM]" the same width as a sentence; removed 9 of 20 spilled lines with no content change), and move reference material to the public repository. It has since gone back to 4 with the B.1 compound-falsification statement, tracked as F38
 - **Process lesson**: the card's dry run could not have failed. Deleting five tables removes their content AND their space, so the document was always going to shrink. It never distinguished "tables take room" from "tables waste room". A check that cannot fail is not evidence
 
-ORIGINAL CARD AS WRITTEN, premise now known false:
-- Phase: Finalize/tooling (team lead 2026-09-06: "register the pandoc Lua filter now - believe it is worth it now"; full card at docs/sprints/drafts/F36_CARD_DRAFT.md)
-- Platform: docs/tooling
-- **The measured problem**: the appendix content FITS three pages and renders on four. Page fills are 2,695 / 3,807 / 2,550 / 1,788 = 10,840 characters against a three-page capacity of 11,421 at page-2 density -- 581 characters UNDER, yet needing a fourth page. pandoc 3.1.2 emits pipe tables as bare `longtable`, which breaks across pages but never FLOATS: it starts exactly where written, so a table that does not fit defers itself AND everything after it. Five tables of 35 rows leave pages 1 and 3 about 1,100 characters below page 2
-- **Dry run already run, before building anything**: rendering the appendix with all five tables removed gives 3 pages, while the tables' own text is only ~1,400 characters. The gap is break waste, not length, which is what floats recover. `ltablex` was tried and cannot work here: a float must sit inside `\begin{table}` and longtable cannot
-- **Design**: a Lua filter wrapping each Table node in `\begin{table}[htbp]`, converting longtable to tabular inside the float (our tables are 6-9 rows and none needs to break), adding `\caption{}` and `\label{}` so a moved table stays referenceable, and leaving already-captioned tables alone. Prose changes from "the table below" to "Table 3"
-- **Completion is EFFECTIVENESS, not execution**: the card is complete only when appendix.pdf renders at 3 pages with the filter and 4 without, from identical markdown. If the filter is correct and the page count does not move, the card FAILS and floats were not the binding constraint -- worth knowing rather than papering over
-- **Seven falsifiable acceptance criteria**: page count drops; no table row lost; numbering sequential; no unresolved `??` references; idempotent; the other eight PDFs unchanged at their current page counts; and every numeric value in every rendered PDF identical before and after
-- **Why now rather than post-submission**: roughly two hours across Sprints 5-8 have gone into trimming prose to satisfy page limits, repeatedly cutting content that did not need to go. `page-fill-report.py` has correctly said "FIX THE BREAK" several times with no way to act on it except deleting text
-- Risk: it runs on every submission render eight days out. Mitigated by making it opt-in via one `--lua-filter` flag, so removal reverts to today's behaviour
-- Depends on: nothing
+The original card body is pruned as shipped. Its premise, the seven
+acceptance criteria and the full failure analysis are preserved in
+docs/reviews/f36-float-tables-outcome.md.
 
 **F38. Appendix back to 3 pages (~30m) Priority 1 -- SUBMISSION BLOCKER**
 - Phase: Finalize (team lead 2026-09-07, accepting the overage for now: "can we leave it in the .md for now and we will address the overage later?")
