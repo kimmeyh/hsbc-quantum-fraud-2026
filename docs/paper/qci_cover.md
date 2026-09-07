@@ -13,7 +13,7 @@ date: "September 2026"
 
 **From**: Harold Kimmey
 **Request**: 30,000 QPU seconds of Dirac-3 access
-**Enclosed, all marked DRAFT**: concept proposal, appendices, frozen preregistration with its twelve amendments, generated gate report, and the hardware run plans.
+**Enclosed, all marked DRAFT**: concept proposal, appendices, frozen preregistration with its seventeen amendments, generated gate report, and the hardware run plans.
 
 We have worked together for three years. This note is written the way I would want one written to me: the commercial case first, then what else you get, then the science.
 
@@ -55,13 +55,41 @@ We flag one thing about that number rather than let you find it. It reached sign
 
 **The part worth your attention: the accuracy came from the learners, not the optimizer.** On the tuned pool the solved weights beat uniform weights by only +0.0047, an order of magnitude smaller than the learner effect and well inside our detectable threshold. So for CVQBoost at low prevalence, the leverage is in how the weak learners are built, and the optimization step is close to free either way. That is a configuration statement about your library rather than a limitation of your hardware, and it is the second thing we would put in the CVQBoost documentation alongside the degeneracy finding above.
 
+## Since drafting: we ran IEEE-CIS, and it bears on ask 3 below
+
+We have now run the preregistered IEEE-CIS protocol: 590,540 transactions, 3.5%
+prevalence, rolling-origin evaluation by month, with the shuffled-label control
+collapsing on every fold. Tuned classical arms reach 0.5739 AUPRC. The CVQBoost
+arm, held to the six features the 100-variable ceiling permits, reaches 0.0571.
+
+That gap is not a hardware result, and the control that establishes it matters
+more than the number: a tuned LightGBM given the SAME six features falls from
+0.5424 to 0.0734. Every model is starved at six features, and the quantum arm
+attains 85% of that constrained ceiling. All of this is a classical proxy solve
+of the identical Hamiltonian, marked [SIM]; no metered time was spent.
+
+We then ran the preregistered feature ladder to test whether the ceiling is what
+binds, and we report the answer against our own interest: it is not. Across k in
+{5, 9, 13, 17} both arms improve and the classical arm improves faster, a slope
+of -0.006 AUPRC per feature. Lifting the ceiling raises CVQBoost 2.8x and the
+GBDT 3.6x. So the 100-variable limit bounds absolute performance without being
+why the arm trails.
+
+We would rather you had that from us than found it in the enclosed appendix. It
+weakens the pure sizing argument for ask 1 and ask 3, and it sharpens ask 2: if
+a weighted vote over one- and two-feature learners does not represent the
+interactions a boosted tree exploits, then the formulation to test is the one
+the continuous relaxation drops -- the cardinality-constrained integer problem,
+three-feature subsets, and the phase representation. None of those have been
+run. That is now our first ask rather than a co-equal one.
+
 ## What we would test with the access
 
 In priority order, each with a preregistered protocol already written:
 
 1. **Cardinality-constrained selection on the integer solver**, against time-capped MIQP, greedy and annealing controls. A win against a certified-optimal classical solve is a result; a win against no control is not.
 2. **The paid-tier sizing curve**, 100 to several thousand variables, published.
-3. **The full ULB and IEEE-CIS grids**, which the 100-variable ceiling currently forecloses. IEEE-CIS is 590,540 transactions and several hundred features, the regime where CVQBoost's published runtime claim actually lives.
+3. **The full ULB and IEEE-CIS grids**, which the 100-variable ceiling currently forecloses. IEEE-CIS is 590,540 transactions and several hundred features, the regime where CVQBoost's published runtime claim actually lives. Our ladder above shows more features help both arms without closing the gap, so we ask for this to characterise the device rather than to rescue the result.
 4. **Segment replication (block B4)**, 15 fits at roughly 450 seconds, and a sign-augmented QSVM block.
 
 ## What we give back
@@ -75,4 +103,4 @@ Two questions we would value your view on, both single-fit experiments we would 
 
 ## A note on this package
 
-Everything enclosed is DRAFT and pre-submission. The results are as measured; the preregistration and its twelve dated amendments show exactly what was decided before any result was seen, including the gate we failed and the two claims we had to correct. We would welcome correction on anything we have characterised wrongly about Dirac-3 -- especially the convexity argument and the free-tier ceiling -- before this becomes a public submission.
+Everything enclosed is DRAFT and pre-submission. The results are as measured; the preregistration and its seventeen dated amendments show exactly what was decided before any result was seen, including the gate we failed and the two claims we had to correct. We would welcome correction on anything we have characterised wrongly about Dirac-3 -- especially the convexity argument and the free-tier ceiling -- before this becomes a public submission.

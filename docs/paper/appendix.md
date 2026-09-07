@@ -149,6 +149,15 @@ temporal gap Sprint 5 measured at +0.2143 on ULB.
 
 H1b is the sole confirmatory endpoint, reported unadjusted. All other completed analyses are exploratory and carry no family-wise confirmatory claim.
 
+**Compound falsification criterion.** Section 2 committed that the theory is
+unsupported if ALL THREE hold: H1b fails, the H3 slope is not positive, and H5
+does not transfer. Two are now measured and both went against the theory: H1b
+is NULL at -0.0399, interval excluding zero, and the H3 slope is -0.006 per
+feature. H5 is unrun, so the criterion has not fired -- but neither has it been
+survived. It sits one unrun condition away. The pre-committed fallback, a
+headline of the measured regime map and boundary statement, is already what
+this submission reports.
+
 ## B.2 Amendments
 
 Seventeen dated amendments, A1 to A17, each with rationale and approval; full
