@@ -147,3 +147,44 @@ def test_proposal_covers_every_required_section() -> None:
     }
     missing = [label for label, probe in required.items() if probe not in text]
     assert not missing, f"proposal.pdf does not visibly cover: {missing}"
+
+
+def test_documents_state_the_true_amendment_count():
+    """Every document naming the amendment count must match the preregistration.
+
+    Sprint 8 shipped a QCi letter asserting "twelve amendments" while the
+    ENCLOSED preregistration held seventeen. A letter that miscounts a document
+    attached to it undercuts the accuracy it is claiming, and the error was
+    caught by reading rather than by any check. Registering A18 recreated the
+    same exposure immediately.
+
+    This is the failure class F39 (the fact database) targets. Until that
+    exists, the one fact most likely to drift gets its own test.
+    """
+    import re
+
+    prereg = (ROOT / "experiments" / "PREREGISTRATION.md").read_text(encoding="utf-8")
+    nums = sorted({int(m) for m in re.findall(r"\(A(\d+)\)", prereg)})
+    assert nums == list(range(1, len(nums) + 1)), (
+        f"amendment numbers are not contiguous: {nums}")
+    n = len(nums)
+
+    words = {12: "twelve", 13: "thirteen", 14: "fourteen", 15: "fifteen",
+             16: "sixteen", 17: "seventeen", 18: "eighteen", 19: "nineteen",
+             20: "twenty"}
+    stale = {w for k, w in words.items() if k != n}
+
+    for rel in ("docs/paper/appendix.md", "docs/paper/qci_cover.md",
+                "docs/QCI_EQC_MODELS_FEEDBACK.md"):
+        path = ROOT / rel
+        if not path.exists():
+            continue
+        body = path.read_text(encoding="utf-8").lower()
+        for bad in stale:
+            assert f"{bad} amendment" not in body and f"{bad} dated" not in body, (
+                f"{rel} says '{bad}' amendments; the preregistration holds {n}")
+        # Match the whole range phrase, not a substring: "a1 to a18" contains
+        # "a1 to a1", so a naive `in` test fails on the CORRECT text.
+        for found in re.findall(r"a1 to a(\d+)", body):
+            assert int(found) == n, (
+                f"{rel} says 'A1 to A{found}'; the preregistration holds {n}")
