@@ -30,6 +30,11 @@ from pypdf import PdfReader  # noqa: E402
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "docs" / "paper" / "out"
 
+# Documents allowed to render LANDSCAPE. Only non-submission artifacts belong
+# here: the challenge's own documents must stay portrait, and this list is what
+# keeps that distinction enforced rather than remembered.
+LANDSCAPE_ALLOWED = {"DRAFT_gate_report.pdf"}
+
 US_LETTER = (612, 792)
 A4 = (595, 842)
 
@@ -79,9 +84,21 @@ ALL_PDFS = _pdfs() + _pdfs("qci_package")
 @pytest.mark.skipif(not ALL_PDFS, reason="no rendered PDFs; run scripts/render-pdf.ps1")
 @pytest.mark.parametrize("pdf", ALL_PDFS, ids=lambda p: p.name)
 def test_page_size_is_letter_or_a4(pdf: Path) -> None:
-    """The tabloid defect. Guidelines section 5 permits A4 or US Letter only."""
+    """The tabloid defect. Guidelines section 5 permits A4 or US Letter only.
+
+    Landscape is allowed ONLY for documents that are not part of the challenge
+    submission. The gate report is one: it is a QCi-package artifact whose
+    widest table needs a 37-character Cell column beside six numeric columns,
+    and at portrait width that row wraps and the Cell text runs flush into its
+    Seeds value. The submission documents stay portrait, and an unrequested
+    rotation in any of them still fails here -- which is the check that caught
+    the 11x17 tabloid defect.
+    """
     size = _size(pdf)
-    assert size in (US_LETTER, A4), (
+    allowed = [US_LETTER, A4]
+    if pdf.name in LANDSCAPE_ALLOWED:
+        allowed += [US_LETTER[::-1], A4[::-1]]
+    assert size in allowed, (
         f"{pdf.name} is {size[0]}x{size[1]}pt, not US Letter {US_LETTER} or A4 {A4}. "
         "11x17 (792x1224) means the renderer set the size after layout."
     )
