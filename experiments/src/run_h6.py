@@ -107,7 +107,58 @@ def _checkpoint(cells: list[dict], smoke: bool) -> None:
 # Each twin is the primitive proven in h6_twin_preflight.py (Sprint 6), which
 # established that pygam and interpret are NOT installed and are not needed.
 
-def _fit_gam(X_tr, y_tr, X_te, max_terms: int = 6):
+def _relevance(X_tr, y_tr):
+    """|Pearson correlation| of each column with the label, TRAIN ONLY.
+
+    Scale-free, unlike variance. Variance ranking is what invalidated the first
+    complete H6 run: ULB's Time column has variance 2.3e9 while QFE phase
+    columns are whitened to unit variance, so a phase column could never be
+    picked and both twins saw identical inputs in 10 of 10 seeds.
+    """
+    yc = y_tr - y_tr.mean()
+    ys = yc.std()
+    if ys == 0:
+        return np.zeros(X_tr.shape[1])
+    xs = X_tr.std(axis=0)
+    # A constant column has no correlation and must not win by dividing by ~0.
+    safe = np.where(xs > 0, xs, np.inf)
+    return np.abs((X_tr - X_tr.mean(axis=0)).T @ yc) / (len(yc) * safe * ys)
+
+
+def _rank_columns(X_tr, y_tr, k: int, n_raw: int | None = None):
+    """Top-k columns, GUARANTEEING the twin sees the representation under test.
+
+    A pure top-k ranking cannot honour H6. Section 3 requires the phase
+    representation to be given to EVERY arm, but measured on ULB the best phase
+    column ranks 14th by supervised relevance (|corr| 0.055) against 0.318 for
+    the top raw column -- the phase columns are genuinely weaker predictors on
+    a dataset whose V-columns are already PCA components. Rank by variance and
+    they never appear; rank by correlation and they still never appear. The
+    selector is not being unfair, it is simply doing its job, and the effect is
+    that the twin never receives the treatment.
+
+    So the budget is SPLIT: the best raw columns plus the best phase columns,
+    each by relevance. Under QFE every twin demonstrably gets phase inputs.
+    Under baseline there are no phase columns and the twin spends its whole
+    budget on raw ones, which is correct -- the treatment is absent because it
+    is absent, not because the selector hid it.
+
+    n_raw: index where the phase block starts. None means no phase block.
+    """
+    rel = _relevance(X_tr, y_tr)
+    if n_raw is None or n_raw >= X_tr.shape[1]:
+        return np.argsort(-rel)[:k]
+
+    # Half the budget to the representation, at least one column each way, so
+    # the twin is order-matched with the quantum arm rather than a straw man.
+    n_phase = max(1, k // 2)
+    n_keep_raw = max(1, k - n_phase)
+    raw = np.argsort(-rel[:n_raw])[:n_keep_raw]
+    phase = n_raw + np.argsort(-rel[n_raw:])[:n_phase]
+    return np.concatenate([raw, phase])
+
+
+def _fit_gam(X_tr, y_tr, X_te, max_terms: int = 6, n_raw=None):
     """Trained-frequency GAM: statsmodels GLMGam with BSplines smooth terms.
 
     "Trained-frequency" means the spline basis is FIT from training data rather
@@ -117,9 +168,10 @@ def _fit_gam(X_tr, y_tr, X_te, max_terms: int = 6):
     import statsmodels.api as sm
     from statsmodels.gam.api import BSplines, GLMGam
 
-    # BSplines cost grows with term count; take the highest-variance columns so
-    # the twin gets the signal-bearing ones rather than an arbitrary prefix.
-    order = np.argsort(-X_tr.var(axis=0))[:max_terms]
+    # BSplines cost grows with term count, so the twin gets the k columns most
+    # correlated with the label rather than all of them. See _rank_columns for
+    # why this is NOT variance.
+    order = _rank_columns(X_tr, y_tr, max_terms, n_raw)
     Xs_tr, Xs_te = X_tr[:, order], X_te[:, order]
     df = [6] * Xs_tr.shape[1]
     bs = BSplines(Xs_tr, df=df, degree=[3] * Xs_tr.shape[1])
@@ -160,7 +212,7 @@ def _fit_ga2m(X_tr, y_tr, X_te):
     return m.predict_proba(X_te)[:, 1]
 
 
-def _fit_joint(X_tr, y_tr, X_te, n_cols: int = 8,
+def _fit_joint(X_tr, y_tr, X_te, n_cols: int = 8, n_raw=None,
                coarse=(0.25, 0.5, 1.0, 2.0, 4.0, 8.0)):
     """ORDER-MATCHED JOINT twin: coarse-to-fine cosine scan + logistic.
 
@@ -172,7 +224,7 @@ def _fit_joint(X_tr, y_tr, X_te, n_cols: int = 8,
     Frequencies are searched on TRAIN ONLY, by supervised correlation with the
     label, then refined around the best coarse value.
     """
-    order = np.argsort(-X_tr.var(axis=0))[:n_cols]
+    order = _rank_columns(X_tr, y_tr, n_cols, n_raw)
     feats_tr, feats_te = [], []
     yc = y_tr - y_tr.mean()
 
@@ -253,7 +305,8 @@ def _fit_cvqboost_proxy(X_tr, y_tr, X_te, seed: int):
     return H_te.T @ w
 
 
-def _cell(X_tr, y_tr, X_te, y_te, seed: int, representation: str) -> dict:
+def _cell(X_tr, y_tr, X_te, y_te, seed: int, representation: str,
+          n_raw: int | None = None) -> dict:
     """One H6 cell: every arm and every twin on one representation."""
     t0 = time.time()
     scores = {}
@@ -264,9 +317,11 @@ def _cell(X_tr, y_tr, X_te, y_te, seed: int, representation: str) -> dict:
 
     # The classical bar is INCOMPLETE without all three twins, so any failure
     # here fails the cell rather than quietly reporting a weaker bar.
-    scores["gam"] = float(average_precision_score(y_te, _fit_gam(X_tr, y_tr, X_te)))
+    scores["gam"] = float(average_precision_score(
+        y_te, _fit_gam(X_tr, y_tr, X_te, n_raw=n_raw)))
     scores["ga2m"] = float(average_precision_score(y_te, _fit_ga2m(X_tr, y_tr, X_te)))
-    scores["joint"] = float(average_precision_score(y_te, _fit_joint(X_tr, y_tr, X_te)))
+    scores["joint"] = float(average_precision_score(
+        y_te, _fit_joint(X_tr, y_tr, X_te, n_raw=n_raw)))
 
     scores["cvqboost"] = float(average_precision_score(
         y_te, _fit_cvqboost_proxy(X_tr, y_tr, X_te, seed)))
@@ -337,7 +392,7 @@ def run(smoke: bool = False) -> dict:
                            np.column_stack([P_te[c] for c in order])])
 
         cells.append(_cell(Xq_tr, np.asarray(y_tr), Xq_te, np.asarray(y_te),
-                           seed, "qfe"))
+                           seed, "qfe", n_raw=np.asarray(X_tr).shape[1]))
         _progress("cell_done", seed=seed, representation="qfe",
                   delta=round(cells[-1]["delta"], 4))
         _checkpoint(cells, smoke)

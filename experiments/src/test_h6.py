@@ -306,3 +306,84 @@ def test_checkpoint_is_skipped_for_smoke_runs(tmp_path, monkeypatch):
     monkeypatch.setattr(run_h6, "CHECKPOINT", ckpt)
     run_h6._checkpoint([{"seed": 42, "delta": -0.01}], smoke=True)
     assert not ckpt.exists()
+
+
+# --- the twins must RECEIVE the representation under test ------------------
+
+def test_twins_actually_see_the_phase_block():
+    """The defect that invalidated a complete 10-seed run.
+
+    H6 (prereg section 3) requires the phase representation to be given to
+    EVERY arm. The first run ranked twin inputs by variance: ULB's Time column
+    has variance 2.3e9 while QFE phase columns are whitened to unit variance,
+    so no phase column could ever be selected. GAM and JOINT returned IDENTICAL
+    scores in 10 of 10 seeds under both representations -- present in the
+    record, absent in substance.
+
+    Ranking by supervised relevance instead did NOT fix it: measured on ULB the
+    best phase column ranks 14th (|corr| 0.055 vs 0.318 for the top raw
+    column). The phase columns are genuinely weaker on a dataset whose
+    V-columns are already PCA components, so no merit ranking picks them. The
+    budget has to be split.
+    """
+    rng = np.random.default_rng(0)
+    n, n_raw, n_phase = 500, 10, 8
+    raw = rng.normal(size=(n, n_raw)) * 1000.0      # large scale, like Time
+    phase = rng.normal(size=(n, n_phase))           # whitened, unit variance
+    X = np.hstack([raw, phase])
+    y = (raw[:, 0] > 0).astype(int)                 # signal lives in raw
+
+    order = run_h6._rank_columns(X, y, 6, n_raw=n_raw)
+    assert any(i >= n_raw for i in order), (
+        "no phase column selected: the twin cannot see the representation it "
+        "is supposed to be a control for")
+    assert any(i < n_raw for i in order), (
+        "the twin must keep raw columns too, or it is not a fair bar")
+
+
+def test_baseline_selection_uses_the_whole_budget_on_raw_columns():
+    """With no phase block the twin spends everything on raw columns.
+
+    The treatment is absent because it is absent, not because the selector
+    hid it.
+    """
+    rng = np.random.default_rng(0)
+    X = rng.normal(size=(300, 12))
+    y = (X[:, 0] > 0).astype(int)
+    order = run_h6._rank_columns(X, y, 6, n_raw=None)
+    assert len(order) == 6
+    assert len(set(order)) == 6, "no duplicate columns"
+
+
+def test_relevance_ranking_is_scale_free():
+    """Variance ranking is what broke this; correlation must not repeat it."""
+    rng = np.random.default_rng(0)
+    n = 400
+    signal = rng.normal(size=n)
+    y = (signal > 0).astype(int)
+    # Same information, wildly different scales.
+    X = np.column_stack([signal * 1e6, signal, rng.normal(size=n) * 1e9])
+    rel = run_h6._relevance(X, y)
+    assert abs(rel[0] - rel[1]) < 1e-6, (
+        "identical signal at different scales must rank identically")
+    assert rel[2] < rel[0], "pure noise must rank below signal at any scale"
+
+
+def test_twins_produce_different_scores_under_the_two_representations(toy):
+    """The end-to-end property: a twin given phase inputs must respond.
+
+    Identical scores across representations is exactly the symptom that
+    invalidated the first run, so it is asserted directly.
+    """
+    X_tr, y_tr, X_te, _ = toy
+    rng = np.random.default_rng(1)
+    P_tr = rng.normal(size=(len(X_tr), 6))
+    P_te = rng.normal(size=(len(X_te), 6))
+    Xq_tr = np.hstack([X_tr, P_tr])
+    Xq_te = np.hstack([X_te, P_te])
+
+    base = run_h6._fit_joint(X_tr, y_tr, X_te)
+    qfe_scores = run_h6._fit_joint(Xq_tr, y_tr, Xq_te, n_raw=X_tr.shape[1])
+    assert not np.allclose(base, qfe_scores), (
+        "JOINT returned identical scores with and without the phase block; it "
+        "is not receiving the representation")
