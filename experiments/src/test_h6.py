@@ -387,3 +387,31 @@ def test_twins_produce_different_scores_under_the_two_representations(toy):
     assert not np.allclose(base, qfe_scores), (
         "JOINT returned identical scores with and without the phase block; it "
         "is not receiving the representation")
+
+
+def test_committed_results_have_distinct_twin_scores_across_representations():
+    """Guard the committed evidence, not just the code.
+
+    A complete 10-seed run was invalidated because GAM and JOINT returned
+    IDENTICAL scores under both representations in 10 of 10 seeds. The code
+    tests above prevent the cause; this one catches the symptom in whatever
+    results file actually ships, which is the artifact a reader trusts.
+    """
+    import json
+    results = SRC.parents[0] / "results" / "h6_representation.json"
+    if not results.exists():
+        pytest.skip("h6_representation.json not present")
+
+    d = json.loads(results.read_text(encoding="utf-8"))
+    by = {}
+    for c in d["cells"]:
+        by.setdefault(c["seed"], {})[c["representation"]] = c["scores"]
+
+    for twin in ("gam", "joint", "ga2m"):
+        identical = sum(
+            1 for s, reps in by.items()
+            if len(reps) == 2 and reps["baseline"][twin] == reps["qfe"][twin])
+        assert identical == 0, (
+            f"{twin} scored identically under both representations in "
+            f"{identical} of {len(by)} seeds; it is not receiving the phase "
+            f"block, so the classical bar is incomplete under QFE")
