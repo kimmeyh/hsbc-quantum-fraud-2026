@@ -213,3 +213,32 @@ def test_documents_state_the_true_amendment_count():
         for found in re.findall(r"a1 to a(\d+)", body):
             assert int(found) == n, (
                 f"{rel} says 'A1 to A{found}'; the preregistration holds {n}")
+
+
+def test_submission_does_not_claim_prior_paid_tier_degree3_work():
+    """Prior paid-account degree-3 work belongs in the QCi letter, not here.
+
+    Team lead, 2026-09-08: "so for qci we can state that, but for the challenge
+    we do not want to claim that."
+
+    The QCi letter is private correspondence to a vendor who already knows the
+    history, and there it is the stronger and more honest framing. The proposal
+    and appendix go to challenge judges, where prior privileged hardware access
+    is not something we want to assert -- it invites a fairness question the
+    submission should not have to answer, and the result does not depend on it.
+
+    The submission may still refer to "a prior Dirac-3 campaign" in general
+    terms, which it does. What it must not do is name the tier, the account, or
+    the degree.
+    """
+    banned = ("degree-3", "degree 3", "paid account", "paid-account",
+              "non-free", "paid tier", "paid-tier")
+    for name in ("proposal.md", "appendix.md", "team_profile.md"):
+        path = ROOT / "docs" / "paper" / name
+        if not path.exists():
+            continue
+        body = path.read_text(encoding="utf-8").lower()
+        for phrase in banned:
+            assert phrase not in body, (
+                f"{name} contains {phrase!r}; prior paid-tier work is for the "
+                f"QCi letter only, not the challenge submission")

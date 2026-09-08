@@ -44,8 +44,11 @@ Three things we cannot obtain on the free tier:
 
 1. **A paid-tier sizing curve.** The free tier refuses any continuous degree-2
    or degree-3 job above 100 variables, and several points of our analysis
-   require more than 100. We want to characterise how solution quality and time
-   behave from 100 to several thousand variables, and publish it.
+   require more than 100. We have run degree-3 work on Dirac-3 before, on a
+   paid account, for the full Fourier Wall and SPECTRA analysis -- so this is
+   not a first attempt, it is the same work on a problem the free tier cannot
+   hold. We want to characterise how solution quality and time behave from 100
+   to several thousand variables, and publish it.
 2. **The integer solver on an analysis that needs it.** Our continuous
    formulation is convex, so a classical solve returns the global optimum in
    milliseconds and no solver can beat it; the cardinality-constrained problem
@@ -90,9 +93,15 @@ beats the classical baseline, all of it is still yours.
 back with "Number of variables '312' in problem is greater than the free-tier
 device limit '100'". Our frozen configuration is 91 variables, sitting under
 that ceiling by accident rather than design, so every scaling statement we can
-currently make is bounded by a tier limit rather than by the device. The
-concrete degree-3 case: three-feature weak-learner subsets over 13 features
-need 377 variables, which the free tier cannot accept at all.
+currently make on this project is bounded by a tier limit rather than by the
+device. The concrete degree-3 case here: three-feature weak-learner subsets
+over 13 features need 377 variables, which the free tier cannot accept at all.
+
+We are not new to this. The full Fourier Wall and SPECTRA analysis was run on
+Dirac-3 at degree 3 on a paid account, so we know what the device does above
+the free-tier ceiling and what it costs to find out. That is why the estimates
+below are costed rather than guessed, and why we are asking for a specific
+number of seconds instead of open-ended access.
 
 **Why the integer solver is the experiment that matters.** Cardinality-
 constrained selection of weak learners is where your hardware is not competing
