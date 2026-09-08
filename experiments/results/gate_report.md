@@ -9,7 +9,7 @@ CAVEAT on dct proxy cells: scores take ~120 distinct values with ~96% of transac
 ## Across-seed summaries (test AUPRC; prevalence beside it)
 
 | Cell | Seeds | Mean AP | Seed SD | t-95% CI | Mean AUC | Prevalence |
-|-----------------------------|------------|---------------|---------------|-------------------------|----------------|------------------|
+|------------------------------------------|-----------|-------------|-------------|----------------------|--------------|----------------|
 | catboost/full | 10 | 0.8368 | 0.0304 | [0.8150, 0.8585] | 0.9765 | 0.00167 |
 | catboost/matched13 | 10 | 0.8070 | 0.0321 | [0.7841, 0.8300] | 0.9738 | 0.00167 |
 | cvqboost_hw/hw_b1_dct/stratified/full | 10 | 0.7671 | 0.0302 | [0.7455, 0.7887] | 0.9201 | 0.00167 |
@@ -35,7 +35,7 @@ CAVEAT on dct proxy cells: scores take ~120 distinct values with ~96% of transac
 ## Score health (amendment A6; WARN = degenerate score distribution)
 
 | Cell | Rows | WARN rows | Median mode share | Median n_distinct |
-|--------------------------------|------------|----------------------------|----------------------------|----------------------------|
+|----------------------------------------------|-----------|-------------------------|-------------------------|-------------------------|
 | catboost/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
 | catboost/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
 | cvqboost_hw/hw_b1_dct/stratified/full | 10 | 10 | 0.951 | 814 |
@@ -74,7 +74,7 @@ MDE(10 seeds) recomputed from this SD: 0.0258 (adjudication uses the amendment-A
 27 successful fits, 0 failed, metered seconds recorded: 120.0 (None-valued rows: 0)
 
 | Cell | Rows | Mean test AP | Mean val AP | Mean weight cosine (hw vs exact proxy) | Mean obj gap (hw - proxy) |
-|--------------------------|----------|------------------|-----------------|--------------------------|-------------------------------|
+|-----------------------|---------|----------------|---------------|---------------------------------------|----------------------------|
 | hw_b1_dct/stratified | 10 | 0.7671 | 0.7802 | 0.9776 | +173.2 |
 | hw_b1_dct/temporal | 1 | 0.7095 | 0.8027 | 0.9753 | +224 |
 | hw_b1_lg/stratified | 10 | 0.7014 | 0.7198 | 0.9962 | +25.41 |

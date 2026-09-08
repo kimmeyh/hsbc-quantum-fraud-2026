@@ -72,17 +72,6 @@ def _fit_table_widths(lines: list[str]) -> list[str]:
             # render flush against each other. Capping forces the long names to
             # WRAP inside their cell, which is readable, instead of colliding
             # with the next column, which is not.
-            # Cap the widest column BELOW its longest cell so that cell must
-            # WRAP. Sizing a column to exactly fit its content is what caused
-            # the collision: the text fills the cell edge to edge and renders
-            # flush against the next column. A wrapped name is readable; a
-            # collided one is not. 26 characters holds
-            # "cvqboost_hw/hw_b1_dct" on one line and breaks the rest onto a
-            # second, which is the behaviour a reader expects from a long
-            # identifier in a narrow table.
-            if len(widths) > 1:
-                widest = max(range(len(widths)), key=lambda k: widths[k])
-                widths[widest] = min(widths[widest], 26)
             total = sum(widths) or 1
             # Floor of 8, not 3. A column scaled to 4 characters sits flush
             # against its neighbour no matter how much padding the wide column
