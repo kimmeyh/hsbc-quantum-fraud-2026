@@ -20,7 +20,7 @@ F4, F16, F14
 
   Candidates at a glance
 
-  - F38. Appendix back to 3 pages (~30m) Priority 1 — SUBMISSION BLOCKER
+  - F38. Appendix back to 3 pages (~30m) Priority 1 — SUBMISSION BLCKER
   - F37. Make the repository public (~45m) Priority 1 — SUBMISSION BLOCKER
   - F35. Interpretation-layer tests (~2h) Priority 2
   - F29. Sample-size insensitivity of the CVQBoost optimum (~2h proxy, zero metered) Priority 15

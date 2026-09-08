@@ -46,3 +46,21 @@ Rank every finding by expected effect on the rubric score divided by effort. For
 
 
 ------------------Temp
+Thoughts on DRAFT_qci_cover.pdf:
+I need the following sections in bullet points at the top. They can be explained in greater detail in sections below:
+<need to state our goal in participation - Explore the usage of QC in order to find better predictions using hybrid classical/QC algorithms and take that wherever it leads. We believe that QCi Dirac-3 and eqc_tools is a likely candidate and want to explore how to maximize predictions as part of the exploration and analysis>
+
+Why this is worth 30,000 seconds to QCi:
+A copy of the repository contents for 2026 Global Quantum + AI Challenge for HSBC’s Credit Card Fraud problem: <list of 4 most valuable items in a 1-line, one sentence or partial sentence>
+
+What else we are trying to get from the 30,000 seconds:
+Three things we cannot obtain on the free tier:
+1. A paid-tier sizing curve. We established empirically that the free tier refuses any continuous degree-
+2 or degree-3 job above 100 variables and several points of analysis require greater than 100 variables.
+2. The integer solver on a analysis that needs it. <one more sentence>
+3. The phase 2 dataset sizes are much larger and will require more seconds. 
+   a) We have optimized usage with a proxy algorithm we use to do all setup and testing.
+   b) We have determined estimates of Dirac-3 QPU seconds needed based on actual usage in order to get "good estimates" - as close as reasonably possible.
+   c) Commit to using the QPU seconds in support of this challenge and return any unused QPU seconds at the end of the challenge.
+
+<rest of the letter, combining additional details that were originally in the top portion as they make sense and where they fit best>
