@@ -29,6 +29,74 @@ MDE = 0.0268             # amendment A5 (measured paired-delta MDE); single sour
 N_SEEDS = 10
 
 
+def _fit_table_widths(lines: list[str]) -> list[str]:
+    """Rewrite every pipe-table separator to reflect real column content.
+
+    pandoc sizes a pipe-table column by the DASH COUNT in its separator row.
+    Every table here was written `|---|---|`, which gives each column an equal
+    share -- so the 37-character Cell column got the same width as the
+    5-character Seeds column and its text ran into the neighbour. The rendered
+    PDF showed "catboost/matched1013" and
+    "cvqboost_hw/hw_b1_dct/strat0.7671ified/full": collisions, not truncation.
+
+    Widths are derived from the widest cell actually present, so they stay
+    correct as rows come and go. A minimum of 3 keeps the separator valid, and
+    the whole row is scaled to a sane total so one very long column cannot
+    squeeze the rest to nothing.
+    """
+    out = list(lines)
+    i = 0
+    while i < len(out):
+        sep_i = i + 1
+        if (out[i].startswith("| ") and sep_i < len(out)
+                and out[sep_i].startswith("|")
+                and set(out[sep_i].replace("|", "").strip()) <= set("-: ")):
+            header = [c.strip() for c in out[i].strip("|").split("|")]
+            rows = []
+            j = sep_i + 1
+            while j < len(out) and out[j].startswith("|"):
+                rows.append([c.strip() for c in out[j].strip("|").split("|")])
+                j += 1
+            widths = []
+            for k, h in enumerate(header):
+                cells = [len(r[k]) for r in rows if k < len(r)]
+                # +2 of padding per column: pandoc sizes to the RATIO, and a
+                # column sized to exactly its longest cell still renders that
+                # cell flush against its neighbour.
+                widths.append(max([len(h)] + cells) + 6)
+            # Scale to ~110 columns total: wide enough that pandoc's relative
+            # widths are meaningful, small enough to stay on the page.
+            # Cap any single column at 40% of the row. Without this the Cell
+            # column (44 chars vs a 4-char Rows column) takes so large a share
+            # that pandoc leaves its neighbour almost no width, and the two
+            # render flush against each other. Capping forces the long names to
+            # WRAP inside their cell, which is readable, instead of colliding
+            # with the next column, which is not.
+            # Cap the widest column BELOW its longest cell so that cell must
+            # WRAP. Sizing a column to exactly fit its content is what caused
+            # the collision: the text fills the cell edge to edge and renders
+            # flush against the next column. A wrapped name is readable; a
+            # collided one is not. 26 characters holds
+            # "cvqboost_hw/hw_b1_dct" on one line and breaks the rest onto a
+            # second, which is the behaviour a reader expects from a long
+            # identifier in a narrow table.
+            if len(widths) > 1:
+                widest = max(range(len(widths)), key=lambda k: widths[k])
+                widths[widest] = min(widths[widest], 26)
+            total = sum(widths) or 1
+            # Floor of 8, not 3. A column scaled to 4 characters sits flush
+            # against its neighbour no matter how much padding the wide column
+            # got: "stratified/full1" was Cell running into a Rows value of 1,
+            # because Rows had scaled down to almost nothing beside a 44-char
+            # Cell. The floor costs the wide column a little and fixes it.
+            scaled = [max(8, round(w * 130 / total)) for w in widths]
+            out[sep_i] = "|" + "|".join("-" * w for w in scaled) + "|"
+            i = j
+        else:
+            i += 1
+    return out
+
+
 def main() -> int:
     store = json.loads((RESULTS_DIR / "results.json").read_text())
     rows = store["rows"]
@@ -260,6 +328,7 @@ def main() -> int:
               "fits are pool builds + classical solves (zero metered seconds).", ""]
 
     out = RESULTS_DIR / "gate_report.md"
+    lines = _fit_table_widths(lines)
     out.write_text("\n".join(lines))
     print(f"gate_report.md written: {len(rows)} rows summarized")
     return 0
