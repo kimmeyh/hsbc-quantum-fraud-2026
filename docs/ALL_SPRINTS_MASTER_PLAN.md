@@ -114,7 +114,7 @@ The original card body is pruned as shipped. Its premise, the seven
 acceptance criteria and the full failure analysis are preserved in
 docs/reviews/f36-float-tables-outcome.md.
 
-**F38. Appendix back to 3 pages (~30m) Priority 1 -- SUBMISSION BLOCKER**
+**F38. Appendix to 3 pages AND proposal to 6 (~45m) Priority 1 -- SUBMISSION BLOCKER**
 - Phase: Finalize (team lead 2026-09-07, accepting the overage for now: "can we leave it in the .md for now and we will address the overage later?")
 - Platform: docs
 - **State**: appendix.pdf is 4 of 3 pages. The B.1 compound-falsification statement was added deliberately and is worth its space: section 2 of the preregistration names its own falsification test, two of its three conditions (H1b NULL at -0.0399, H3 slope -0.006) are now measured AGAINST the theory, and a submission silent on that reads as avoidance. It stays; something else pays for it
@@ -123,6 +123,7 @@ docs/reviews/f36-float-tables-outcome.md.
 - **Do NOT cut**: any figure, control, caveat, the A15/A17/A12 disclosures, or the compound-criterion statement. The 2026-09-06 pass already removed all restatement that was free to remove; what remains is evidence
 - Acceptance: `python scripts/check-page-limits.py` reports OK 3 of 3, AND a numeric diff against the current render shows no figure lost (the 2026-09-06 method: extract all decimals from both PDFs and compare as sets)
 - **Sprint 9 update (2026-09-07)**: the H6 arm (F4) lands an A.5/A.6 write-up in the same appendix, so the cut is larger than 76pt by whatever H6 needs. Sequence matters: write H6 FIRST, then cut once against the real total, rather than cutting to 3 pages and immediately breaking it again
+- **Sprint 9 update (2026-09-08)**: the H6 write-up landed, so BOTH documents are now over. appendix 4 of 3, proposal 7 of 6. Both page-limit cases are xfail(strict) tied to this card, so each FAILS once its document is back under limit and the markers cannot outlive the fix
 - Risk: an over-limit appendix is a submission-rules failure independent of content quality. Must not reach Sep 13 unresolved
 - Depends on: nothing
 

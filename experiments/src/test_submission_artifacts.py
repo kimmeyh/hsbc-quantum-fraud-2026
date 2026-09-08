@@ -119,12 +119,16 @@ def _page_limit_params():
     out = []
     for name, limit in sorted(PAGE_LIMITS.items()):
         marks = []
-        if name == "appendix.pdf":
+        if name in ("appendix.pdf", "proposal.pdf"):
             marks.append(pytest.mark.xfail(
                 strict=True,
-                reason="F38 (SUBMISSION BLOCKER): appendix is 4 of 3 pages. "
-                       "PDF sizing deferred to Finalize by the team lead, "
-                       "2026-09-07. Remove this marker when F38 closes."))
+                reason="F38 (SUBMISSION BLOCKER): appendix 4 of 3, proposal 7 "
+                       "of 6 after the H6 write-up landed. PDF sizing deferred "
+                       "to Finalize by the team lead (2026-09-07: 'do not worry "
+                       "about doc size as we will address the doc size for "
+                       "submission in the next sprint'). strict=True means this "
+                       "marker FAILS once a document is back under limit, so it "
+                       "cannot outlive F38."))
         out.append(pytest.param(name, limit, marks=marks, id=name))
     return out
 

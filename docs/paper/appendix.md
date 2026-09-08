@@ -136,6 +136,60 @@ sits below the published leakage-free band (0.64-0.67) while our own labelled
 scale check on a stratified random split reached 0.861 -- the random-versus-
 temporal gap Sprint 5 measured at +0.2143 on ULB.
 
+## A.6 H6: does a phase representation move the delta?
+
+Preregistration section 3, exploratory, registered as A18 BEFORE the run. The
+QFE phase block (Fourier Wall recipe, train-only whitening) is given to EVERY
+arm, and the reported quantity is the SHIFT between representations, not a
+delta under one of them. Ten ULB seeds, k=13 schedule 2, CVQBoost via the exact
+classical proxy of the identical Hamiltonian. [SIM], zero metered seconds.
+
+| Quantity | Value |
+|---|---|
+| Mean delta, baseline representation | -0.0685 |
+| Mean delta, QFE representation | -0.0800 |
+| **Representation shift** | **-0.0115** |
+| Paired seed-to-seed SD of the shift | 0.0135 |
+| Seeds negative | 7 of 10 |
+
+**The answer: the phase representation does not move the delta by an amount we
+can claim.** The shift is 0.85 of its own paired SD, and 43% of the 0.0268 MDE.
+The preregistered falsifier -- |shift| below the paired SD -- fires.
+
+We state the direction rather than hide it: the shift is negative on 7 of 10
+seeds, which is *suggestive* that the classical bar exploits the added
+representation slightly better than a weighted vote over one- and two-feature
+learners does. That would be consistent with the A.5 ladder. But 43% of the
+MDE is below the smallest difference we preregistered as detectable, so it is
+not a finding, and reporting it as one would repeat the error A15 records.
+
+**The classical bar, which is what makes the question answerable.** Every cell
+carries a trained-frequency GAM, a GA2M and an order-matched JOINT twin
+alongside the three GBDTs, because the Fourier Wall result is that omitting the
+twin is how apparent quantum wins get manufactured. Mean AP under the baseline
+representation: XGBoost 0.8328, CatBoost 0.8185, **GAM 0.7893**, CVQBoost
+0.7646. The GAM twin outscores the quantum arm.
+
+A GBDT was nonetheless the best classical arm in all 20 cells (XGBoost 17,
+CatBoost 3), so the twins never set the delta. Both facts belong together: the
+twins did not change the NUMBER, and they changed what the number MEANS,
+because "best classical" now denotes a bar containing a periodic-structure
+model at 0.79 rather than one at 0.26.
+
+**Scope.** Exploratory; H1b remains the sole confirmatory endpoint and H6
+carries no confirmatory weight. One dataset, one family set, one phase recipe.
+The QFE encoder is fitted on train folds only, asserted by test.
+
+**Two earlier runs of this arm were discarded rather than reported**, and the
+reasons are recorded because they bear on how much the third should be
+trusted. The first predicted through a spline basis refitted on test data. The
+second selected twin inputs by variance, so the whitened phase columns could
+never be chosen and two of three twins never received the representation under
+test -- identical scores in 10 of 10 seeds. Neither defect changed which arm
+set the bar, so neither changed the headline number materially; both made the
+classical bar something other than what section 3 specifies. The corrected run
+is the one reported here.
+
 # Appendix B. Preregistration registry
 
 ## B.1 Gates, scored as committed

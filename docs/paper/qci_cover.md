@@ -171,8 +171,16 @@ It weakens the pure sizing argument below and sharpens the integer-solver one:
 if a weighted vote over one- and two-feature learners does not represent the
 interactions a boosted tree exploits, then the formulation worth testing is the
 one the continuous relaxation drops -- the cardinality-constrained integer
-problem, three-feature subsets, and the phase representation. None have been
-run, and that is our first ask.
+problem and three-feature subsets. Neither has been run, and that is our first
+ask.
+
+We have since tested the third candidate, the phase representation, and it does
+not help: across ten seeds the quantum-minus-classical difference shifts by
+-0.0115 against a paired SD of 0.0135, well inside our detectable threshold. We
+report that because it narrows the ask honestly. The remaining two are the ones
+that need your hardware, and one of them -- the cardinality-constrained integer
+problem -- is the only formulation here where a classical solver does not win by
+construction.
 
 ## What we would test with the access
 
