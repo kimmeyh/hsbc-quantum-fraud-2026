@@ -20,7 +20,31 @@ Working project for Harold Kimmey's Phase 1 concept proposal to the 2026 Global 
 
 - Program page: https://quantumai.thequantuminsider.com/program/
 - TrueLoop HSBC proposal (public competitor example): https://github.com/MatthewLeibel/TrueLoop-Compute-HSBC-Challenge-Reproducibility
-- Prior submission template (different challenge): `D:\Data\Harold\0 QGIC\Quantum Forecasts from Echoes - Phase1 V1.pdf`
+- Prior submission template (different challenge): held locally by the team lead, not part of this repository
+
+## Datasets (required before anything runs)
+
+The raw datasets are NOT redistributed here: their licences do not permit it,
+and `experiments/data/` is gitignored apart from `MANIFEST.json`, which carries
+the SHA-256 of every file the frozen loaders read.
+
+| Dataset | Place at | Source |
+|---|---|---|
+| ULB creditcard | `experiments/data/ulb/creditcard.csv` (plus `creditcard_x1_train.csv`, `creditcard_x1_test.csv`) | Kaggle "Credit Card Fraud Detection" (ULB) |
+| SPECTRA | `experiments/data/spectra/spectra_<name>.csv` | SPECTRA release (see `docs/references.md`) |
+| IEEE-CIS | `experiments/data/ieee-cis/` | Kaggle "IEEE-CIS Fraud Detection" |
+
+Set `HSBC_ULB_CSV` to override the ULB location if you keep it elsewhere.
+
+Verify a staged copy against the frozen checksums before running anything:
+
+```
+python scripts/manifest.py verify
+```
+
+`VERIFY OK` means every file matches the manifest the results were produced
+from. Any other output means the data differs from what the evidence store
+records, and figures will not reproduce.
 
 ## Immediate to-do
 

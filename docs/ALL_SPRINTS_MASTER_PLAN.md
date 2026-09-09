@@ -64,7 +64,7 @@ improvements 1, 2 and 4 applied, 3 declined; suite 173 -> 194).
 | 7 | Sep 5-6 | [DONE] F33, F34, QCi/paper update | -- |
 | 8 | Sep 6-7 | [DONE] **F3** (IEEE-CIS, all four tasks) + paper updates; F36 attempted and FAILED | -- |
 | 9 | Sep 7-8 | [DONE] F4 (H6, measured null), F14, F16; **QCi package SENT** 2026-09-08 09:59 | -- |
-| 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
+| 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F10; F16 shipped in Sprint 9 |
 | Finalize | Sep 12-13 | F10, **F40 (segment non-public material)** -> **F37 (repo public)** in that order, **F38 (page limits)** -- all SUBMISSION BLOCKERS; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
 
 Renumbered 2026-09-05: the team lead noted the project is running more than one sprint per day, so F33 took Sprint 7 and F3 moved to Sprint 8 rather than competing for the same hours. A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
@@ -140,7 +140,7 @@ docs/reviews/f36-float-tables-outcome.md.
 **F40. Segment non-public material out of the working tree (~1h) Priority 1 -- BLOCKS F37**
 - Phase: Finalize (team lead 2026-09-08: "removing them going forward is enough. Add as backlog item so we can fully plan it")
 - Platform: repo/admin
-- **Why it blocks F37**: making the repository public publishes everything in the working tree. This card must complete FIRST. Destination is `D:\Data\Harold\hsbc-quantum-fraud-2026\`, a sibling of the repo that git cannot see, already holding the sent QCi .msg
+- **Why it blocks F37**: making the repository public publishes everything in the working tree. This card must complete FIRST. Destination is a sibling folder outside the repository that git cannot see, already holding the sent QCi .msg
 - **What moves, and why each**:
   - `0Testing Feedback - all.txt` -- STRUCTURAL scan (no content read, per the CLAUDE.md rule that team-lead `0*` files are committed but never read) finds 1 email address, 1 phone number, 4 personal-name hits, 9 QCi mentions. Team-lead working notes with contact details
   - `0QMLQI Backlog Refinement.txt` -- 71KB, 41 QCi mentions, 2 hits on an api/key/secret pattern. Those are PROBABLY discussion rather than live credentials, but confirming would require reading the file, which the standing rule forbids. That is precisely when segmentation beats inspection
@@ -174,53 +174,80 @@ docs/reviews/f36-float-tables-outcome.md.
 
 (F3 IEEE-CIS: COMPLETED in Sprint 8, all four tasks, merged via PR #47; history in SPRINT_8_SUMMARY.md. Removed from candidates per convention.)
 
-**F29. Sample-size insensitivity of the CVQBoost optimum (~2h proxy, zero metered) Priority 15**
-- Phase: Experiments (team-lead observation 2026-09-04; run "if we have time before submission", include only if the evidence supports it)
-- Platform: ULB proxy (zero metered seconds); IEEE-CIS as a second regime if F3 lands first
-- **The observation to test**: the team lead has repeatedly measured equivalent CVQBoost predictions training on 250k, 1M, 2M, 3M, 5M, 6M and 7M rows, across multiple datasets, in prior work outside this repository. No paper found in a survey of the QML randomness/generalization literature states this result; Caro et al. (few-training-data generalization) bounds a different quantity and assumes trainable gates that CVQBoost does not have, so it must NOT be cited as direct support
-- **Candidate mechanism, from this project's own Sprint 4 finding**: both Hamiltonian terms scale linearly with n_train (J = HH^T + lambda*I with entries summed over rows; C = -2Hy), so scaling the row count scales the objective without moving its argmin. The optimum depends on the correlation structure among weak learners, which stabilizes once enough rows estimate it. The lambda sweep already showed the solution sits at near-uniform weights regardless of lambda
-- **Design (all on the exact proxy)**: build pools at n in {50k, 100k, 250k, 500k, full} from the same seed's train fold, identical feature set and weak-learner config; report (a) cosine similarity of the optimal weight vectors against the full-n solution, (b) test AP at each n with seed CIs, (c) the n at which both curves flatten. Repeat across 3 seeds. Zero metered seconds; hardware confirmation only if the proxy curve is interesting and budget allows
-- **Honesty constraints**: enters as a LABELED EXPLORATORY analysis under a dated amendment, never as a headline or a preregistered result; prior-work evidence gets the same provenance disclosure as the FourierWall2 material; and the paper must connect it to the near-degeneracy finding rather than let a reviewer discover the link, since "the optimum is insensitive to sample size" and "the optimum is nearly degenerate" are adjacent claims
-- **Why it could matter to the submission**: training cost, retraining cadence, and data-retention footprint are production concerns a bank weighs directly; a measured "this arm reaches its ceiling at a fraction of the data" is practical evidence in the production-bound framing (F27), if it holds
-- Depends on: nothing (reuses qubo_proxy build/solve); best run after F8 so it cannot displace paper work
-
-**F4. QFE phase arms + order-matched twins (~0.5 day) Priority 16**
-- Phase: Experiments
-- Platform: ULB, IEEE-CIS
-- Fourier Wall recipe applied identically to all arms; trained-frequency GAM/GA2M/JOINT twins in every H6 cell
-- Depends on: F1
-
-**F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority 18**
-- Phase: Experiments
-- Platform: SPECTRA, Dirac-3
-- 3 strongest cells x 5 seeds; random-segment negative control machinery reused for fraud transfer
-- Depends on: QCi grant; F2 approval pattern
-
-(F6 Braket gate-based arm: moved to HOLD per team-lead steering 2026-08-30; no Braket execution before submission/acceptance. The proposal covers Braket via the written [PROJ] Phase 2 plan plus Team Capability citing the team lead's near-expert AWS and hands-on Braket experience.)
-
-(F7 results memo + gate review: COMPLETED Sprint 4 -> docs/RESULTS_MEMO.md. A REFRESH of the memo is folded into each later evidence sprint rather than tracked as a separate item.)
-
 ### Paper (Stages 4-6)
 
 ### Finalize (Stages 7-8)
 
+**F42. Correctness findings needing verification or reruns (~4h) Priority 4**
+- Phase: Finalize (Fable 5.1 adversarial review 2026-09-09; card #60)
+- Platform: docs + experiments/src
+- Needs EXTERNAL SOURCE CHECKS: the hardware description against QCi's own paper (coherent states with shot noise, not Fock states; R/~200 weight resolution; 23 dB dynamic-range limit); the vendor accuracy claim against CVQBoost Table 1 (reportedly ~0.19 AUC below XGBoost at ratios 0.01-0.02, which would STRENGTHEN our null); the Loke et al. citation and venue; Equality Act 2010 scope (Great Britain, not Northern Ireland)
+- Needs CLASSICAL RUNS: lambda=0 FISTA spread from 20 random simplex starts; decomposition of the +0.0319 gain, which currently confounds three simultaneous changes and selected on seed 42 then evaluated including seed 42; per-GBDT H1b deficits rather than against the max only
+- **F11 of that review is the SAME lambda=0 degeneracy F41 found from the other side.** Do them together or one redoes the other's work
+- Depends on: nothing; overlaps F41 (#59)
+
+**F43. Report IEEE-CIS AUC-ROC against HSBC's named benchmark (~1h) Priority 5**
+- Phase: Finalize (team-lead direction 2026-09-09; card #61)
+- Platform: docs, experiments/src
+- HSBC's problem statement names AUC-ROC 0.9459 on IEEE-CIS as the classical bar. We report AUPRC only. Problem Relevance & Impact is 25%, the largest single rubric weight
+- **The classical half needs NO rerun**: `run_ieee.py` already computes and stores `auc_roc` per fold and `ieee_classical.json` holds all nine -- LightGBM 0.9139, CatBoost 0.8941, XGBoost 0.8640. Reportable from stored evidence today. (An earlier analysis called this a full rerun; it had read summary keys instead of per-fold rows.) Only the CVQBoost and ladder arms lack the metric
+- Required caveat: the Kaggle leaderboard test set differs from our rolling-origin folds, so 0.9139 is NOT directly comparable to 0.9459. State it rather than inviting the comparison
+- Depends on: nothing. Page cost lands against F38, which runs last
+
+**F44. Evidence-vs-document consistency tests (~3h) Priority 6**
+- Phase: Finalize (Sprint 10 retrospective improvement 2, team-lead approved 2026-09-09)
+- Platform: experiments/src
+- **Why**: every defect found this sprint was a document disagreeing with the evidence, and OUR SUITE CAUGHT NONE OF THEM. Two external reviewers found four in a day: the gate report under-reporting the campaign total (27/120 against the store's 37/163), a GAM twin cited "at 0.26" that appears in no artifact, B.1 listing H3 and H6 as NOT RUN while A.5/A.6 reported them measured, and the amendment count reading ten in two files against nineteen in a third
+- **What**: assert that every figure quoted in proposal.md, appendix.md and team_profile.md resolves to a value in results.json or a named results artifact. Extract decimals from the documents, match against the store, fail on any figure with no source
+- **The one that would have caught the worst case**: the gate report is generated FROM the store, so a test comparing report to store catches a generator bug. That specific test now exists (test_gate_report_totals.py, added with the fix); this card generalizes it from one artifact to every document
+- **Sequencing**: must land AFTER F41 and F42, so the tests encode the CORRECTED values rather than freezing the current wrong ones into an assertion
+- Acceptance: a deliberate edit changing any quoted figure fails a test; every figure currently in the three documents either resolves or is explicitly registered as prose
+- Depends on: F41 (#59), F42 (#60)
+
+**F41. Correct the pool-degeneracy mechanism and the depth claim (~2h) Priority 2 -- SUBMISSION BLOCKER**
+- Phase: Finalize (GPT-6 Astra adversarial review, 2026-09-08; every claim reproduced against the saved pools before carding)
+- Platform: docs + experiments/src
+- **Finding 1 -- the published mechanism is WRONG.** The proposal says "at 0.17% prevalence a depth-limited tree predicts the negative class almost everywhere, so the pool carries almost no diversity". Reproduced across all ten saved seed pools: **80-84 of 91 learners classify EVERY training row correctly, and exactly ZERO predict all-negative.** The Gram degeneracy is real (off-diagonal 170,234.4 vs diagonal 170,235) but its cause is in-sample MEMORIZATION, not majority-class collapse. Right observation, wrong explanation
+- **Finding 2 -- "depth-limited" is FALSE.** `qubo_proxy.py` passes `weak_cls_params=dict(weak_params or {})`, empty by default, so eqc-models builds `DecisionTreeClassifier(**{})` -> `max_depth=None`, unbounded. The phrase appears in 4 places including the proposal mechanism paragraph and the Loke comparison
+- **Finding 3 -- the zero-penalty sentence overstates.** "The optimum stays uniform even at zero penalty" is too strong. An independent SLSQP solve at lambda=0 from uniform reaches L1 distance **0.1978** from uniform (the reviewer's 0.198 reproduces exactly). BUT the objective improves by only **4.5e-08 relative** (-1.7023499227e5 -> -1.7023500000e5) and test AUPRC moves +0.0052, well inside the 0.0268 MDE. The defensible claim is numerical degeneracy, not a uniform optimum
+- **What does NOT change**: no gate score, no headline figure. H1b's -0.0399 null, the Gram entries, and the hardware-vs-proxy agreement are measurements and stand. What changes is the EXPLANATION attached to them
+- **The Loke comparison gets STRONGER, not weaker**: their heterogeneous learners (KNN, LDA, logistic, XGBoost) fail on different transactions; ours memorize the same rows. That is a cleaner contrast than the depth story
+- **Steps**: (1) register A20 recording the corrected mechanism with the reproduction; (2) fix "depth-limited" -> unbounded in all 4 places; (3) re-word the zero-penalty sentence to state the degeneracy numerically; (4) add a regression test asserting the perfect-classifier count per pool so this cannot drift silently
+- **Class 1 AND Class 2**: amends the FROZEN preregistration and changes a published claim. Needs explicit team-lead approval before the documents are touched
+- Acceptance: A20 registered; no "depth-limited" left in any document; the zero-penalty sentence states the 4.5e-08 relative degeneracy; a test asserts 80-84 of 91 perfect classifiers across the saved pools; full suite green
+- Reproduction is already done and recorded here, so the card starts from evidence rather than re-deriving it
+- Depends on: nothing. Should precede F10 (final verification walk)
+
 **F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 40**
 - Phase: Finalize
 - Platform: docs
-- Every number vs results.json; repo-wide confidential-string scan (fourierwall2 reference files file-by-file); requirements-matrix walk; public reproducibility repo; team-lead final PDF + portal submission, receipt archived
+- Every number vs results.json; repo-wide confidential-string scan (the fourierwall2 reference files were moved OUT of the repository at Sprint 10 F40, so the scan covers what remains rather than re-verifying them in place); requirements-matrix walk; public reproducibility repo; team-lead final PDF + portal submission, receipt archived
 - Depends on: F8, F9
 
 ### External (team-lead-owned, parallel)
 
 (F11 QCi sponsorship letter send: COMPLETED by the team lead 2026-08-30. F12 portal verification and F15 best-practices/ADR review: COMPLETED in Sprint 2, merged via PR #2; history in SPRINT_2_SUMMARY.md. All three removed from candidates per convention.)
 
-**F16. Minimal CI: pytest + lint on PRs with smoke fixture (~30m) Priority 36**
-- Phase: Finalize
-- Platform: docs
-- GitHub Actions on PRs to develop; sub-minute; no dataset or metered access
-- Backlogged per the approved 2026-08-30 disposition (item 11)
+(F4 H6 representation arm, F14 eqc-models feedback package, and F16 minimal CI: COMPLETED in Sprint 9, merged via PR #53 (main PR #54); history in SPRINT_9_SUMMARY.md. All three removed from candidates per convention.)
 
 ### HOLD Items (post-submission)
+
+**F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority HOLD**
+- Phase: Experiments (moved to HOLD by team lead 2026-09-08 at Sprint 10 refinement)
+- Platform: SPECTRA, Dirac-3
+- 3 strongest cells x 5 seeds; random-segment negative control machinery reused for fraud transfer
+- **Why HOLD**: needs the QCi grant, which has only been acknowledged, not granted (card #40 open). Blocked by the same pending reply as F25
+- Depends on: QCi grant; F2 approval pattern
+
+**F29. Sample-size insensitivity of the CVQBoost optimum (~1h measured, zero metered) Priority HOLD**
+- Phase: Experiments (moved to HOLD by team lead 2026-09-08 at Sprint 10 refinement)
+- Platform: ULB proxy
+- **Effort re-measured 2026-09-08, and the old ~2h was wrong in the cheap direction**: pool build scales O(n^1.4) -- 8.8s at 50k rows, 25.9s at 100k, 82.2s at 250k. The ULB train fold is 170,236 rows after dedup and the 60/20/20 split, so the full 3-seed x 4-size grid is 8-10 minutes of build plus solve and scoring. It could have run in parallel with anything
+- **Why HOLD anyway, and this is the deciding reason**: it scores against no rubric criterion. The weights are Problem Relevance & Impact 25%, Technical Approach & Innovation 25%, Feasibility 20%, Validation Plan 15%, Team Capability 10%, Hybrid 5%. A stability property of our own optimizer is not a fraud-detection result, a validation-protocol improvement, or a hybrid-integration argument
+- **The proposal already makes the production-cost argument better** (section, line 94): CVQBoost's published claim is a runtime advantage from 1M to 70M samples, our null sits at 284k rows, and the untested question is end-to-end training time against sample count whose Hamiltonian construction grows with the square of the pool size. That is sharper than "the optimum is insensitive to sample size"
+- **Three further costs**: it needs a dated amendment (A20) four days from the evidence freeze; the card's own honesty constraint requires connecting it to the near-degeneracy finding, which a reviewer reads as the same finding restated; and it needs page space in two documents that are currently OVER limit, working against F38
+- Post-submission value is real; the Phase 2 plan can name it as a follow-up at zero cost
+- Depends on: nothing (reuses qubo_proxy build/solve)
 
 **F17. Dirac-3 simulator for pre-hardware test runs (~2-3h investigation, build TBD) Priority HOLD**
 - Phase: Phase 2 preparation (team lead: "prioritize for after submission")
@@ -268,7 +295,3 @@ docs/reviews/f36-float-tables-outcome.md.
 - Sandwich/entangling encoding only (Inverse Born Rule: plain Ry is provably classical); phase-complexity, Berry-connection, mode-MI diagnostics reported
 - Team lead brings near-expert AWS + hands-on Braket experience; Phase 1 covers this as a written [PROJ] plan only
 
-**F14. eqc-models feedback package to QCi (~2h) Priority HOLD**
-- Phase: External
-- Platform: Dirac-3
-- Promised in the sponsorship letter; assemble after the hardware campaign

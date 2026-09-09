@@ -1,10 +1,13 @@
 """Data loading and splitting per PREREGISTRATION.md.
 
-ULB source files live in the existing XGBvHQXGB checkout; nothing is copied.
+Dataset locations resolve relative to the repository, with an env-var override.
+Nothing is copied into the repo: `experiments/data/` is gitignored except its
+MANIFEST.json, and the raw datasets are never redistributed (licence).
 All feature selection is fit on train only (leakage rule).
 """
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -12,8 +15,23 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_selection import mutual_info_classif
 
-ULB_CSV = Path(r"D:\Data\Harold\github\XGBvHQXGB\datasets\creditcard.csv")
 _DATA = Path(__file__).resolve().parents[1] / "data"
+
+
+def ulb_csv() -> Path:
+    """Locate the ULB creditcard.csv.
+
+    Order: $HSBC_ULB_CSV, then the repo-relative default. An absolute path
+    hardcoded here used to be the only answer, which meant the public repository
+    shipped one machine's directory layout and worked nowhere else -- a hole in
+    the reproducibility appendix C promises. The file itself is never committed:
+    the ULB licence does not permit redistribution, and experiments/data/ is
+    gitignored apart from MANIFEST.json, which carries the checksum instead.
+    """
+    override = os.environ.get("HSBC_ULB_CSV")
+    if override:
+        return Path(override)
+    return _DATA / "ulb" / "creditcard.csv"
 SPECTRA_DIR = _DATA / "spectra"
 IEEE_CIS_DIR = _DATA / "ieee-cis"
 
@@ -39,7 +57,14 @@ class Split:
 
 
 def load_ulb() -> pd.DataFrame:
-    df = pd.read_csv(ULB_CSV)
+    path = ulb_csv()
+    if not path.exists():
+        raise FileNotFoundError(
+            f"ULB creditcard.csv not found at {path}. Place it at "
+            f"experiments/data/ulb/creditcard.csv, or set HSBC_ULB_CSV to its "
+            f"location. The file is not redistributed with this repository; "
+            f"experiments/data/MANIFEST.json carries its checksum.")
+    df = pd.read_csv(path)
     assert LABEL_COL in df.columns and TIME_COL in df.columns
     assert df[LABEL_COL].sum() == 492 and len(df) == 284807, "unexpected ULB variant"
     return df
