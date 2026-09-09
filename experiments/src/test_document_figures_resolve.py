@@ -130,7 +130,29 @@ REGISTERED: dict[str, str] = {
 }
 
 
+def _tracked_result_files() -> list[Path]:
+    """Only files git actually carries.
+
+    The first version globbed the results directory, which on a development
+    machine also holds progress heartbeats, smoke outputs and an INVALID_twins
+    artifact -- none of them committed. The test therefore passed locally using
+    evidence a fresh clone does not have, and CI caught it. A figure must
+    resolve against what SHIPS, not against what happens to be on disk.
+    """
+    import subprocess
+    out = subprocess.run(
+        ["git", "ls-files", "experiments/results/*.json"],
+        capture_output=True, text=True, cwd=str(ROOT))
+    return [ROOT / line for line in out.stdout.split() if line]
+
+
 def _stored_values() -> set[float]:
+    """Absolute values of every number in the tracked artifacts.
+
+    ABSOLUTE, because the document regex captures "0.0800" out of "-0.0800"
+    while the store holds -0.08000348. Comparing signed values made a correctly
+    reported figure look unaccounted.
+    """
     vals: set[float] = set()
 
     def walk(o):
@@ -141,9 +163,9 @@ def _stored_values() -> set[float]:
             for v in o:
                 walk(v)
         elif isinstance(o, (int, float)) and not isinstance(o, bool):
-            vals.add(round(float(o), 4))
+            vals.add(round(abs(float(o)), 4))
 
-    for f in RESULTS.glob("*.json"):
+    for f in _tracked_result_files():
         try:
             walk(json.loads(f.read_text(encoding="utf-8")))
         except Exception:
@@ -166,7 +188,7 @@ def test_every_quoted_figure_resolves_or_is_registered(doc):
     stored = _stored_values()
     unaccounted = sorted(
         (d for d in _decimals(p.read_text(encoding="utf-8"))
-         if round(float(d), 4) not in stored and d not in REGISTERED),
+         if round(abs(float(d)), 4) not in stored and d not in REGISTERED),
         key=float)
     assert not unaccounted, (
         f"{doc} quotes {len(unaccounted)} figure(s) that resolve to no stored "
@@ -197,7 +219,7 @@ def test_the_guard_would_have_caught_the_stale_gam_figure():
     not in REGISTERED either, so the check above must reject it.
     """
     stored = _stored_values()
-    assert round(0.26, 4) not in stored, (
+    assert round(abs(0.26), 4) not in stored, (
         "0.26 now resolves to a stored value, so this regression test no "
         "longer demonstrates anything; pick another retired figure")
     assert "0.26" not in REGISTERED, "0.26 must never be registered; it was wrong"
