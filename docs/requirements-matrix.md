@@ -1,6 +1,6 @@
 # Requirements and Evidence Matrix
 
-Status legend: OK = verified against the full official PDF text (docs/source/, verified 2026-08-29). TODO = not yet addressed in our submission. PARTIAL = addressed but bounded, with the bound stated in the submission rather than hidden (Sprint 5 sweep, 2026-09-04). Rows C1-C7, E1-E6 and A5b were verified against the RENDERED PDFs, not against intent; several are additionally enforced by experiments/src/test_submission_artifacts.py.
+Status legend: OK = verified against the full official PDF text (docs/source/, verified 2026-08-29). TODO = not yet addressed in our submission. PARTIAL = addressed but bounded, with the bound stated in the submission rather than hidden (Sprint 5 sweep, 2026-09-04; re-swept at Sprint 9 close-out, 2026-09-08, which moved E5 from OK to PARTIAL and added the H6 encodings result to D7). Rows C1-C7, E1-E6 and A5b were verified against the RENDERED PDFs, not against intent; several are additionally enforced by experiments/src/test_submission_artifacts.py.
 
 This matrix is the final acceptance checklist. Stage 8 walks it line by line.
 
@@ -55,7 +55,7 @@ Scoring guide: 5 = flagship demonstration; 4 = convincing with minor gaps. Targe
 | D4 | Metrics: AUC-ROC, AUPRC (recommended primary for imbalance), F1, Precision, Recall, confusion matrix, on held-out test | s4.1, 5.2 | All, with bootstrap CIs. AUPRC primary (step-wise AP), AUC-ROC reported; appendix A.1. | OK |
 | D5 | Comparison with at least one classical baseline (XGBoost or LightGBM named; consistent with competition SOTA) | s5.2, 5.3 | Tuned XGBoost + LightGBM + CatBoost + logistic + structural control. Tuned XGBoost, LightGBM and CatBoost, equal 100-trial Optuna budgets; appendix A.1. | OK |
 | D6 | Benchmark against published results and clearly report comparison methodology | s4.1 | Statement's own reference table: ULB XGB+SMOTE AUPRC 0.867, RF+SMOTE 0.871, stacking AUC 0.9887, CatBoost F1 0.8636, XRAI F1 0.9407; IEEE-CIS winner AUC 0.9459. Also quantum refs: VQC F1 0.88, QSVC F1 0.98 (Innan), Deloitte QNN precision 0.87. AutoXGB 0.782 cited as illustrative, not like-for-like; Loke et al. 2026 compared on design. | OK |
-| D7 | Secondary objective: document where quantum/quantum-inspired improves over TUNED classical baselines; characterize under what conditions (feature sets, data subsets, encodings) | s4.2 | This is our Lane A thesis. H1b null reported as committed (-0.0399); conditions characterized via the degeneracy finding. | OK |
+| D7 | Secondary objective: document where quantum/quantum-inspired improves over TUNED classical baselines; characterize under what conditions (feature sets, data subsets, encodings) | s4.2 | This is our Lane A thesis. H1b null reported as committed (-0.0399); conditions characterized via the degeneracy finding. ENCODINGS now covered too (Sprint 9, F4/H6): a Fourier-phase representation given identically to every arm, with order-matched classical twins, shifts the quantum-minus-classical delta by -0.0115 against a paired SD of 0.0135 -- 43% of the 0.0268 MDE, below what we preregistered as detectable, so reported as a measured null rather than a finding (appendix A.6, A19). | OK |
 | D8 | Class imbalance handling documented (resampling, loss weighting, threshold tuning) | s5.3 | Weighting, no double-correction. 0.17% prevalence handled by class weighting; the class-weighted control is reported in A.4. | OK |
 | D9 | Robustness: consistency across fraud types/partitions; behavior under distribution shift (temporal splits) | s4.2 | Temporal split protocol. Single time-ordered split reported with its reversal; a proper temporal protocol is Phase 2. | PARTIAL |
 | D10 | Latency context: 100 to 300 ms end-to-end envelope; inference latency benchmark is good-to-have | s3.1, 5.3 | Report inference latency per arm. Latency stated as a Phase 2 target to be measured (p50/p95/p99), not claimed as measured. | PARTIAL |
@@ -76,7 +76,7 @@ Scoring guide: 5 = flagship demonstration; 4 = convincing with minor gaps. Targe
 | E2 | Evidence tags [HW] / [SIM] / [PROJ] on every quantitative claim. [HW]/[SIM]/[PROJ] on every quantitative claim. | OK |
 | E3 | Preregistered gates, nulls published. G0 FAIL, G0b PASS, H1b NULL, H4 PARTIAL, all scored as committed. | OK |
 | E4 | Classical ceiling stated plainly. CatBoost 0.8368 stated as the ceiling the quantum arm did not beat. | OK |
-| E5 | Under the page limit. Proposal 6/6, appendix 3/3, team profile 1/1; TESTED by test_page_count_within_limit. | OK |
+| E5 | Under the page limit. NOT MET as of Sprint 9: the H6 write-up (A.6) pushed both documents over -- proposal 7 of 6, appendix 4 of 3; team profile still 1/1. Both page-limit cases are xfail(strict=True) tied to F38, so each FAILS the moment its document is back under limit and the marker cannot outlive the fix. F38 is a named SUBMISSION BLOCKER in the Finalize row of the master plan. | PARTIAL |
 | E6 | Reproducibility repo linked as supplementary material. Public package described; repository becomes public at submission. | OK |
 
 ## Portal document verification (2026-09-04)
