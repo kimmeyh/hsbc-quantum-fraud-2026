@@ -138,21 +138,7 @@ docs/reviews/f36-float-tables-outcome.md.
 - Acceptance: every numeric assertion in proposal, appendix and the QCi letter resolves to a fact record; the build fails on a stale reference; and a deliberate edit to one fact value propagates to every document that cites it
 - Depends on: nothing. Best started after F16/F10 and the submission
 
-**F40. Segment non-public material out of the working tree (~1h) Priority 1 -- BLOCKS F37**
-- Phase: Finalize (team lead 2026-09-08: "removing them going forward is enough. Add as backlog item so we can fully plan it")
-- Platform: repo/admin
-- **Why it blocks F37**: making the repository public publishes everything in the working tree. This card must complete FIRST. Destination is a sibling folder outside the repository that git cannot see, already holding the sent QCi .msg
-- **What moves, and why each**:
-  - `0Testing Feedback - all.txt` -- STRUCTURAL scan (no content read, per the CLAUDE.md rule that team-lead `0*` files are committed but never read) finds 1 email address, 1 phone number, 4 personal-name hits, 9 QCi mentions. Team-lead working notes with contact details
-  - `0QMLQI Backlog Refinement.txt` -- 71KB, 41 QCi mentions, 2 hits on an api/key/secret pattern. Those are PROBABLY discussion rather than live credentials, but confirming would require reading the file, which the standing rule forbids. That is precisely when segmentation beats inspection
-  - The other five `0*` files -- small, few flagged patterns, but they are team-lead working files with no reason to be public
-  - `experiments/reference/fourierwall2/` -- 2MB, 42 tracked files, the prior Fourier Wall / SPECTRA work. The team lead decided on 2026-09-08 that this work stays OUT of the challenge submission (test_submission_does_not_claim_prior_paid_tier_degree3_work enforces it in the documents); publishing its charts and findings in the challenge repo would contradict that decision
-- **Verified before proposing**: `.env` is NOT tracked and has never been committed. QCi job identifiers in `hw_job_ids.json` are opaque hashes with no account linkage, and the QCi letter promises them as evidence -- they STAY
-- **`fourierwall2` is safe to move**: referenced only by CHECKLIST.md, docs/adr/0013 and the master plan. NO code or test depends on the path (verified by grep over experiments/ and scripts/). Those three references need rewording to point at the external folder, not deleting -- the ADR's reasoning still stands
-- **Steps**: (1) move the files; (2) `git rm --cached` each; (3) add `0*.txt` and `experiments/reference/fourierwall2/` to .gitignore; (4) reword the three doc references; (5) write a README in the destination folder recording what moved, when, why, and from which commit; (6) re-run the full suite and `render-all.ps1`
-- **HISTORY IS NOT REWRITTEN** (team lead's explicit decision). These files remain in git history and a public repo exposes history. Accepted because the exposure is the team lead's own contact details and prior-work references, not credentials. Anyone revisiting this should know it was a decision, not an oversight
-- Acceptance: `git ls-files` returns nothing matching `0*.txt` or `fourierwall2`; the full suite passes; all ten PDFs still render; the destination README exists
-- Depends on: nothing. MUST precede F37
+(F40 segment non-public material: COMPLETED in Sprint 10, merged via PR #58 (main PR #62); history in SPRINT_10_SUMMARY.md. Removed from candidates per convention.)
 
 **F37. Make the repository public (~45m) Priority 1 -- SUBMISSION BLOCKER**
 - Phase: Finalize (team lead 2026-09-06: "It must be public upon submission ... if not already in the backlog item for final submission, please add making the repository public")
