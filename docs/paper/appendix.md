@@ -248,7 +248,7 @@ this submission reports.
 
 ## B.2 Amendments
 
-Twenty dated amendments, A1 to A20, each with rationale and approval; full
+Twenty-one dated amendments, A1 to A21, each with rationale and approval; full
 text in the repository. Three changed a reported figure, named here so they are
 easy to find. **A15**: the
 frozen pool's k=6 AUPRC was published as 0.7688, a five-seed mean carried into a
@@ -266,7 +266,7 @@ No amendment changed a gate criterion; no gate was rescored after observation.
 
 # Appendix C. Reproduction and references
 
-Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A20. The
+Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A21. The
 repository at `github.com/kimmeyh/hsbc-quantum-fraud-2026` carries the pinned
 environment, both dataset checksums, the preregistration in full, the full
 reference list, and the results store, whose every row holds a configuration

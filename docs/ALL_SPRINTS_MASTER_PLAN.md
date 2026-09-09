@@ -165,6 +165,32 @@ docs/reviews/f36-float-tables-outcome.md.
 
 ### Finalize (Stages 7-8)
 
+**F47. Unbuffered Dirac-3 call logging and a job-id ledger (~2h) Priority 8**
+- Phase: Finalize / infrastructure (team-lead direction 2026-09-09, raised during the F46 probe)
+- Platform: Dirac-3
+- **The problem, observed live**: the first F46 probe attempt died with no artifact and no output. Whether the ONE approved metered call had been spent was unanswerable from the repository -- only an allocation-balance query settled it (it had not). A metered call whose outcome is unrecoverable is the worst case for a Criterion H workflow, because the safe response to ambiguity is to not re-run, and that stalls the sprint
+- **Write output UNBUFFERED, character by character as received**, appended to a per-call log rather than accumulated in memory and written at the end. The team lead's framing: like a terminal capturing keystrokes. A killed process, a lost tool result or a timeout then still leaves everything received up to that instant
+- **Capture the JOB NUMBER at submission, before waiting.** QCi results are retrievable by job id AFTER completion (`QciClient.get_job_results`, `get_job_status`, `get_job_metrics`), so a captured id turns a lost connection from a lost call into a re-read. This is the single highest-value item on this card: it makes a metered call recoverable rather than repeatable
+- **A durable ledger of every request and job id**, appended before the call returns, so the record survives a crash: timestamp, configuration hash, variable count, job id, and the outcome once known. `hw_job_ids.json` already retains ids for the 27+10 completed fits, but only AFTER success; the ledger must record the INTENT first
+- **Precedent**: F30 (concurrent submission, HOLD) already designed a durable job ledger for exactly this reason -- "a restart retrieves results for in-flight jobs instead of re-billing them". That design should be reused rather than reinvented, and this card is the subset of it that has value NOW, at 3,000 granted seconds
+- **Why it matters more now than it did**: at 163 spent seconds a lost call was an annoyance. At 3,000 granted seconds and a campaign worth running, an unrecoverable call is real money and real calendar
+- **RETRIEVAL HALF BUILT 2026-09-09** (`experiments/src/job_query.py`, team-lead request): queries status, metrics and results by job id. All four endpoints are reads and consume ZERO metered seconds. Verified against the real campaign: all 27 retained ids readable six days later, full results included. What REMAINS is the capture half -- recording the id at submission, before waiting -- which is what makes the tool reliably usable rather than usable only when an id happens to have been kept
+- **The metrics carry queue and processing times SEPARATELY**, which is the data that answers "is it queued or computing?" without inferring it from CPU. Measured across all 27: queue median 0.7s against processing median 5.3s, every job submitted 19:00-20:00 local
+- Acceptance: killing a submission mid-flight leaves both the job id and the partial output on disk; a job id alone is sufficient to retrieve the result afterwards; every metered request appears in the ledger whether or not it completed
+- Depends on: nothing. Pairs with F30, which holds the fuller concurrent design
+
+**F46. Verify the QCi grant and probe the variable ceiling (~45m) Priority 3**
+- Phase: Finalize (team-lead direction 2026-09-09; added to Sprint 11 mid-sprint)
+- Platform: Dirac-3
+- **Trigger**: QCi email 2026-09-09 13:58 confirms "3,000 seconds of complimentary, full-access Dirac-3 compute time" loaded to the account. Two things need establishing before any plan is built on it: that the seconds are actually there, and whether "full-access" lifts the A12 free-tier ceiling of 100 continuous variables
+- **Step 1, ZERO metered seconds**: `qci_client.QciClient.get_allocations()` is a plain HTTP GET against the allocations endpoint. It submits no job, so it needs no Criterion H approval. Reports the balance
+- **Step 2, METERED, needs explicit per-block approval**: the smallest possible job that distinguishes the ceilings. A12 was established when a 312-variable job was refused SERVER-SIDE, so the probe is a single continuous job just above 100 variables built from an existing pool. One call, expected 4 to 5 seconds. If it is accepted the ceiling moved; if it is refused server-side, A12 stands
+- **Design the probe to be cheap and decisive**: reuse a committed pool rather than fitting anything, submit the smallest variable count that exceeds 100, and record the raw response either way. A refusal is as informative as an acceptance and costs nothing
+- **What it unblocks**: 3,000 seconds against a campaign that has spent 163 is a different regime entirely. The formulations the submission names as unrun -- the cardinality-constrained integer problem, three-feature subsets -- become runnable, and the QCi letter's "first ask" stops being hypothetical. Scope for that is a SEPARATE team-lead decision, not this card
+- **Sequencing**: MUST run before F37. Making the repository public is irreversible, and a result that changes what the papers claim should land first
+- Acceptance: the allocation balance is recorded from the API, not from the email; the ceiling question is answered by a real device response; both outcomes written to results.json with [HW] tags and job identifiers retained; A12's status is either confirmed or amended
+- Depends on: nothing. Criterion H governs step 2
+
 **F42. Correctness findings needing verification or reruns (~4h) Priority 4**
 - Phase: Finalize (Fable 5.1 adversarial review 2026-09-09; card #60)
 - Platform: docs + experiments/src
@@ -278,7 +304,9 @@ docs/reviews/f36-float-tables-outcome.md.
 - Preserves every existing guard: spend caps computed against projected spend INCLUDING in-flight requests, frozen identical-config retry rule, B1 hash verification, unparseable-billing charge
 - Fully tested offline first (fake client simulating queue latency, out-of-order completion, crash-restart, failed job, unreadable billing); only then 2-3 real calls at window size 2, on explicit approval
 - Full card drafted at docs/sprints/drafts/F30_CARD_DRAFT.md
-- Value arrives with Phase 2 volume (81+ fit grids); not recommended before submission
+- **Measured queue behaviour, 2026-09-09**: the F46 probe submitted at 14:33 local was still queued 52 minutes later, having spent ~97 CPU-seconds on its local pool build. Flat CPU against growing wall clock is the signature of queue wait, not computation. The team lead reports the queue is ALMOST ALWAYS EMPTY AFTER 5PM LOCAL, so wall-clock cost is a function of WHEN a block runs, not what it computes
+- **The team lead's intent for this card**: enqueue 4 or more jobs at once so they run CONSECUTIVELY, raising the odds they execute back to back rather than each paying a fresh queue wait. That is a different and stronger value case than the throughput argument below
+- Value was judged to arrive with Phase 2 volume (81+ fit grids), and that judgment was made against a free tier with 163 spent seconds. With 3,000 granted seconds (F46) and queue wait as the binding cost rather than device seconds, the case is stronger: whenever a session needs more than one or two fits, serial submission wastes most of the wall clock. Still not recommended BEFORE submission, on calendar grounds alone
 - Depends on: nothing to build; live vetting needs team-lead approval (Criterion H)
 
 **F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD**

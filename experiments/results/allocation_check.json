@@ -1,0 +1,26 @@
+{
+ "note": "F46 step 1: Dirac-3 allocation balance read from the API, not from the grant email. QciClient.get_allocations() is a plain GET; zero metered seconds.",
+ "generator": "experiments/src/check_allocation.py",
+ "evidence_tag": "HW",
+ "checked_utc": "2026-09-09T18:24:14.763330+00:00",
+ "metered_seconds": 0.0,
+ "allocations": {
+  "csample": {
+   "metered": true,
+   "seconds": 0,
+   "paid": false
+  },
+  "dirac": {
+   "metered": true,
+   "seconds": 3000,
+   "paid": true
+  }
+ },
+ "grant_email": {
+  "from": "QCi (Lauren St. John)",
+  "date": "2026-09-09 13:58",
+  "stated": "3,000 seconds of complimentary, full-access Dirac-3 compute time"
+ },
+ "reconciliation": "API agrees with the email: 3000 seconds on the dirac allocation.",
+ "paid_flag_note": "dirac.paid is TRUE, where the free tier A12 was measured on is not. That is an account-tier change, and it is the reason the 100-variable ceiling has to be RE-TESTED rather than assumed to still hold."
+}
