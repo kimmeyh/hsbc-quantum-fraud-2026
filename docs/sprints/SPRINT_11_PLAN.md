@@ -262,11 +262,23 @@ output on disk; a job id alone retrieves the result afterwards; every metered
 request appears in the ledger whether or not it completed; the ObjectId
 reconstruction is unit-tested against the 27-job campaign.
 
-**Premise falsifier**: the premise is that the job id is obtainable at or near
-submission. Falsifier: no seam exists in `eqc-models` or `qci-client` that
-exposes it before the call returns. If that holds, the fallback becomes primary
-and the design changes -- find out FIRST, in a 15-minute spike, before building
-around an assumption.
+**Premise falsifier: RUN 2026-09-09, DID NOT FIRE.** The seam exists and is
+better than assumed. Call chain, traced offline:
+
+    QBoostClassifier.fit -> ClassifierBase.solve -> Dirac3CloudSolver.solve
+      -> QciClientSolver.solve -> QciClient.process_job(job_body, wait=wait)
+
+`process_job` ALREADY reads the allocation balance before the call, extracts
+`submit_job_response["job_id"]`, logs `Job submitted: job_id='...'` under
+`verbose`, polls to completion, reads the balance again, and returns
+`get_job_results(job_id)`. With `wait=False` it returns the submit response --
+containing the job id -- before any result exists.
+
+We never passed `verbose=True` and never captured either value. **The build is
+therefore smaller than planned**: drive `process_job` directly with balance
+reads around it, rather than wrapping or monkeypatching `submit_job`. That also
+retires the repr scrape that produced the F46 probe's wrong 5.0-second figure,
+since balance-before minus balance-after is the authoritative cost.
 
 **No metered call is needed to verify this.** The 27 historical ids exercise
 retrieval and reconstruction; a fake client exercises capture and crash
