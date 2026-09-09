@@ -178,6 +178,16 @@ docs/reviews/f36-float-tables-outcome.md.
 
 ### Finalize (Stages 7-8)
 
+**F44. Evidence-vs-document consistency tests (~3h) Priority 6**
+- Phase: Finalize (Sprint 10 retrospective improvement 2, team-lead approved 2026-09-09)
+- Platform: experiments/src
+- **Why**: every defect found this sprint was a document disagreeing with the evidence, and OUR SUITE CAUGHT NONE OF THEM. Two external reviewers found four in a day: the gate report under-reporting the campaign total (27/120 against the store's 37/163), a GAM twin cited "at 0.26" that appears in no artifact, B.1 listing H3 and H6 as NOT RUN while A.5/A.6 reported them measured, and the amendment count reading ten in two files against nineteen in a third
+- **What**: assert that every figure quoted in proposal.md, appendix.md and team_profile.md resolves to a value in results.json or a named results artifact. Extract decimals from the documents, match against the store, fail on any figure with no source
+- **The one that would have caught the worst case**: the gate report is generated FROM the store, so a test comparing report to store catches a generator bug. That specific test now exists (test_gate_report_totals.py, added with the fix); this card generalizes it from one artifact to every document
+- **Sequencing**: must land AFTER F41 and F42, so the tests encode the CORRECTED values rather than freezing the current wrong ones into an assertion
+- Acceptance: a deliberate edit changing any quoted figure fails a test; every figure currently in the three documents either resolves or is explicitly registered as prose
+- Depends on: F41 (#59), F42 (#60)
+
 **F41. Correct the pool-degeneracy mechanism and the depth claim (~2h) Priority 2 -- SUBMISSION BLOCKER**
 - Phase: Finalize (GPT-6 Astra adversarial review, 2026-09-08; every claim reproduced against the saved pools before carding)
 - Platform: docs + experiments/src
