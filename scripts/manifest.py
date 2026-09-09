@@ -7,9 +7,11 @@ read. Manifest entries are keyed by portable logical names (e.g. "ulb/creditcard
 never machine paths, so the committed MANIFEST.json is valid on any clone.
 
 Known failure modes: a staged file changed legitimately (re-download) -> regenerate
-after confirming provenance; ULB lives OUTSIDE this repo (XGBvHQXGB checkout) by
-ADR-0003 -- on another machine set ULB_CSV (or HSBC_ULB_CSV) to its
-creditcard.csv path; the default is experiments/data/ulb/creditcard.csv.
+after confirming provenance; ULB is staged at experiments/data/ulb/creditcard.csv by default. ADR-0003
+permits either that directory or a pre-existing external checkout, and the
+raw data is never committed either way. To read it from elsewhere, set
+HSBC_ULB_CSV (honoured by data.py and therefore by every loader) or ULB_CSV
+(this tooling only).
 
 Usage:
   python scripts/manifest.py generate   # writes experiments/data/MANIFEST.json
@@ -30,13 +32,27 @@ import data  # noqa: E402  (frozen module; read-only import)
 
 DATA = REPO / "experiments" / "data"
 MANIFEST = DATA / "MANIFEST.json"
-ULB_CSV = Path(os.environ.get("ULB_CSV", str(data._ulb_csv())))
+def ulb_csv() -> Path:
+    """Resolve at CALL time, not import time.
+
+    This was a module-level constant, which froze the path at import and so
+    defeated the HSBC_ULB_CSV override this tooling exists to honour: anything
+    setting the variable after importing manifest got the stale default and
+    verify() would attest the wrong file.
+
+    Precedence is ULB_CSV, then whatever data.ulb_csv() resolves (which reads
+    HSBC_ULB_CSV, then the repo-relative default). Setting the two variables to
+    DIFFERENT paths means this module checksums one file while data.load_ulb()
+    reads another, and VERIFY OK stops meaning what it says -- so prefer one.
+    """
+    override = os.environ.get("ULB_CSV")
+    return Path(override) if override else data.ulb_csv()
 
 
 def required() -> dict[str, Path]:
     """Logical key -> path for every file the frozen loaders read. Missing any
     of these is a hard failure in both generate and verify."""
-    req = {"ulb/creditcard.csv": ULB_CSV}
+    req = {"ulb/creditcard.csv": ulb_csv()}
     for name in data.SPECTRA_NAMES:
         req[f"spectra/spectra_{name}.csv"] = data.SPECTRA_DIR / f"spectra_{name}.csv"
     for f in ("train_transaction.csv", "train_identity.csv"):
@@ -53,8 +69,9 @@ def staged() -> dict[str, Path]:
         if d.is_dir():
             for p in sorted(d.glob("*.csv")):
                 files.setdefault(f"{sub}/{p.name}", p)
-    if ULB_CSV.parent.is_dir():
-        for p in sorted(ULB_CSV.parent.glob("creditcard*.csv")):
+    _ulb = ulb_csv()
+    if _ulb.parent.is_dir():
+        for p in sorted(_ulb.parent.glob("creditcard*.csv")):
             files.setdefault(f"ulb/{p.name}", p)
     return files
 

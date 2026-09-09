@@ -7,6 +7,7 @@ All feature selection is fit on train only (leakage rule).
 """
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -17,7 +18,7 @@ from sklearn.feature_selection import mutual_info_classif
 _DATA = Path(__file__).resolve().parents[1] / "data"
 
 
-def _ulb_csv() -> Path:
+def ulb_csv() -> Path:
     """Locate the ULB creditcard.csv.
 
     Order: $HSBC_ULB_CSV, then the repo-relative default. An absolute path
@@ -27,7 +28,6 @@ def _ulb_csv() -> Path:
     the ULB licence does not permit redistribution, and experiments/data/ is
     gitignored apart from MANIFEST.json, which carries the checksum instead.
     """
-    import os
     override = os.environ.get("HSBC_ULB_CSV")
     if override:
         return Path(override)
@@ -57,7 +57,7 @@ class Split:
 
 
 def load_ulb() -> pd.DataFrame:
-    path = _ulb_csv()
+    path = ulb_csv()
     if not path.exists():
         raise FileNotFoundError(
             f"ULB creditcard.csv not found at {path}. Place it at "

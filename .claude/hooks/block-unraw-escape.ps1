@@ -49,7 +49,12 @@ if ([string]::IsNullOrWhiteSpace($cmd)) { exit 0 }
 if ($cmd -match 'allow_unraw_escape') { exit 0 }
 
 # Only look at commands that actually run python.
-if ($cmd -notmatch 'python') { exit 0 }
+# Anchor on an actual INVOCATION, not the bare substring. `-notmatch 'python'`
+# turned the scanner on for any command merely containing those letters: a path
+# like C:/Python312/..., a filename test_python_paths.sh, `pip show
+# python-dateutil`, or prose. During review of PR #58 it blocked a `gh api` call
+# whose only Python content was example text inside the comment being posted.
+if ($cmd -notmatch '(?:^|[\s;&|(])python[0-9.]*(?:\.exe)?(?:\s|$)') { exit 0 }
 
 # Only a DRIVE-LETTER path is unambiguous enough to block on. Legitimate
 # newline and tab escapes, and raw strings, must pass untouched: a hook that
@@ -67,7 +72,12 @@ foreach ($line in ($cmd -split "`n")) {
     if ($line.Trim().StartsWith('#')) { continue }
 
     foreach ($m in [regex]::Matches($line, '(?<prefix>[A-Za-z]*)(?<q>[''"])(?<body>[^''"]*)\k<q>')) {
-        if ($m.Groups['prefix'].Value -match '[rR]') { continue }
+        # EXACT Python string prefixes only. This was -match '[rR]', a
+        # substring test over a [A-Za-z]* capture, so an adjacent identifier
+        # ending in r -- str'...', dir'...', ptr'...' -- silenced the block.
+        # Valid prefixes are only r/b/f/u combinations; anything else abutting
+        # a quote is an identifier, not a prefix.
+        if ($m.Groups['prefix'].Value -match '(?i)^(?:r|rb|br|rf|fr)$') { continue }
         $body = $m.Groups['body'].Value
         $probe = $body -replace '\\\\', ''
         if ($probe -match '[A-Za-z]:\\[A-Za-z]') { $bad += $m.Value }

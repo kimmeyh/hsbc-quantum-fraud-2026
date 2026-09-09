@@ -18,8 +18,12 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
+SRC = Path(__file__).resolve().parent
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
 ROOT = Path(__file__).resolve().parents[2]
 RESULTS = ROOT / "experiments" / "results" / "results.json"
 REPORT = ROOT / "experiments" / "results" / "gate_report.md"
@@ -31,9 +35,17 @@ def _rows():
 
 
 def _metered():
-    """Every row that actually consumed device seconds, by whatever arm."""
-    return [r for r in _rows()
-            if r.get("status") == "ok" and (r.get("metered_seconds") or 0)]
+    """The rows score_gates.py counts, selected by ITS OWN predicate.
+
+    This used to restate the rule as "any row with truthy metered_seconds",
+    which agreed with the report only by coincidence of today's data. A future
+    metered arm not named cvqboost_hw* would be counted here and excluded
+    there, and a cvqboost_hw* row with 0 or None seconds diverges the other
+    way -- in both cases the test fails while blaming the wrong thing.
+    Importing the predicate means the test cannot drift from the code.
+    """
+    from score_gates import is_metered_arm
+    return [r for r in _rows() if is_metered_arm(r) and r.get("status") == "ok"]
 
 
 def test_report_fit_count_matches_the_store():
@@ -59,10 +71,16 @@ def test_every_metered_arm_appears_in_the_breakdown():
     line = REPORT.read_text(encoding="utf-8")
     m = re.search(r"By arm: (.+?)\.$", line, re.MULTILINE)
     assert m, "per-arm breakdown missing; it is what makes the total auditable"
+    # Compare parsed tokens, NOT substrings: "cvqboost_hw" is a prefix of
+    # "cvqboost_hw_mixed", so `arm in breakdown` passed even when only the
+    # mixed arm was listed -- exempting exactly the arm family this codebase
+    # generates, which is the regression this test exists to catch.
+    listed = {entry.split()[0] for entry in m.group(1).split("; ") if entry.split()}
     for arm in arms:
-        assert arm in m.group(1), (
+        assert arm in listed, (
             f"metered arm {arm!r} is absent from the gate report's per-arm "
-            f"breakdown, so its seconds are invisible in the audit trail")
+            f"breakdown (listed: {sorted(listed)}), so its seconds are "
+            f"invisible in the audit trail")
 
 
 def test_the_guard_would_catch_the_original_bug():

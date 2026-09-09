@@ -86,6 +86,19 @@ def _fit_table_widths(lines: list[str]) -> list[str]:
     return out
 
 
+def is_metered_arm(row) -> bool:
+    """True for a row belonging to an arm that consumes device seconds.
+
+    Exported so tests assert against the SAME predicate the report uses. The
+    first version of test_gate_report_totals.py restated the rule as "any row
+    with truthy metered_seconds", which agreed with this only by coincidence of
+    today's data: a future metered arm not named cvqboost_hw* would be counted
+    by the test and excluded by the report, and the failure would misdirect to
+    "the arm filter has narrowed again".
+    """
+    return str(row.get("arm", "")).startswith("cvqboost_hw")
+
+
 def main() -> int:
     store = json.loads((RESULTS_DIR / "results.json").read_text())
     rows = store["rows"]
@@ -105,7 +118,14 @@ def main() -> int:
                 quarantined += 1
                 continue
             key = (r["arm"], r["config"], r["pool_variant"], r["pair_build"])
-        elif r["arm"] == "cvqboost_hw":
+        elif str(r["arm"]).startswith("cvqboost_hw"):
+            # startswith, matching the metered-arm selection below. This branch
+            # used to test == "cvqboost_hw", so a cvqboost_hw_mixed row fell to
+            # the else and was keyed WITHOUT the status guard. run_hardware_f32
+            # writes failed fits as {"status": "failed", "metrics": None}, and
+            # the across-seed summary then dereferences metrics["auprc"] on
+            # None. Latent only because all 10 mixed rows are currently ok; the
+            # first failed mixed fit would take down the report generator.
             if r.get("status") != "ok":
                 continue                      # failed cells summarized separately
             key = (r["arm"], r["config"], r["protocol"], r["pair_build"])
@@ -218,7 +238,7 @@ def main() -> int:
     # This is the file CLAUDE.md designates as the verification path for every
     # reported number, so an undercount here is worse than an undercount in a
     # document: it certifies the wrong figure.
-    hw = [r for r in rows if str(r["arm"]).startswith("cvqboost_hw")]
+    hw = [r for r in rows if is_metered_arm(r)]
     lines += ["## Hardware rows [HW] and G0b proxy-fidelity gate", ""]
     if hw:
         ok = [r for r in hw if r.get("status") == "ok"]
@@ -271,6 +291,9 @@ def main() -> int:
     lines.append("")
 
     # ---- H1b on hardware (paired per-seed, identical splits) ----
+    # DELIBERATELY exact, not startswith: H1b is a preregistered endpoint over
+    # the B1 cells, and cvqboost_hw_mixed is a different arm (F32 mixed pool).
+    # Widening this would silently change what the primary endpoint measures.
     hw_cells = {k: v for k, v in by_cell.items() if k[0] == "cvqboost_hw" and k[2] == "stratified"
                 and len(v) >= N_SEEDS}   # B1 cells only; G0b cells are single-seed
     gbdt_matched = {a: {r["seed"]: r["metrics"]["auprc"] for r in by_cell.get((a, "matched13"), [])}
