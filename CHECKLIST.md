@@ -15,7 +15,7 @@ All development and debugging runs use the local proxy (the classical solve of t
 - [x] **C**: Braket question resolved: exec summary "asks" for Braket, scope allows any quantum/quantum-inspired framework, hardware optional and not penalized. Positioning: Dirac-3 as measured [HW] evidence + phase-active Braket-simulator arm + Phase 2 Braket plan
 - [x] **H**: Team name decided: "Claude Shannon's Fraud Catchers" (docs/team-name.md, with Claude Code disclosure language)
 - [x] **H+C**: Thesis decided (Aug 30): performance-first framing, scoped to provable wins; H1b promotion to blanket claim only on Stage 3 evidence (docs/thesis-candidates.md). Overall goal recorded: best predictions/inference, quantum or not
-- [x] **H**: Winning QML results located: FourierWall2 repo (in-segment CVQBoost wins, tuned config); analyzed in docs/evidence-inventory.md 3a/3b; 42 evidence files copied to experiments/reference/fourierwall2/, MOVED OUT of the repository at Sprint 10 (F40) to D:\Data\Harold\hsbc-quantum-fraud-2026\fourierwall2\ (external, outside the repository)
+- [x] **H**: Winning QML results located: FourierWall2 repo (in-segment CVQBoost wins, tuned config); analyzed in docs/evidence-inventory.md 3a/3b; 42 evidence files were copied to `experiments/reference/fourierwall2/` and MOVED OUT of the repository at Sprint 10 (F40); they are retained privately outside the repository and are not part of the submission
 - [x] **H**: Portal account confirmed (Sprint 2, F12): submission = 5-slot file upload; fields recorded in requirements-matrix A5/A5b; team profile ships as a one-page PDF; nothing uploaded until the final package
 
 ## QCi sponsorship (parallel track)
@@ -87,7 +87,7 @@ All development and debugging runs use the local proxy (the classical solve of t
 ## Stages 7 to 8: Finalize (Sep 7 to 8)
 
 - [ ] **C**: Verify every number in the paper against `results.json`
-- [ ] **C**: Pre-publication confidentiality scan of the entire repo and paper: no employer-repo URLs or org names in remotes/links, no account identifiers, no API keys or .env content, no QPU balance figures tied to a named account. Grep for the known-sensitive strings plus "github.com" and "sandbox" before anything goes public. F40 moves experiments/reference/fourierwall2/ and the 0* team-lead files OUT of the repository before it goes public, so the scan covers what remains rather than re-verifying that directory in place. F40 BLOCKS F37
+- [ ] **C**: Pre-publication confidentiality scan of the entire repo and paper: no employer-repo URLs or org names in remotes/links, no account identifiers, no API keys or .env content, no QPU balance figures tied to a named account. Grep for the known-sensitive strings plus "github.com" and "sandbox" before anything goes public. F40 (DONE, Sprint 10) moved `experiments/reference/fourierwall2/` and the `0*` team-lead files OUT of the repository, so this scan covers what remains rather than re-verifying those in place. NOTE: history is deliberately not rewritten, so the scan must cover full history, not just the tip. F40 BLOCKED F37
 - [ ] **C**: Freeze and publish the reproducibility repo (public GitHub under kimmeyh); link in appendix as supplementary material
 - [ ] **C**: Compliance walk of `requirements-matrix.md` against the final PDF (every A/B/C/D/E row)
 - [ ] **H**: Final approval of PDF
