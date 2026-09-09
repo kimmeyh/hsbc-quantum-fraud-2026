@@ -2,7 +2,9 @@
 
 **Dates**: 2026-09-10 to 2026-09-11 (evidence freeze Sep 12, target submit Sep 13, hard deadline Sep 15)
 **Branch**: `feature/20260910_Sprint_11`
-**Scope** (DEFINED, team lead 2026-09-09): F41, F42, F43, F37, F44, F45, F35. Nothing else.
+**Scope** (DEFINED, team lead 2026-09-09): F41, F42, F43, F37, F44, F45, F35.
+
+**EXTENDED mid-sprint** by team-lead direction: **F46** (#67, QCi grant landed 2026-09-09) and **F47** (#68). F47 is a HARD GATE -- the team lead's direction is that no further Dirac-3 job runs until it is done.
 
 ## Objective
 
@@ -79,6 +81,8 @@ encode corrected values, so it follows them.
 | E | **F45** Evidence-artifact guard (#63) | 60m | ~2m | pre-commit hook + CI wiring | Opus |
 | F | **F44** Evidence-vs-document tests | 180m | ~1m | 280 decimals to resolve or register | Opus |
 | G | **F35** Interpretation-layer tests | 120m | ~1m | designing what "meaning" tests assert | Opus |
+| H | **F46** QCi grant + ceiling probe (#67) | 45m | 1 metered call | queue wait, not compute | Opus + **team lead** |
+| I | **F47** Job-id capture and unbuffered logging (#68) | 120m | ~0m | no metered call needed to verify | Opus |
 
 **Total estimate 11h50m against a 2-day sprint.** That is tight but the runtime
 risk is now small: the two items the cards called "hours" are measured at 8
@@ -208,6 +212,65 @@ claim has a results row, a gate marked PASS has its criterion recorded.
 
 **Acceptance**: at least one test that would have caught the B.1 NOT-RUN
 contradiction, and one that would have caught the stale 0.26.
+
+### Task I -- F47: job-id capture and unbuffered logging (120m)
+
+**Why it is a gate.** The F46 probe spent an approved metered call and its job id
+was never captured, so its runtime is unrecoverable and its cost is known only
+from the allocation balance. A metered call whose outcome cannot be retrieved is
+the worst case under Criterion H: the safe response to ambiguity is not to
+re-run, which stalls the sprint. The team lead's direction is that no further
+Dirac-3 work runs until this is fixed.
+
+**What already exists**: `job_query.py` (built 2026-09-09) retrieves status,
+metrics and results by id, verified against all 27 retained ids six days on.
+That is the RETRIEVAL half. This task is the CAPTURE half.
+
+1. **Capture the job id at submission, before waiting.** This is the whole point:
+   it turns a lost connection from a lost call into a re-read. `eqc-models`
+   drives the submission internally, so find the seam -- a client hook, a
+   response callback, or reading the client's own job record immediately after
+   `fit()` starts. If no clean seam exists, wrap `QciClient.submit_job` for the
+   duration of the call and record what it returns
+2. **Exploit the ObjectId structure as a fallback.** Ids are MongoDB ObjectIds:
+   4-byte timestamp, 5-byte per-process random, 3-byte counter. Within ONE
+   client process the random field is constant and the counter increments, so
+   capturing the FIRST id of a block plus the call count recovers every id in
+   that block. Verified against the 27-job campaign, which shares
+   `08442f441b` and runs `bb6d1f` to `bb6d3f`. This does NOT recover an id from a
+   different process, which is why capture at submission is still primary.
+   **Measured, not assumed**: a job_id and the polynomial_file_id from the SAME
+   job, created in the same second, carry different random fields
+   (`08442f441b` against `ff2f309fb9`). An account-wide or date-derived value
+   would match. So the field is per generator, the search space for a foreign
+   process is 2^40, and running a fresh job reveals only that job's field --
+   the F46 probe's id is permanently unrecoverable, which is the cost this
+   card exists to stop repeating
+3. **Unbuffered append log per call.** Write each line as received, flushed, so a
+   kill or a lost tool result leaves everything up to that instant. The team
+   lead's framing: like a terminal capturing keystrokes
+4. **Durable ledger recording INTENT before the call**: timestamp, config hash,
+   variable count, degree, sample count, expected cost from
+   `qpu_cost_model.estimate_for`, then the job id, then the outcome. The existing
+   `hw_job_ids.json` records ids only AFTER success, which is the wrong order
+5. **Record the measured cost from the allocation balance**, before and after,
+   since the paid tier dropped the `device_usage_s` field the repr scrape relied
+   on. Feed it back into `qpu_cost_ledger.json` so estimates improve with use
+
+**Acceptance**: killing a submission mid-flight leaves the job id and partial
+output on disk; a job id alone retrieves the result afterwards; every metered
+request appears in the ledger whether or not it completed; the ObjectId
+reconstruction is unit-tested against the 27-job campaign.
+
+**Premise falsifier**: the premise is that the job id is obtainable at or near
+submission. Falsifier: no seam exists in `eqc-models` or `qci-client` that
+exposes it before the call returns. If that holds, the fallback becomes primary
+and the design changes -- find out FIRST, in a 15-minute spike, before building
+around an assumption.
+
+**No metered call is needed to verify this.** The 27 historical ids exercise
+retrieval and reconstruction; a fake client exercises capture and crash
+behaviour. Verification uses zero QPU seconds by construction.
 
 ## Risks
 
