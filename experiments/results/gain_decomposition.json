@@ -1,0 +1,121 @@
+{
+ "note": "F42/F12: AUPRC decomposition of the +0.0319 tuned-pool gain, plus the leave-one-out figure on the selection seed. Classical proxy throughout; zero metered seconds.",
+ "generator": "experiments/src/run_gain_decomposition.py",
+ "evidence_tag": "SIM",
+ "smoke": false,
+ "k": 6,
+ "frozen_k6_comparator_per_seed": {
+  "42": 0.7695289369563404,
+  "43": 0.7342691937553362,
+  "44": 0.704559891215237,
+  "45": 0.7445138762637926,
+  "46": 0.7230748946856085,
+  "47": 0.7347613077223422,
+  "48": 0.8119804230891033,
+  "49": 0.7519309215505582,
+  "50": 0.7286742931917252,
+  "51": 0.6778601133882199
+ },
+ "mde": 0.0268,
+ "elapsed_sec": 524.58,
+ "per_seed": [
+  {
+   "seed": 42,
+   "defaults": 0.7648269591051002,
+   "balanced": 0.8059688227596923,
+   "balanced_shallow_knn": 0.8073258338604213
+  },
+  {
+   "seed": 43,
+   "defaults": 0.7479808241615992,
+   "balanced": 0.7656727197929396,
+   "balanced_shallow_knn": 0.7687128585473628
+  },
+  {
+   "seed": 44,
+   "defaults": 0.7294756233648352,
+   "balanced": 0.7626445036388753,
+   "balanced_shallow_knn": 0.7762016084567606
+  },
+  {
+   "seed": 45,
+   "defaults": 0.7373846651979901,
+   "balanced": 0.7716133546859008,
+   "balanced_shallow_knn": 0.7760231445855114
+  },
+  {
+   "seed": 46,
+   "defaults": 0.7393925868809305,
+   "balanced": 0.7670133318861021,
+   "balanced_shallow_knn": 0.7542544180494647
+  },
+  {
+   "seed": 47,
+   "defaults": 0.7321670674435732,
+   "balanced": 0.7599833810466898,
+   "balanced_shallow_knn": 0.7674294329440253
+  },
+  {
+   "seed": 48,
+   "defaults": 0.7656084281592611,
+   "balanced": 0.8167832401653243,
+   "balanced_shallow_knn": 0.8143599876036132
+  },
+  {
+   "seed": 49,
+   "defaults": 0.7421875761319251,
+   "balanced": 0.7651588893148327,
+   "balanced_shallow_knn": 0.7693464647879527
+  },
+  {
+   "seed": 50,
+   "defaults": 0.6907749054967474,
+   "balanced": 0.7280728244150957,
+   "balanced_shallow_knn": 0.7427201267470552
+  },
+  {
+   "seed": 51,
+   "defaults": 0.6843107287712427,
+   "balanced": 0.7190763824221897,
+   "balanced_shallow_knn": 0.7238360343159308
+  }
+ ],
+ "published_mean_delta": 0.03190560580798345,
+ "decomposition": {
+  "families": {
+   "label": "families only (4-family defaults minus frozen 1-family)",
+   "mean": -0.004704448710505893,
+   "sd": 0.02274663410456902,
+   "n_positive": 4,
+   "n": 10
+  },
+  "weighting": {
+   "label": "class weighting only (same families)",
+   "mean": 0.03278780854144377,
+   "sd": 0.009486896980813078,
+   "n_positive": 10,
+   "n": 10
+  },
+  "knn": {
+   "label": "kNN change only (shallow tree + distance-weighted k=3)",
+   "mean": 0.0038222459770455687,
+   "sd": 0.00779650122318382,
+   "n_positive": 8,
+   "n": 10
+  },
+  "total": {
+   "label": "all three (the published +0.0319)",
+   "mean": 0.03190560580798345,
+   "sd": 0.018915213104998864,
+   "n_positive": 10,
+   "n": 10
+  },
+  "leave_out_selection_seed": {
+   "label": "all three, excluding the selection seed 42",
+   "mean": 0.03125101790841706,
+   "sd": 0.019942115931566792,
+   "n_positive": 9,
+   "n": 9
+  }
+ }
+}

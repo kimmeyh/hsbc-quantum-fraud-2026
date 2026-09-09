@@ -12,7 +12,7 @@ date: "September 2026"
 # To QCi
 
 **Request**: 30,000 QPU seconds of Dirac-3 access
-**Enclosed, all marked DRAFT**: concept proposal, appendices, frozen preregistration with its nineteen amendments, generated gate report, the hardware run plans, and the eqc-models integration feedback.
+**Enclosed, all marked DRAFT**: concept proposal, appendices, frozen preregistration with its twenty amendments, generated gate report, the hardware run plans, and the eqc-models integration feedback.
 
 ## Our goal in participating
 
@@ -205,7 +205,7 @@ Two questions we would value your view on, both single-fit experiments we would 
 
 ## A note on this package
 
-Everything enclosed is DRAFT and pre-submission. The results are as measured; the preregistration and its nineteen dated amendments show exactly what was decided before any result was seen, including the gate we failed and the two claims we had to correct. We would welcome correction on anything we have characterised wrongly about Dirac-3 -- especially the convexity argument and the free-tier ceiling -- before this becomes a public submission.
+Everything enclosed is DRAFT and pre-submission. The results are as measured; the preregistration and its twenty dated amendments show exactly what was decided before any result was seen, including the gate we failed and the two claims we had to correct. We would welcome correction on anything we have characterised wrongly about Dirac-3 -- especially the convexity argument and the free-tier ceiling -- before this becomes a public submission.
 
 Thank you for considering the request.
 
