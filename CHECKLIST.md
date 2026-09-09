@@ -14,7 +14,7 @@ All development and debugging runs use the local proxy (the classical solve of t
 - [x] **C**: PDFs copied to `docs/source/`; all four read in full; requirements matrix verified line by line (page limits confirmed: 6-page proposal + 3-page appendix, PDF, min 10pt, 20 MB; team profile is a separate portal component)
 - [x] **C**: Braket question resolved: exec summary "asks" for Braket, scope allows any quantum/quantum-inspired framework, hardware optional and not penalized. Positioning: Dirac-3 as measured [HW] evidence + phase-active Braket-simulator arm + Phase 2 Braket plan
 - [x] **H**: Team name decided: "Claude Shannon's Fraud Catchers" (docs/team-name.md, with Claude Code disclosure language)
-- [x] **H+C**: Thesis decided (Aug 30): performance-first framing, scoped to provable wins; H1b promotion to blanket claim only on Stage 3 evidence (docs/thesis-candidates.md). Overall goal recorded: best predictions/inference, quantum or not
+- [x] **H+C**: Thesis decided (Aug 30): performance-first framing, scoped to provable wins; H1b promotion to blanket claim only on Stage 3 evidence. Overall goal recorded: best predictions/inference, quantum or not
 - [x] **H**: Winning QML results located: FourierWall2 repo (in-segment CVQBoost wins, tuned config); analyzed in docs/evidence-inventory.md 3a/3b; 42 evidence files were copied to `experiments/reference/fourierwall2/` and MOVED OUT of the repository at Sprint 10 (F40); they are retained privately outside the repository and are not part of the submission
 - [x] **H**: Portal account confirmed (Sprint 2, F12): submission = 5-slot file upload; fields recorded in requirements-matrix A5/A5b; team profile ships as a one-page PDF; nothing uploaded until the final package
 

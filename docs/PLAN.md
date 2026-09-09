@@ -27,7 +27,7 @@ The joint task checklist with owners is in `CHECKLIST.md`. This file holds the s
 - Exit test: no requirement has status "unknown."
 
 ### Stage 1: Winning thesis (Aug 30)
-- Choose one thesis from `thesis-candidates.md`. State it in three sentences: problem, mechanism, evidence.
+- Choose one thesis from the candidate notes (held privately). State it in three sentences: problem, mechanism, evidence.
 - Exit test: the thesis answers a question the HSBC statement explicitly asks, and does not collide head-on with TrueLoop's occupied lane (drift-adaptation training economics).
 
 ### Stage 2: Preregistered experiment design (Aug 30 to 31)
