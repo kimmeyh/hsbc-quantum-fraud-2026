@@ -1,13 +1,17 @@
 {
   "current_sprint": {
     "number": 10,
-    "name": null,
+    "name": "Publish What We Promised",
     "branch": "feature/20260909_Sprint_10",
-    "status": "phase_1_backlog_refinement",
-    "plan_doc": null,
-    "pr": null,
+    "status": "phase_3_planning_awaiting_approval",
+    "plan_doc": "docs/sprints/SPRINT_10_PLAN.md",
+    "pr": 58,
     "plan_approved": false,
-    "github_issues": []
+    "github_issues": [
+      55,
+      56,
+      57
+    ]
   },
   "last_completed_sprint": {
     "number": 9,
