@@ -36,7 +36,7 @@ Source: `qml-unlocked\DIRAC3.md`. All hardware-executed [HW], cheap (1 to 4 mete
 - Chapter 10 Default: QSVM 0.707 AUC after sign augmentation, near logistic regression.
 - Methodological finding with real value: the non-negative-weight constraint of Dirac-3 continuous variables requires sign-augmenting features (`[X, -X]`), discovered when un-augmented QSVM scored 0.18 AUC on anti-correlated features.
 
-## 3b. FourierWall2: Harold's better-than-SMU results (read 2026-08-30, no re-runs; source `D:\Data\Harold\github\FourierWall2\docs\CVQBoost_Findings.md`, runs of 2026-08-04 on real Dirac-3)
+## 3b. Prior in-segment CVQBoost results (read 2026-08-30, no re-runs; source held privately by the team lead, runs of 2026-08-04 on real Dirac-3)
 
 The tuned CVQBoost configuration, found via a disciplined parameter sweep: `weak_cls_schedule=3` (feature triples; the accuracy lever), `num_samples=8`, `relaxation_schedule=2`, adaptive ridge `lambda_coef = 2 x n_train` per dataset, default full-depth weak learners, leak-free features, pinned seed 20260804, auto feature-reduction to the Dirac-3 ~940-variable ceiling.
 
@@ -66,7 +66,7 @@ Variable-count reality for fraud at schedule=3 (`n + C(n,2) + C(n,3) <= ~940` re
 3. Documented, honest methodological findings (sign augmentation, free-tier variable-limit backoff, sharded-ensemble structure effects) that read as exactly the "under which conditions" evidence the HSBC statement asks for.
 4. A second hardware paradigm: Dirac-3 is an entropy/photonic optimizer, complementary to the gate-based devices (Braket) the statement names. Compliance note: verify whether the statement requires Braket or merely suggests it; if required, position Dirac-3 results as supplementary [HW] evidence and gate-based work as the Phase 2 Braket plan.
 
-## 3a. Published CVQBoost evidence (read 2026-08-29, from `D:\Data\Harold\0.Quantum\`)
+## 3a. Published CVQBoost evidence (read 2026-08-29, from local copies of the published papers)
 
 **QCi paper (Emami et al., arXiv:2503.11273), ULB fraud.** XGBoost wins AUC in 23 of 24 cells across four balancing strategies and six class ratios. The single CVQBoost win: ADASYN at ratio 1.0, 0.8855 vs 0.8826. The paper's real claim is training-time scaling: CVQBoost stays ~2s (Dirac-3 solve ~1.3s) while XGBoost grows to 117s (1 core), 4.2s (8 cores), 3.6s (GPU) at 150k rows; at 1M to 70M synthetic rows and 100 to 900 features, CVQBoost scales linearly while XGBoost grows quadratically, beating even 48-core and 4x L4 GPU setups. Uses AUC only, not AUPRC. Public code: github.com/qci-github/eqc-studies (CVQBoost).
 

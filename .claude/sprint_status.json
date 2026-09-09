@@ -1,22 +1,20 @@
 {
   "current_sprint": {
-    "number": 9,
-    "name": "Representation, and Paying What We Promised",
-    "branch": "feature/20260907_Sprint_9",
-    "status": "phase_7_review",
-    "plan_doc": "docs/sprints/SPRINT_9_PLAN.md",
-    "pr": 53,
+    "number": 10,
+    "name": "Publish What We Promised",
+    "branch": "feature/20260909_Sprint_10",
+    "status": "phase_4_execution",
+    "plan_doc": "docs/sprints/SPRINT_10_PLAN.md",
+    "pr": 58,
     "plan_approved": true,
     "github_issues": [
-      50,
-      51,
-      52
+      55
     ]
   },
   "last_completed_sprint": {
-    "number": 8,
-    "merged_pr": 47,
-    "main_merge_pr": 49,
+    "number": 9,
+    "merged_pr": 53,
+    "main_merge_pr": 54,
     "docs_triad_complete": true
   },
   "prereg": {
@@ -24,5 +22,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-07"
+  "updated": "2026-09-08"
 }

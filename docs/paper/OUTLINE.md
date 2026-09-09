@@ -32,7 +32,7 @@ The system: tuned GBDT ensemble as the production detector; CVQBoost on Dirac-3 
 
 ### 3. What we measured (1.25 pp) -- the honest core
 - G0 FAIL as committed, with the F21 finding that its threshold traced to an uncorroborated band (footnoted, not headlined).
-- G0b PASS: proxy-hardware rank agreement 0.900 across 27 metered fits.
+- G0b PASS: proxy-hardware rank agreement 0.900 over n=5 ranked configs (campaign total 37 fits, 163 s).
 - H1b null: CVQBoost on hardware trails the best tuned GBDT by 0.040, CI excluding zero, 9 of 10 seeds.
 - H4 solver-fidelity component: hardware minus exact proxy = -0.0010, CI containing zero; weight cosine 0.975-0.999.
 - The structural explanation: strictly convex objective, near-degenerate optimum confirmed by a lambda sweep showing uniform weights even at lambda = 0. This is the paper's most defensible original contribution.

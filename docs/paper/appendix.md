@@ -187,7 +187,8 @@ A GBDT was nonetheless the best classical arm in all 20 cells (XGBoost 17,
 CatBoost 3), so the twins never set the delta. Both facts belong together: the
 twins did not change the NUMBER, and they changed what the number MEANS,
 because "best classical" now denotes a bar containing a periodic-structure
-model at 0.79 rather than one at 0.26.
+model -- the GAM twin at 0.7893 in the baseline representation and 0.7351
+under QFE -- rather than a bar of models with no periodic component at all.
 
 **A limitation in the twin design, disclosed because it is the kind a reader
 should not have to find.** The twins take a fixed input budget, and under the
@@ -228,7 +229,9 @@ is the one reported here.
 | G0b | Proxy-hardware rank Spearman >= 0.5 | **PASS**: 0.900 | [HW] |
 | H1b (primary) | CVQBoost versus best tuned GBDT | **NULL**: -0.0399, interval excludes zero | [HW] |
 | H4 | Versus best structural control | PARTIAL: solver fidelity only, controls unrun | [HW] |
-| H1a, H1c, H3, H5, H6, Phase 2 cardinality arm | Preregistered against MIQP, greedy and annealing controls | NOT RUN | [PROJ] |
+| H3 (feature ladder) | Does lifting the feature restriction close the gap | **MEASURED**: slope -0.006 AUPRC per feature, negative (A.5) | [SIM] |
+| H6 (phase representation) | Does a phase representation move the delta | **MEASURED**: shift -0.0115, preregistered falsifier fired (A.6) | [SIM] |
+| H1a, H1c, H5, Phase 2 cardinality arm | Preregistered against MIQP, greedy and annealing controls | NOT RUN | [PROJ] |
 
 H1b is the sole confirmatory endpoint, reported unadjusted. All other completed analyses are exploratory and carry no family-wise confirmatory claim.
 
@@ -247,7 +250,10 @@ Nineteen dated amendments, A1 to A19, each with rationale and approval; full
 text in the repository. Three changed a reported figure, named here so they are
 easy to find. **A15**: the
 frozen pool's k=6 AUPRC was published as 0.7688, a five-seed mean carried into a
-ten-seed writeup; the true value 0.7629 inverted the argument it carried.
+ten-seed writeup; the corrected ten-seed value, 0.7629, inverted the argument it
+carried. A17 then superseded that figure in turn: on the deduplicated data the
+same comparator scores **0.7381**, which is the value reported throughout this
+submission. 0.7629 is pre-A17 and appears here only as the history of A15.
 **A17**: three exploratory fold builders skipped the deduplication section 4
 mandates, so every A11/A13 figure was recomputed, moving the tuned-pool result
 from below to above the MDE -- a direction that should invite checking rather

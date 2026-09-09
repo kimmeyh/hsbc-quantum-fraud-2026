@@ -1,7 +1,7 @@
 # F15 Research Findings: spamfilter-multi ADR and Best-Practice Review
 
 **Purpose**: Raw material for Sprint 2 Task A (F15). Inventory of the spamfilter-multi ADR corpus, transferable practices, additional SE suggestions, and ML best-practice ADR candidates for this repository.
-**Sources reviewed**: `D:\Data\Harold\github\spamfilter-multi\docs\ARCHITECTURE.md`, all 42 ADRs plus `README.md` in `D:\Data\Harold\github\spamfilter-multi\docs\adr\`, `QUALITY_STANDARDS.md`, `TESTING_STRATEGY.md`, `LOGGING_CONVENTIONS.md` (headings). Target grounding: `experiments/PREREGISTRATION.md` v1.1 (FROZEN, sections 5-9 read in full), `docs/sprints/SPRINT_2_PLAN.md`, `experiments/src/` contents.
+**Sources reviewed**: a prior private repository's `docs/ARCHITECTURE.md`, all 42 of its ADRs plus their `README.md`, `QUALITY_STANDARDS.md`, `TESTING_STRATEGY.md`, `LOGGING_CONVENTIONS.md` (headings). Target grounding: `experiments/PREREGISTRATION.md` v1.1 (FROZEN, sections 5-9 read in full), `docs/sprints/SPRINT_2_PLAN.md`, `experiments/src/` contents.
 **Date**: 2026-08-30
 
 ---
@@ -143,7 +143,7 @@ Suggested authoring order under deadline: 1, 3, 10 first (decisions already made
 
 ## 5. Source ADR template
 
-The source repo's template, reproduced verbatim from `D:\Data\Harold\github\spamfilter-multi\docs\adr\README.md` ("Template" section):
+The source repo's template, reproduced verbatim from that repository's ADR `README.md` ("Template" section):
 
 ```markdown
 # ADR-NNNN: [Title]

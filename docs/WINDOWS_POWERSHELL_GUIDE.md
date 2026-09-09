@@ -30,7 +30,7 @@ PowerShell 7+ is the primary shell. Bash (Git Bash POSIX sh) is available for PO
 
 - **Never pass complex commands inline through `wsl.exe -e bash -lc "..."`**: PowerShell and bash quoting interact destructively (variables expand empty, quotes glue arguments; two silent failures in Sprint 3). Write a `.sh` script file in the repo, run `wsl.exe -e bash /mnt/d/...`.
 - **Per-distro venv**: the Windows .venv is unusable from Linux; create a venv inside WSL (python3.12 via dnf on OracleLinux) and pin the same critical library versions (sklearn matched at 1.9.0 in Sprint 3 for pool comparability).
-- **Windows paths in frozen code**: shim at the consumer (`D:\x` -> `/mnt/d/x`), never edit the frozen module (see qubo_proxy.py's ULB_CSV shim).
+- **Windows paths in frozen code**: set `HSBC_ULB_CSV` to the WSL path (`/mnt/d/...`); `data.ulb_csv()` reads it on every call. The former advice was to shim at the consumer by rebinding `data.ULB_CSV`, and the `qubo_proxy.py` shim it pointed at was deleted in Sprint 10 along with that constant. Rebinding now fails SILENTLY: the assignment creates an attribute `load_ulb()` never reads, so the loader quietly falls back to the repo-relative default. Several arms must run under WSL (`run_hardware.py`, `tune_proxy.py`, the A3 full-pair build), so this matters.
 - **Default WSL user may be root**: `~` resolves differently per user; use absolute paths in scripts.
 
 ## Hooks (assessment from spamfilter .claude/hooks)
