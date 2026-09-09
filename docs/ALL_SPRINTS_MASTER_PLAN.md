@@ -64,7 +64,7 @@ improvements 1, 2 and 4 applied, 3 declined; suite 173 -> 194).
 | 7 | Sep 5-6 | [DONE] F33, F34, QCi/paper update | -- |
 | 8 | Sep 6-7 | [DONE] **F3** (IEEE-CIS, all four tasks) + paper updates; F36 attempted and FAILED | -- |
 | 9 | Sep 7-8 | [DONE] F4 (H6, measured null), F14, F16; **QCi package SENT** 2026-09-08 09:59 | -- |
-| 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
+| 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F10; F16 shipped in Sprint 9 |
 | Finalize | Sep 12-13 | F10, **F40 (segment non-public material)** -> **F37 (repo public)** in that order, **F38 (page limits)** -- all SUBMISSION BLOCKERS; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
 
 Renumbered 2026-09-05: the team lead noted the project is running more than one sprint per day, so F33 took Sprint 7 and F3 moved to Sprint 8 rather than competing for the same hours. A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
@@ -184,12 +184,6 @@ docs/reviews/f36-float-tables-outcome.md.
 - **Why it could matter to the submission**: training cost, retraining cadence, and data-retention footprint are production concerns a bank weighs directly; a measured "this arm reaches its ceiling at a fraction of the data" is practical evidence in the production-bound framing (F27), if it holds
 - Depends on: nothing (reuses qubo_proxy build/solve); best run after F8 so it cannot displace paper work
 
-**F4. QFE phase arms + order-matched twins (~0.5 day) Priority 16**
-- Phase: Experiments
-- Platform: ULB, IEEE-CIS
-- Fourier Wall recipe applied identically to all arms; trained-frequency GAM/GA2M/JOINT twins in every H6 cell
-- Depends on: F1
-
 **F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority 18**
 - Phase: Experiments
 - Platform: SPECTRA, Dirac-3
@@ -214,11 +208,7 @@ docs/reviews/f36-float-tables-outcome.md.
 
 (F11 QCi sponsorship letter send: COMPLETED by the team lead 2026-08-30. F12 portal verification and F15 best-practices/ADR review: COMPLETED in Sprint 2, merged via PR #2; history in SPRINT_2_SUMMARY.md. All three removed from candidates per convention.)
 
-**F16. Minimal CI: pytest + lint on PRs with smoke fixture (~30m) Priority 36**
-- Phase: Finalize
-- Platform: docs
-- GitHub Actions on PRs to develop; sub-minute; no dataset or metered access
-- Backlogged per the approved 2026-08-30 disposition (item 11)
+(F4 H6 representation arm, F14 eqc-models feedback package, and F16 minimal CI: COMPLETED in Sprint 9, merged via PR #53 (main PR #54); history in SPRINT_9_SUMMARY.md. All three removed from candidates per convention.)
 
 ### HOLD Items (post-submission)
 
@@ -268,7 +258,3 @@ docs/reviews/f36-float-tables-outcome.md.
 - Sandwich/entangling encoding only (Inverse Born Rule: plain Ry is provably classical); phase-complexity, Berry-connection, mode-MI diagnostics reported
 - Team lead brings near-expert AWS + hands-on Braket experience; Phase 1 covers this as a written [PROJ] plan only
 
-**F14. eqc-models feedback package to QCi (~2h) Priority HOLD**
-- Phase: External
-- Platform: Dirac-3
-- Promised in the sponsorship letter; assemble after the hardware campaign
