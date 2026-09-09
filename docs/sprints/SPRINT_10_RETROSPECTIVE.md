@@ -228,7 +228,7 @@ Team-lead feedback is recorded VERBATIM. Claude's lines come from
 
 - **Claude Code Development Team**:
 
-  - [DEV] F43: Evidence-vs-document consistency tests -- assert every figure quoted in the papers resolves to a results.json value, so the next contradiction fails a test rather than waiting for a reviewer -- estimated: 3h, priority: 6, depends on: F41 and F42 landing first so the tests encode corrected values
+  - [DEV] F44: Evidence-vs-document consistency tests -- assert every figure quoted in the papers resolves to a results.json value, so the next contradiction fails a test rather than waiting for a reviewer -- estimated: 3h, priority: 6, depends on: F41 and F42 landing first so the tests encode corrected values
 
 ### 15. Assigned Coding Agents Quality
 

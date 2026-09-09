@@ -33,8 +33,8 @@ experiments/results/*_progress.json
 
 # Non-public material, segmented out of the working tree at Sprint 10 (F40,
 # card #55) because F37 makes this repository public and a public repo
-# publishes the whole tree. Both now live in the sibling folder
-# a sibling folder outside the repository, which git cannot see.
+# publishes the whole tree. Both now live in a sibling folder outside the
+# repository, which git cannot see.
 #
 # 0*.txt: team-lead working files. CLAUDE.md says commit but NEVER read them,
 # so their contents were never inspected -- which is exactly why segmenting

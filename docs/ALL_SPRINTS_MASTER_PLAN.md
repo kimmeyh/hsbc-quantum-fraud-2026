@@ -178,6 +178,22 @@ docs/reviews/f36-float-tables-outcome.md.
 
 ### Finalize (Stages 7-8)
 
+**F42. Correctness findings needing verification or reruns (~4h) Priority 4**
+- Phase: Finalize (Fable 5.1 adversarial review 2026-09-09; card #60)
+- Platform: docs + experiments/src
+- Needs EXTERNAL SOURCE CHECKS: the hardware description against QCi's own paper (coherent states with shot noise, not Fock states; R/~200 weight resolution; 23 dB dynamic-range limit); the vendor accuracy claim against CVQBoost Table 1 (reportedly ~0.19 AUC below XGBoost at ratios 0.01-0.02, which would STRENGTHEN our null); the Loke et al. citation and venue; Equality Act 2010 scope (Great Britain, not Northern Ireland)
+- Needs CLASSICAL RUNS: lambda=0 FISTA spread from 20 random simplex starts; decomposition of the +0.0319 gain, which currently confounds three simultaneous changes and selected on seed 42 then evaluated including seed 42; per-GBDT H1b deficits rather than against the max only
+- **F11 of that review is the SAME lambda=0 degeneracy F41 found from the other side.** Do them together or one redoes the other's work
+- Depends on: nothing; overlaps F41 (#59)
+
+**F43. Report IEEE-CIS AUC-ROC against HSBC's named benchmark (~1h) Priority 5**
+- Phase: Finalize (team-lead direction 2026-09-09; card #61)
+- Platform: docs, experiments/src
+- HSBC's problem statement names AUC-ROC 0.9459 on IEEE-CIS as the classical bar. We report AUPRC only. Problem Relevance & Impact is 25%, the largest single rubric weight
+- **The classical half needs NO rerun**: `run_ieee.py` already computes and stores `auc_roc` per fold and `ieee_classical.json` holds all nine -- LightGBM 0.9139, CatBoost 0.8941, XGBoost 0.8640. Reportable from stored evidence today. (An earlier analysis called this a full rerun; it had read summary keys instead of per-fold rows.) Only the CVQBoost and ladder arms lack the metric
+- Required caveat: the Kaggle leaderboard test set differs from our rolling-origin folds, so 0.9139 is NOT directly comparable to 0.9459. State it rather than inviting the comparison
+- Depends on: nothing. Page cost lands against F38, which runs last
+
 **F44. Evidence-vs-document consistency tests (~3h) Priority 6**
 - Phase: Finalize (Sprint 10 retrospective improvement 2, team-lead approved 2026-09-09)
 - Platform: experiments/src
