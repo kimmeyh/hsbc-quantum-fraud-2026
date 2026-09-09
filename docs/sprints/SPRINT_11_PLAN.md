@@ -6,6 +6,15 @@
 
 **EXTENDED mid-sprint** by team-lead direction: **F46** (#67, QCi grant landed 2026-09-09) and **F47** (#68). F47 is a HARD GATE -- the team lead's direction is that no further Dirac-3 job runs until it is done.
 
+**DEFERRED to Sprint 12** by team-lead direction 2026-09-09, after the F47 gate
+cleared: **F37** (#56, make the repository public) and the **fresh-eyes evidence
+review** Phase 5 normally requires. Both are Class 3 scope decisions, made
+explicitly rather than inferred.
+
+Consequence, flagged rather than buried: Sprint 12 carries F37, F38, F10, the
+fresh-eyes review, and any approved Dirac-3 work, against a Sep 12 evidence
+freeze. That is the heaviest sprint of the project against the least calendar.
+
 ## Objective
 
 Make every claim in the submission true, and make the tooling catch the next
