@@ -49,7 +49,7 @@
 
 `scripts/manifest.py verify` reports **VERIFY OK** against the currently staged `experiments/data/spectra/*.csv` files (SHA-256, byte count, line count all match `experiments/data/MANIFEST.json`, generated 2026-09-01).
 
-Independently, the staged files were compared byte-for-byte (SHA-256) against a FourierWall2-era copy of the same four files (`D:\Data\Harold\0.Quantum\QMLDatasets\spectra_*.csv`, staged 2026-08-02, predating both the FourierWall2 2026-08-04 tuned rollout this block replicates and this repo's 2026-09-01 manifest generation). **All four hashes match exactly**:
+Independently, the staged files were compared byte-for-byte (SHA-256) against an earlier private copy of the same four files (staged 2026-08-02, predating both the FourierWall2 2026-08-04 tuned rollout this block replicates and this repo's 2026-09-01 manifest generation). **All four hashes match exactly**:
 
 | Dataset | SHA-256 (staged == FourierWall2-era copy) |
 |---|---|

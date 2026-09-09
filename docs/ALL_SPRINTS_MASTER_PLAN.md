@@ -140,7 +140,7 @@ docs/reviews/f36-float-tables-outcome.md.
 **F40. Segment non-public material out of the working tree (~1h) Priority 1 -- BLOCKS F37**
 - Phase: Finalize (team lead 2026-09-08: "removing them going forward is enough. Add as backlog item so we can fully plan it")
 - Platform: repo/admin
-- **Why it blocks F37**: making the repository public publishes everything in the working tree. This card must complete FIRST. Destination is `D:\Data\Harold\hsbc-quantum-fraud-2026\`, a sibling of the repo that git cannot see, already holding the sent QCi .msg
+- **Why it blocks F37**: making the repository public publishes everything in the working tree. This card must complete FIRST. Destination is a sibling folder outside the repository that git cannot see, already holding the sent QCi .msg
 - **What moves, and why each**:
   - `0Testing Feedback - all.txt` -- STRUCTURAL scan (no content read, per the CLAUDE.md rule that team-lead `0*` files are committed but never read) finds 1 email address, 1 phone number, 4 personal-name hits, 9 QCi mentions. Team-lead working notes with contact details
   - `0QMLQI Backlog Refinement.txt` -- 71KB, 41 QCi mentions, 2 hits on an api/key/secret pattern. Those are PROBABLY discussion rather than live credentials, but confirming would require reading the file, which the standing rule forbids. That is precisely when segmentation beats inspection
@@ -177,6 +177,20 @@ docs/reviews/f36-float-tables-outcome.md.
 ### Paper (Stages 4-6)
 
 ### Finalize (Stages 7-8)
+
+**F41. Correct the pool-degeneracy mechanism and the depth claim (~2h) Priority 2 -- SUBMISSION BLOCKER**
+- Phase: Finalize (GPT-6 Astra adversarial review, 2026-09-08; every claim reproduced against the saved pools before carding)
+- Platform: docs + experiments/src
+- **Finding 1 -- the published mechanism is WRONG.** The proposal says "at 0.17% prevalence a depth-limited tree predicts the negative class almost everywhere, so the pool carries almost no diversity". Reproduced across all ten saved seed pools: **80-84 of 91 learners classify EVERY training row correctly, and exactly ZERO predict all-negative.** The Gram degeneracy is real (off-diagonal 170,234.4 vs diagonal 170,235) but its cause is in-sample MEMORIZATION, not majority-class collapse. Right observation, wrong explanation
+- **Finding 2 -- "depth-limited" is FALSE.** `qubo_proxy.py` passes `weak_cls_params=dict(weak_params or {})`, empty by default, so eqc-models builds `DecisionTreeClassifier(**{})` -> `max_depth=None`, unbounded. The phrase appears in 4 places including the proposal mechanism paragraph and the Loke comparison
+- **Finding 3 -- the zero-penalty sentence overstates.** "The optimum stays uniform even at zero penalty" is too strong. An independent SLSQP solve at lambda=0 from uniform reaches L1 distance **0.1978** from uniform (the reviewer's 0.198 reproduces exactly). BUT the objective improves by only **4.5e-08 relative** (-1.7023499227e5 -> -1.7023500000e5) and test AUPRC moves +0.0052, well inside the 0.0268 MDE. The defensible claim is numerical degeneracy, not a uniform optimum
+- **What does NOT change**: no gate score, no headline figure. H1b's -0.0399 null, the Gram entries, and the hardware-vs-proxy agreement are measurements and stand. What changes is the EXPLANATION attached to them
+- **The Loke comparison gets STRONGER, not weaker**: their heterogeneous learners (KNN, LDA, logistic, XGBoost) fail on different transactions; ours memorize the same rows. That is a cleaner contrast than the depth story
+- **Steps**: (1) register A20 recording the corrected mechanism with the reproduction; (2) fix "depth-limited" -> unbounded in all 4 places; (3) re-word the zero-penalty sentence to state the degeneracy numerically; (4) add a regression test asserting the perfect-classifier count per pool so this cannot drift silently
+- **Class 1 AND Class 2**: amends the FROZEN preregistration and changes a published claim. Needs explicit team-lead approval before the documents are touched
+- Acceptance: A20 registered; no "depth-limited" left in any document; the zero-penalty sentence states the 4.5e-08 relative degeneracy; a test asserts 80-84 of 91 perfect classifiers across the saved pools; full suite green
+- Reproduction is already done and recorded here, so the card starts from evidence rather than re-deriving it
+- Depends on: nothing. Should precede F10 (final verification walk)
 
 **F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 40**
 - Phase: Finalize

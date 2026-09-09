@@ -8,7 +8,8 @@ never machine paths, so the committed MANIFEST.json is valid on any clone.
 
 Known failure modes: a staged file changed legitimately (re-download) -> regenerate
 after confirming provenance; ULB lives OUTSIDE this repo (XGBvHQXGB checkout) by
-ADR-0003 -- on another machine set ULB_CSV to its creditcard.csv path.
+ADR-0003 -- on another machine set ULB_CSV (or HSBC_ULB_CSV) to its
+creditcard.csv path; the default is experiments/data/ulb/creditcard.csv.
 
 Usage:
   python scripts/manifest.py generate   # writes experiments/data/MANIFEST.json
@@ -29,7 +30,7 @@ import data  # noqa: E402  (frozen module; read-only import)
 
 DATA = REPO / "experiments" / "data"
 MANIFEST = DATA / "MANIFEST.json"
-ULB_CSV = Path(os.environ.get("ULB_CSV", str(data.ULB_CSV)))
+ULB_CSV = Path(os.environ.get("ULB_CSV", str(data._ulb_csv())))
 
 
 def required() -> dict[str, Path]:

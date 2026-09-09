@@ -37,11 +37,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import data
 import store
 
-if os.name == "posix" and not data.ULB_CSV.exists():
-    # WSL shim (frozen data.py hardcodes the Windows drive path): D:\x -> /mnt/d/x
-    _p = str(data.ULB_CSV)
-    data.ULB_CSV = Path("/mnt/" + _p[0].lower() + _p[2:].replace("\\", "/"))
-
 log = logging.getLogger("frd.proxy")
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s %(name)s %(levelname)s %(message)s")

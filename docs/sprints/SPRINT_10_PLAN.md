@@ -75,8 +75,8 @@ the render + suite at the end, ~3m.
 
 ### Task A -- F40: segment non-public material (60m)
 
-1. Move 7 `0*.txt` files and `experiments/reference/fourierwall2/` to
-   `D:\Data\Harold\hsbc-quantum-fraud-2026\`
+1. Move 7 `0*.txt` files and `experiments/reference/fourierwall2/` to the
+   sibling folder outside the repository
 2. `git rm --cached` each
 3. Add `0*.txt` and `experiments/reference/fourierwall2/` to `.gitignore`
 4. Reword **4** doc references (CHECKLIST.md, docs/adr/0013, master plan,
