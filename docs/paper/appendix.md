@@ -141,8 +141,21 @@ temporal gap Sprint 5 measured at +0.2143 on ULB.
 Preregistration section 3, exploratory, registered as A18 BEFORE the run. The
 QFE phase block (Fourier Wall recipe, train-only whitening) is given to EVERY
 arm, and the reported quantity is the SHIFT between representations, not a
-delta under one of them. Ten ULB seeds, k=13 schedule 2, CVQBoost via the exact
-classical proxy of the identical Hamiltonian. [SIM], zero metered seconds.
+delta under one of them. Ten ULB seeds, schedule 2, CVQBoost via the exact classical proxy of the
+identical Hamiltonian. [SIM], zero metered seconds.
+
+**This arm is NOT the frozen k=13 configuration, and the difference is the
+hypothesis.** A top-13 feature selection would exclude the phase columns --
+the best of them ranks about fourteenth by relevance on ULB -- so reducing
+first would hand the quantum arm a pool containing no phase information and
+H6 could not be tested. The pool is therefore built over every column: 30 in
+the baseline representation and 90 under QFE, which at a sequential pair
+build is 435 and 4,005 variables against the frozen arm's 78. That is
+possible only because this arm runs entirely on the classical proxy, where
+the A12 free-tier ceiling of 100 continuous degree-2 variables does not
+apply. It is not a configuration the free tier could execute, and the shift
+reported here is therefore a statement about the FORMULATION rather than
+about anything Dirac-3 has run.
 
 | Quantity | Value |
 |---|---|
@@ -230,7 +243,7 @@ this submission reports.
 
 ## B.2 Amendments
 
-Eighteen dated amendments, A1 to A18, each with rationale and approval; full
+Nineteen dated amendments, A1 to A19, each with rationale and approval; full
 text in the repository. Three changed a reported figure, named here so they are
 easy to find. **A15**: the
 frozen pool's k=6 AUPRC was published as 0.7688, a five-seed mean carried into a
@@ -245,7 +258,7 @@ No amendment changed a gate criterion; no gate was rescored after observation.
 
 # Appendix C. Reproduction and references
 
-Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A18. The
+Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A19. The
 repository at `github.com/kimmeyh/hsbc-quantum-fraud-2026` carries the pinned
 environment, both dataset checksums, the preregistration in full, the full
 reference list, and the results store, whose every row holds a configuration

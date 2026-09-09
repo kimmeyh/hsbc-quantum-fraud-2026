@@ -65,8 +65,24 @@ SMOKE_OUT = Path(__file__).resolve().parents[1] / "results" / "h6_representation
 PROGRESS = Path(__file__).resolve().parents[1] / "results" / "h6_progress.json"
 
 SEEDS = tuple(range(42, 52))
-K_FEATURES = 13          # matches the frozen CVQBoost pool size
 SCHEDULE = 2             # frozen relaxation_schedule, not tuned here
+
+# NO top-k reduction here, deliberately, and this differs from the standard
+# proxy pipeline (qubo_proxy._prep reduces to k=13 via top_k_features before
+# building the pool).
+#
+# H6 asks whether giving EVERY arm the phase representation shifts the delta.
+# A top-13 selection by relevance would exclude the phase columns outright --
+# on ULB the best of them ranks about 14th -- so reducing first would hand the
+# quantum arm a pool with no phase information in it and the hypothesis could
+# not be tested at all.
+#
+# The cost is that this arm is not the frozen k=13 configuration. The pool is
+# built over every column: 30 in the baseline representation and 90 under QFE,
+# which at a sequential pair build is 435 and 4,005 variables against the
+# frozen arm's 78. That is legitimate here only because H6 runs entirely on the
+# classical proxy [SIM], where no device ceiling applies. It would NOT be a
+# runnable hardware configuration, and A.6 says so.
 
 
 def _progress(stage: str, **fields) -> None:
