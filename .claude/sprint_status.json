@@ -1,13 +1,21 @@
 {
   "current_sprint": {
     "number": 11,
-    "name": null,
+    "name": "Correctness Before Compression",
     "branch": "feature/20260910_Sprint_11",
-    "status": "phase_1_backlog_refinement",
-    "plan_doc": null,
-    "pr": null,
+    "status": "phase_3_planning_awaiting_approval",
+    "plan_doc": "docs/sprints/SPRINT_11_PLAN.md",
+    "pr": 66,
     "plan_approved": false,
-    "github_issues": []
+    "github_issues": [
+      59,
+      60,
+      61,
+      56,
+      63,
+      64,
+      65
+    ]
   },
   "last_completed_sprint": {
     "number": 10,
