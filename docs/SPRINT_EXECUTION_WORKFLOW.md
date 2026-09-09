@@ -82,6 +82,8 @@ Consult this line at the START and END of every phase; state which steps were do
 ### Phase 6: Push & Finalize PR
 - 6.3 Update the existing draft PR (never create a second). 6.5 interim status to the team lead, NOT "ready".
 - 6.6 **Carry-forward**: on merge notification, immediately `git checkout -b feature/<date>_Sprint_<N+1>` FROM the current feature branch; commit post-merge work there; push. NEVER stash to carry forward; never branch from develop after the merge (loses uncommitted work; the recovery is cherry-pick onto a develop-cut branch and reset the merged branch to its pushed head).
+  - **Both clauses are hook-enforced** (`.claude/hooks/`): `block-carry-forward-stash.ps1` blocks `git stash`, `block-branch-from-develop.ps1` blocks a `checkout -b`/`switch -c` that names develop, main or master as the start point. Bare `git checkout -b <name>` is the prescribed form and passes; both hooks carry a sanctioned bypass token for the genuine exception.
+  - **A clean result does not mean the cut was right.** At the Sprint 9 close-out the branch was cut from `origin/develop`; no commits were lost, because the merge had already carried everything and the uncommitted work followed the checkout. The violation was invisible in `git status` and surfaced only on re-reading this rule. Verify the flow, not the outcome.
 
 ### Phase 7: Retrospective (mandatory before merge-ready)
 - Follow SPRINT_RETROSPECTIVE.md's 7-step protocol: prompt to team lead -> Claude drafts its role's feedback in parallel (`docs/sprints/drafts/`) -> record team lead's words verbatim -> combine and display -> propose improvements (Title/Source/Type/Effort/Recommendation) -> team lead disposes each (now/backlog/skip) -> apply now-items as commits, backlog-items to master plan.
