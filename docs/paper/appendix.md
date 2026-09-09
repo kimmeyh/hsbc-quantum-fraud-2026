@@ -70,9 +70,11 @@ uniform weights leave 95.3% of test rows tied on one score (78 distinct values)
 and weights differing by 1e-07 split those into 151, so rounding the solved
 scores to six decimals returns the metric to the uniform value. The cause is
 pool degeneracy -- off-diagonal Gram entries average 170,234.4 against a
-diagonal of 170,235, because at 0.17% prevalence a depth-limited tree predicts
-the negative class almost everywhere. A penalty sweep from 0 to 4x n_train
-leaves it uniform even at zero penalty.
+diagonal of 170,235, because the frozen pool's unbounded trees memorise the
+training fold: 80 to 84 of the 91 learners reproduce the training labels exactly
+and are therefore the same vector, while ZERO predict the negative class
+everywhere (A20). A penalty sweep from 0 to 4x n_train leaves it uniform even at
+zero penalty.
 
 **Mixed pool (exploratory, A11).** Four families at k=13, 312 variables, same
 splits: gram ratio 0.9975, L1 from uniform 0.126, solved-minus-uniform +0.0076 on
