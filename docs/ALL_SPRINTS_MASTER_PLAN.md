@@ -174,26 +174,6 @@ docs/reviews/f36-float-tables-outcome.md.
 
 (F3 IEEE-CIS: COMPLETED in Sprint 8, all four tasks, merged via PR #47; history in SPRINT_8_SUMMARY.md. Removed from candidates per convention.)
 
-**F29. Sample-size insensitivity of the CVQBoost optimum (~2h proxy, zero metered) Priority 15**
-- Phase: Experiments (team-lead observation 2026-09-04; run "if we have time before submission", include only if the evidence supports it)
-- Platform: ULB proxy (zero metered seconds); IEEE-CIS as a second regime if F3 lands first
-- **The observation to test**: the team lead has repeatedly measured equivalent CVQBoost predictions training on 250k, 1M, 2M, 3M, 5M, 6M and 7M rows, across multiple datasets, in prior work outside this repository. No paper found in a survey of the QML randomness/generalization literature states this result; Caro et al. (few-training-data generalization) bounds a different quantity and assumes trainable gates that CVQBoost does not have, so it must NOT be cited as direct support
-- **Candidate mechanism, from this project's own Sprint 4 finding**: both Hamiltonian terms scale linearly with n_train (J = HH^T + lambda*I with entries summed over rows; C = -2Hy), so scaling the row count scales the objective without moving its argmin. The optimum depends on the correlation structure among weak learners, which stabilizes once enough rows estimate it. The lambda sweep already showed the solution sits at near-uniform weights regardless of lambda
-- **Design (all on the exact proxy)**: build pools at n in {50k, 100k, 250k, 500k, full} from the same seed's train fold, identical feature set and weak-learner config; report (a) cosine similarity of the optimal weight vectors against the full-n solution, (b) test AP at each n with seed CIs, (c) the n at which both curves flatten. Repeat across 3 seeds. Zero metered seconds; hardware confirmation only if the proxy curve is interesting and budget allows
-- **Honesty constraints**: enters as a LABELED EXPLORATORY analysis under a dated amendment, never as a headline or a preregistered result; prior-work evidence gets the same provenance disclosure as the FourierWall2 material; and the paper must connect it to the near-degeneracy finding rather than let a reviewer discover the link, since "the optimum is insensitive to sample size" and "the optimum is nearly degenerate" are adjacent claims
-- **Why it could matter to the submission**: training cost, retraining cadence, and data-retention footprint are production concerns a bank weighs directly; a measured "this arm reaches its ceiling at a fraction of the data" is practical evidence in the production-bound framing (F27), if it holds
-- Depends on: nothing (reuses qubo_proxy build/solve); best run after F8 so it cannot displace paper work
-
-**F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority 18**
-- Phase: Experiments
-- Platform: SPECTRA, Dirac-3
-- 3 strongest cells x 5 seeds; random-segment negative control machinery reused for fraud transfer
-- Depends on: QCi grant; F2 approval pattern
-
-(F6 Braket gate-based arm: moved to HOLD per team-lead steering 2026-08-30; no Braket execution before submission/acceptance. The proposal covers Braket via the written [PROJ] Phase 2 plan plus Team Capability citing the team lead's near-expert AWS and hands-on Braket experience.)
-
-(F7 results memo + gate review: COMPLETED Sprint 4 -> docs/RESULTS_MEMO.md. A REFRESH of the memo is folded into each later evidence sprint rather than tracked as a separate item.)
-
 ### Paper (Stages 4-6)
 
 ### Finalize (Stages 7-8)
@@ -211,6 +191,23 @@ docs/reviews/f36-float-tables-outcome.md.
 (F4 H6 representation arm, F14 eqc-models feedback package, and F16 minimal CI: COMPLETED in Sprint 9, merged via PR #53 (main PR #54); history in SPRINT_9_SUMMARY.md. All three removed from candidates per convention.)
 
 ### HOLD Items (post-submission)
+
+**F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority HOLD**
+- Phase: Experiments (moved to HOLD by team lead 2026-09-08 at Sprint 10 refinement)
+- Platform: SPECTRA, Dirac-3
+- 3 strongest cells x 5 seeds; random-segment negative control machinery reused for fraud transfer
+- **Why HOLD**: needs the QCi grant, which has only been acknowledged, not granted (card #40 open). Blocked by the same pending reply as F25
+- Depends on: QCi grant; F2 approval pattern
+
+**F29. Sample-size insensitivity of the CVQBoost optimum (~1h measured, zero metered) Priority HOLD**
+- Phase: Experiments (moved to HOLD by team lead 2026-09-08 at Sprint 10 refinement)
+- Platform: ULB proxy
+- **Effort re-measured 2026-09-08, and the old ~2h was wrong in the cheap direction**: pool build scales O(n^1.4) -- 8.8s at 50k rows, 25.9s at 100k, 82.2s at 250k. The ULB train fold is 170,236 rows after dedup and the 60/20/20 split, so the full 3-seed x 4-size grid is 8-10 minutes of build plus solve and scoring. It could have run in parallel with anything
+- **Why HOLD anyway, and this is the deciding reason**: it scores against no rubric criterion. The weights are Problem Relevance & Impact 25%, Technical Approach & Innovation 25%, Feasibility 20%, Validation Plan 15%, Team Capability 10%, Hybrid 5%. A stability property of our own optimizer is not a fraud-detection result, a validation-protocol improvement, or a hybrid-integration argument
+- **The proposal already makes the production-cost argument better** (section, line 94): CVQBoost's published claim is a runtime advantage from 1M to 70M samples, our null sits at 284k rows, and the untested question is end-to-end training time against sample count whose Hamiltonian construction grows with the square of the pool size. That is sharper than "the optimum is insensitive to sample size"
+- **Three further costs**: it needs a dated amendment (A20) four days from the evidence freeze; the card's own honesty constraint requires connecting it to the near-degeneracy finding, which a reviewer reads as the same finding restated; and it needs page space in two documents that are currently OVER limit, working against F38
+- Post-submission value is real; the Phase 2 plan can name it as a follow-up at zero cost
+- Depends on: nothing (reuses qubo_proxy build/solve)
 
 **F17. Dirac-3 simulator for pre-hardware test runs (~2-3h investigation, build TBD) Priority HOLD**
 - Phase: Phase 2 preparation (team lead: "prioritize for after submission")
