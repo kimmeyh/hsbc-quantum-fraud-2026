@@ -2,15 +2,20 @@
 
 **Dates**: 2026-09-09 to 2026-09-11 (evidence freeze Sep 12, target submit Sep 13, hard deadline Sep 15)
 **Branch**: `feature/20260909_Sprint_10`
-**Scope** (DEFINED, team lead 2026-09-08): F40 -> F37 -> F38, in that order. Nothing else.
+**Scope** (DEFINED, team lead 2026-09-08): **F40 only.**
+
+**RE-SCOPED 2026-09-08 after initial approval** (Class 3, team-lead directed):
+F37 and F38 moved to Sprint 11. Cards #56 and #57 stay open and remain
+SUBMISSION BLOCKERS against the Sep 13 target; they are simply not this
+sprint's work. Sprint 10 is the segmentation step alone, which is also the
+step that must precede F37 whenever F37 runs.
 
 ## Objective
 
-Clear all three remaining submission blockers. Every task is a gate on submitting
-at all, not an improvement to what is submitted: an over-limit PDF is a rules
-failure independent of content quality, and the appendix's 3-page limit is met
-only because material was moved OUT of the PDF and INTO a repository that is
-still private, so its citation is currently a dead link.
+Segment non-public material out of the working tree, so that making the
+repository public (F37, Sprint 11) publishes only what is intended. This is the
+prerequisite step: F37 cannot safely run until it is done, and doing it early
+means the irreversible visibility flip is never taken under deadline pressure.
 
 ## Audience-first statement (mandatory, Sprint 4 retro improvement 3)
 
@@ -54,21 +59,19 @@ Every number below is measured today, not carried from the cards.
 
 ## Tasks
 
-Order is a hard dependency chain, not a preference: F40 must complete before
-F37, because making the repository public publishes the working tree.
+F40 is the whole sprint. It remains the hard prerequisite for F37 (Sprint 11),
+because making the repository public publishes the working tree.
 
 | # | Task | Est | Runtime | Dominant cost | Model |
 |---|---|---|---|---|---|
 | A | **F40** Segment non-public material out of the tree | 60m | ~3m | `render-all.ps1` (3 submission + 7 QCi package PDFs) + full suite (~105s) | Opus |
-| B | **F37** Make the repository public | 45m | ~2m | Full-history confidentiality scan | Opus + team lead |
-| C | **F38** Appendix to 3 pages AND proposal to 6 | 90m | ~2m/cycle | Render + page-fill measure per cut cycle | Opus |
 
-**Estimates are calibrated against recorded actuals, and deliberately pessimistic
-on C.** Sprint 7 overran specifically on page-limit cycles that were not
-estimated. C is now a 158pt cut, not the 76pt the card assumed, on a document
-where every page is already full. 90m is the timebox; if the cut cannot be made
-without losing evidence, that is a Decision-Class 2 event (see below), not a
-reason to cut deeper.
+**Deferred to Sprint 11**: F37 (#56), F38 (#57).
+
+
+**Estimate calibration.** 60m covers the move, the cache removal, the .gitignore
+entries, 4 doc rewordings and the verification pass. The dominant runtime cost is
+the render + suite at the end, ~3m.
 
 ### Task A -- F40: segment non-public material (60m)
 
@@ -94,66 +97,21 @@ fixed first.
 **Never read the `0*` files.** CLAUDE.md forbids it. Structural scan only; the
 move needs no content inspection, which is exactly why segmentation beats review.
 
-### Task B -- F37: make the repository public (45m, team-lead action)
+### Deferred to Sprint 11
 
-1. Run `scripts/confidentiality-scan.ps1` over **full history**, not just the tip
-2. Confirm the `0*` resolution from Task A left nothing tracked
-3. Confirm QCi job records carry no account or credential material
-4. Confirm both dataset licences permit redistributing derived checksums and
-   results (raw ULB and IEEE-CIS data are NOT redistributed)
-5. **Team lead flips visibility** -- Claude never does this
-6. Verify anonymously: `curl` the API for 200, and resolve the Appendix C URL
-   in a logged-out browser
-
-**Acceptance**: anonymous fetch returns 200 AND `experiments/requirements.txt`,
-`experiments/PREREGISTRATION.md` and the results store are reachable without
-authentication, verified logged out rather than from an authenticated session.
-
-**Premise falsifier**: the premise is that the scan finds nothing publishable-
-sensitive after Task A. Falsifier: any scan hit outside the known-and-accepted
-history exposure. A hit stops the flip and returns to Task A.
-
-**Irreversible.** Once public, published is published; history rewriting after
-publication is not reliable. This is the one step that cannot be undone, which
-is why it runs before the deadline pressure of Sep 13, not on it.
-
-### Task C -- F38: page limits (90m)
-
-Appendix needs 158pt cut; proposal needs 21pt. Both measured 2026-09-08.
-
-1. Re-run `page-fill-report.py` on both PDFs immediately before cutting (the
-   figures move whenever content lands)
-2. Proposal first: 21pt against 48pt of slack is the cheaper problem
-3. Update the xfail `reason` string too -- it still says "appendix 4 of 3",
-   stale as of today's 5 of 3
-4. Appendix: candidate already drafted and measured once -- condensing Appendix
-   C's artifact list to one sentence recovers ~3 lines. That is nowhere near
-   158pt on its own
-5. Re-render and re-measure after each cut; do not batch
-
-**Do NOT cut**: any figure, control, caveat, the A15/A17/A12 disclosures, or the
-B.1 compound-falsification statement. The 2026-09-06 pass already removed all
-restatement that was free to remove; what remains is evidence.
-
-**Acceptance**: `python scripts/check-page-limits.py` reports OK 6 of 6 and
-3 of 3, AND a numeric diff against the current render shows no figure lost
-(extract all decimals from both PDFs, compare as sets). The two
-`xfail(strict=True)` page-limit cases FLIP TO FAILING, which is the designed
-signal that the markers must be removed in the same commit.
-
-**Premise falsifier**: the premise is that 158pt can be reclaimed without losing
-evidence. Falsifier: reaching the end of the non-evidence material with the
-document still over. If that happens, STOP -- cutting evidence to fit is a
-Decision-Class 2 change and needs explicit team-lead approval, not a judgment call.
+**Task B -- F37 (#56)** and **Task C -- F38 (#57)** were moved out of this sprint
+by team-lead decision after plan approval. Their full task detail, acceptance
+criteria and premise falsifiers stay in cards #56 and #57. The Sprint 10
+pre-flight measurements (appendix 5 of 3 needing a 158pt cut; proposal 7 of 6
+needing 21pt) are recorded there and MUST be re-run before that work starts,
+because both figures move whenever content lands.
 
 ## Risks
 
 | Risk | Likelihood | Mitigation |
 |---|---|---|
-| **F38 cannot reach 3 pages without cutting evidence** | Medium-high. 158pt is large and every page is full | Falsifier above stops the task rather than quietly cutting evidence. Escalate as Class 2 |
-| F37 published something that should not be public | Low after Task A | Task A precedes it; full-history scan; irreversibility respected by sequencing it early |
-| Page-limit cycles overrun, as in Sprint 7 | Medium | Estimated at 90m against a measured 158pt, not the card's stale 76pt |
-| Deadline: 3 blockers, T-5 to target submit | Medium | This sprint is only the blockers. F5 and F29 already moved to HOLD |
+| F40 misses something that should not be public | Low | Structural scan already inventoried the tree; the acceptance check is `git ls-files`, not judgment. F37 (Sprint 11) adds a full-history scan before anything is published |
+| **Deadline: 2 blockers now deferred to Sprint 11, T-5 to target submit** | **Raised by the re-scope** | Sprint 11 must carry both F37 and F38. Flagged, not mitigated here: scope is the team lead's call |
 | Hardware budget (Criterion H) | None | Zero metered seconds planned. No Dirac-3 run in this sprint |
 | Grant timing | None this sprint | F5 held; issue #40 awaits QCi independently |
 | Context/session continuity | Medium | Each task commits independently; the chain order is recorded here |
@@ -161,14 +119,15 @@ Decision-Class 2 change and needs explicit team-lead approval, not a judgment ca
 ## Decision-Class checkpoints (invariant 7)
 
 - **Class 1 (protocol)**: none planned. No task touches the frozen preregistration
-- **Class 2 (evidence claims)**: triggered if F38 cannot fit without cutting a
-  figure, control or caveat. STOP and surface
-- **Class 3 (scope)**: triggered if any of the three cards is proposed for
-  deferral. All three are submission blockers; deferring one is a team-lead
-  decision, never a time-pressure judgment call
+- **Class 2 (evidence claims)**: none planned. F40 moves files, it does not
+  change any claim
+- **Class 3 (scope)**: already exercised. F37 and F38 were deferred to Sprint 11
+  by explicit team-lead direction on 2026-09-08, which is the only way approved
+  work may be deferred
 
 ## Definition of Done
 
-All three acceptance blocks met; full suite green with the two page-limit xfail
-markers REMOVED (not flipped to skip); 10 PDFs render; repository anonymously
-reachable; tree clean; PR updated and still DRAFT until 7.7.
+F40's acceptance met: `git ls-files` returns nothing matching `0*.txt` or
+`fourierwall2`; full suite green (the two page-limit xfails REMAIN xfail, since
+F38 is deferred); all 10 PDFs render; destination README updated; tree clean; PR
+updated and still DRAFT until 7.7.
