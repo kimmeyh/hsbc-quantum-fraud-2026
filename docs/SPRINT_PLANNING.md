@@ -69,6 +69,19 @@ Rules:
 
 - State the dominant cost and its complexity in the task row, e.g. "KNN H-build
   O(n_train x n_query), 495,902 x 56,746".
+- **NAME the dominant term and show its measurement (Sprint 9 improvement 2).**
+  This rule was FOLLOWED in Sprint 9 and the estimate still missed by 47x: 10
+  minutes planned against 7.9 hours actual, per run, three times. The twins and
+  the GBDTs were both sized from real fits, and the GAM twin was piloted
+  specifically because it looked like the risk. What was never sized was the
+  CVQBoost pool build -- 300 seconds of the 335 per cell, the single dominant
+  term, simply not on the list of things being thought about.
+
+  So "I estimated the runtime" is not the bar. The bar is naming which
+  component dominates and showing the number: "pool build 300s of 335s per
+  cell, measured on the real split". If you cannot say which component
+  dominates, the sizing is not finished -- enumerate every step the task
+  executes, not the ones that come to mind.
 - If the runtime cannot be estimated, say `[unbounded]` and add a PILOT on a
   subsample as a preceding task. Never let an unsized run start.
 - Any run expected to exceed 30 minutes must emit heartbeat progress to a file

@@ -47,6 +47,16 @@ This was already written as guidance after Sprint 7 and was violated again in Sp
 
 **Verify a tool before trusting its verdict (Sprint 8 retro improvement 6)**: when a tool's output drives a decision, spot-check that output against a direct measurement ONCE before acting on it. `page-fill-report.py` reported appendix pages as underfilled at 71% and 65% of median; direct measurement of text-block extent showed every page filling 680-724pt of a 792pt page, with zero free space anywhere. The tool counted extracted CHARACTERS, and a table spends far more vertical space per character than prose, so any table-heavy page looks short by that measure. Acting on it cost a full card (F36).
 
+**Every experimental runner needs a test that reads its SHIPPED OUTPUT (Sprint 9 improvement 1)**: six tests of `run_h6.py` passed while the arm was measuring the wrong thing. The defect was not in a code path -- it was that two of three classical twins never received the representation under test, so the classical bar was not the bar section 3 specifies. The code ran, the numbers were plausible, and 7h 42m of compute had to be discarded.
+
+Guarding the code caught neither of that sprint's two defects. Guarding the ARTIFACT would have caught both. So every runner that writes an evidence file also gets at least one test that READS that file and asserts a property the preregistration requires -- not that the code is right, but that the committed result has the shape the protocol demands. `test_committed_results_have_distinct_twin_scores_across_representations` is the worked example: it reads `h6_representation.json` and fails if any twin scored identically across representations, which is exactly the symptom the defect produced. Verified against the invalidated run, where it reports "gam scored identically under both representations in 10 of 10 seeds".
+
+Such a test skips cleanly when the results file is absent, so it does not block a clean checkout or CI.
+
+**Verify an instrument distinguishes good from bad BEFORE iterating against it (Sprint 9 improvement 4)**: a gate-report "collision" was chased through four separate column-width changes using a regex over text extracted from the rendered PDF. The regex was measuring nothing: pypdf drops the space between adjacent text runs, so `full 10` extracts as `full10` in a perfectly well-formed table. Four changes were made against a signal that could not tell a good table from a bad one, and the actual fix -- landscape orientation -- came from the team lead.
+
+This is the third instance of the same pattern. F36 built a whole card on a page-fill tool that counted characters, and Sprint 8's `page-fill-report` counted the page-number folio as content. Before iterating on any measurement, confirm the instrument reports differently for a known-good and a known-bad case. Reading glyph POSITIONS rather than extracted characters is what finally settled the gate-report question, and one such check up front would have saved the four changes.
+
 The trap is that the tool was ours, was written for exactly this purpose, and had been right before. Familiarity is not verification. One direct measurement would have cost minutes.
 
 
