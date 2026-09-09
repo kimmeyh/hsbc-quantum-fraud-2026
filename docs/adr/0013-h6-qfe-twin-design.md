@@ -206,7 +206,7 @@ it and changes no gate, hypothesis, or cell.
 
 `experiments/PREREGISTRATION.md` sections 3, 5, 10 and amendment A2;
 `docs/references.md` design implications 1-2 (Mancilla & Tagliani, "The
-Fourier Wall", arXiv:2607.15815, section 6.4); `experiments/reference/fourierwall2/CVQBoost_Findings.md`
+Fourier Wall", arXiv:2607.15815, section 6.4); `CVQBoost_Findings.md` (was `experiments/reference/fourierwall2/`; moved out of the repository at Sprint 10 F40 to D:\Data\Harold\hsbc-quantum-fraud-2026\fourierwall2\ (external, outside the repository))
 section 2 (leak-free feature convention this ADR follows for replace-vs-augment);
 ADR-0002 (proxy as structural control, same variable-count formula);
 ADR-0006 (feature recipe registry / representation tagging convention);

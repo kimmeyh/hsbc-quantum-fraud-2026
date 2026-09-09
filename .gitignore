@@ -30,3 +30,23 @@ experiments/results/*_smoke.json
 # test runs), so tracking them makes CI's dirty-tree gate fire on a clean
 # build. Evidence lives in the named results files, which ARE tracked.
 experiments/results/*_progress.json
+
+# Non-public material, segmented out of the working tree at Sprint 10 (F40,
+# card #55) because F37 makes this repository public and a public repo
+# publishes the whole tree. Both now live in the sibling folder
+# D:\Data\Harold\hsbc-quantum-fraud-2026\, which git cannot see.
+#
+# 0*.txt: team-lead working files. CLAUDE.md says commit but NEVER read them,
+# so their contents were never inspected -- which is exactly why segmenting
+# beats reviewing. A structural scan found contact details in two of them.
+#
+# fourierwall2: the prior Fourier Wall / SPECTRA work. The team lead decided
+# on 2026-09-08 that it stays OUT of the challenge submission, and
+# test_submission_does_not_claim_prior_paid_tier_degree3_work enforces that in
+# the documents. Publishing its charts here would contradict that decision.
+#
+# HISTORY IS NOT REWRITTEN (explicit team-lead decision). Both remain in git
+# history and a public repo exposes history. Accepted: the exposure is the
+# team lead's own contact details and prior-work references, not credentials.
+0*.txt
+experiments/reference/fourierwall2/

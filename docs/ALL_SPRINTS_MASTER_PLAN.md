@@ -181,7 +181,7 @@ docs/reviews/f36-float-tables-outcome.md.
 **F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 40**
 - Phase: Finalize
 - Platform: docs
-- Every number vs results.json; repo-wide confidential-string scan (fourierwall2 reference files file-by-file); requirements-matrix walk; public reproducibility repo; team-lead final PDF + portal submission, receipt archived
+- Every number vs results.json; repo-wide confidential-string scan (the fourierwall2 reference files were moved OUT of the repository at Sprint 10 F40, so the scan covers what remains rather than re-verifying them in place); requirements-matrix walk; public reproducibility repo; team-lead final PDF + portal submission, receipt archived
 - Depends on: F8, F9
 
 ### External (team-lead-owned, parallel)
