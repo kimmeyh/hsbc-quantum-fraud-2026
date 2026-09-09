@@ -10,7 +10,7 @@ All development and debugging runs use the local proxy (the classical solve of t
 
 ## Stage 0 to 1: Requirements and thesis (Aug 29 to 30) - COMPLETE
 
-- [x] **H**: Locate the four official PDFs (provided via D:\Data\Temp\Downloads, Aug 30)
+- [x] **H**: Locate the four official PDFs (provided locally, Aug 30)
 - [x] **C**: PDFs copied to `docs/source/`; all four read in full; requirements matrix verified line by line (page limits confirmed: 6-page proposal + 3-page appendix, PDF, min 10pt, 20 MB; team profile is a separate portal component)
 - [x] **C**: Braket question resolved: exec summary "asks" for Braket, scope allows any quantum/quantum-inspired framework, hardware optional and not penalized. Positioning: Dirac-3 as measured [HW] evidence + phase-active Braket-simulator arm + Phase 2 Braket plan
 - [x] **H**: Team name decided: "Claude Shannon's Fraud Catchers" (docs/team-name.md, with Claude Code disclosure language)
