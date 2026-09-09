@@ -34,15 +34,24 @@ EXEMPT: dict[str, str] = {}
 def _evidence_files() -> dict[str, list[str]]:
     """{runner filename: [evidence json it writes]}.
 
-    Matches OUT/CHECKPOINT module constants, which is how every runner in this
-    repo names its destination. A runner that invents a different idiom will
-    simply not be seen here -- so the convention is part of the guard.
+    Covers the three write idioms this repo actually uses. A runner that
+    invents a fourth will not be seen here, so the convention is part of the
+    guard -- and widening it is cheaper than the alternative, which is a guard
+    that reads as reassurance while exempting whole classes of writer.
     """
     out: dict[str, list[str]] = {}
     for f in sorted(SRC.glob("run_*.py")):
         text = f.read_text(encoding="utf-8", errors="ignore")
-        names = re.findall(r'^(?:OUT|CHECKPOINT)\s*=.*?/ "([\w.]+\.json)"',
+        # Three idioms in this repo: OUT/CHECKPOINT module constants, the
+        # RESULTS constant (run_classical), and store.append_row, which writes
+        # to the shared results.json. The first version of this guard matched
+        # only the first idiom and so silently exempted every append_row
+        # writer -- a guard that quietly covers less than it claims is worse
+        # than none, because it reads as reassurance.
+        names = re.findall(r'^(?:OUT|CHECKPOINT|RESULTS)\s*=.*?/ "([\w.]+\.json)"',
                            text, re.M)
+        if "append_row(" in text and "results.json" not in names:
+            names.append("results.json")
         # SMOKE_OUT is deliberately excluded: smoke output is not evidence.
         if names:
             out[f.name] = names

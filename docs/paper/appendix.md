@@ -176,6 +176,19 @@ twins did not change the NUMBER, and they changed what the number MEANS,
 because "best classical" now denotes a bar containing a periodic-structure
 model at 0.79 rather than one at 0.26.
 
+**A limitation in the twin design, disclosed because it is the kind a reader
+should not have to find.** The twins take a fixed input budget, and under the
+QFE representation half of it is reserved for phase columns -- which is what
+guarantees they receive the treatment at all. So a QFE twin sees fewer raw
+columns than its baseline counterpart, and if the dropped raw columns carried
+signal the QFE twin is handicapped, biasing the shift negative. That is the
+direction we observed. It cannot have affected the reported number, because a
+twin was never the best classical arm in any of the 20 cells and the delta is
+measured against that maximum: the shift comes from CVQBoost falling further
+(0.7646 to 0.7513) than the GBDT bar did (0.8331 to 0.8313). But the bias would
+matter in any cell where a twin took the bar, and a design that gave each twin
+its full raw budget PLUS the phase block would avoid it.
+
 **Scope.** Exploratory; H1b remains the sole confirmatory endpoint and H6
 carries no confirmatory weight. One dataset, one family set, one phase recipe.
 The QFE encoder is fitted on train folds only, asserted by test.
