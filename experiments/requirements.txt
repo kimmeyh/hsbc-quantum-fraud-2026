@@ -15,4 +15,6 @@ qci-client==5.0.2
 python-dotenv>=1.0
 joblib>=1.4
 pytest>=8.0
-statsmodels>=0.14   # Wilson interval cross-check + proportion CIs
+statsmodels>=0.14   # Wilson interval cross-check + proportion CIs; H6 GAM twin
+scipy>=1.11         # spearmanr in score_gates, distributions in metrics
+pypdf>=4.0          # page-size and page-count verification of the rendered PDFs

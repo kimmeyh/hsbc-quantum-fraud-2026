@@ -24,7 +24,12 @@ param(
     # float-tables.lua. Kept as a parameter rather than hard-wired so that
     # removing one line in render-all.ps1 reverts to the previous behaviour,
     # which matters eight days from the deadline.
-    [string[]]$LuaFilter = @()
+    [string[]]$LuaFilter = @(),
+    # Landscape is for WIDE-TABLE documents that are NOT part of the challenge
+    # submission -- the gate report, whose widest table needs a 37-character
+    # Cell column beside six numeric columns and overprints at portrait width.
+    # Submission documents (proposal, appendix, team profile) stay portrait.
+    [switch]$Landscape
 )
 $ErrorActionPreference = 'Stop'
 
@@ -71,6 +76,7 @@ $safePath = @($texBin, "$env:SystemRoot\system32", $env:SystemRoot) -join ';'
 $origPath = $env:PATH
 
 $geom = if ($Paper -eq 'a4') { 'a4paper' } else { 'letterpaper' }
+$orientArgs = if ($Landscape) { @('-V', 'geometry:landscape') } else { @() }
 try {
     $env:PATH = $safePath
     $filterArgs = @()
@@ -79,7 +85,7 @@ try {
         if (-not (Test-Path $fp)) { throw "Lua filter not found: $f" }
         $filterArgs += "--lua-filter=$fp"
     }
-    & $pandoc $src -o $Out --pdf-engine=$xelatex @filterArgs -V "geometry:$geom" -V "geometry:margin=$Margin" -V fontsize=10pt
+    & $pandoc $src -o $Out --pdf-engine=$xelatex @filterArgs @orientArgs -V "geometry:$geom" -V "geometry:margin=$Margin" -V fontsize=10pt
 } finally {
     $env:PATH = $origPath
 }
@@ -88,8 +94,9 @@ if ($LASTEXITCODE -ne 0) { throw "pandoc/xelatex failed on $Source" }
 # Verify what was actually produced: page size AND page count.
 $py = Join-Path $PSScriptRoot "..\.venv\Scripts\python.exe"
 $abs = (Resolve-Path $Out).Path
-$result = & $py -c "from pypdf import PdfReader; r=PdfReader(r'$abs'); b=r.pages[0].mediabox; w,h=round(float(b.width)),round(float(b.height)); n={(612,792):'US Letter',(595,842):'A4',(792,1224):'TABLOID 11x17'}.get((w,h), 'OTHER %dx%dpt'%(w,h)); print('%d|%s'%(len(r.pages), n))"
+$result = & $py -c "from pypdf import PdfReader; r=PdfReader(r'$abs'); b=r.pages[0].mediabox; w,h=round(float(b.width)),round(float(b.height)); n={(612,792):'US Letter',(595,842):'A4',(792,1224):'TABLOID 11x17',(792,612):'US Letter landscape',(842,595):'A4 landscape'}.get((w,h), 'OTHER %dx%dpt'%(w,h)); print('%d|%s'%(len(r.pages), n))"
 $pages, $size = $result -split '\|'
 $expected = if ($Paper -eq 'a4') { 'A4' } else { 'US Letter' }
+if ($Landscape) { $expected = "$expected landscape" }
 if ($size -ne $expected) { throw "WRONG PAGE SIZE: produced $size, expected $expected, for $Out" }
 Write-Host "PDF written: $Out ($pages pages, $size)"

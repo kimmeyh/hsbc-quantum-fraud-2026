@@ -136,6 +136,86 @@ sits below the published leakage-free band (0.64-0.67) while our own labelled
 scale check on a stratified random split reached 0.861 -- the random-versus-
 temporal gap Sprint 5 measured at +0.2143 on ULB.
 
+## A.6 H6: does a phase representation move the delta?
+
+Preregistration section 3, exploratory, registered as A18 BEFORE the run. The
+QFE phase block (Fourier Wall recipe, train-only whitening) is given to EVERY
+arm, and the reported quantity is the SHIFT between representations, not a
+delta under one of them. Ten ULB seeds, schedule 2, CVQBoost via the exact classical proxy of the
+identical Hamiltonian. [SIM], zero metered seconds.
+
+**This arm is NOT the frozen k=13 configuration, and the difference is the
+hypothesis.** A top-13 feature selection would exclude the phase columns --
+the best of them ranks about fourteenth by relevance on ULB -- so reducing
+first would hand the quantum arm a pool containing no phase information and
+H6 could not be tested. The pool is therefore built over every column: 30 in
+the baseline representation and 90 under QFE, which at a sequential pair
+build is 435 and 4,005 variables against the frozen arm's 78. That is
+possible only because this arm runs entirely on the classical proxy, where
+the A12 free-tier ceiling of 100 continuous degree-2 variables does not
+apply. It is not a configuration the free tier could execute, and the shift
+reported here is therefore a statement about the FORMULATION rather than
+about anything Dirac-3 has run.
+
+| Quantity | Value |
+|---|---|
+| Mean delta, baseline representation | -0.0685 |
+| Mean delta, QFE representation | -0.0800 |
+| **Representation shift** | **-0.0115** |
+| Paired seed-to-seed SD of the shift | 0.0135 |
+| Seeds negative | 7 of 10 |
+
+**The answer: the phase representation does not move the delta by an amount we
+can claim.** The shift is 0.85 of its own paired SD, and 43% of the 0.0268 MDE.
+The preregistered falsifier -- |shift| below the paired SD -- fires.
+
+We state the direction rather than hide it: the shift is negative on 7 of 10
+seeds, which is *suggestive* that the classical bar exploits the added
+representation slightly better than a weighted vote over one- and two-feature
+learners does. That would be consistent with the A.5 ladder. But 43% of the
+MDE is below the smallest difference we preregistered as detectable, so it is
+not a finding, and reporting it as one would repeat the error A15 records.
+
+**The classical bar, which is what makes the question answerable.** Every cell
+carries a trained-frequency GAM, a GA2M and an order-matched JOINT twin
+alongside the three GBDTs, because the Fourier Wall result is that omitting the
+twin is how apparent quantum wins get manufactured. Mean AP under the baseline
+representation: XGBoost 0.8328, CatBoost 0.8185, **GAM 0.7893**, CVQBoost
+0.7646. The GAM twin outscores the quantum arm.
+
+A GBDT was nonetheless the best classical arm in all 20 cells (XGBoost 17,
+CatBoost 3), so the twins never set the delta. Both facts belong together: the
+twins did not change the NUMBER, and they changed what the number MEANS,
+because "best classical" now denotes a bar containing a periodic-structure
+model at 0.79 rather than one at 0.26.
+
+**A limitation in the twin design, disclosed because it is the kind a reader
+should not have to find.** The twins take a fixed input budget, and under the
+QFE representation half of it is reserved for phase columns -- which is what
+guarantees they receive the treatment at all. So a QFE twin sees fewer raw
+columns than its baseline counterpart, and if the dropped raw columns carried
+signal the QFE twin is handicapped, biasing the shift negative. That is the
+direction we observed. It cannot have affected the reported number, because a
+twin was never the best classical arm in any of the 20 cells and the delta is
+measured against that maximum: the shift comes from CVQBoost falling further
+(0.7646 to 0.7513) than the GBDT bar did (0.8331 to 0.8313). But the bias would
+matter in any cell where a twin took the bar, and a design that gave each twin
+its full raw budget PLUS the phase block would avoid it.
+
+**Scope.** Exploratory; H1b remains the sole confirmatory endpoint and H6
+carries no confirmatory weight. One dataset, one family set, one phase recipe.
+The QFE encoder is fitted on train folds only, asserted by test.
+
+**Two earlier runs of this arm were discarded rather than reported**, and the
+reasons are recorded because they bear on how much the third should be
+trusted. The first predicted through a spline basis refitted on test data. The
+second selected twin inputs by variance, so the whitened phase columns could
+never be chosen and two of three twins never received the representation under
+test -- identical scores in 10 of 10 seeds. Neither defect changed which arm
+set the bar, so neither changed the headline number materially; both made the
+classical bar something other than what section 3 specifies. The corrected run
+is the one reported here.
+
 # Appendix B. Preregistration registry
 
 ## B.1 Gates, scored as committed
@@ -163,7 +243,7 @@ this submission reports.
 
 ## B.2 Amendments
 
-Seventeen dated amendments, A1 to A17, each with rationale and approval; full
+Nineteen dated amendments, A1 to A19, each with rationale and approval; full
 text in the repository. Three changed a reported figure, named here so they are
 easy to find. **A15**: the
 frozen pool's k=6 AUPRC was published as 0.7688, a five-seed mean carried into a
@@ -178,7 +258,7 @@ No amendment changed a gate criterion; no gate was rescored after observation.
 
 # Appendix C. Reproduction and references
 
-Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A17. The
+Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A19. The
 repository at `github.com/kimmeyh/hsbc-quantum-fraud-2026` carries the pinned
 environment, both dataset checksums, the preregistration in full, the full
 reference list, and the results store, whose every row holds a configuration
