@@ -64,7 +64,8 @@ improvements 1, 2 and 4 applied, 3 declined; suite 173 -> 194).
 | 7 | Sep 5-6 | [DONE] F33, F34, QCi/paper update | -- |
 | 8 | Sep 6-7 | [DONE] **F3** (IEEE-CIS, all four tasks) + paper updates; F36 attempted and FAILED | -- |
 | 9 | Sep 7-8 | [DONE] F4 (H6, measured null), F14, F16; **QCi package SENT** 2026-09-08 09:59 | -- |
-| 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F10; F16 shipped in Sprint 9 |
+| 10 | Sep 9 | [DONE] **F40** (segmentation) re-scoped to F40 only; gate-report undercount fixed (27/120 -> the true 37/163); 8 correctness findings from two adversarial reviews; 13 PR-review findings addressed | F37/F38 deferred to 11 |
+| 11 | Sep 10-11 | **F41, F42, F43** (correctness) then **F37 -> F38** (submission blockers); F44/F45 if they fit | correctness BEFORE page size, team-lead sequencing |
 | Finalize | Sep 12-13 | F10, **F40 (segment non-public material)** -> **F37 (repo public)** in that order, **F38 (page limits)** -- all SUBMISSION BLOCKERS; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
 
 Renumbered 2026-09-05: the team lead noted the project is running more than one sprint per day, so F33 took Sprint 7 and F3 moved to Sprint 8 rather than competing for the same hours. A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
@@ -193,6 +194,16 @@ docs/reviews/f36-float-tables-outcome.md.
 - **The classical half needs NO rerun**: `run_ieee.py` already computes and stores `auc_roc` per fold and `ieee_classical.json` holds all nine -- LightGBM 0.9139, CatBoost 0.8941, XGBoost 0.8640. Reportable from stored evidence today. (An earlier analysis called this a full rerun; it had read summary keys instead of per-fold rows.) Only the CVQBoost and ladder arms lack the metric
 - Required caveat: the Kaggle leaderboard test set differs from our rolling-origin folds, so 0.9139 is NOT directly comparable to 0.9459. State it rather than inviting the comparison
 - Depends on: nothing. Page cost lands against F38, which runs last
+
+**F45. Guard evidence artifacts against diagnostic scripts (~1h) Priority 7**
+- Phase: Finalize (Sprint 10 process note, team-lead approved 2026-09-09)
+- Platform: experiments/src, scripts
+- **What happened**: the script written to REPRODUCE the review's crash finding injected a fake failed row into `results.json`, ran `score_gates.py`, and restored the store in a `finally`. The store was restored correctly. But `score_gates.py` had already written `gate_report.md` from the polluted data, so a 158-row artifact reporting a nonexistent failed fit was briefly committed. Caught on the next diff, `results.json` verified never contaminated, report regenerated from the clean store
+- **Why it is worth a card**: the restore was careful and still insufficient, because the derived artifact outlived the source it was derived from. Any future diagnostic that perturbs the store has the same hole, and the next one may not be noticed in the same turn
+- **Options to weigh at planning** (do not pre-commit): (a) a `--dry-run`/`--out` flag on `score_gates.py` so a diagnostic can render without touching the committed artifact; (b) a context manager in a test helper that snapshots and restores BOTH the store and every artifact derived from it; (c) a pre-commit check that `gate_report.md` regenerates byte-identically from `results.json`, which catches the whole class regardless of cause
+- **(c) is the strongest**: it does not depend on remembering to use a helper, and it would have caught this before the commit rather than after. It is also the same shape as the F44 consistency tests, so the two may share machinery
+- Acceptance: a deliberate perturbation of `results.json` followed by a commit attempt fails; the guard runs in CI as well as pre-commit
+- Depends on: nothing. Pairs with F44
 
 **F44. Evidence-vs-document consistency tests (~3h) Priority 6**
 - Phase: Finalize (Sprint 10 retrospective improvement 2, team-lead approved 2026-09-09)
