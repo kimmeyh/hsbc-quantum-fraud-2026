@@ -45,6 +45,26 @@ Every number measured today. Two findings changed the plan.
 | F37 repo visibility | private | anonymous API 404 | Still private; F40 prerequisite is DONE |
 | F44 surface | unknown | 106 decimals in proposal, 174 in appendix | Sizes the consistency-test work |
 
+
+### Overlap audit (2026-09-09): none of A-G was done in Sprint 10
+
+Checked each task against the repository rather than against its card, because
+Sprint 10 fixed correctness findings from the same two reviews and overlap was
+plausible.
+
+| Task | Check run | Result |
+|---|---|---|
+| A F41 | A20 in prereg; "depth-limited" sites; majority-class sentence | **Outstanding** -- 0 A20, 10 sites, claim present |
+| B F42 | each Fable finding grepped individually | **Outstanding** -- F6, F7, F9, F13, F16, F17 all still present |
+| C F43 | AUC-ROC in proposal/appendix | **Outstanding** -- 0 in proposal, 1 unrelated in appendix |
+| D F37 | anonymous API | **Outstanding** -- 404, still private |
+| E F45 | hooks dir, pre-commit, CI | **Outstanding** -- no regeneration check anywhere |
+| F F44 | test_submission_artifacts.py contents | **Outstanding** -- it tests structure (page size, sections, amendment count), not figure-to-evidence resolution |
+| G F35 | full test list | **Outstanding** -- no interpretation-layer test exists |
+
+One item WAS fixed in Sprint 10 and is deliberately NOT re-done: the B.1
+registry contradiction listing H3/H6 as NOT RUN. Verified corrected.
+
 ## Tasks
 
 Order matters: F41 and F42 share the same lambda=0 analysis, and F44 must
@@ -103,10 +123,29 @@ seeds, plus the 9-seed result excluding the selection seed 42 (8 minutes).
 **Its convexity finding is the same lambda=0 degeneracy F41 addresses**, so the
 sweep runs once and feeds both cards.
 
+**Scope of Task B, made explicit after the overlap audit.** F42's card groups
+some findings as "presentation, deferred with F38". Two of those are corrections,
+not layout, so they land HERE and not in Sprint 12:
+
+- **F6**: the title says "Quantum-Enhanced" while section 2 says "we do not use
+  the phrase quantum-enhanced". A document contradicting itself is a correctness
+  defect whatever its cause; also pick ONE paradigm label (section 1 says
+  "quantum-inspired candidate", section 2 "hybrid classical-quantum")
+- **F16**: "cited requirement. the benchmark's" -- a lowercase sentence start,
+  verified still present and introduced in 16618bb, before Sprint 10
+- **F13**: "falls from 0.5424 to 0.0734" quotes a bracket BOUND as if it were
+  the mean (0.5739). Verified still present. This one misstates a number
+
+Only **F18** (team-capability hours) is genuinely presentation and defers.
+
+**Verified outstanding before planning** (none fixed by Sprint 10): F6, F7, F9,
+F13, F16, F17 all still present in the documents. F3 (the B.1 registry
+contradiction) WAS fixed in Sprint 10 and is not re-done.
+
 **Acceptance**: every external claim either verified with a citation or
 corrected; the lambda=0 spread reported as L1 and objective range; the
 decomposition reported as a paired per-seed table; the 9-seed figure stated
-alongside the 10-seed one.
+alongside the 10-seed one; F6, F13 and F16 corrected in the documents.
 
 **Premise falsifier**: the premise is that the +0.0319 gain survives excluding
 seed 42. Falsifier: a materially different mean on 9 seeds. If it moves, that is
