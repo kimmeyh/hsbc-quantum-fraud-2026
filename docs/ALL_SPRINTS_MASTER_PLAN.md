@@ -21,14 +21,38 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 5 | docs/sprints/SPRINT_5_SUMMARY.md | [OK] Complete | ~1 day (Sep 4, 2026) |
 | 6 | docs/sprints/SPRINT_6_SUMMARY.md | [OK] Complete | ~1 day (Sep 5, 2026) |
 | 7 | docs/sprints/SPRINT_7_SUMMARY.md | [OK] Complete | ~1 day (Sep 5, 2026) |
+| 8 | docs/sprints/SPRINT_8_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 6-7, 2026) |
+| 9 | docs/sprints/SPRINT_9_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 7-8, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 7: Direction into Result** (Sep 5, 2026; PR #41).
-Delivered: **F33** -- a tuned four-family pool reaches 0.7827 AUPRC (SD 0.0283) over ten seeds against 0.7565 untuned and ~0.80 reported by Loke et al. The MATCHED comparison is the one reported: the frozen single-family pool rebuilt at the same k=6 on the same splits gives a PAIRED +0.0198 (SD 0.0203), 9 of 10 seeds positive, still BELOW the 0.0268 MDE. **F34** -- eight spend-guard property tests, each asserting the property whose violation caused a real defect, verified to fail on the originals. Amendments A13 (registered before the run) and A14.
-**The finding**: the accuracy came from the LEARNERS, not the optimizer. Solved-minus-uniform on the tuned pool is +0.0043. Fit-time class weighting -- inside each weak learner as it is built, the one intervention no earlier control varied -- drops the Gram ratio from 0.9988 to 0.92 and lifts absolute accuracy, while the optimization step stays nearly free. For CVQBoost at low prevalence the leverage is pool construction.
-**Two corrections to our own interpretation**, both registered as A14: a mid-run prediction compared sweep VALIDATION AP against TEST AP comparators (validation runs ~0.005 below test on this design), and the k=6 tuned arm was initially set against k=13 comparators -- the order-mismatched comparison ADR-0013 warns of, which the Sprint 7 plan itself had invited by naming the k=13 figure as an acceptance criterion.
-Retro: docs/sprints/SPRINT_7_RETROSPECTIVE.md (4 improvements, all applied or registered; suite 125 -> 132).
+**Sprint 9: Representation, and Paying What We Promised** (Sep 7-8, 2026; PR #53).
+Delivered **F4** (H6, the last preregistered experimental arm), **F14** (the
+eqc-models feedback package QCi's letter had promised) and **F16** (minimal CI
+with a dirty-tree gate). ZERO metered Dirac-3 seconds.
+**The finding**: H6 is a measured null. The QFE phase representation shifts the
+quantum-minus-classical delta by -0.0115 against a paired SD of 0.0135, which is
+43% of our 0.0268 MDE and negative on 7 of 10 seeds. Reported as "a small
+negative shift that does not reach claimable size" -- not "no effect", not
+"widens the gap". The framing was fixed in writing BEFORE any result was seen,
+which mattered: between four and nine seeds an apparent monotonic negative drift
+reached ratio 0.70, and seed 46 broke it in both runs to within 0.0003.
+**The sprint's defining fact**: the same arm ran THREE times and two runs were
+discarded, 18.9 hours of compute against a 10-minute estimate. Run 1 crashed on
+a spline basis refitted on TEST data. Run 2 completed 20/20 cells cleanly and
+was discarded because two of three classical twins never received the
+representation under test -- they ranked inputs by variance, and ULB's Time
+column has variance 2.3e9 against whitened phase columns at 1.0. Both defects
+share a shape: the code ran, the numbers were plausible, and the experiment was
+not the experiment the preregistration specifies.
+**What the fix bought**: not a different number -- a GBDT was the best classical
+arm in all 20 cells either way -- but a different meaning. The corrected GAM
+twin scores 0.7893 against the quantum arm's 0.7646, where before it scored
+0.2590 and was noise. "Best classical" now denotes a bar that can exploit
+periodic structure, which is what makes the comparison survive the Fourier Wall
+objection.
+Retro: docs/sprints/SPRINT_9_RETROSPECTIVE.md (15 categories all Very Good;
+improvements 1, 2 and 4 applied, 3 declined; suite 173 -> 194).
 
 ## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
 
@@ -38,10 +62,10 @@ Retro: docs/sprints/SPRINT_7_RETROSPECTIVE.md (4 improvements, all applied or re
 | 5 | Sep 4 | [DONE] F8, F9, F27, F26, F28, F19 | -- |
 | 6 | Sep 5 | [DONE] F31, F3 prep, F23, F24, F32 | -- |
 | 7 | Sep 5-6 | [DONE] F33, F34, QCi/paper update | -- |
-| 8 | Sep 6-7 | **F3** (IEEE-CIS; scaffolding built and tested in Sprint 6) + paper updates | still time for F16 + F10 |
-| 9 | Sep 7-9 | F4 + paper updates + **QCi package send** (team lead 2026-09-07: moved from Sep 7 to Sprint 9) | still time for F16 + F10 |
+| 8 | Sep 6-7 | [DONE] **F3** (IEEE-CIS, all four tasks) + paper updates; F36 attempted and FAILED | -- |
+| 9 | Sep 7-8 | [DONE] F4 (H6, measured null), F14, F16; **QCi package SENT** 2026-09-08 09:59 | -- |
 | 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
-| Finalize | Sep 12-13 | F16, F10, **F37 (repo public)**, **F38 (appendix to 3 pages)** -- both SUBMISSION BLOCKERS; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
+| Finalize | Sep 12-13 | F10, **F40 (segment non-public material)** -> **F37 (repo public)** in that order, **F38 (page limits)** -- all SUBMISSION BLOCKERS; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
 
 Renumbered 2026-09-05: the team lead noted the project is running more than one sprint per day, so F33 took Sprint 7 and F3 moved to Sprint 8 rather than competing for the same hours. A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
 
@@ -78,26 +102,18 @@ now would be deciding without the evidence that Phase 2 exists to gather.
 - Depends on: QCi grant; per-block team-lead approval (Criterion H)
 
 **F36. Pandoc Lua filter: floating tables for the submission PDFs -- CLOSED 2026-09-07, FAILED**
-- **VERDICT: the filter works; the problem it was built for did not exist.** The premise below is preserved as written because it is wrong in an instructive way. It rests on a CHARACTER-COUNT page-fill measurement, and a table-heavy page always looks short by that measure. Measured as vertical extent, every page cited below was already full: 724 / 680 / 680 / 682pt of a 792pt page, zero free space anywhere. The appendix was over its limit because it had too much content
+- **VERDICT: the filter works; the problem it was built for did not exist.** The premise (preserved in the review doc, because it is wrong in an instructive way) rested on a CHARACTER-COUNT page-fill measurement, and a table-heavy page always looks short by that measure. Measured as vertical extent, every page cited below was already full: 724 / 680 / 680 / 682pt of a 792pt page, zero free space anywhere. The appendix was over its limit because it had too much content
 - **Failed criterion 1** (appendix 3 pages with the filter, 4 without): 4 and 4. **Failed criterion 6** (other documents unchanged), which is worse: floating tables in a table-dense document COSTS a page, taking gate_report.pdf from 3 to 4. Criteria 2, 3, 4, 5 and 7 pass
 - Filter RETAINED but UNREGISTERED at `scripts/pandoc/float-tables.lua`, opt-in through `render-pdf.ps1 -LuaFilter`, which nothing passes. `render-all.ps1` is unchanged. Do not enable it without reading `docs/reviews/f36-float-tables-outcome.md`
 - **What the card actually produced, and it is worth more than the filter**: `scripts/page-fill-report.py` now measures vertical extent in points instead of counting characters, and excludes the page-number folio, which sat at the same depth on every page and so made every page report zero free space -- including a nearly empty last page, the one case the tool exists to flag. `experiments/src/test_page_fill_report.py` covers both defects and all four tests fail against the previous implementation
 - **The appendix DID reach 3 pages**, by the team lead's two suggestions: set pipe-table column widths from the longest cell each column holds (every table used `|---|---|`, giving "30" and "[SIM]" the same width as a sentence; removed 9 of 20 spilled lines with no content change), and move reference material to the public repository. It has since gone back to 4 with the B.1 compound-falsification statement, tracked as F38
 - **Process lesson**: the card's dry run could not have failed. Deleting five tables removes their content AND their space, so the document was always going to shrink. It never distinguished "tables take room" from "tables waste room". A check that cannot fail is not evidence
 
-ORIGINAL CARD AS WRITTEN, premise now known false:
-- Phase: Finalize/tooling (team lead 2026-09-06: "register the pandoc Lua filter now - believe it is worth it now"; full card at docs/sprints/drafts/F36_CARD_DRAFT.md)
-- Platform: docs/tooling
-- **The measured problem**: the appendix content FITS three pages and renders on four. Page fills are 2,695 / 3,807 / 2,550 / 1,788 = 10,840 characters against a three-page capacity of 11,421 at page-2 density -- 581 characters UNDER, yet needing a fourth page. pandoc 3.1.2 emits pipe tables as bare `longtable`, which breaks across pages but never FLOATS: it starts exactly where written, so a table that does not fit defers itself AND everything after it. Five tables of 35 rows leave pages 1 and 3 about 1,100 characters below page 2
-- **Dry run already run, before building anything**: rendering the appendix with all five tables removed gives 3 pages, while the tables' own text is only ~1,400 characters. The gap is break waste, not length, which is what floats recover. `ltablex` was tried and cannot work here: a float must sit inside `\begin{table}` and longtable cannot
-- **Design**: a Lua filter wrapping each Table node in `\begin{table}[htbp]`, converting longtable to tabular inside the float (our tables are 6-9 rows and none needs to break), adding `\caption{}` and `\label{}` so a moved table stays referenceable, and leaving already-captioned tables alone. Prose changes from "the table below" to "Table 3"
-- **Completion is EFFECTIVENESS, not execution**: the card is complete only when appendix.pdf renders at 3 pages with the filter and 4 without, from identical markdown. If the filter is correct and the page count does not move, the card FAILS and floats were not the binding constraint -- worth knowing rather than papering over
-- **Seven falsifiable acceptance criteria**: page count drops; no table row lost; numbering sequential; no unresolved `??` references; idempotent; the other eight PDFs unchanged at their current page counts; and every numeric value in every rendered PDF identical before and after
-- **Why now rather than post-submission**: roughly two hours across Sprints 5-8 have gone into trimming prose to satisfy page limits, repeatedly cutting content that did not need to go. `page-fill-report.py` has correctly said "FIX THE BREAK" several times with no way to act on it except deleting text
-- Risk: it runs on every submission render eight days out. Mitigated by making it opt-in via one `--lua-filter` flag, so removal reverts to today's behaviour
-- Depends on: nothing
+The original card body is pruned as shipped. Its premise, the seven
+acceptance criteria and the full failure analysis are preserved in
+docs/reviews/f36-float-tables-outcome.md.
 
-**F38. Appendix back to 3 pages (~30m) Priority 1 -- SUBMISSION BLOCKER**
+**F38. Appendix to 3 pages AND proposal to 6 (~45m) Priority 1 -- SUBMISSION BLOCKER**
 - Phase: Finalize (team lead 2026-09-07, accepting the overage for now: "can we leave it in the .md for now and we will address the overage later?")
 - Platform: docs
 - **State**: appendix.pdf is 4 of 3 pages. The B.1 compound-falsification statement was added deliberately and is worth its space: section 2 of the preregistration names its own falsification test, two of its three conditions (H1b NULL at -0.0399, H3 slope -0.006) are now measured AGAINST the theory, and a submission silent on that reads as avoidance. It stays; something else pays for it
@@ -105,6 +121,8 @@ ORIGINAL CARD AS WRITTEN, premise now known false:
 - **Candidate, already drafted and reverted once**: condensing Appendix C's artifact list to one sentence recovers about 3 lines and was measured to work. It was reverted only because the team lead chose to defer rather than cut under time pressure
 - **Do NOT cut**: any figure, control, caveat, the A15/A17/A12 disclosures, or the compound-criterion statement. The 2026-09-06 pass already removed all restatement that was free to remove; what remains is evidence
 - Acceptance: `python scripts/check-page-limits.py` reports OK 3 of 3, AND a numeric diff against the current render shows no figure lost (the 2026-09-06 method: extract all decimals from both PDFs and compare as sets)
+- **Sprint 9 update (2026-09-07)**: the H6 arm (F4) lands an A.5/A.6 write-up in the same appendix, so the cut is larger than 76pt by whatever H6 needs. Sequence matters: write H6 FIRST, then cut once against the real total, rather than cutting to 3 pages and immediately breaking it again
+- **Sprint 9 update (2026-09-08)**: the H6 write-up landed, so BOTH documents are now over. appendix 4 of 3, proposal 7 of 6. Both page-limit cases are xfail(strict) tied to this card, so each FAILS once its document is back under limit and the markers cannot outlive the fix
 - Risk: an over-limit appendix is a submission-rules failure independent of content quality. Must not reach Sep 13 unresolved
 - Depends on: nothing
 
@@ -118,6 +136,22 @@ ORIGINAL CARD AS WRITTEN, premise now known false:
 - **Explicitly held until after submission** (team lead: "We may hold this until after submission"). It is infrastructure, and eight days out the risk of touching every document exceeds the benefit
 - Acceptance: every numeric assertion in proposal, appendix and the QCi letter resolves to a fact record; the build fails on a stale reference; and a deliberate edit to one fact value propagates to every document that cites it
 - Depends on: nothing. Best started after F16/F10 and the submission
+
+**F40. Segment non-public material out of the working tree (~1h) Priority 1 -- BLOCKS F37**
+- Phase: Finalize (team lead 2026-09-08: "removing them going forward is enough. Add as backlog item so we can fully plan it")
+- Platform: repo/admin
+- **Why it blocks F37**: making the repository public publishes everything in the working tree. This card must complete FIRST. Destination is `D:\Data\Harold\hsbc-quantum-fraud-2026\`, a sibling of the repo that git cannot see, already holding the sent QCi .msg
+- **What moves, and why each**:
+  - `0Testing Feedback - all.txt` -- STRUCTURAL scan (no content read, per the CLAUDE.md rule that team-lead `0*` files are committed but never read) finds 1 email address, 1 phone number, 4 personal-name hits, 9 QCi mentions. Team-lead working notes with contact details
+  - `0QMLQI Backlog Refinement.txt` -- 71KB, 41 QCi mentions, 2 hits on an api/key/secret pattern. Those are PROBABLY discussion rather than live credentials, but confirming would require reading the file, which the standing rule forbids. That is precisely when segmentation beats inspection
+  - The other five `0*` files -- small, few flagged patterns, but they are team-lead working files with no reason to be public
+  - `experiments/reference/fourierwall2/` -- 2MB, 42 tracked files, the prior Fourier Wall / SPECTRA work. The team lead decided on 2026-09-08 that this work stays OUT of the challenge submission (test_submission_does_not_claim_prior_paid_tier_degree3_work enforces it in the documents); publishing its charts and findings in the challenge repo would contradict that decision
+- **Verified before proposing**: `.env` is NOT tracked and has never been committed. QCi job identifiers in `hw_job_ids.json` are opaque hashes with no account linkage, and the QCi letter promises them as evidence -- they STAY
+- **`fourierwall2` is safe to move**: referenced only by CHECKLIST.md, docs/adr/0013 and the master plan. NO code or test depends on the path (verified by grep over experiments/ and scripts/). Those three references need rewording to point at the external folder, not deleting -- the ADR's reasoning still stands
+- **Steps**: (1) move the files; (2) `git rm --cached` each; (3) add `0*.txt` and `experiments/reference/fourierwall2/` to .gitignore; (4) reword the three doc references; (5) write a README in the destination folder recording what moved, when, why, and from which commit; (6) re-run the full suite and `render-all.ps1`
+- **HISTORY IS NOT REWRITTEN** (team lead's explicit decision). These files remain in git history and a public repo exposes history. Accepted because the exposure is the team lead's own contact details and prior-work references, not credentials. Anyone revisiting this should know it was a decision, not an oversight
+- Acceptance: `git ls-files` returns nothing matching `0*.txt` or `fourierwall2`; the full suite passes; all ten PDFs still render; the destination README exists
+- Depends on: nothing. MUST precede F37
 
 **F37. Make the repository public (~45m) Priority 1 -- SUBMISSION BLOCKER**
 - Phase: Finalize (team lead 2026-09-06: "It must be public upon submission ... if not already in the backlog item for final submission, please add making the repository public")
@@ -138,13 +172,7 @@ ORIGINAL CARD AS WRITTEN, premise now known false:
 - **Honest limit**: some of this is genuinely hard to test mechanically and will end up as a checklist rather than an assertion. The parts that CAN be asserted are worth asserting, and the parts that cannot belong in STATISTICAL_REVIEW_CHECKLIST where a human walks them
 - Depends on: nothing (comparators.py already landed)
 
-**F3. IEEE-CIS reduced Deotte recipe + temporal protocols (~1 day) Priority 14**
-- Phase: Experiments
-- Platform: IEEE-CIS
-- **Scope decision (team lead, 2026-09-05)**: run BOTH pool configurations, the frozen single-family arm and the F33 tuned four-family arm. The frozen arm is the preregistered comparator and must be carried for continuity; the tuned arm is where F33 measured the accuracy to live. Running only one would either break comparability with every prior result or omit the configuration the evidence now favours
-- Preregistered feature pass (D-normalization, UID excluded, named aggregates, V-reduction); leakage controls incl. shuffled-label positive control
-- GroupKFold-by-month rolling origin; classical arms + proxy CVQBoost on the reduced set; H3 ladder cells
-- Depends on: F1
+(F3 IEEE-CIS: COMPLETED in Sprint 8, all four tasks, merged via PR #47; history in SPRINT_8_SUMMARY.md. Removed from candidates per convention.)
 
 **F29. Sample-size insensitivity of the CVQBoost optimum (~2h proxy, zero metered) Priority 15**
 - Phase: Experiments (team-lead observation 2026-09-04; run "if we have time before submission", include only if the evidence supports it)

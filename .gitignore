@@ -25,3 +25,8 @@ experiments/results/predictions/*
 
 # Smoke-run output; evidence lives in ieee_classical.json only.
 experiments/results/*_smoke.json
+
+# Run heartbeats, not evidence. They are rewritten on every run (including
+# test runs), so tracking them makes CI's dirty-tree gate fire on a clean
+# build. Evidence lives in the named results files, which ARE tracked.
+experiments/results/*_progress.json

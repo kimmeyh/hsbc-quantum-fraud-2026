@@ -2,7 +2,7 @@
 
 Owners: **H** = Harold (only you can do it), **C** = Claude (I do it), **H+C** = decision or review done together.
 Mark items `[x]` as they complete. This list is the working agenda; `docs/requirements-matrix.md` is the final acceptance gate.
-Last reconciled: 2026-09-04 (Sprint 4 close).
+Last reconciled: 2026-09-08 (Sprint 9 close).
 
 ## Standing rule: Dirac-3 hardware budget
 
@@ -60,6 +60,21 @@ All development and debugging runs use the local proxy (the classical solve of t
 - [ ] **C**: Paper outline, seven sections mapped to rubric plus appendices (results, preregistration registry with gate table, reproduction, references from docs/references.md)
 - [ ] **H+C**: Approve outline
 - [ ] **C**: Draft V1 with [HW]/[SIM]/[PROJ] tags on every number; prevalence beside every AUPRC
+## Stage 3 to 6: Evidence campaign (Sep 4 to 8) - COMPLETE
+
+- [x] **C**: ULB evidence complete: tuned GBDT trio, CVQBoost frozen and mixed pools, 37 metered Dirac-3 fits over two campaigns (163 device seconds, zero failures, zero retries)
+- [x] **C**: Solver fidelity established: hardware minus exact proxy -0.0010 AUPRC with the interval containing zero, weight cosine 0.975 to 0.999, hardware objective never below the exact minimum (Sprint 4-6)
+- [x] **C**: The pool-degeneracy finding: the frozen optimum is uniform to seven decimal places, and the apparent gain over uniform weights is tie-breaking. Cause measured, not inferred: off-diagonal Gram entries average 170,234.4 against a diagonal of 170,235 (Sprint 6, A6)
+- [x] **C**: Tuned pool (F33): fit-time class weighting makes the pool genuinely diverse, +0.0319 AUPRC at matched size on 10 of 10 seeds, the first difference in this project to exceed the 0.0268 MDE. The accuracy came from the LEARNERS, not the optimizer (Sprint 7, A13/A14/A16)
+- [x] **C**: IEEE-CIS second dataset (F3): 590,540 transactions, rolling origin by month, three classical arms, CVQBoost proxy arms, and the H3 ladder at 12 scoreable cells. The ladder answers the ceiling question AGAINST our interest: slope -0.006 per feature, so lifting the ceiling does not close the gap (Sprint 8)
+- [x] **C**: H6 representation arm (F4): a measured null. The QFE phase representation shifts the delta by -0.0115 against a paired SD of 0.0135, 43% of the MDE. Reported as a shift too small to claim rather than as "no effect" (Sprint 9, A18)
+- [x] **C**: Protocol violation A17 found, recorded and corrected: three exploratory fold builders had skipped the section 4 deduplication, and every affected figure was recomputed (Sprint 8)
+- [x] **C**: eqc-models integration feedback package written for QCi, every claim cited to file and line (Sprint 9, F14)
+- [x] **H**: QCi sponsorship request SENT 2026-09-08 09:59:03 -0400 (tagged `qci-letter-sent-20260908`); acknowledged, no substantive reply yet
+- [x] **C**: Minimal CI on PRs with a dirty-tree gate, after a test overwrote an evidence file in Sprint 8 (Sprint 9, F16)
+
+## Stage 7 to 8: Paper, review and submission (Sep 8 to 13)
+
 - [ ] **H**: Write or approve Team Capability content (education, GIC 2026 entry, repos, honest gaps, Claude Code disclosure)
 
 ## Stage 6: Adversarial reviews (Sep 6 to 7)
@@ -72,7 +87,7 @@ All development and debugging runs use the local proxy (the classical solve of t
 ## Stages 7 to 8: Finalize (Sep 7 to 8)
 
 - [ ] **C**: Verify every number in the paper against `results.json`
-- [ ] **C**: Pre-publication confidentiality scan of the entire repo and paper: no employer-repo URLs or org names in remotes/links, no account identifiers, no API keys or .env content, no QPU balance figures tied to a named account. Grep for the known-sensitive strings plus "github.com" and "sandbox" before anything goes public. Re-verify experiments/reference/fourierwall2/ file by file
+- [ ] **C**: Pre-publication confidentiality scan of the entire repo and paper: no employer-repo URLs or org names in remotes/links, no account identifiers, no API keys or .env content, no QPU balance figures tied to a named account. Grep for the known-sensitive strings plus "github.com" and "sandbox" before anything goes public. F40 moves experiments/reference/fourierwall2/ and the 0* team-lead files OUT of the repository before it goes public, so the scan covers what remains rather than re-verifying that directory in place. F40 BLOCKS F37
 - [ ] **C**: Freeze and publish the reproducibility repo (public GitHub under kimmeyh); link in appendix as supplementary material
 - [ ] **C**: Compliance walk of `requirements-matrix.md` against the final PDF (every A/B/C/D/E row)
 - [ ] **H**: Final approval of PDF

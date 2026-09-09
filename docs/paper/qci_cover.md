@@ -11,28 +11,118 @@ date: "September 2026"
 
 # To QCi
 
-**Request**: 30,000 QPU seconds of Dirac-3 access  
-**Enclosed, all marked DRAFT**: concept proposal, appendices, frozen preregistration with its seventeen amendments, generated gate report, and the hardware run plans.
+**Request**: 30,000 QPU seconds of Dirac-3 access
+**Enclosed, all marked DRAFT**: concept proposal, appendices, frozen preregistration with its nineteen amendments, generated gate report, the hardware run plans, and the eqc-models integration feedback.
 
-We have worked together for three years. This note is written the way I would want one written to me: the commercial case first, then what else you get, then the science.
+## Our goal in participating
+
+We are exploring whether quantum computing can produce better fraud
+predictions in a hybrid classical/quantum design, and we intend to follow that
+wherever it leads. We believe Dirac-3 and eqc-models are a likely candidate,
+and we want to find out how far predictions can be pushed with them. That is
+the exploration; the analysis is what we publish either way.
 
 ## Why this is worth 30,000 seconds to QCi
 
-**The named account is the return.** This work is a Phase 1 entry to the 2026 Global Quantum + AI Challenge under HSBC's problem statement, judged by a panel that includes enterprise representatives. Finalists advance to a Phase 2 PoC sprint with HSBC engagement. A submission that runs on Dirac-3, names Dirac-3, and reports measured device numbers puts your hardware in front of a tier-one bank's fraud organization with an independent party doing the measuring. That is a sales conversation you cannot buy at the price of 30,000 seconds, and it is one your own marketing cannot have on your behalf.
+A copy of the repository contents for the 2026 Global Quantum + AI Challenge,
+HSBC's credit-card fraud problem, and specifically:
 
-**The cost basis is small and known.** Our measured rate is 4 to 5 seconds per fit across 37 metered fits with zero failures. 30,000 seconds is roughly 6,600 fits, and our entire campaign to date has consumed 163 seconds. We are not asking for capacity you would otherwise sell at volume; we are asking for headroom to run a grid that a free tier cannot hold.
-
-**A credible negative is worth more to you than an uncritical positive.** We published a null against our own hypothesis. That is why the numbers in this package will survive a reviewer who wants to attack them, and it is why a later positive from the same protocol will be believed. A vendor-favourable result from a protocol nobody trusts moves no procurement decision.
-
-**What you can reuse regardless of outcome.** Everything below is yours: the finding, the integration write-ups, the cost model, and the measured device behaviour. If our arm never beats the classical baseline, you still keep all of it.
+- **Your hardware named and measured in front of a tier-one bank**, by an
+  independent party, with finalists advancing to a Phase 2 PoC with HSBC.
+- **A CVQBoost configuration finding you can put in your documentation**: at
+  low prevalence a single-family pool is degenerate and the optimizer has
+  nothing to weight.
+- **A validated classical proxy for the Dirac-3 CVQBoost path**, usable as a
+  regression oracle and as a way for customers to size a problem before
+  spending.
+- **A measured cost model and integration notes** from 37 metered fits and five
+  weeks of sustained use, enclosed as a document rather than a promise.
 
 ## What else we are trying to get from the 30,000 seconds
 
-Beyond the challenge itself, three things we cannot obtain on the free tier:
+Three things we cannot obtain on the free tier:
 
-1. **A paid-tier sizing curve.** We established empirically that the free tier refuses any continuous degree-2 job above 100 variables: a 312-variable submission came back with "Number of variables '312' in problem is greater than the free-tier device limit '100'". Our frozen configuration is 91 variables, sitting under that ceiling by accident rather than design. Every scaling statement we can currently make is therefore bounded by a tier limit rather than by the device. We would like to characterise how solution quality and time behave from 100 to several thousand variables, and to publish it.
-2. **The integer solver on a problem that needs it.** Our continuous formulation is convex, so a classical solve returns the global optimum in milliseconds and no solver can beat it. The problem it relaxes -- cardinality-constrained selection of weak learners -- is NP-hard and is native to Dirac-3's integer mode. That is the first experiment where your hardware is not competing against an easy classical answer.
-3. **Enough repetition to characterise the stochasticity honestly.** Across 8 samples per fit, no fit has returned identical draws, and the within-fit energy spread is a median 0.019% and maximum 0.343%. That is a good number for you. With headroom we can turn it into a proper distribution across configurations and sizes rather than a footnote.
+1. **A paid-tier sizing curve.** The free tier refuses any continuous degree-2
+   or degree-3 job above 100 variables, and several points of our analysis
+   require more than 100. We have run degree-3 work on Dirac-3 before, on a
+   paid account, for the full Fourier Wall and SPECTRA analysis -- so this is
+   not a first attempt, it is the same work on a problem the free tier cannot
+   hold. We want to characterise how solution quality and time behave from 100
+   to several thousand variables, and publish it.
+2. **The integer solver on an analysis that needs it.** Our continuous
+   formulation is convex, so a classical solve returns the global optimum in
+   milliseconds and no solver can beat it; the cardinality-constrained problem
+   it relaxes is NP-hard and native to Dirac-3's integer mode.
+3. **Phase 2 datasets are much larger and will need more seconds.**
+   1. We have optimised usage with a proxy algorithm that does all setup and
+      testing classically, at zero metered cost.
+   2. Our estimates come from actual measured usage rather than from
+      projection, so they are as close as we can reasonably make them.
+   3. We commit to spending the seconds on this challenge and returning any
+      unused balance at the end of it.
+
+## The commercial case, in more detail
+
+**The named account is the return.** This work is a Phase 1 entry to the 2026
+Global Quantum + AI Challenge under HSBC's problem statement, judged by a panel
+that includes enterprise representatives. A submission that runs on Dirac-3,
+names Dirac-3, and reports measured device numbers puts your hardware in front
+of a tier-one bank's fraud organization with an independent party doing the
+measuring. That is a sales conversation you cannot buy at the price of 30,000
+seconds, and one your own marketing cannot have on your behalf.
+
+**The cost basis is small and known.** Our measured rate is 4 to 5 seconds per
+fit across 37 metered fits with zero failures. 30,000 seconds is roughly 6,600
+fits, and our entire campaign to date has consumed 163 seconds. We are not
+asking for capacity you would otherwise sell at volume; we are asking for
+headroom to run a grid a free tier cannot hold.
+
+**A credible negative is worth more to you than an uncritical positive.** We
+published a null against our own hypothesis. That is why the numbers in this
+package will survive a reviewer who wants to attack them, and why a later
+positive from the same protocol will be believed. A vendor-favourable result
+from a protocol nobody trusts moves no procurement decision.
+
+**What you keep regardless of outcome.** The findings, the integration
+write-ups, the cost model, and the measured device behaviour. If our arm never
+beats the classical baseline, all of it is still yours.
+
+## The three needs, in more detail
+
+**The variable ceiling, and what it forecloses.** A 312-variable submission came
+back with "Number of variables '312' in problem is greater than the free-tier
+device limit '100'". Our frozen configuration is 91 variables, sitting under
+that ceiling by accident rather than design, so every scaling statement we can
+currently make on this project is bounded by a tier limit rather than by the
+device. The concrete degree-3 case here: three-feature weak-learner subsets
+over 13 features need 377 variables, which the free tier cannot accept at all.
+
+We are not new to this. The full Fourier Wall and SPECTRA analysis was run on
+Dirac-3 at degree 3 on a paid account, so we know what the device does above
+the free-tier ceiling and what it costs to find out. That is why the estimates
+below are costed rather than guessed, and why we are asking for a specific
+number of seconds instead of open-ended access.
+
+**Why the integer solver is the experiment that matters.** Cardinality-
+constrained selection of weak learners is where your hardware is not competing
+against an easy classical answer. Everything we have run so far is a convex
+relaxation, and a convex relaxation is exactly the case where a classical
+solver wins by construction.
+
+**Sizing, from measurement rather than projection.** Our preregistered Phase 1
+grid is 81 fits at roughly 2,300 to 2,600 seconds, each block costed from the
+4 to 5 seconds per fit we actually measured. Phase 2 runs the same protocol on
+larger data. We would rather ask once, against numbers we can show you, than
+return repeatedly with revised guesses.
+
+**Enough repetition to characterise the stochasticity honestly.** Across 8
+samples per fit, no fit has returned identical draws, and the within-fit energy
+spread is a median 0.019% and maximum 0.343%. That is a good number for you.
+With headroom we can turn it into a proper distribution across configurations
+and sizes rather than a footnote.
+
+We have worked together for three years. This note is written the way I would
+want one written to me: the ask first, then what you get, then the science.
 
 ## What we found, since it bears on how CVQBoost gets configured
 
@@ -81,8 +171,16 @@ It weakens the pure sizing argument below and sharpens the integer-solver one:
 if a weighted vote over one- and two-feature learners does not represent the
 interactions a boosted tree exploits, then the formulation worth testing is the
 one the continuous relaxation drops -- the cardinality-constrained integer
-problem, three-feature subsets, and the phase representation. None have been
-run, and that is our first ask.
+problem and three-feature subsets. Neither has been run, and that is our first
+ask.
+
+We have since tested the third candidate, the phase representation, and it does
+not help: across ten seeds the quantum-minus-classical difference shifts by
+-0.0115 against a paired SD of 0.0135, well inside our detectable threshold. We
+report that because it narrows the ask honestly. The remaining two are the ones
+that need your hardware, and one of them -- the cardinality-constrained integer
+problem -- is the only formulation here where a classical solver does not win by
+construction.
 
 ## What we would test with the access
 
@@ -96,7 +194,9 @@ In priority order, each with a preregistered protocol already written:
 ## What we give back
 
 - The pool-degeneracy finding above, written up for your documentation.
-- Integration notes from sustained use of eqc-models: the pool-construction strategy that fails on Windows, the response object whose billing field is not a dictionary key, the free-tier variable arithmetic and where the documentation and implementation diverge, and the guards we built around metered execution that any serious user would need.
+- **Integration feedback, enclosed as a document rather than a promise**
+  (`eqc-models and Dirac-3: Integration Feedback`). Every finding cites the
+  file and line that establishes it, so you can check any of them: the pool-construction strategy that fails on Windows, the response object whose billing field is not a dictionary key, the free-tier variable arithmetic and where the documentation and implementation diverge, and the guards we built around metered execution that any serious user would need.
 - The measured cost model: per-fit timings consistent across 37 fits, and the solver-dispersion data above.
 - **A validated classical proxy for Dirac-3's CVQBoost path, which may be the most reusable thing here.** It reads the Hamiltonian eqc-models actually constructs (J = HH^T + lambda*I, C = -2Hy, sum constraint 1.0, w >= 0) and solves that identical objective classically by accelerated projected gradient on the simplex. Because it builds its pools through eqc-models' own builders, the problem it solves is the same problem, not a reimplementation that has drifted. Two things that buys: it is how we could measure hardware-minus-exact at -0.0010 AUPRC with weight cosine 0.975 to 0.999, since without an exact solve of the SAME Hamiltonian there is nothing to compare a device result against; and it let us develop against the free tier while spending 163 metered seconds in total. For QCi it is a test oracle for CVQBoost regressions and a way for evaluating customers to size a problem before they spend on it. It is yours, and we would be glad to have your correction on whether we have read the Hamiltonian right.
 - Named attribution in a submission to a tier-one bank, and in whatever is published afterwards.
@@ -105,7 +205,7 @@ Two questions we would value your view on, both single-fit experiments we would 
 
 ## A note on this package
 
-Everything enclosed is DRAFT and pre-submission. The results are as measured; the preregistration and its seventeen dated amendments show exactly what was decided before any result was seen, including the gate we failed and the two claims we had to correct. We would welcome correction on anything we have characterised wrongly about Dirac-3 -- especially the convexity argument and the free-tier ceiling -- before this becomes a public submission.
+Everything enclosed is DRAFT and pre-submission. The results are as measured; the preregistration and its nineteen dated amendments show exactly what was decided before any result was seen, including the gate we failed and the two claims we had to correct. We would welcome correction on anything we have characterised wrongly about Dirac-3 -- especially the convexity argument and the free-tier ceiling -- before this becomes a public submission.
 
 Thank you for considering the request.
 

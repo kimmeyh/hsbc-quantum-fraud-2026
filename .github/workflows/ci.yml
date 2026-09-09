@@ -1,0 +1,65 @@
+# Minimal CI (F16, card #52).
+#
+# WHY THIS EXISTS. Sprint 8 shipped a bug where RUNNING THE TEST SUITE
+# overwrote experiments/results/ieee_classical.json -- the full 590,537-row,
+# 3-fold run that every reported IEEE figure traces to -- with a 1-fold smoke
+# result. It was caught from `git status` by luck, not by any check. The
+# dirty-tree gate below is the tripwire for that class of defect: a test that
+# modifies tracked files is a defect whether or not its assertions pass.
+#
+# Runs from a CLEAN CHECKOUT with no raw datasets, no rendered PDFs and no QCi
+# credentials. Tests that need those SKIP rather than fail (they carry
+# skipif guards), so a red build here always means a real regression.
+name: CI
+
+on:
+  pull_request:
+    branches: [develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r experiments/requirements.txt
+          pip install ruff
+
+      # Lint is advisory: a style warning must not block a submission fix five
+      # days from the deadline. Failures are visible in the log and in the step
+      # summary without failing the build.
+      - name: Lint (advisory)
+        continue-on-error: true
+        run: ruff check experiments/src scripts || true
+
+      # `-m "not slow"` excludes the 89-second live-pipeline test, which is the
+      # one test that deliberately runs a real fit. The full suite still runs
+      # locally and pre-merge.
+      - name: Tests
+        run: pytest -m "not slow" -q
+
+      # THE POINT OF THIS WORKFLOW. If the suite modified any tracked file, the
+      # build fails and names the files. Sprint 8's evidence-overwrite bug
+      # would have failed here on the PR that introduced it.
+      - name: Test run must leave the tree clean
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::The test run modified tracked files. A test that"
+            echo "::error::writes to the repository is a defect even when its"
+            echo "::error::assertions pass -- Sprint 8 lost an evidence file"
+            echo "::error::exactly this way. Files changed:"
+            git status --porcelain
+            git diff --stat
+            exit 1
+          fi
+          echo "Working tree clean after the test run."
