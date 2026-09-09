@@ -5,7 +5,7 @@
     "branch": "feature/20260907_Sprint_9",
     "status": "phase_7_review",
     "plan_doc": "docs/sprints/SPRINT_9_PLAN.md",
-    "pr": null,
+    "pr": 53,
     "plan_approved": true,
     "github_issues": [
       50,

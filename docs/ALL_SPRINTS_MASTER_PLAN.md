@@ -22,38 +22,37 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 6 | docs/sprints/SPRINT_6_SUMMARY.md | [OK] Complete | ~1 day (Sep 5, 2026) |
 | 7 | docs/sprints/SPRINT_7_SUMMARY.md | [OK] Complete | ~1 day (Sep 5, 2026) |
 | 8 | docs/sprints/SPRINT_8_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 6-7, 2026) |
+| 9 | docs/sprints/SPRINT_9_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 7-8, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 8: The Second Dataset** (Sep 6-7, 2026; PR #47, main merge PR #49).
-Delivered **F3** on IEEE-CIS under its preregistered protocol: 590,540
-transactions, 3.5% prevalence, GroupKFold-by-month rolling origin, four tasks
-(protocol compliance, classical arms, CVQBoost proxy arms, H3 ladder). ZERO
-metered Dirac-3 seconds; every result is [SIM].
-**The findings**: classical arms reach 0.5739 AUPRC against CVQBoost's 0.0571 --
-but the matched-feature control settles what that means, since the same LightGBM
-on the SAME six features falls from 0.5424 to 0.0734, so every model is starved
-and the quantum arm attains 85% of that constrained ceiling. The H3 ladder (12
-cells, scoreable) then answered the ceiling question AGAINST our own interest:
-slope -0.006 AUPRC per feature, so lifting the ceiling does not close the gap.
-That contradicts a claim made mid-sprint after Task C, and the contradiction is
-recorded rather than smoothed.
-**The preregistered compound falsification criterion is now stated** (appendix
-B.1): two of its three conditions are measured and both went against the theory,
-H5 is unrun, so it has not fired but has not been survived either. The
-submission had been silent on it.
-**A card FAILED and is recorded as failed**: F36 (#48) built a pandoc Lua filter
-for appendix page space that was never wasted. The premise came from
-`page-fill-report.py` counting CHARACTERS, which makes any table-heavy page look
-short; measured as vertical extent every page was already full. The filter also
-costs gate_report.pdf a page, so it is retained UNREGISTERED and opt-in. Full
-writeup: docs/reviews/f36-float-tables-outcome.md.
-**Four protocol defects passed a smoke test** and were found only because the
-team lead asked for a full sweep (docs/reviews/f3-preflight-audit.md): no class
-weighting, ID columns entering the model raw, the shuffled-label control never
-run, and an MDE borrowed from a different design.
-Retro: docs/sprints/SPRINT_8_RETROSPECTIVE.md (16 categories all Very Good; 6
-improvements, all approved and applied; suite 145 -> 156).
+**Sprint 9: Representation, and Paying What We Promised** (Sep 7-8, 2026; PR #53).
+Delivered **F4** (H6, the last preregistered experimental arm), **F14** (the
+eqc-models feedback package QCi's letter had promised) and **F16** (minimal CI
+with a dirty-tree gate). ZERO metered Dirac-3 seconds.
+**The finding**: H6 is a measured null. The QFE phase representation shifts the
+quantum-minus-classical delta by -0.0115 against a paired SD of 0.0135, which is
+43% of our 0.0268 MDE and negative on 7 of 10 seeds. Reported as "a small
+negative shift that does not reach claimable size" -- not "no effect", not
+"widens the gap". The framing was fixed in writing BEFORE any result was seen,
+which mattered: between four and nine seeds an apparent monotonic negative drift
+reached ratio 0.70, and seed 46 broke it in both runs to within 0.0003.
+**The sprint's defining fact**: the same arm ran THREE times and two runs were
+discarded, 18.9 hours of compute against a 10-minute estimate. Run 1 crashed on
+a spline basis refitted on TEST data. Run 2 completed 20/20 cells cleanly and
+was discarded because two of three classical twins never received the
+representation under test -- they ranked inputs by variance, and ULB's Time
+column has variance 2.3e9 against whitened phase columns at 1.0. Both defects
+share a shape: the code ran, the numbers were plausible, and the experiment was
+not the experiment the preregistration specifies.
+**What the fix bought**: not a different number -- a GBDT was the best classical
+arm in all 20 cells either way -- but a different meaning. The corrected GAM
+twin scores 0.7893 against the quantum arm's 0.7646, where before it scored
+0.2590 and was noise. "Best classical" now denotes a bar that can exploit
+periodic structure, which is what makes the comparison survive the Fourier Wall
+objection.
+Retro: docs/sprints/SPRINT_9_RETROSPECTIVE.md (15 categories all Very Good;
+improvements 1, 2 and 4 applied, 3 declined; suite 173 -> 194).
 
 ## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
 
@@ -64,7 +63,7 @@ improvements, all approved and applied; suite 145 -> 156).
 | 6 | Sep 5 | [DONE] F31, F3 prep, F23, F24, F32 | -- |
 | 7 | Sep 5-6 | [DONE] F33, F34, QCi/paper update | -- |
 | 8 | Sep 6-7 | [DONE] **F3** (IEEE-CIS, all four tasks) + paper updates; F36 attempted and FAILED | -- |
-| 9 | Sep 7-9 | F4 + paper updates + **QCi package send** (team lead 2026-09-07: moved from Sep 7 to Sprint 9) | still time for F16 + F10 |
+| 9 | Sep 7-8 | [DONE] F4 (H6, measured null), F14, F16; **QCi package SENT** 2026-09-08 09:59 | -- |
 | 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F16 + F10 |
 | Finalize | Sep 12-13 | F10, **F40 (segment non-public material)** -> **F37 (repo public)** in that order, **F38 (page limits)** -- all SUBMISSION BLOCKERS; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
 
