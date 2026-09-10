@@ -113,7 +113,7 @@ already anticipates.
 
 | Risk | Likelihood | Mitigation |
 |---|---|---|
-| **B2 pool build exceeds the calendar** | **High** -- already >617 CPU-s unfinished | Measure one fit first; reduce seeds; B3 has priority |
+| **B2 pool build eats the calendar** | **Measured, not speculative**: 735.4s/pool, 135 min for 11 fits | Run B2 as ONE background pass overlapping the F38 cut; B3 first regardless; reducing seeds stays available as a Class 3 option |
 | B2 cost unknown, could be large per fit | Medium | One fit establishes the anchor before ten more |
 | New evidence grows the documents again | **Certain** | F38 already re-measured at 250pt + 439pt; cut AFTER evidence lands |
 | Writing two runners at T-2 | Medium | They route through tested infrastructure; the new code is config plus a submission path |
