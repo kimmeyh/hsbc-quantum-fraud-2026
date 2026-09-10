@@ -54,7 +54,12 @@ RANKING = qp.RESULTS_DIR / "proxy_ranking.json"
 SEEDS = qp.SEEDS
 PAIR_BUILD = "full"
 MAX_RETRIES = 2
-BLOCK_CAP_S = {"B1": 220.0, "G0b": 70.0}     # 2x the request's expected upper bound
+BLOCK_CAP_S = {"B1": 220.0, "G0b": 70.0,     # 2x the request's expected upper bound
+               "B2": 450.0}                   # frozen grid estimate for 11 fits; the
+                                              # per-fit cost is UNANCHORED at 833 vars
+                                              # and degree 3, so this cap is the guard
+                                              # that matters. b2-first establishes the
+                                              # real anchor before the other ten run.
 EXPECTED_CALL_S = 6.0                        # measured 4-5 s/fit; bound the NEXT call
 UNPARSEABLE_CALL_CHARGE_S = 10.0             # conservative charge when billing is unreadable
 TUNING_SEED = 42
@@ -68,6 +73,21 @@ B1_VARIANTS = [
 ]
 
 
+# B2: the frozen grid's ULB full config (preregistration section 10). Never ran
+# under A12's 100-variable ceiling; A21 lifted it. schedule 3 adds triples, so
+# 17 + C(17,2) + C(17,3) = 833 variables against B1's 78.
+#
+# MEASURED before scheduling: the pool build alone is 735s per fit, so 11 fits
+# is ~135 minutes of local CPU before a second is billed. The device cost is
+# UNANCHORED -- qpu_cost_model has no degree-3 observation within 2x of 833
+# variables -- which is why the first fit reports its real cost before the rest
+# proceed.
+B2_VARIANT = {
+    "label": "hw_b2_full", "k": 17, "schedule": 3, "wt": "dct", "wp": {},
+    "alpha": 2.0, "proxy_hash": None,   # no proxy counterpart at this size
+}
+
+
 def verify_proxy_hashes() -> None:
     """B1 hashes are literals; a re-run tuning study would silently make them
     stale, and config_hash is the field every reported number traces by.
@@ -79,6 +99,8 @@ def verify_proxy_hashes() -> None:
     if qp.RESULTS.exists():
         known |= {r.get("config_hash") for r in json.loads(qp.RESULTS.read_text())["rows"]
                   if r.get("arm") == "cvqboost_proxy"}
+    # B2 is excluded: it has no proxy counterpart at 833 variables, so there is
+    # no hash to verify. Its provenance is the frozen grid itself.
     missing = [v["proxy_hash"] for v in B1_VARIANTS if v["proxy_hash"] not in known]
     if missing:
         raise SystemExit(
@@ -176,6 +198,10 @@ def _cells(block: str):
                        schedule=p["schedule"], alpha=p["lambda_alpha"], seed=TUNING_SEED,
                        protocol="stratified", proxy_hash=c["config_hash"],
                        proxy_val_ap=c["val_ap"], rank=i)
+    elif block == "B2":
+        for seed in SEEDS:
+            yield dict(block="B2", seed=seed, protocol="stratified", **B2_VARIANT)
+        yield dict(block="B2", seed=TUNING_SEED, protocol="temporal", **B2_VARIANT)
     else:
         for v in B1_VARIANTS:
             for seed in SEEDS:
@@ -340,10 +366,10 @@ def run_block(block: str, only_first: bool = False):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["plan", "first", "g0b", "b1"])
+    ap.add_argument("cmd", choices=["plan", "first", "g0b", "b1", "b2", "b2-first"])
     args = ap.parse_args()
     if args.cmd == "plan":
-        for b in ("G0b", "B1"):
+        for b in ("G0b", "B1", "B2"):
             specs = list(_cells(b))
             print(f"{b}: {len(specs)} calls")
             for s in specs:
@@ -354,6 +380,14 @@ def main() -> int:
         run_block("G0b", only_first=True)
     elif args.cmd == "g0b":
         run_block("G0b")
+    elif args.cmd == "b2-first":
+        # ONE fit, to establish the cost anchor before the other ten. B2's
+        # per-fit cost is unanchored (no degree-3 observation within 2x of 833
+        # variables), and the team lead approved the block in advance while
+        # asleep.
+        run_block("B2", only_first=True)
+    elif args.cmd == "b2":
+        run_block("B2")
     else:
         run_block("B1")
     return 0
