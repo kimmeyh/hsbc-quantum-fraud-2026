@@ -57,6 +57,8 @@ REGISTERED: dict[str, str] = {
     "0.17": "ULB fraud prevalence, a property of the dataset",
     "3.5": "IEEE-CIS prevalence, a property of the dataset",
     "3.14": "a Python version (eqc-models requires <3.14), not a measurement",
+    "5.8": "pool-row ratio of the superseded B3 run to the [SIM] arm on fold 2 "
+           "(582,426 / 100,000), quoted in A.5 as the size of the withdrawn defect",
     "0.0268": "the preregistered MDE (amendment A5)",
     # --- percentages derived from stored values ---------------------------
     "50.9": "recall at 0.1% budget, percentage form of a stored rate",

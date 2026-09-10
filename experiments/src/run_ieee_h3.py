@@ -186,6 +186,18 @@ def run(smoke: bool = False) -> dict:
             "what the ceiling costs."),
         "delta_by_k": {str(k): {"mean": float(np.mean(by_k[k])),
                                 "n_folds": len(by_k[k])} for k in ks_run},
+        # Per-ARM fold means, stored because the papers quote them directly.
+        # delta_by_k alone is not enough: a difference does not let a reader
+        # recover either side, and a figure that lives only in prose is exactly
+        # what F44 exists to prevent.
+        "arm_means_by_k": {
+            str(k): {
+                "cvqboost": float(np.mean([c["cvqboost_ap"] for c in cells
+                                           if c["k"] == k])),
+                "matched_gbdt": float(np.mean([c["gbdt_ap"] for c in cells
+                                               if c["k"] == k])),
+                "n_folds": len([c for c in cells if c["k"] == k]),
+            } for k in ks_run},
         "slope_delta_vs_k": slope,
         "cells": cells,
     }

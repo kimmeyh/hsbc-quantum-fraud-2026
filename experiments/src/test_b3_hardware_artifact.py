@@ -126,3 +126,29 @@ def test_hardware_stays_below_the_classical_arms(art):
     assert best_hw < 0.5739, (
         f"best hardware cell {best_hw} now meets or beats LightGBM's 0.5739; "
         f"the null reported in A22 and section A.5 must be revisited")
+
+def test_pools_were_built_on_the_same_rows_as_the_sim_arm(art):
+    """The assertion whose absence let a false claim reach the documents.
+
+    A22's central claim is that the [HW] and [SIM] ladders differ ONLY in the
+    solver. The first B3 run built its pools on the entire training fold while
+    `run_ieee_h3.py` subsamples pool construction to POOL_SUBSAMPLE_N = 100,000
+    -- 4.1x to 5.8x more rows, and a different lambda_coef, since that scales
+    with len(y). The published [HW] ladder was inflated by up to +0.0699 AUPRC
+    and the comparison was invalid.
+
+    Every other test in this file passed throughout. This one is the difference
+    between testing that the numbers are consistent and testing that they mean
+    what the paper says they mean.
+    """
+    import run_ieee_h3
+
+    for r in art["rows"]:
+        assert "n_pool_rows" in r, (
+            "row does not record its pool-row count, so comparability with the "
+            "[SIM] arm cannot be verified from the artifact")
+        expected = min(r["n_train_rows"], run_ieee_h3.POOL_SUBSAMPLE_N)
+        assert r["n_pool_rows"] == expected, (
+            f"k={r['k']} fold={r['fold']} built its pool on {r['n_pool_rows']:,} "
+            f"rows; the [SIM] arm uses {expected:,}. The two ladders are no "
+            f"longer comparable and no [HW]-vs-[SIM] claim may be made.")

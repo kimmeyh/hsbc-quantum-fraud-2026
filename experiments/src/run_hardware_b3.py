@@ -53,6 +53,18 @@ SUM_CONSTRAINT = 1.0
 NUM_SAMPLES = 8                    # frozen; matches every prior hardware fit
 
 # Standing authorization 2026-09-10: 27 fits across B3 and B2, hard ceiling.
+# The [SIM] ladder this arm is compared against subsamples POOL-CONSTRUCTION
+# rows to 100,000 (`run_ieee_h3.py:57`). The first B3 run did NOT, so its pools
+# saw the whole training fold -- 4.1x to 5.8x more rows than the arm it was
+# quoted against, growing with the fold. That is not a speed detail: the QUBO's
+# lambda_coef is LAMBDA_MULT * len(y), so the two arms did not even solve the
+# same regularized objective, and the [HW]-over-[SIM] gap grew monotonically
+# with k (+0.0000, +0.0112, +0.0294, +0.0330). Dirac-3 is a WORSE optimizer
+# than the exact proxy, so hardware beating its own proxy could not have been
+# the solver; it was the extra data. Found by adversarial review after the
+# first run was published, which is why A22 needed superseding.
+POOL_SUBSAMPLE_N = 100_000
+
 SPEND_CEILING_S = 900.0   # raised from 600 by the team lead, 2026-09-10
 MAX_FITS = 16
 
@@ -109,19 +121,35 @@ def _prepare_fold_once(df, fold):
     ctrl = ieee_controls.apply_item4_controls(Xtr_num, y_tr, day_tr, seed=ieee.SEED)
     surviving = ctrl["features"] or list(Xtr_num.columns)
 
+    # Subsample POOL-CONSTRUCTION rows only, matching run_ieee_h3.py exactly:
+    # same size, same default_rng(SEED), drawn once per fold and shared across
+    # every k so the ladder rungs stay nested. The evaluation month is NOT
+    # touched -- every AP below is computed on all of it.
+    rs = np.random.default_rng(ieee.SEED)
+    pool_idx = (rs.choice(len(y_tr), size=POOL_SUBSAMPLE_N, replace=False)
+                if len(y_tr) > POOL_SUBSAMPLE_N else np.arange(len(y_tr)))
+
     return {
         "Xtr_num": Xtr_num, "Xev_num": Xev_all.select_dtypes(include=[np.number]),
         "surviving": surviving, "y_tr": y_tr, "y_ev": y_ev,
+        "pool_idx": pool_idx,
+        "n_train_rows": int(len(y_tr)),
+        "n_pool_rows": int(len(pool_idx)),
         "prep_seconds": round(time.perf_counter() - t0, 1),
         "n_surviving": len(surviving),
     }
 
 
 def _slice_at_k(prep: dict, k: int):
-    """The CHEAP half: top-k over the surviving features, per k."""
+    """The CHEAP half: top-k over the surviving features, per k.
+
+    X_tr is restricted to the fold's pool subsample so the pool is built on the
+    same rows the [SIM] arm builds on. X_ev is untouched: evaluation always uses
+    the whole month.
+    """
     import run_ieee_cvqboost as ieee
     cols = ieee._top_k_numeric(prep["Xtr_num"][prep["surviving"]], prep["y_tr"], k)
-    X_tr = prep["Xtr_num"][cols].fillna(0.0).to_numpy(np.float32)
+    X_tr = prep["Xtr_num"][cols].fillna(0.0).to_numpy(np.float32)[prep["pool_idx"]]
     X_ev = prep["Xev_num"].reindex(columns=cols).fillna(0.0).to_numpy(np.float32)
     return X_tr, X_ev, cols
 
@@ -210,7 +238,9 @@ def main() -> int:
         prep = _prepare_fold_once(df, fold)
         print(f"    prep {prep['prep_seconds']}s, {prep['n_surviving']} features "
               f"survived", flush=True)
-        y_pm1 = np.where(prep["y_tr"] == 1, 1, -1)
+        # Labels must follow the pool rows, not the full fold: Xp is subsampled
+        # in _slice_at_k, so y_pm1 is indexed identically or the two misalign.
+        y_pm1 = np.where(prep["y_tr"][prep["pool_idx"]] == 1, 1, -1).astype(np.float64)
         yev = prep["y_ev"]
 
         for k in args.ks:
@@ -261,6 +291,11 @@ def main() -> int:
             rows.append({
                 "k": k, "fold": fi, "n_variables": int(n_vars),
                 "build_seconds": round(build_s, 1),
+                # Recorded so the artifact itself proves the [HW] and [SIM] arms
+                # built their pools on the same rows. The first B3 run's whole
+                # defect was invisible because nothing stored this.
+                "n_train_rows": prep["n_train_rows"],
+                "n_pool_rows": prep["n_pool_rows"],
                 "job_id": rec.job_id, "metered_seconds": rec.measured_seconds,
                 "status": "ok", "evidence_tag": "HW",
                 "auprc": float(AP(yev, scores_ev)),
