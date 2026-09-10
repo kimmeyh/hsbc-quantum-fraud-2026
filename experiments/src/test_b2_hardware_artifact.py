@@ -105,3 +105,21 @@ def test_h1b_endpoint_is_not_computed_over_b2(art):
     assert "minus exact proxy" in report, (
         "the H4 solver-fidelity line is missing from the gate report; B2 may "
         "have displaced the H1b cell selection again")
+
+def test_the_artifact_regenerates_from_committed_code(art):
+    """Appendix C claims every figure regenerates from the repository.
+
+    This artifact was first written by a throwaway script, so the campaign's one
+    headline positive result could not be reproduced by a fresh clone -- the
+    numbers were right, but their provenance was manual. `summarize_b2.py` now
+    rebuilds it from results.json with a seeded bootstrap, so the claim holds.
+    """
+    import subprocess
+    import sys
+
+    r = subprocess.run(
+        [sys.executable, str(Path(__file__).resolve().parent / "summarize_b2.py"),
+         "--check"], capture_output=True, text=True)
+    assert r.returncode == 0, (
+        "b2_hardware.json does not match a fresh regeneration: "
+        + r.stdout + r.stderr)

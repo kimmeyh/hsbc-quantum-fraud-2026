@@ -1,6 +1,7 @@
 {
  "note": "B2: the ULB full config (top-17, schedule 3, 833 continuous variables) on Dirac-3. Never runnable under A12's free-tier ceiling; A21 retired that ceiling and the team lead authorised the block on 2026-09-10.",
- "generator": "experiments/src/run_hardware.py (block B2) + this summary",
+ "generator": "experiments/src/summarize_b2.py",
+ "source": "experiments/results/results.json (rows with block == B2)",
  "evidence_tag": "HW",
  "n_fits": 11,
  "total_metered_seconds": 906.0,
@@ -11,7 +12,7 @@
  "stratified": {
   "n_seeds": 10,
   "auprc_mean": 0.7928,
-  "auprc_sd": 0.0281,
+  "auprc_sd": 0.0296,
   "auprc_min": 0.7626,
   "auprc_max": 0.8548,
   "auc_roc_mean": 0.9423,
@@ -39,14 +40,26 @@
   },
   "b1_dct_mean": 0.7671,
   "mean_difference": 0.0256,
-  "sd_difference": 0.0087,
+  "sd_difference": 0.0091,
   "ci95_bootstrap": [
    0.0203,
    0.031
   ],
   "n_boot": 10000,
+  "boot_seed": 42,
   "seeds_favouring_b2": 10,
   "verdict": "POSITIVE and consistent: 10 of 10 seeds favour the 833-variable configuration, mean +0.0256 AUPRC, 95% CI excludes zero. Unpaired the effect hides inside a 0.028 seed-to-seed sd; pairing cancels that variance. Lifting the ceiling produces a real improvement."
+ },
+ "solver_fidelity": {
+  "weight_cosine_min": 0.8192,
+  "weight_cosine_max": 0.8327,
+  "weight_cosine_mean": 0.8272,
+  "objective_gap_mean": 191.5,
+  "n": 11,
+  "note": "Hardware minus classical objective; positive means the device found a worse minimum. Compare the schedule-2 B1 cells at 0.9747-0.9825 cosine."
+ },
+ "score_degeneracy": {
+  "tie_fraction_mean": 0.9224
  },
  "limitation": "tie_fraction averages 0.9224 across every seed, so this is a STRUCTURAL property of the configuration, not a per-fit artifact. B2's threshold-dependent figures are weak evidence; its ranking metrics (AUPRC, AUC-ROC) are sound.",
  "rows": [

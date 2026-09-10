@@ -225,8 +225,14 @@ def _cells(block: str):
 def _done():
     if not qp.RESULTS.exists():
         return set()
+    # Only SUCCESSFUL cells count as done. Without the status filter a failed
+    # row was treated as complete, so the cell was skipped forever on resume:
+    # a failed fit was both uncounted in _spent() and never retried. The
+    # preregistration (section 11) requires a cell to be retried up to twice and
+    # then reported as failed -- never silently dropped.
     return {(r["arm"], r.get("config"), r["seed"], r.get("protocol"))
-            for r in json.loads(qp.RESULTS.read_text())["rows"]}
+            for r in json.loads(qp.RESULTS.read_text())["rows"]
+            if r.get("status") != "failed"}
 
 
 def _live_balance():
@@ -304,7 +310,28 @@ def run_cell(spec) -> dict:
            "features_used": cols, "evidence_tag": "HW", "retry_count": retries,
            "timestamps": {"started": t0, "finished": None}}
     if resp is None:
-        row.update({"status": "failed", "error": err, "metered_seconds": None, "metrics": None})
+        # A failed cell is NOT a free cell. The retry loop above makes up to
+        # MAX_RETRIES+1 real submissions, and a failure AFTER the device has run
+        # (result-parse error, post-submit timeout, a changed response schema) is
+        # billed by QCi regardless. Recording None here let _spent() coerce it to
+        # 0.0, so a cell that failed three times at B2's measured 91 s could burn
+        # ~273 device seconds while the block guard still read zero -- enough to
+        # overshoot a 1,050 s cap by 21% and defeat Criterion H.
+        #
+        # Charge the same conservative rate the success path already uses when
+        # billing is unreadable, once per attempt actually made. The estimate is
+        # deliberately an UNDER-count of a real 91 s fit rather than a guess at
+        # it: the point is that failures move the counter, not that this number
+        # is exact. The allocation floor, read from the live balance, is what
+        # bounds the true spend.
+        charged = UNPARSEABLE_CALL_CHARGE_S * (retries + 1)
+        row.update({"status": "failed", "error": err,
+                    "metered_seconds": charged,
+                    "metered_seconds_parsed": False,
+                    "cost_source": (f"estimated: {retries + 1} attempt(s) x "
+                                    f"{UNPARSEABLE_CALL_CHARGE_S:.0f} s, charged because a "
+                                    f"failed submission may still have been billed"),
+                    "metrics": None})
         row["timestamps"]["finished"] = time.strftime("%Y-%m-%dT%H:%M:%S")
         store.append_row(row)
         return row
@@ -362,6 +389,10 @@ def run_cell(spec) -> dict:
 
 def run_block(block: str, only_first: bool = False):
     _require_wsl(); _load_env()
+    # True once the allocation balance has been read successfully at least once.
+    # Before that, an unreadable balance stops the block: we will not spend with
+    # the floor unenforced when we have never confirmed we can see it.
+    balance_ok = False
     if block == "B1":
         verify_proxy_hashes()
     done = _done()
@@ -385,12 +416,36 @@ def run_block(block: str, only_first: bool = False):
         # Outer guard: never let the allocation fall through the floor the team
         # lead set, whatever the block cap says. Checked against the LIVE balance
         # rather than our own tally, because the balance is authoritative.
+        # Outer guard: never let the allocation fall through the floor the team
+        # lead set, whatever the block cap says. Read from the LIVE balance
+        # rather than our own tally, because the balance is authoritative.
+        #
+        # FAILS CLOSED. An unreadable balance used to skip this check entirely,
+        # which is precisely backwards for a spend guard: the floor exists
+        # because the cap alone was judged insufficient, so losing the floor
+        # silently leaves the weaker guard doing the work. The response schema
+        # has already changed once under this account (see _find_job_id in
+        # run_hardware_b3.py), so a KeyError here is a real scenario, not a
+        # hypothetical -- and unlike an auth failure it does NOT stop the fits
+        # from billing normally.
         bal = _live_balance()
-        if bal is not None and bal - expected < ALLOCATION_FLOOR_S:
-            log.error("[HW] allocation %.0f s - one call (%.1f s) would fall below the "
-                      "%.0f s floor -- STOPPING BEFORE the call", bal, expected,
-                      ALLOCATION_FLOOR_S)
-            return
+        if bal is None:
+            if balance_ok:
+                log.warning("[HW] balance unreadable this iteration; proceeding on "
+                            "the block cap because an earlier read succeeded")
+            else:
+                log.error("[HW] allocation balance could not be read and none has "
+                          "been read this run -- STOPPING BEFORE the call rather "
+                          "than spending with the %.0f s floor unenforced",
+                          ALLOCATION_FLOOR_S)
+                return
+        else:
+            balance_ok = True
+            if bal - expected < ALLOCATION_FLOOR_S:
+                log.error("[HW] allocation %.0f s - one call (%.1f s) would fall below "
+                          "the %.0f s floor -- STOPPING BEFORE the call", bal, expected,
+                          ALLOCATION_FLOOR_S)
+                return
         log.info("[HW] CALL %s/%s seed=%d %s k=%d s=%d a=%.1f hash=%s (block spend so far %.1f s)",
                  block, spec["label"], spec["seed"], spec["protocol"], spec["k"], spec["schedule"],
                  spec["alpha"], spec["proxy_hash"], spent)
