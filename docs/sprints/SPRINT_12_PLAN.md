@@ -21,7 +21,7 @@ Every number measured today. **Three findings change the plan materially.**
 |---|---|---|---|
 | B2/B3 runners exist | assumed | **NO** -- `run_hardware.py` defines only `B1_VARIANTS`; there is no B2 or B3 config | Build work before any call |
 | IEEE hardware path | assumed | **NO** -- `run_ieee_cvqboost.py` solves via `qp.` (classical proxy) with no submission path | B3 needs a new runner |
-| B2 pool build (k=17, sched 3, 833 vars) | ~97s, as at 91 vars | **>617 CPU-s and still running** at time of writing | The LOCAL build dominates, not the device |
+| B2 pool build (k=17, sched 3, 833 vars) | ~97s, as at 91 vars | **735.4s per pool -- 12.3 minutes** | 11 fits = **135 min of local CPU** before a second is billed |
 | B2 cost estimate | ~450s for 11 fits | **UNKNOWN** -- `estimate_for` returns `known: False`, no degree-3 anchor within 2x of 833 vars | Criterion H request must say "unknown" and bound by call count |
 | Degree-2 cost, ~105-136 vars | -- | 4-10s, 28 anchors | B3's ladder cells are estimable |
 | IEEE-CIS staged | assumed | `manifest.py verify` -> **VERIFY OK** | B3 prerequisite met |
@@ -37,7 +37,7 @@ the card.
 
 | # | Task | Est | Runtime | Dominant cost | Model |
 |---|---|---|---|---|---|
-| A | **B2 runner**: k=17 schedule 3 config, wired through `metered_call` | 90m | build measured below | pool build, >10 min/fit | Opus |
+| A | **B2 runner**: k=17 schedule 3 config, wired through `metered_call` | 90m | 735s/pool | pool build, **12.3 min/fit measured** | Opus |
 | B | **B2 execution**: 11 fits, ULB full config | 30m | **[unbounded]** | Criterion H, cost UNKNOWN | Opus + **team lead** |
 | C | **B3 runner**: IEEE-CIS hardware submission path | 120m | -- | no hardware path exists today | Opus |
 | D | **B3 execution**: 16 fits, IEEE-CIS + ladder cells | 30m | ~650s est (free-tier basis) | Criterion H | Opus + **team lead** |
@@ -51,17 +51,32 @@ improvement 5 and not re-litigated here.
 
 ### Runtime is the risk, and it is NOT device time
 
-The measured pool build at 833 variables exceeded 617 CPU-seconds and had not
-finished. Eleven B2 fits could therefore cost **hours of local CPU** before a
-single second is billed. This is the Sprint 9 lesson exactly: the dominant term
-was never the one being estimated.
+**MEASURED: 735.4 seconds per B2 pool build.** Eleven fits is **135 minutes of
+local CPU** before a single second is billed -- and that is build time only,
+excluding the solve, the scoring and the queue. The device cost, whatever it
+turns out to be, is a rounding error against it.
 
-**Mitigation, in order:**
-1. Measure one complete B2 fit end to end before committing to eleven
-2. If the build exceeds ~15 min/fit, propose reducing B2 to a subset of seeds
-   and say so -- a smaller B2 that runs is worth more than a full B2 that does not
-3. B3's cells are degree-2 and far cheaper; if only one block fits, **B3 goes
-   first**, which is also the frozen spend priority (B3 > B2)
+This is the Sprint 9 lesson exactly: the dominant term was never the one being
+estimated. The frozen grid's "~450 QPU s" for B2 is accurate about the device
+and silent about the 2+ hours of CPU that precede it.
+
+**Consequence for the plan.** 135 minutes is affordable at T-2 if it runs
+unattended and nothing else needs the machine, but it is not affordable twice.
+So:
+
+1. **B3 first**, without exception. It leads the frozen spend priority, its cost
+   is anchored at 4-10s per fit, and its degree-2 pools are far cheaper to build
+2. **B2 second**, launched as a single background run over all 11 seeds rather
+   than fit-by-fit, so the 135 minutes overlaps the F38 page cut instead of
+   blocking it
+3. **The first B2 fit still reports before the other ten proceed**, to establish
+   the cost anchor Criterion H needs -- but the pool builds continue meanwhile,
+   since they are classical and cost nothing but wall clock
+
+**The sprint premise falsifier is therefore already answered for the build**: at
+12.3 minutes per pool it does NOT fire (the threshold was ~20 min of wall clock
+per complete fit). It remains live for the device side, where the cost is
+unknown.
 
 ### Criterion H, with provenance (Sprint 11 improvement 2)
 
