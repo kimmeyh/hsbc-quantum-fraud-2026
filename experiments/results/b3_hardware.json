@@ -1,0 +1,23 @@
+{
+ "note": "B3: IEEE-CIS arm on Dirac-3 at the frozen recipe. A12's 100-variable ceiling forced the published [SIM] arm down to k=6; A21 lifted it.",
+ "generator": "experiments/src/run_hardware_b3.py",
+ "evidence_tag": "HW",
+ "schedule": 2,
+ "k_ladder": [
+  13
+ ],
+ "num_samples": 8,
+ "dry_run": true,
+ "fits": 0,
+ "total_metered_seconds": 0.0,
+ "elapsed_sec": 593.0,
+ "rows": [
+  {
+   "k": 13,
+   "fold": 0,
+   "n_variables": 78,
+   "build_seconds": 9.4,
+   "dry_run": true
+  }
+ ]
+}

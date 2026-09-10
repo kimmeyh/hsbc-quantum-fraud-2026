@@ -91,7 +91,7 @@ here explicitly and in advance, so this is durable authorization rather than a
 bypass. SCOPE, held tightly because B2's cost is unanchored:
 
 - **27 fits total**: B3 16, B2 11. Not one more without a fresh decision
-- **A SELF-IMPOSED CEILING OF 600 SECONDS**, about 20% of the grant. If cumulative
+- **A CEILING OF 900 SECONDS** (raised from 600 by the team lead 2026-09-10), about 30% of the grant. If cumulative
   spend crosses it, execution STOPS and reports, even mid-block. An open-ended
   authorization against an unknown per-fit cost is how a grant disappears
   overnight, and the team lead is asleep

@@ -53,7 +53,7 @@ SUM_CONSTRAINT = 1.0
 NUM_SAMPLES = 8                    # frozen; matches every prior hardware fit
 
 # Standing authorization 2026-09-10: 27 fits across B3 and B2, hard ceiling.
-SPEND_CEILING_S = 600.0
+SPEND_CEILING_S = 900.0   # raised from 600 by the team lead, 2026-09-10
 MAX_FITS = 16
 
 
@@ -82,7 +82,51 @@ def _fold_y(df, fold):
     return ieee_splits.split_xy(df, fold)["y_train"].to_numpy()
 
 
-def _prepare_fold(df, fold, k: int):
+def _prepare_fold_once(df, fold):
+    """The EXPENSIVE half, done once per fold: pipeline + item-4 controls.
+
+    Measured at 582s against a 9s pool build, and it does not depend on k --
+    `apply_item4_controls(X_train, y_train, day_train, seed)` takes no k, and
+    only the final top-k slice varies. Preparing once per fold and slicing per k
+    is the same work in a different order: 12 cells x 591s = 2.0 hours becomes
+    3 folds x 582s + 12 x 9s = 31 minutes.
+    """
+    import ieee_controls
+    import ieee_features
+    import run_ieee_cvqboost as ieee
+
+    t0 = time.perf_counter()
+    parts = ieee_splits.split_xy(df, fold)
+    tr_df, ev_df = parts["X_train"], parts["X_eval"]
+    y_tr, y_ev = parts["y_train"].to_numpy(), parts["y_eval"].to_numpy()
+
+    pipe = ieee_features.IEEEFeaturePipeline()
+    Xtr_all = pipe.fit_transform(tr_df)
+    Xev_all = pipe.transform(ev_df)
+
+    day_tr = ieee_features.add_day(tr_df).to_numpy()
+    Xtr_num = Xtr_all.select_dtypes(include=[np.number])
+    ctrl = ieee_controls.apply_item4_controls(Xtr_num, y_tr, day_tr, seed=ieee.SEED)
+    surviving = ctrl["features"] or list(Xtr_num.columns)
+
+    return {
+        "Xtr_num": Xtr_num, "Xev_num": Xev_all.select_dtypes(include=[np.number]),
+        "surviving": surviving, "y_tr": y_tr, "y_ev": y_ev,
+        "prep_seconds": round(time.perf_counter() - t0, 1),
+        "n_surviving": len(surviving),
+    }
+
+
+def _slice_at_k(prep: dict, k: int):
+    """The CHEAP half: top-k over the surviving features, per k."""
+    import run_ieee_cvqboost as ieee
+    cols = ieee._top_k_numeric(prep["Xtr_num"][prep["surviving"]], prep["y_tr"], k)
+    X_tr = prep["Xtr_num"][cols].fillna(0.0).to_numpy(np.float32)
+    X_ev = prep["Xev_num"].reindex(columns=cols).fillna(0.0).to_numpy(np.float32)
+    return X_tr, X_ev, cols
+
+
+def _prepare_fold_unused(df, fold, k: int):
     """Exactly the published [SIM] arm's preparation, then top-k at OUR k.
 
     Reuses run_ieee_cvqboost's own helpers rather than restating them. The whole
@@ -156,19 +200,33 @@ def main() -> int:
     fits = 0
     t_start = time.perf_counter()
 
-    for k in args.ks:
-        for fi, fold in enumerate(folds):
+    # Folds OUTSIDE, k INSIDE: prep is 582s per fold and does not depend on k,
+    # so preparing once and slicing per k turns 2.0 hours into 31 minutes.
+    stop_all = False
+    for fi, fold in enumerate(folds):
+        if stop_all:
+            break
+        print(f"--- fold {fi}: preparing (pipeline + item-4 controls) ---", flush=True)
+        prep = _prepare_fold_once(df, fold)
+        print(f"    prep {prep['prep_seconds']}s, {prep['n_surviving']} features "
+              f"survived", flush=True)
+        y_pm1 = np.where(prep["y_tr"] == 1, 1, -1)
+        yev = prep["y_ev"]
+
+        for k in args.ks:
             if fits >= MAX_FITS:
                 print(f"STOP: {MAX_FITS} fits reached (authorized count).")
+                stop_all = True
                 break
             spent = spent_so_far()
             if spent >= SPEND_CEILING_S:
                 print(f"STOP: cumulative spend {spent:.0f}s reached the "
                       f"{SPEND_CEILING_S:.0f}s ceiling.")
+                stop_all = True
                 break
 
-            Xp, Xe, yev, prep_s = _prepare_fold(df, fold, k)
-            y_pm1 = np.where(_fold_y(df, fold) == 1, 1, -1)
+            Xp, Xe, _cols = _slice_at_k(prep, k)
+            prep_s = prep["prep_seconds"]
 
             t0 = time.perf_counter()
             clf = qp.build_pool(Xp, y_pm1, SCHEDULE, "dct", "seq")
@@ -212,9 +270,6 @@ def main() -> int:
             fits += 1
             print(f"  job={rec.job_id} cost={rec.measured_seconds}s "
                   f"AUPRC={rows[-1]['auprc']:.4f}", flush=True)
-        else:
-            continue
-        break
 
     out = {
         "note": ("B3: IEEE-CIS arm on Dirac-3 at the frozen recipe. A12's 100-variable "
