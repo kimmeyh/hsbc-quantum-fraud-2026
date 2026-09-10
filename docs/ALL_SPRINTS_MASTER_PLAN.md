@@ -68,6 +68,15 @@ improvements 1, 2 and 4 applied, 3 declined; suite 173 -> 194).
 | 11 | Sep 10-11 | **F41, F42, F43** (correctness) then **F37 -> F38** (submission blockers); F44/F45 if they fit | correctness BEFORE page size, team-lead sequencing |
 | Finalize | Sep 12-13 | F10, **F40 (segment non-public material)** -> **F37 (repo public)** in that order, **F38 (page limits)** -- all SUBMISSION BLOCKERS; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
 
+**Sprint 12 sequencing, DECIDED 2026-09-09 (Sprint 11 improvement 5) rather than under deadline pressure.** The order is forced by two dependencies, not by preference:
+
+1. **Dirac-3 work first, if any is approved.** It produces new evidence, and evidence changes the documents. Run it in the evening window: measured queue wait is a 0.7s median after 19:00 local against the 52 minutes a 14:33 submission cost
+2. **Then F38.** The page cut must run against FINAL content or it runs twice. This is why F38 has grown at every measurement
+3. **Then F37.** Making the repository public is IRREVERSIBLE. Nothing that could still change a document should follow it
+4. **Then F10**, the submission itself, which depends on all three
+
+If the calendar forces a cut, drop the Dirac-3 work: it is the only one of the four that is not a submission blocker.
+
 Renumbered 2026-09-05: the team lead noted the project is running more than one sprint per day, so F33 took Sprint 7 and F3 moved to Sprint 8 rather than competing for the same hours. A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
 
 RESTORED 2026-09-06: this section was destroyed by a card-pruning script during the Sprint 7 close-out (commit c40038d) and again in the Sprint 8 sweep before the loss was noticed. Both scripts deleted from a shipped card's header until the next card header, and a `## ` section heading that fell inside that span went with it. The prune step now stops at any `## ` heading, and this recovery came from commit be1198c.
@@ -115,6 +124,7 @@ acceptance criteria and the full failure analysis are preserved in
 docs/reviews/f36-float-tables-outcome.md.
 
 **F38. Appendix to 3 pages AND proposal to 6 (~45m) Priority 1 -- SUBMISSION BLOCKER**
+- **RE-MEASURE BEFORE CUTTING (Sprint 11 improvement 3).** Run `python scripts/page-fill-report.py` on both PDFs as the FIRST action of this card. Every recorded figure has been stale by the time the card ran: 76pt became 158pt became 229pt, because each correctness sprint adds text. Cutting against a stale number is how this card grew twice. The figure in this card is a record of what was once true, not an instruction
 - Phase: Finalize (team lead 2026-09-07, accepting the overage for now: "can we leave it in the .md for now and we will address the overage later?")
 - Platform: docs
 - **State**: appendix.pdf is 4 of 3 pages. The B.1 compound-falsification statement was added deliberately and is worth its space: section 2 of the preregistration names its own falsification test, two of its three conditions (H1b NULL at -0.0399, H3 slope -0.006) are now measured AGAINST the theory, and a submission silent on that reads as avoidance. It stays; something else pays for it
@@ -164,6 +174,15 @@ docs/reviews/f36-float-tables-outcome.md.
 ### Paper (Stages 4-6)
 
 ### Finalize (Stages 7-8)
+
+**F48. Extend the escape hook to shell metacharacters (~45m) Priority 9**
+- Phase: Finalize / tooling (Sprint 11 retrospective improvement 4, backlogged 2026-09-09)
+- Platform: .claude/hooks
+- `block-unraw-escape.ps1` catches Windows path escapes in non-raw PYTHON strings and has fired correctly several times. It does not catch SHELL metacharacters: a backtick or `$(...)` inside a quoted string passed to Bash is expanded by bash before Python ever sees it
+- **Observed in Sprint 11**: backticks inside a Python string in a Bash command were expanded as command substitution, executing a source file as shell and silently deleting the backticked filenames from a master-plan line. The edit "succeeded" and the damage was only visible on inspection
+- The fix is the same shape as the existing hook: detect backticks or `$(` inside a quoted span destined for Bash, and require the single-quoted heredoc form that suppresses expansion
+- Lower priority than the submission blockers, and real: the failure mode is SILENT corruption of a file that was edited successfully, which is worse than a crash
+- Depends on: nothing
 
 **F47. Unbuffered Dirac-3 call logging and a job-id ledger (~2h) Priority 8**
 - Phase: Finalize / infrastructure (team-lead direction 2026-09-09, raised during the F46 probe)

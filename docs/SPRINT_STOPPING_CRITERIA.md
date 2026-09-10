@@ -4,7 +4,15 @@ Adapted 2026-08-30 from spamfilter-multi's SPRINT_STOPPING_CRITERIA.md. Purpose:
 
 ## Criterion H (project-specific, overrides the auto-advance window): Metered Hardware
 
-Any metered Dirac-3 run STOPS for explicit team-lead approval, every time: state the block, the call count, and the expected metered seconds, then wait. Sprint-plan approval never covers hardware execution. An errored hardware solve retries at most twice (frozen protocol); a third failure reports the cell as failed and continues with the rest of the approved list.
+Any metered Dirac-3 run STOPS for explicit team-lead approval, every time: state the block, the call count, and the expected metered seconds, then wait.
+
+**The estimate must carry its PROVENANCE (Sprint 11 improvement 2).** State which of the three it is:
+
+- **measured** at this configuration -- cite the calls it comes from
+- **extrapolated** from a different configuration -- say which, and that it is an extrapolation
+- **unknown** -- no comparable anchor exists; bound the block by call count instead of quoting a number
+
+Sprint 11's ceiling probe was approved at "0-5 seconds" and cost 10. The figure came from free-tier anchors at a different variable count and was presented as though measured. Ten seconds of three thousand is nothing; an approval given against a soft number is not, because the team lead is agreeing to a cost that was never established. `qpu_cost_model.estimate_for()` returns exactly these three cases -- quote it rather than reasoning from memory. Sprint-plan approval never covers hardware execution. An errored hardware solve retries at most twice (frozen protocol); a third failure reports the cell as failed and continues with the rest of the approved list.
 
 ## Criteria 1-10 (adapted)
 
