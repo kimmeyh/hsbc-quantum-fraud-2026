@@ -65,7 +65,8 @@ improvements 1, 2 and 4 applied, 3 declined; suite 173 -> 194).
 | 8 | Sep 6-7 | [DONE] **F3** (IEEE-CIS, all four tasks) + paper updates; F36 attempted and FAILED | -- |
 | 9 | Sep 7-8 | [DONE] F4 (H6, measured null), F14, F16; **QCi package SENT** 2026-09-08 09:59 | -- |
 | 10 | Sep 9 | [DONE] **F40** (segmentation) re-scoped to F40 only; gate-report undercount fixed (27/120 -> the true 37/163); 8 correctness findings from two adversarial reviews; 13 PR-review findings addressed | F37/F38 deferred to 11 |
-| 11 | Sep 10-11 | **F41, F42, F43** (correctness) then **F37 -> F38** (submission blockers); F44/F45 if they fit | correctness BEFORE page size, team-lead sequencing |
+| 11 | Sep 9-10 | [DONE] **F41** (A20, mechanism corrected), **F42** (+0.0319 decomposed: the gain is class weighting, not diversity), **F43**, **F44**, **F45**, **F35**, plus **F46** (A21, ceiling LIFTED) and **F47** added mid-sprint; 15 review findings addressed | F37 and the fresh-eyes review deferred to 12 |
+| 12 | Sep 10-12 | **F37 -> F38 -> F10** in that order, plus the fresh-eyes review; Dirac-3 work only if the calendar allows | SUBMISSION SPRINT; evidence freeze Sep 12 |
 | Finalize | Sep 12-13 | F10, **F40 (segment non-public material)** -> **F37 (repo public)** in that order, **F38 (page limits)** -- all SUBMISSION BLOCKERS; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
 
 **Sprint 12 sequencing, DECIDED 2026-09-09 (Sprint 11 improvement 5) rather than under deadline pressure.** The order is forced by two dependencies, not by preference:
@@ -123,7 +124,8 @@ The original card body is pruned as shipped. Its premise, the seven
 acceptance criteria and the full failure analysis are preserved in
 docs/reviews/f36-float-tables-outcome.md.
 
-**F38. Appendix to 3 pages AND proposal to 6 (~45m) Priority 1 -- SUBMISSION BLOCKER**
+**F38. Appendix to 3 pages AND proposal to 6 (~3h, RE-ESTIMATED) Priority 1 -- SUBMISSION BLOCKER**
+- **MEASURED 2026-09-10 at Sprint 11 close-out: appendix needs 250pt cut, proposal needs 439pt.** The proposal figure was 81pt at Sprint 10 planning and 21pt before that: page 7 now carries 467pt where it carried 70pt, because two correctness sprints added roughly two-thirds of a page. THIS IS NO LONGER A 45-MINUTE CARD
 - **RE-MEASURE BEFORE CUTTING (Sprint 11 improvement 3).** Run `python scripts/page-fill-report.py` on both PDFs as the FIRST action of this card. Every recorded figure has been stale by the time the card ran: 76pt became 158pt became 229pt, because each correctness sprint adds text. Cutting against a stale number is how this card grew twice. The figure in this card is a record of what was once true, not an instruction
 - Phase: Finalize (team lead 2026-09-07, accepting the overage for now: "can we leave it in the .md for now and we will address the overage later?")
 - Platform: docs
@@ -160,20 +162,14 @@ docs/reviews/f36-float-tables-outcome.md.
 - Risk: history rewriting after publication is not reliable, so anything published is published. The scan and the `0*` resolution are the whole cost of this card; the visibility flip itself is one click
 - Depends on: nothing. Can run any time before Sep 13, and EARLIER is safer -- it is the one submission step that cannot be undone
 
-**F35. Interpretation-layer tests (~2h) Priority 2**
-- Phase: Experiments/tooling (Sprint 7 retrospective, Claude category 14)
-- Platform: N/A
-- **Why**: across three sprints the defects that travelled furthest were claims about what a number MEANS, not errors in the number. Sprint 5 reported a weight vector "exactly uniform" at 0.000000 when it was 8.0e-08, and the gain it implied was tie-breaking. Sprint 6 presented k=13 [SIM] mechanism evidence and k=6 [HW] hardware evidence as one narrative. Sprint 7 differenced a k=6 arm against k=13 comparators and compared sweep VALIDATION AP against TEST AP. Every one was caught by reading; none by a test
-- **Already partly built**: `comparators.py` (improvement 1) refuses a difference whose arms mismatch on k, protocol, schedule or dataset, and refuses validation against test. F35 extends that from the computation to the DOCUMENT
-- **Design**: assert that every quantitative claim in docs/paper/*.md that quotes a difference names its comparator's configuration; that no figure tagged [HW] appears in a sentence whose mechanism evidence is [SIM] without the distinction stated; that a difference quoted below the A5 MDE carries directional language rather than win language; and that rounding in prose never asserts more precision than the stored value supports (the Sprint 5 "0.000000" case)
-- **Honest limit**: some of this is genuinely hard to test mechanically and will end up as a checklist rather than an assertion. The parts that CAN be asserted are worth asserting, and the parts that cannot belong in STATISTICAL_REVIEW_CHECKLIST where a human walks them
-- Depends on: nothing (comparators.py already landed)
 
 (F3 IEEE-CIS: COMPLETED in Sprint 8, all four tasks, merged via PR #47; history in SPRINT_8_SUMMARY.md. Removed from candidates per convention.)
 
 ### Paper (Stages 4-6)
 
 ### Finalize (Stages 7-8)
+
+(F35 interpretation-layer tests, F41 mechanism correction (A20), F42 review findings, F43 IEEE-CIS AUC-ROC, F44 figure resolution, F45 evidence guard, F46 QCi grant and ceiling probe (A21), F47 metered-call wrapper: ALL COMPLETED in Sprint 11, merged via PR #66 (main PR #70); history in SPRINT_11_SUMMARY.md. Removed from candidates per convention.)
 
 **F48. Extend the escape hook to shell metacharacters (~45m) Priority 9**
 - Phase: Finalize / tooling (Sprint 11 retrospective improvement 4, backlogged 2026-09-09)
@@ -184,81 +180,12 @@ docs/reviews/f36-float-tables-outcome.md.
 - Lower priority than the submission blockers, and real: the failure mode is SILENT corruption of a file that was edited successfully, which is worse than a crash
 - Depends on: nothing
 
-**F47. Unbuffered Dirac-3 call logging and a job-id ledger (~2h) Priority 8**
-- Phase: Finalize / infrastructure (team-lead direction 2026-09-09, raised during the F46 probe)
-- Platform: Dirac-3
-- **The problem, observed live**: the first F46 probe attempt died with no artifact and no output. Whether the ONE approved metered call had been spent was unanswerable from the repository -- only an allocation-balance query settled it (it had not). A metered call whose outcome is unrecoverable is the worst case for a Criterion H workflow, because the safe response to ambiguity is to not re-run, and that stalls the sprint
-- **Write output UNBUFFERED, character by character as received**, appended to a per-call log rather than accumulated in memory and written at the end. The team lead's framing: like a terminal capturing keystrokes. A killed process, a lost tool result or a timeout then still leaves everything received up to that instant
-- **Capture the JOB NUMBER at submission, before waiting.** QCi results are retrievable by job id AFTER completion (`QciClient.get_job_results`, `get_job_status`, `get_job_metrics`), so a captured id turns a lost connection from a lost call into a re-read. This is the single highest-value item on this card: it makes a metered call recoverable rather than repeatable
-- **A durable ledger of every request and job id**, appended before the call returns, so the record survives a crash: timestamp, configuration hash, variable count, job id, and the outcome once known. `hw_job_ids.json` already retains ids for the 27+10 completed fits, but only AFTER success; the ledger must record the INTENT first
-- **Precedent**: F30 (concurrent submission, HOLD) already designed a durable job ledger for exactly this reason -- "a restart retrieves results for in-flight jobs instead of re-billing them". That design should be reused rather than reinvented, and this card is the subset of it that has value NOW, at 3,000 granted seconds
-- **Why it matters more now than it did**: at 163 spent seconds a lost call was an annoyance. At 3,000 granted seconds and a campaign worth running, an unrecoverable call is real money and real calendar
-- **RETRIEVAL HALF BUILT 2026-09-09** (`experiments/src/job_query.py`, team-lead request): queries status, metrics and results by job id. All four endpoints are reads and consume ZERO metered seconds. Verified against the real campaign: all 27 retained ids readable six days later, full results included. What REMAINS is the capture half -- recording the id at submission, before waiting -- which is what makes the tool reliably usable rather than usable only when an id happens to have been kept
-- **The metrics carry queue and processing times SEPARATELY**, which is the data that answers "is it queued or computing?" without inferring it from CPU. Measured across all 27: queue median 0.7s against processing median 5.3s, every job submitted 19:00-20:00 local
-- Acceptance: killing a submission mid-flight leaves both the job id and the partial output on disk; a job id alone is sufficient to retrieve the result afterwards; every metered request appears in the ledger whether or not it completed
-- Depends on: nothing. Pairs with F30, which holds the fuller concurrent design
 
-**F46. Verify the QCi grant and probe the variable ceiling (~45m) Priority 3**
-- Phase: Finalize (team-lead direction 2026-09-09; added to Sprint 11 mid-sprint)
-- Platform: Dirac-3
-- **Trigger**: QCi email 2026-09-09 13:58 confirms "3,000 seconds of complimentary, full-access Dirac-3 compute time" loaded to the account. Two things need establishing before any plan is built on it: that the seconds are actually there, and whether "full-access" lifts the A12 free-tier ceiling of 100 continuous variables
-- **Step 1, ZERO metered seconds**: `qci_client.QciClient.get_allocations()` is a plain HTTP GET against the allocations endpoint. It submits no job, so it needs no Criterion H approval. Reports the balance
-- **Step 2, METERED, needs explicit per-block approval**: the smallest possible job that distinguishes the ceilings. A12 was established when a 312-variable job was refused SERVER-SIDE, so the probe is a single continuous job just above 100 variables built from an existing pool. One call, expected 4 to 5 seconds. If it is accepted the ceiling moved; if it is refused server-side, A12 stands
-- **Design the probe to be cheap and decisive**: reuse a committed pool rather than fitting anything, submit the smallest variable count that exceeds 100, and record the raw response either way. A refusal is as informative as an acceptance and costs nothing
-- **What it unblocks**: 3,000 seconds against a campaign that has spent 163 is a different regime entirely. The formulations the submission names as unrun -- the cardinality-constrained integer problem, three-feature subsets -- become runnable, and the QCi letter's "first ask" stops being hypothetical. Scope for that is a SEPARATE team-lead decision, not this card
-- **Sequencing**: MUST run before F37. Making the repository public is irreversible, and a result that changes what the papers claim should land first
-- Acceptance: the allocation balance is recorded from the API, not from the email; the ceiling question is answered by a real device response; both outcomes written to results.json with [HW] tags and job identifiers retained; A12's status is either confirmed or amended
-- Depends on: nothing. Criterion H governs step 2
 
-**F42. Correctness findings needing verification or reruns (~4h) Priority 4**
-- Phase: Finalize (Fable 5.1 adversarial review 2026-09-09; card #60)
-- Platform: docs + experiments/src
-- Needs EXTERNAL SOURCE CHECKS: the hardware description against QCi's own paper (coherent states with shot noise, not Fock states; R/~200 weight resolution; 23 dB dynamic-range limit); the vendor accuracy claim against CVQBoost Table 1 (reportedly ~0.19 AUC below XGBoost at ratios 0.01-0.02, which would STRENGTHEN our null); the Loke et al. citation and venue; Equality Act 2010 scope (Great Britain, not Northern Ireland)
-- Needs CLASSICAL RUNS: lambda=0 FISTA spread from 20 random simplex starts; decomposition of the +0.0319 gain, which currently confounds three simultaneous changes and selected on seed 42 then evaluated including seed 42; per-GBDT H1b deficits rather than against the max only
-- **F11 of that review is the SAME lambda=0 degeneracy F41 found from the other side.** Do them together or one redoes the other's work
-- Depends on: nothing; overlaps F41 (#59)
 
-**F43. Report IEEE-CIS AUC-ROC against HSBC's named benchmark (~1h) Priority 5**
-- Phase: Finalize (team-lead direction 2026-09-09; card #61)
-- Platform: docs, experiments/src
-- HSBC's problem statement names AUC-ROC 0.9459 on IEEE-CIS as the classical bar. We report AUPRC only. Problem Relevance & Impact is 25%, the largest single rubric weight
-- **The classical half needs NO rerun**: `run_ieee.py` already computes and stores `auc_roc` per fold and `ieee_classical.json` holds all nine -- LightGBM 0.9139, CatBoost 0.8941, XGBoost 0.8640. Reportable from stored evidence today. (An earlier analysis called this a full rerun; it had read summary keys instead of per-fold rows.) Only the CVQBoost and ladder arms lack the metric
-- Required caveat: the Kaggle leaderboard test set differs from our rolling-origin folds, so 0.9139 is NOT directly comparable to 0.9459. State it rather than inviting the comparison
-- Depends on: nothing. Page cost lands against F38, which runs last
 
-**F45. Guard evidence artifacts against diagnostic scripts (~1h) Priority 7**
-- Phase: Finalize (Sprint 10 process note, team-lead approved 2026-09-09)
-- Platform: experiments/src, scripts
-- **What happened**: the script written to REPRODUCE the review's crash finding injected a fake failed row into `results.json`, ran `score_gates.py`, and restored the store in a `finally`. The store was restored correctly. But `score_gates.py` had already written `gate_report.md` from the polluted data, so a 158-row artifact reporting a nonexistent failed fit was briefly committed. Caught on the next diff, `results.json` verified never contaminated, report regenerated from the clean store
-- **Why it is worth a card**: the restore was careful and still insufficient, because the derived artifact outlived the source it was derived from. Any future diagnostic that perturbs the store has the same hole, and the next one may not be noticed in the same turn
-- **Options to weigh at planning** (do not pre-commit): (a) a `--dry-run`/`--out` flag on `score_gates.py` so a diagnostic can render without touching the committed artifact; (b) a context manager in a test helper that snapshots and restores BOTH the store and every artifact derived from it; (c) a pre-commit check that `gate_report.md` regenerates byte-identically from `results.json`, which catches the whole class regardless of cause
-- **(c) is the strongest**: it does not depend on remembering to use a helper, and it would have caught this before the commit rather than after. It is also the same shape as the F44 consistency tests, so the two may share machinery
-- Acceptance: a deliberate perturbation of `results.json` followed by a commit attempt fails; the guard runs in CI as well as pre-commit
-- Depends on: nothing. Pairs with F44
 
-**F44. Evidence-vs-document consistency tests (~3h) Priority 6**
-- Phase: Finalize (Sprint 10 retrospective improvement 2, team-lead approved 2026-09-09)
-- Platform: experiments/src
-- **Why**: every defect found this sprint was a document disagreeing with the evidence, and OUR SUITE CAUGHT NONE OF THEM. Two external reviewers found four in a day: the gate report under-reporting the campaign total (27/120 against the store's 37/163), a GAM twin cited "at 0.26" that appears in no artifact, B.1 listing H3 and H6 as NOT RUN while A.5/A.6 reported them measured, and the amendment count reading ten in two files against nineteen in a third
-- **What**: assert that every figure quoted in proposal.md, appendix.md and team_profile.md resolves to a value in results.json or a named results artifact. Extract decimals from the documents, match against the store, fail on any figure with no source
-- **The one that would have caught the worst case**: the gate report is generated FROM the store, so a test comparing report to store catches a generator bug. That specific test now exists (test_gate_report_totals.py, added with the fix); this card generalizes it from one artifact to every document
-- **Sequencing**: must land AFTER F41 and F42, so the tests encode the CORRECTED values rather than freezing the current wrong ones into an assertion
-- Acceptance: a deliberate edit changing any quoted figure fails a test; every figure currently in the three documents either resolves or is explicitly registered as prose
-- Depends on: F41 (#59), F42 (#60)
 
-**F41. Correct the pool-degeneracy mechanism and the depth claim (~2h) Priority 2 -- SUBMISSION BLOCKER**
-- Phase: Finalize (GPT-6 Astra adversarial review, 2026-09-08; every claim reproduced against the saved pools before carding)
-- Platform: docs + experiments/src
-- **Finding 1 -- the published mechanism is WRONG.** The proposal says "at 0.17% prevalence a depth-limited tree predicts the negative class almost everywhere, so the pool carries almost no diversity". Reproduced across all ten saved seed pools: **80-84 of 91 learners classify EVERY training row correctly, and exactly ZERO predict all-negative.** The Gram degeneracy is real (off-diagonal 170,234.4 vs diagonal 170,235) but its cause is in-sample MEMORIZATION, not majority-class collapse. Right observation, wrong explanation
-- **Finding 2 -- "depth-limited" is FALSE.** `qubo_proxy.py` passes `weak_cls_params=dict(weak_params or {})`, empty by default, so eqc-models builds `DecisionTreeClassifier(**{})` -> `max_depth=None`, unbounded. The phrase appears in 4 places including the proposal mechanism paragraph and the Loke comparison
-- **Finding 3 -- the zero-penalty sentence overstates.** "The optimum stays uniform even at zero penalty" is too strong. An independent SLSQP solve at lambda=0 from uniform reaches L1 distance **0.1978** from uniform (the reviewer's 0.198 reproduces exactly). BUT the objective improves by only **4.5e-08 relative** (-1.7023499227e5 -> -1.7023500000e5) and test AUPRC moves +0.0052, well inside the 0.0268 MDE. The defensible claim is numerical degeneracy, not a uniform optimum
-- **What does NOT change**: no gate score, no headline figure. H1b's -0.0399 null, the Gram entries, and the hardware-vs-proxy agreement are measurements and stand. What changes is the EXPLANATION attached to them
-- **The Loke comparison gets STRONGER, not weaker**: their heterogeneous learners (KNN, LDA, logistic, XGBoost) fail on different transactions; ours memorize the same rows. That is a cleaner contrast than the depth story
-- **Steps**: (1) register A20 recording the corrected mechanism with the reproduction; (2) fix "depth-limited" -> unbounded in all 4 places; (3) re-word the zero-penalty sentence to state the degeneracy numerically; (4) add a regression test asserting the perfect-classifier count per pool so this cannot drift silently
-- **Class 1 AND Class 2**: amends the FROZEN preregistration and changes a published claim. Needs explicit team-lead approval before the documents are touched
-- Acceptance: A20 registered; no "depth-limited" left in any document; the zero-penalty sentence states the 4.5e-08 relative degeneracy; a test asserts 80-84 of 91 perfect classifiers across the saved pools; full suite green
-- Reproduction is already done and recorded here, so the card starts from evidence rather than re-deriving it
-- Depends on: nothing. Should precede F10 (final verification walk)
 
 **F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 40**
 - Phase: Finalize

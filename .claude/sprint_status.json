@@ -1,28 +1,18 @@
 {
   "current_sprint": {
-    "number": 11,
-    "name": "Correctness Before Compression",
-    "branch": "feature/20260910_Sprint_11",
-    "status": "phase_7_review",
-    "plan_doc": "docs/sprints/SPRINT_11_PLAN.md",
-    "pr": 66,
-    "plan_approved": true,
-    "github_issues": [
-      59,
-      60,
-      61,
-      56,
-      63,
-      64,
-      65,
-      67,
-      68
-    ]
+    "number": 12,
+    "name": null,
+    "branch": "feature/20260910_Sprint_12",
+    "status": "phase_1_backlog_refinement",
+    "plan_doc": null,
+    "pr": null,
+    "plan_approved": false,
+    "github_issues": []
   },
   "last_completed_sprint": {
-    "number": 10,
-    "merged_pr": 58,
-    "main_merge_pr": 62,
+    "number": 11,
+    "merged_pr": 66,
+    "main_merge_pr": 70,
     "docs_triad_complete": true
   },
   "prereg": {
@@ -30,5 +20,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-09"
+  "updated": "2026-09-10"
 }
