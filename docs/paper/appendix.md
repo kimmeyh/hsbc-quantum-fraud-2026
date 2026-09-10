@@ -70,9 +70,11 @@ uniform weights leave 95.3% of test rows tied on one score (78 distinct values)
 and weights differing by 1e-07 split those into 151, so rounding the solved
 scores to six decimals returns the metric to the uniform value. The cause is
 pool degeneracy -- off-diagonal Gram entries average 170,234.4 against a
-diagonal of 170,235, because at 0.17% prevalence a depth-limited tree predicts
-the negative class almost everywhere. A penalty sweep from 0 to 4x n_train
-leaves it uniform even at zero penalty.
+diagonal of 170,235, because the frozen pool's unbounded trees memorise the
+training fold: 80 to 84 of the 91 learners reproduce the training labels exactly
+and are therefore the same vector, while ZERO predict the negative class
+everywhere (A20). A penalty sweep from 0 to 4x n_train leaves it uniform even at
+zero penalty.
 
 **Mixed pool (exploratory, A11).** Four families at k=13, 312 variables, same
 splits: gram ratio 0.9975, L1 from uniform 0.126, solved-minus-uniform +0.0076 on
@@ -116,9 +118,10 @@ per-dataset search is unspent on IEEE-CIS, so these are floors.
 | CatBoost | 0.4795 [0.4696, 0.4927] | ~182 |
 | CVQBoost tuned / frozen [SIM] | 0.0571 / 0.0523 | 6 |
 
-**Matched-feature control.** The same LightGBM given the SAME six features
-CVQBoost is limited to falls from 0.5424 to 0.0734: every model is starved there
-and CVQBoost attains 85% of that ceiling. Gram ratios 0.950-0.973 rule out the
+**Matched-feature control.** The same LightGBM falls from 0.5739 on the full
+feature set to 0.0734 when restricted to the SAME six features CVQBoost is
+limited to: every model is starved there, and CVQBoost attains 78% of that
+constrained ceiling (0.0571 of 0.0734). Gram ratios 0.950-0.973 rule out the
 A.4 degeneracy mode.
 
 **H3 ladder (scoreable, 12 cells).** delta = CVQBoost minus matched GBDT:
@@ -246,7 +249,7 @@ this submission reports.
 
 ## B.2 Amendments
 
-Nineteen dated amendments, A1 to A19, each with rationale and approval; full
+Twenty-one dated amendments, A1 to A21, each with rationale and approval; full
 text in the repository. Three changed a reported figure, named here so they are
 easy to find. **A15**: the
 frozen pool's k=6 AUPRC was published as 0.7688, a five-seed mean carried into a
@@ -264,7 +267,7 @@ No amendment changed a gate criterion; no gate was rescored after observation.
 
 # Appendix C. Reproduction and references
 
-Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A19. The
+Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A21. The
 repository at `github.com/kimmeyh/hsbc-quantum-fraud-2026` carries the pinned
 environment, both dataset checksums, the preregistration in full, the full
 reference list, and the results store, whose every row holds a configuration

@@ -20,17 +20,42 @@ def _load_runner():
     return mod
 
 
-def test_metered_parses_solutionresults_repr():
-    """eqc-models returns a SolutionResults object, not a dict; the billed field
-    lives in its repr. Verified against the first real G0b response."""
+def test_metered_reads_a_real_billing_field_wherever_it_appears():
+    """A device_usage_s field in the response is still the cheapest right answer."""
+    rh = _load_runner()
+    assert rh._metered({"job_info": {"device_usage_s": 7}}) == 7.0
+
+
+def test_metered_does_not_scrape_a_repr(monkeypatch):
+    """Sprint 11 improvement 1: the repr fallback is gone, and must stay gone.
+
+    It was added for the free tier, where SolutionResults carried the billed
+    field in its repr. PAID-TIER RESPONSES DO NOT CARRY IT, so the scrape
+    returned nothing and the caller's UNPARSEABLE_CALL_CHARGE_S default was
+    recorded as though it were a measurement -- the F46 probe logged 5.0 seconds
+    for a call the allocation balance showed cost 10.
+
+    Returning None is the point: a caller that cannot establish the cost must
+    say so. The conservative charge is then applied KNOWINGLY, which is a
+    different thing from a scraped number that silently became a default.
+    """
     rh = _load_runner()
 
-    class FakeResults:
+    class PaidTierResults:
+        """Shaped like the real F46 response: no billing field anywhere."""
+        def __repr__(self):
+            return "SolutionResults(solutions=array([0.0075, 0.0074]), energies=[...])"
+
+    assert rh._metered(PaidTierResults()) is None
+
+    class FreeTierResults:
+        """The old shape. Even here, the repr is no longer trusted."""
         def __repr__(self):
             return "SolutionResults(solutions=array([...]), 'device_usage_s': 4, 'job_id': 'x')"
 
-    assert rh._metered(FakeResults()) == 4.0
-    assert rh._metered({"job_info": {"device_usage_s": 7}}) == 7.0
+    assert rh._metered(FreeTierResults()) is None, (
+        "the repr scrape is back; it silently defaults on the paid tier and is "
+        "why a 10-second call was recorded as 5")
 
 
 def test_unparseable_billing_is_never_free():

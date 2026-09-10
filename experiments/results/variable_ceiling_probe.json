@@ -1,0 +1,27 @@
+{
+  "note": "F46 step 2: one metered probe at 105 continuous degree-2 variables, five above the A12 free-tier ceiling of 100. Team-lead approved under Criterion H, 2026-09-09.",
+  "generator": "experiments/src/probe_variable_ceiling.py",
+  "evidence_tag": "HW",
+  "arm": "cvqboost_hw_ceiling_probe",
+  "dataset": "ulb",
+  "k_features": 15,
+  "schedule": 2,
+  "n_variables": 105,
+  "ceiling_under_test": 100,
+  "seed": 42,
+  "status": "ok",
+  "ceiling_lifted": true,
+  "error": null,
+  "metered_seconds": 10.0,
+  "wall_clock_sec": 5452.4,
+  "timestamps": {
+    "started": "2026-09-09T14:33:02",
+    "finished": "2026-09-09T16:03:54"
+  },
+  "raw_response_repr": "SolutionResults(solutions=array([[0.007591 , 0.0074666, 0.0096569, 0.0095409, 0.0076414, 0.0108867,\n        0.0111769, 0.0108589, 0.0092994, 0.0118374, 0.0121848, 0.0100563,\n        0.0081623, 0.0107717, 0.0129436, 0.0111405, 0.0089052, 0.0068644,\n        0.0118521, 0.0128051, 0.0113833, 0.0107006, 0.0069918, 0.0093159,\n        0.0103301, 0.0097956, 0.0101078, 0.0129033, 0.0140583, 0.0141893,\n        0.0098806, 0.008124 , 0.0040926, 0.007345 , 0.0096586, 0.0097515,\n        0.0085382, 0.0082129, 0.0109088, 0.0110822, 0.0110043, 0.0096829,\n        0.0080665, 0.0089758, 0.004223 , 0.0089892, 0.0075365, 0.0065737,\n        0.004964 , 0.0074482, 0.0088034, 0.0097387, 0.0117696, 0.0084312,\n        0.0083206, 0.0080191, 0.0078544, 0.0038998, 0.0095393, 0.011722 ,\n        0.0102803, 0.0087675, 0.0089534, 0.0094945, 0.0109218, 0.0090986,\n        0.0084264, 0.0082696, 0.0099778, 0.0092063, 0.0086071, 0.0100606,\n        0.0087478, 0.0070026, 0.0090598, 0.0089906, 0.0066175, 0.0081237,\n        0.0060331, 0.0087567, 0.0118315, 0.011106 , 0.0093534, 0.0060208,\n        0.0091519, 0.0096633, 0.0091734, 0.013185 , 0.010928 , 0.0108249,\n        0.0111101, 0.0146   , 0.0117708, 0.0134185, 0.0139009, 0.0098959,\n        0.013841 , 0.011456 , 0.0053398, 0.0074447, 0.012048 , 0.009508 ,\n        0.0097927, 0.0079841, 0.006681 ],\n       [0.0098066, 0.0118818, 0.0084814, 0.0087266, 0.009232 , 0.0102296,\n        0.0096477, 0.007433 , 0.0091013, 0.0090458, 0.0093216, 0.0102677,\n        0.0097625, 0.004986 , 0.0093477, 0.0113634, 0.0096217, 0.0098294,\n        0.0094864, 0.010958 , 0.0130418, 0.0122399, 0.0117218, 0.0084711,\n        0.009288 , 0.0117056, 0.0097842, 0.0080457, 0.0065573, 0.0098261,\n        0.0121049, 0.0087711, 0.011263 , 0.0111495, 0.0104642, 0.0049604,\n        0.0079057, 0.0117907, 0.0097816, 0.0067785, 0.0048295, 0.0073932,\n        0.0096415, 0.008935 , 0.0093122, 0.0115058, 0.0111019, 0.0058665,\n        0.0031844, 0.0052596, 0.0074395, 0.0110585, 0.0061669, 0.0049394,\n        ",
+  "metered_seconds_source": "allocation balance before minus after (3000 -> 2990), read from get_allocations(). The response object carried no device_usage_s field, so the repr scrape used by run_hardware.py returned nothing and the runner defaulted to 5.0. A default is not a measurement; the balance is.",
+  "metered_seconds_scraped": null,
+  "allocation_before": 3000,
+  "allocation_after": 2990,
+  "approved_budget": "one call, 0-5s expected if accepted. Actual 10s: within the same order but DOUBLE the estimate, because a fit appears to bill in whole units larger than the ~5s processing time the historical jobs show."
+}

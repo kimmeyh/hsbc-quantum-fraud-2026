@@ -31,7 +31,6 @@ import argparse
 import json
 import logging
 import os
-import re
 import sys
 import time
 import traceback
@@ -124,13 +123,30 @@ def _metered(resp) -> float | None:
         elif isinstance(o, list):
             for v in o:
                 walk(v)
-    walk(resp)
+    # Include a response OBJECT's attributes, not just dict/list shapes.
+    # run_hardware_f32 always did this; without it a SolutionResults that
+    # DOES expose device_usage_s as an attribute returns None and gets the
+    # 10s conservative charge instead of its real cost.
+    walk(resp if isinstance(resp, (dict, list, tuple))
+         else getattr(resp, "__dict__", {}))
     if found:
         return max(found)
-    # eqc-models returns a SolutionResults object (not a dict); its repr carries
-    # the billed field 'device_usage_s': N (verified on the first G0b call).
-    m = re.search(r"'device_usage_s':\s*([0-9.]+)", repr(resp))
-    return float(m.group(1)) if m else None
+    # NO REPR SCRAPE (Sprint 11 improvement 1). This used to fall back to a
+    # regex for 'device_usage_s' over repr(resp), verified on the first G0b
+    # call. Free-tier responses carried that field; PAID-TIER RESPONSES DO NOT,
+    # so the scrape returned nothing and the caller's default was recorded as
+    # though it were a measurement -- the F46 probe logged 5.0 seconds for a
+    # call the allocation balance showed cost 10.
+    #
+    # The authoritative sources, in order of preference:
+    #   1. the allocation balance before minus after (metered_call.run_metered)
+    #   2. ceil(sum(device.samples.runtime)) from get_job_metrics
+    #      (qpu_cost_model, validated against all 27 retained jobs)
+    # Both need the job id, which metered_call captures at submission.
+    #
+    # Returning None here is deliberate: a caller that cannot establish the cost
+    # must say so rather than record a plausible number.
+    return None
 
 
 def _wp_eff(wt, wp, y_pm1):
