@@ -3,10 +3,10 @@
     "number": 12,
     "name": "Spend the Grant, Then Submit",
     "branch": "feature/20260910_Sprint_12",
-    "status": "phase_3_planning_awaiting_approval",
+    "status": "phase_4_execution",
     "plan_doc": "docs/sprints/SPRINT_12_PLAN.md",
     "pr": null,
-    "plan_approved": false,
+    "plan_approved": true,
     "github_issues": [
       71,
       72,

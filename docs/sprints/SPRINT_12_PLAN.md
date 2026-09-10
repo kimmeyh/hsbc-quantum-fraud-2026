@@ -78,6 +78,27 @@ So:
 per complete fit). It remains live for the device side, where the cost is
 unknown.
 
+### Criterion H: STANDING AUTHORIZATION, 2026-09-10
+
+The team lead approved the Dirac-3 runs in advance and waived the per-block stop,
+because the sprint must reach manual validation overnight. Recorded verbatim:
+"the Dirac-3 running is approved - do not stop for Criterion H approval as I will
+be asleep".
+
+Criterion H normally requires a stop per block regardless of the window. It
+exists to protect the team lead's spend decisions, and those decisions were made
+here explicitly and in advance, so this is durable authorization rather than a
+bypass. SCOPE, held tightly because B2's cost is unanchored:
+
+- **27 fits total**: B3 16, B2 11. Not one more without a fresh decision
+- **A SELF-IMPOSED CEILING OF 600 SECONDS**, about 20% of the grant. If cumulative
+  spend crosses it, execution STOPS and reports, even mid-block. An open-ended
+  authorization against an unknown per-fit cost is how a grant disappears
+  overnight, and the team lead is asleep
+- **B2 reports its first fit's real cost** before the remaining ten proceed. If
+  that one fit costs more than ~50s, the block stops for a decision rather than
+  spending 11x an unexpected number
+
 ### Criterion H, with provenance (Sprint 11 improvement 2)
 
 - **B2**: 11 fits, cost **UNKNOWN**. No measured anchor at degree 3 within 2x of
