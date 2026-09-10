@@ -118,9 +118,10 @@ per-dataset search is unspent on IEEE-CIS, so these are floors.
 | CatBoost | 0.4795 [0.4696, 0.4927] | ~182 |
 | CVQBoost tuned / frozen [SIM] | 0.0571 / 0.0523 | 6 |
 
-**Matched-feature control.** The same LightGBM given the SAME six features
-CVQBoost is limited to falls from 0.5424 to 0.0734: every model is starved there
-and CVQBoost attains 85% of that ceiling. Gram ratios 0.950-0.973 rule out the
+**Matched-feature control.** The same LightGBM falls from 0.5739 on the full
+feature set to 0.0734 when restricted to the SAME six features CVQBoost is
+limited to: every model is starved there, and CVQBoost attains 78% of that
+constrained ceiling (0.0571 of 0.0734). Gram ratios 0.950-0.973 rule out the
 A.4 degeneracy mode.
 
 **H3 ladder (scoreable, 12 cells).** delta = CVQBoost minus matched GBDT:

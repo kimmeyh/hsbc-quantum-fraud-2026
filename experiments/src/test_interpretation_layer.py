@@ -53,9 +53,17 @@ def test_a_hypothesis_with_an_artifact_is_not_listed_unrun(hyp, artifact):
     """
     if not (RESULTS / artifact).exists():
         pytest.skip(f"{artifact} not present")
+    # SCOPED to the B.1 section. An unscoped scan matched any appendix table
+    # row mentioning the hypothesis -- the A.5 and A.6 tables discuss H3 and H6
+    # too -- so a row like "H3 NOT RUN at k=21" in a different sense would raise
+    # a contradiction that does not exist.
     text = _appendix()
-    # Find the B.1 registry row naming this hypothesis, if any.
-    for line in text.splitlines():
+    start = text.find("B.1")
+    if start == -1:
+        pytest.skip("no B.1 section in the appendix")
+    nxt = text.find("\n## ", start)
+    section = text[start:nxt if nxt != -1 else len(text)]
+    for line in section.splitlines():
         if line.startswith("|") and re.search(rf"\b{hyp}\b", line):
             if "NOT RUN" in line:
                 raise AssertionError(

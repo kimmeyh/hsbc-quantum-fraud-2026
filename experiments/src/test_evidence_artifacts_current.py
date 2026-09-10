@@ -35,19 +35,25 @@ def test_gate_report_matches_a_fresh_regeneration(tmp_path):
     """
     before = REPORT.read_text(encoding="utf-8")
 
-    proc = subprocess.run(
-        [sys.executable, str(SRC / "score_gates.py")],
-        capture_output=True, text=True, cwd=str(ROOT))
+    # score_gates.py writes the REAL path, so the committed artifact is restored
+    # in a finally -- not after the returncode assert. An earlier version put the
+    # restore after that assert, so a generator crash left the tree modified and
+    # the developer could commit it without noticing. tmp_path holds the copy.
+    backup = tmp_path / "gate_report.md.committed"
+    backup.write_text(before, encoding="utf-8")
+    try:
+        proc = subprocess.run(
+            [sys.executable, str(SRC / "score_gates.py")],
+            capture_output=True, text=True, cwd=str(ROOT))
+        after = REPORT.read_text(encoding="utf-8")
+    finally:
+        REPORT.write_text(before, encoding="utf-8")
+
     assert proc.returncode == 0, (
         f"score_gates.py failed, so the committed report cannot be verified:\n"
         f"{proc.stderr[-800:]}")
 
-    after = REPORT.read_text(encoding="utf-8")
-
     if before != after:
-        # Put the committed content back before failing, so a failing test does
-        # not itself leave a modified artifact in the tree.
-        REPORT.write_text(before, encoding="utf-8")
         import difflib
         diff = "\n".join(list(difflib.unified_diff(
             before.splitlines(), after.splitlines(),

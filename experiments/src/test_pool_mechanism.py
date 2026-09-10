@@ -23,6 +23,18 @@ import pytest
 POOLS = sorted(glob.glob(str(
     Path(__file__).resolve().parents[1] / "results" / "pools" / "h_*_free_dct_full.npz")))
 
+# The pools are gitignored (.gitignore:9) and nothing under that directory is
+# tracked, so on CI or any fresh clone POOLS is empty. An empty parametrize list
+# generates ZERO cases SILENTLY -- the guards below would vanish from the run and
+# the suite would stay green while the A20 mechanism claim went unchecked. That
+# is exactly the "green suite read as more assurance than it gives" failure this
+# sprint exists to close, so the absence is made loud instead.
+pytestmark = pytest.mark.skipif(
+    not POOLS,
+    reason=("no pools under experiments/results/pools/ (gitignored, untracked). "
+            "The A20 mechanism guard cannot run; rebuild them with the pool "
+            "builder before trusting a green suite on this file."))
+
 
 def _pool(path: str):
     # No allow_pickle: these artifacts hold plain numeric arrays, verified, so

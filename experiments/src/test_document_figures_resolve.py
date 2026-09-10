@@ -143,7 +143,17 @@ def _tracked_result_files() -> list[Path]:
     out = subprocess.run(
         ["git", "ls-files", "experiments/results/*.json"],
         capture_output=True, text=True, cwd=str(ROOT))
-    return [ROOT / line for line in out.stdout.split() if line]
+    # A git failure must NOT look like a repository full of fabricated figures.
+    # Unchecked, an exported tarball or a missing git binary yields an empty
+    # file list, an empty value set, and every decimal reported as unaccounted
+    # -- the cry-wolf outcome this module's docstring says would get the test
+    # deleted. Distinguish the tooling failure from a real defect.
+    if out.returncode != 0:
+        pytest.skip(f"cannot enumerate tracked files (git exited "
+                    f"{out.returncode}): {out.stderr.strip()[:200]}")
+    # splitlines, not split(): a tracked path containing a space would be
+    # silently mangled by whitespace splitting.
+    return [ROOT / line for line in out.stdout.splitlines() if line.strip()]
 
 
 def _stored_values() -> set[float]:
@@ -203,9 +213,17 @@ def test_the_registry_has_not_grown_stale():
     Guards against the registry becoming a place to silence failures: if a
     figure leaves the papers, its exemption should go too.
     """
-    text = " ".join((PAPERS / d).read_text(encoding="utf-8")
-                    for d in DOCS if (PAPERS / d).exists())
-    unused = sorted(k for k in REGISTERED if k not in text)
+    # Compare against the SAME extraction the forward check uses. Raw substring
+    # matching under-reported: "3.5" is "found" inside "13.57", so a retired
+    # exemption stayed in the registry silently -- defeating the stated purpose.
+    # It was also asymmetric, since _decimals() strips code spans and this did
+    # not, so an entry appearing only inside a code fence passed forever.
+    quoted: set[str] = set()
+    for d in DOCS:
+        p = PAPERS / d
+        if p.exists():
+            quoted |= _decimals(p.read_text(encoding="utf-8"))
+    unused = sorted(k for k in REGISTERED if k not in quoted)
     assert not unused, (
         f"registered but no longer quoted anywhere: {unused}. Remove the "
         f"entries so the registry keeps meaning something.")

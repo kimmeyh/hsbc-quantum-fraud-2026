@@ -116,8 +116,14 @@ def _metered(resp) -> float | None:
         # same (run_hardware.py:_metered). PR #36 Copilot review.
         return max(found)
     import re
-    m = re.search(r"device_usage_s['\"]?\s*[:=]\s*([0-9.]+)", repr(resp))
-    return float(m.group(1)) if m else None
+    # NO REPR SCRAPE (Sprint 11 improvement 1, extended here after review).
+    # run_hardware.py deleted the identical fallback in this PR: free-tier
+    # responses carried device_usage_s in their repr and PAID-TIER RESPONSES DO
+    # NOT, so the scrape silently returned nothing and the caller's default was
+    # recorded as though measured. Leaving it here would reproduce the bug on
+    # the next F32 run. Cost now comes from the allocation balance
+    # (metered_call.run_metered) or ceil(sum(runtime)) via qpu_cost_model.
+    return None
 
 
 FREE_TIER_MAX_VARS = 100    # established empirically 2026-09-05 (amendment A12)

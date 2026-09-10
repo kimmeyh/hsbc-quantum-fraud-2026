@@ -63,6 +63,13 @@ class CallRecord:
     error: str | None = None
     finished_utc: str | None = None
     tier: str = "paid"
+    # Written so a run_metered row is readable by the same code that reads the
+    # hand-built backfill rows. Without these the two halves of F47 do not
+    # interoperate: test_qpu_cost_model reads preprocessing_s and billed_s, and
+    # the first real free-tier call through run_metered would KeyError.
+    preprocessing_s: float | None = None
+    billed_s: float | None = None
+    cost_source: str = "allocation balance before minus after"
     notes: list[str] = field(default_factory=list)
 
 
@@ -109,7 +116,22 @@ def append_ledger(record: CallRecord) -> None:
 
 
 def balance(client) -> int:
-    return int(client.get_allocations()["allocations"]["dirac"]["seconds"])
+    """Dirac seconds remaining. Tolerates both response shapes.
+
+    The live API returns {"allocations": {"dirac": {...}}} -- verified against
+    the real endpoint. But allocation_check.json stored the INNER dict, so a
+    reader of that artifact sees the unwrapped shape, and a hard index on the
+    wrapper would raise.
+
+    This matters more than it looks: balance() is called from the `finally` of
+    run_metered, AFTER the call is billed. An exception there replaces the
+    return value, so a spent call would produce no result and no cost record --
+    reproducing the F46 failure on the one path this module exists to protect.
+    Accept either shape rather than assert one.
+    """
+    d = client.get_allocations()
+    d = d.get("allocations", d)
+    return int(d["dirac"]["seconds"])
 
 
 def run_metered(client, job_body: dict, record: CallRecord,
@@ -194,6 +216,8 @@ def run_metered(client, job_body: dict, record: CallRecord,
         if jc:
             record.runtime_sum_s = round(jc.runtime_sum_s, 4)
             record.per_sample_s = round(jc.per_sample_s, 4)
+            record.preprocessing_s = round(jc.preprocessing_s, 4)
+            record.billed_s = jc.billed_s
             derived = math.ceil(jc.runtime_sum_s)
             if record.measured_seconds is not None and derived != record.measured_seconds:
                 record.notes.append(

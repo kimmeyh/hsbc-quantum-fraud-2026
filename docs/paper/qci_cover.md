@@ -154,9 +154,9 @@ per-dataset search, so treat that as a floor. The CVQBoost arm, held to the six
 features the 100-variable ceiling permits, reaches 0.0571.
 
 That gap is not a hardware result, and the control that establishes it matters
-more than the number: the same LightGBM given the SAME six features falls from
-0.5424 to 0.0734. Every model is starved at six features, and the quantum arm
-attains 85% of that constrained ceiling. All of this is a classical proxy solve
+more than the number: the same LightGBM falls from 0.5739 on the full
+feature set to 0.0734 when restricted to the SAME six features. Every model is starved at six features, and the quantum arm
+attains 78% of that constrained ceiling. All of this is a classical proxy solve
 of the identical Hamiltonian, marked [SIM]; no metered time was spent.
 
 We then ran the preregistered feature ladder to test whether the ceiling is what

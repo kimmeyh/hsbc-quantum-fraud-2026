@@ -123,7 +123,12 @@ def _metered(resp) -> float | None:
         elif isinstance(o, list):
             for v in o:
                 walk(v)
-    walk(resp)
+    # Include a response OBJECT's attributes, not just dict/list shapes.
+    # run_hardware_f32 always did this; without it a SolutionResults that
+    # DOES expose device_usage_s as an attribute returns None and gets the
+    # 10s conservative charge instead of its real cost.
+    walk(resp if isinstance(resp, (dict, list, tuple))
+         else getattr(resp, "__dict__", {}))
     if found:
         return max(found)
     # NO REPR SCRAPE (Sprint 11 improvement 1). This used to fall back to a

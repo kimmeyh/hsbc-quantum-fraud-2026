@@ -1,7 +1,10 @@
 """Query a Dirac-3 job by id: status, metrics, results. ZERO metered seconds.
 
-All four QciClient endpoints used here (`get_job_status`, `get_job_metrics`,
-`get_job_results`, `get_job_response`) take only a job_id and perform a read.
+The three QciClient endpoints used here (`get_job_status`, `get_job_metrics`,
+`get_job_results`) take only a job_id and perform a read. `get_job_response`
+exists on the client and is deliberately NOT called: the three above cover
+status, cost and payload, and a tool that must never submit should reach for as
+little as it needs.
 They submit nothing, so they consume no QPU time and need no Criterion H
 approval -- verified against the client signatures before writing this.
 
@@ -57,7 +60,10 @@ def known_job_ids() -> list[str]:
     if not p.exists():
         return []
     d = json.loads(p.read_text(encoding="utf-8"))
-    ids = d.get("job_ids", d if isinstance(d, list) else [])
+    # isinstance FIRST: d.get(...) on a bare list raises AttributeError
+    # before the default is ever considered, so the fallback written for
+    # that shape could never run.
+    ids = d if isinstance(d, list) else d.get("job_ids", [])
     return [str(i) for i in ids]
 
 

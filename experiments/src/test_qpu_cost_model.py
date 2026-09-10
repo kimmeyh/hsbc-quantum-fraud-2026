@@ -32,8 +32,19 @@ def ledger():
 
 
 def _free_tier(ledger):
+    """The 27 backfilled free-tier rows the billing rule was validated against.
+
+    Filters on PROVENANCE rather than tier alone: run_metered writes rows with
+    the same tier field, so a future free-tier call through it would join this
+    set and break the count and the distribution assertions below. Those
+    assertions are about the ORIGINAL validation set, not about every row that
+    happens to share a tier.
+    """
     return [c for c in ledger["calls"]
-            if c["tier"] == "free" and c.get("runtime_sum_s") is not None]
+            if c.get("tier") == "free"
+            and c.get("runtime_sum_s") is not None
+            and c.get("preprocessing_s") is not None
+            and str(c.get("cost_source", "")).startswith("ceil(sum(runtime))")]
 
 
 def test_the_rule_reproduces_the_recorded_total(ledger):

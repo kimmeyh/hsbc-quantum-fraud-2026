@@ -60,6 +60,13 @@ def main() -> int:
     ap.add_argument("--starts", type=int, default=N_STARTS)
     args = ap.parse_args()
 
+    if not POOLS:
+        raise SystemExit(
+            "no pools under experiments/results/pools/ (gitignored, so a "
+            "fresh clone has none). Build them before regenerating this "
+            "evidence -- otherwise numpy raises a bare ValueError from "
+            "inside the summary and the prerequisite is invisible.")
+
     rng = np.random.default_rng(SEED)
     t0 = time.perf_counter()
     per_seed = []

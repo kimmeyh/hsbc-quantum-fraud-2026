@@ -42,9 +42,14 @@ def test_the_gain_is_class_weighting_not_family_diversity(d):
     dec = d["decomposition"]
     assert dec["weighting"]["mean"] > MDE, (
         "class weighting no longer carries the gain; the paper says it does")
-    assert dec["families"]["mean"] < MDE, (
+    # ABSOLUTE value: the claim is "buys nothing measurable", a magnitude. A
+    # signed comparison passed a large NEGATIVE effect (say -0.05 < 0.0268)
+    # while the paper's claim became false, and the failure message would have
+    # read "above the MDE" -- the opposite of what happened.
+    assert abs(dec["families"]["mean"]) < MDE, (
         f"family diversity alone now measures {dec['families']['mean']:+.4f}, "
-        f"above the MDE. The paper states it buys nothing measurable.")
+        f"a magnitude above the {MDE} MDE. The paper states it buys nothing "
+        f"measurable, in either direction.")
 
 
 def test_selection_bias_is_small(d):

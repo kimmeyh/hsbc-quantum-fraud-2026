@@ -56,9 +56,17 @@ def _load_env() -> None:
             os.environ.setdefault(k.strip(), v.strip())
 
 
-def _billed(resp) -> float | None:
-    m = re.search(r"'device_usage_s':\s*([0-9.]+)", repr(resp))
-    return float(m.group(1)) if m else None
+def _balance(client) -> int:
+    """The authoritative cost source: what the account says, before and after.
+
+    This function used to scrape 'device_usage_s' out of repr(response) -- the
+    same fallback run_hardware._metered was changed to delete in this PR,
+    because PAID-TIER RESPONSES DO NOT CARRY THAT FIELD. On the paid tier it
+    matched nothing and returned None, so a real billed call would have written
+    metered_seconds: null and left budget accounting blind. The committed
+    artifact reads 10.0 only because it was corrected by hand afterwards.
+    """
+    return int(client.get_allocations()["allocations"]["dirac"]["seconds"])
 
 
 def main() -> int:
@@ -99,6 +107,11 @@ def main() -> int:
     print(f"heartbeat written: {hb.name}")
     print("submitting (queue wait is normal; a fit bills 4-5s once it runs)...", flush=True)
 
+    from qci_client import QciClient
+    client = QciClient(api_token=os.environ["QCI_TOKEN"],
+                       url=os.environ["QCI_API_URL"])
+    balance_before = _balance(client)
+
     started = time.strftime("%Y-%m-%dT%H:%M:%S")
     t0 = time.perf_counter()
     resp, err, refused = None, None, False
@@ -115,7 +128,8 @@ def main() -> int:
         # Sizing refusals are deterministic: no retry (F18 disposition 5).
 
     elapsed = round(time.perf_counter() - t0, 2)
-    billed = _billed(resp) if resp is not None else 0.0
+    balance_after = _balance(client)
+    billed = float(balance_before - balance_after)
 
     out = {
         "note": ("F46 step 2: one metered probe at 105 continuous degree-2 variables, "
@@ -134,6 +148,11 @@ def main() -> int:
         "ceiling_lifted": bool(resp is not None),
         "error": err,
         "metered_seconds": billed,
+        "metered_seconds_source": ("allocation balance before minus after; "
+                                   "authoritative, and immune to the paid-tier "
+                                   "response dropping device_usage_s"),
+        "allocation_before": balance_before,
+        "allocation_after": balance_after,
         "wall_clock_sec": elapsed,
         "timestamps": {"started": started,
                        "finished": time.strftime("%Y-%m-%dT%H:%M:%S")},
