@@ -60,15 +60,17 @@ minimum, never below [HW]. That agreement bounds any effect of Dirac-3's
 continuous-variable resolution: quantization coarse enough to drive the flat
 optimum could not reproduce it.
 
-**The frozen pool's optimum is uniform to seven decimal places** on all ten seeds
-(L1 from 1/91 of 7.2e-08 to 1.6e-07). Controls, all classical at zero metered
-cost: uniform weights by construction give 0.7659, the solved objective 0.7681,
-class-weighted 0.7686, and a free-sign logistic stack 0.7681 -- so the
+**The frozen pool's optimum is uniform to within 4e-06 in L1** on all ten seeds
+(3.3e-06 to 7.4e-06 from 1/91), under a solve certified by its KKT residual
+rather than by objective change (A26). Controls, all classical at zero metered
+cost: uniform weights by construction give 0.7659, the solved objective 0.7687,
+class-weighted 0.7690, and a free-sign logistic stack 0.7681 -- so the
 non-negative simplex form costs nothing detectable and objective weighting is
-ruled out (though not imbalance at fit time). The +0.0022 is TIE-BREAKING:
-uniform weights leave 95.3% of test rows tied on one score (78 distinct values)
-and weights differing by 1e-07 split those into 151, so rounding the solved
-scores to six decimals returns the metric to the uniform value. The cause is
+ruled out (though not imbalance at fit time). The +0.0028 is TIE-BREAKING, and
+we now bound that rather than demonstrate it: uniform weights leave 95.2% of
+test rows tied on one score, and reordering WITHIN that tied block spans 0.0120
+of AP, four times the gain. A difference inside the span its own ties can
+produce is not evidence of optimization. The cause is
 pool degeneracy -- off-diagonal Gram entries average 170,234.4 against a
 diagonal of 170,235, because the frozen pool's unbounded trees memorise the
 training fold: 80 to 84 of the 91 learners reproduce the training labels exactly
@@ -292,7 +294,7 @@ this submission reports.
 
 ## B.2 Amendments
 
-Twenty-five dated amendments, A1 to A25, each with rationale and approval; full
+Twenty-six dated amendments, A1 to A26, each with rationale and approval; full
 text in the repository. Three changed a reported figure, named here so they are
 easy to find. **A15**: the
 frozen pool's k=6 AUPRC was published as 0.7688, a five-seed mean carried into a
@@ -381,7 +383,7 @@ the wrong interpreter and should have been checked before it was written.
 
 # Appendix C. Reproduction and references
 
-Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A25. The
+Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A26. The
 repository at `github.com/kimmeyh/hsbc-quantum-fraud-2026` carries the pinned
 environment, both dataset checksums, the preregistration in full, the full
 reference list, and the results store, whose every row holds a configuration

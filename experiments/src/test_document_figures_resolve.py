@@ -58,6 +58,8 @@ REGISTERED: dict[str, str] = {
     "3.5": "IEEE-CIS prevalence, a property of the dataset",
     "3.14": "a Python version (eqc-models requires <3.14), not a measurement",
     "3.12": "a Python version (the project's Linux environment), not a measurement",
+    "7.4": "max L1 distance from uniform, 7.4e-06; stored as l1_from_uniform_max",
+    "95.2": "uniform-arm mode share as a percentage; stored as uniform_mode_share_mean 0.9516",
     "85.7": "B2 median mode share as a percentage; gate_report.md stores it as 0.857",
     "0.1028": "hardware ladder minus matched GBDT at k=17: 0.1430 [HW] - 0.2458 [SIM], "
               "both stored; the difference is arithmetic on two artifact values",
@@ -74,7 +76,6 @@ REGISTERED: dict[str, str] = {
     "85.5": "recall at 0.5% budget, percentage form",
     "88.4": "precision at 0.1% budget on hardware, percentage form",
     "95.1": "score-degeneracy mode share, percentage form",
-    "95.3": "score-degeneracy mode share, percentage form",
     "99.999": "pairwise learner agreement, percentage form of the Gram ratio",
     "2.8": "difference in recall points, derived",
     "3.6": "difference in recall points, derived",
@@ -96,7 +97,6 @@ REGISTERED: dict[str, str] = {
     "0.92": "Gram ratio after class weighting, 2dp",
     "0.975": "weight cosine lower bound",
     "0.977": "weight cosine lower bound, hardware block",
-    "1.6": "solved optimum distance from uniform, 1e-07 scale",
     "234.4": "Gram off-diagonal mean, 170,234.4 split by the comma",
     "9.1": "lambda=0 objective spread exponent, 9.1e-12",
     "8.0": "kNN neighbour count / derived constant in prose",
@@ -125,7 +125,6 @@ REGISTERED: dict[str, str] = {
     # --- appendix: retracted and historical figures, labelled as such ------
     "0.7688": "the five-seed mean A15 RETRACTED; appendix labels it as retracted",
     # --- appendix: percentages -------------------------------------------
-    "7.2": "percentage quoted in the appendix",
     "81.7": "percentage quoted in the appendix",
     "94.2": "percentage quoted in the appendix",
     "95.9": "percentage quoted in the appendix",
