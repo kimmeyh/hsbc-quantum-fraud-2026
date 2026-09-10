@@ -43,7 +43,7 @@ The test fold holds about 95 frauds in 56,746 transactions, so the 0.05% and 0.1
 
 ## A.3 Hardware campaign and score health
 
-51 metered fits over three campaigns, 325 device seconds, zero failures, zero retries, 4 to 91 s per fit; the classical solve takes milliseconds. The third campaign spent the QCi grant: the A22 IEEE-CIS hardware ladder (12 fits, 62 s), one B2 fit at 833 variables (91 s), and the 10-second probe that retired the free-tier variable ceiling (A21). The selected configuration carries a score-degeneracy warning on all ten seeds (95.1% of transactions share one score across 814 distinct values), so its threshold-dependent figures are weak evidence while its ranking metrics are sound.
+61 metered fits over three campaigns, 1,141 device seconds, zero failures, zero retries, 4 to 92 s per fit; the classical solve takes milliseconds. The third campaign spent the QCi grant: the A22 IEEE-CIS hardware ladder (12 fits, 62 s), the full B2 block at 833 variables (11 fits, 906 s), and the 10-second probe that retired the free-tier variable ceiling (A21). The selected configuration carries a score-degeneracy warning on all ten seeds (95.1% of transactions share one score across 814 distinct values), so its threshold-dependent figures are weak evidence while its ranking metrics are sound.
 
 | Quantity | Value | Tag |
 |----------------------------------|------------------------------|-----|
@@ -287,7 +287,7 @@ this submission reports.
 
 ## B.2 Amendments
 
-Twenty-three dated amendments, A1 to A23, each with rationale and approval; full
+Twenty-four dated amendments, A1 to A24, each with rationale and approval; full
 text in the repository. Three changed a reported figure, named here so they are
 easy to find. **A15**: the
 frozen pool's k=6 AUPRC was published as 0.7688, a five-seed mean carried into a
@@ -308,31 +308,58 @@ by a single cheap probe that the 100-variable ceiling shaping the whole campaign
 was a billing tier, not a device limit. A22 then spent the grant on the block
 that ceiling had cost the most, the IEEE-CIS ladder, and reports it above.
 
-## B.3 Committed blocks that did not run
+## B.3 B2: the largest configuration the campaign planned
 
-Section 10 of the preregistration commits a run grid and provides that unrun
-blocks enter the proposal as [PROJ] with the grid cited as the plan. One block
-qualifies.
+Section 10 commits B2 as the ULB full config -- top-17 features, schedule 3,
+**833 continuous variables** against B1's 78. A12's free-tier ceiling foreclosed
+it for the whole campaign; A21 retired that ceiling and the block ran on
+2026-09-10. Eleven fits, 906 metered seconds: ten stratified seeds plus the
+temporal protocol.
 
-**B2 (ULB full config: top-17 features, schedule 3, 833 variables, 11 fits).**
-[PROJ], never submitted, zero metered seconds. A12's ceiling foreclosed it for
-most of the campaign and A21 lifted that, so it was scheduled. It did not run for
-a reason unrelated to the device: the full pair-build that amendment A3 requires
-uniformly of every CVQBoost cell uses `fork`, which is POSIX-only, and the
-available Linux environment ships Python 3.14 while `eqc-models` requires below
-3.14. We stopped rather than work around it, because both available workarounds
--- reimplementing the pool build, or rebuilding the environment days before
-submission -- put the frozen recipe at risk to gain one block. The honest
-statement is that B2's variable count, 833, is the largest the campaign planned
-and remains untested by us on hardware.
+| Arm | Variables | Mean AUPRC | AUC-ROC |
+|---|---|---|---|
+| B2, 10 seeds [HW] | 833 | 0.7928 (sd 0.0281) | 0.9423 |
+| B1 `dct`, 10 seeds [HW] | 78 | 0.7671 | -- |
+| CatBoost, all features [SIM] | -- | 0.8368 | -- |
+
+Temporal protocol: 0.7605 AUPRC, 0.9261 AUC-ROC [HW]. Prevalence 0.0017.
+
+**The ceiling was costing real performance, and the paired test is what shows
+it.** B2 minus B1's `dct` arm on identical seeds -- same pool family, same
+protocol, differing only in k and schedule -- gives **+0.0256 AUPRC, 95% CI
+[+0.0203, +0.0310], with 10 of 10 seeds favouring the larger configuration**.
+Unpaired that effect hides inside a seed-to-seed standard deviation of 0.028 and
+reads as noise; pairing cancels the shared variance and the improvement is
+unambiguous. This is the campaign's one clean positive result for CVQBoost, and
+it exists only because a billing tier was lifted, not because the method or the
+formulation changed.
+
+**It does not reach the classical bar.** The same 833-variable arm trails
+full-feature CatBoost by -0.0440. Lifting the restriction closes part of the gap
+and leaves the rest, which is the same shape as the IEEE-CIS ladder in A.5 and
+the same conclusion H1b reached at 78 variables.
+
+**Limitation.** `tie_fraction` averages 0.9224 and varies by less than 0.004
+across seeds, so the score degeneracy is structural to this configuration rather
+than a property of any one fit. B2's threshold-dependent figures are therefore
+weak evidence; its ranking metrics are sound. This is the same warning A.3
+records for the selected configuration, and it does not improve with scale.
+
+**One earlier claim in this appendix was wrong and is withdrawn.** A previous
+version of this section reported B2 as unrunnable, citing a `fork` dependency
+and a Python 3.14 environment incompatible with `eqc-models`. The dependency is
+real but was never the obstacle: the project's own Linux environment runs Python
+3.12 with `eqc-models` present, and the repository's build log shows the
+fork-based pool build succeeding a week earlier. The diagnosis was made against
+the wrong interpreter and should have been checked before it was written.
 
 # Appendix C. Reproduction and references
 
-Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A23. The
+Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A24. The
 repository at `github.com/kimmeyh/hsbc-quantum-fraud-2026` carries the pinned
 environment, both dataset checksums, the preregistration in full, the full
 reference list, and the results store, whose every row holds a configuration
-hash and evidence tag. The 40 QCi job identifiers the client returned, their raw responses and the
+hash and evidence tag. The 50 QCi job identifiers the client returned, their raw responses and the
 Dirac-3 parameters are retained there. For eleven earlier fits the runner did
 not persist the identifier the client returned; the gap was closed mid-campaign,
 and every fit since records one. Those eleven costs were measured

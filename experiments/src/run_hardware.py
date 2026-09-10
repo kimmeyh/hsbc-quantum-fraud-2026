@@ -54,13 +54,26 @@ RANKING = qp.RESULTS_DIR / "proxy_ranking.json"
 SEEDS = qp.SEEDS
 PAIR_BUILD = "full"
 MAX_RETRIES = 2
-BLOCK_CAP_S = {"B1": 220.0, "G0b": 70.0,     # 2x the request's expected upper bound
-               "B2": 450.0}                   # frozen grid estimate for 11 fits; the
-                                              # per-fit cost is UNANCHORED at 833 vars
-                                              # and degree 3, so this cap is the guard
-                                              # that matters. b2-first establishes the
-                                              # real anchor before the other ten run.
+# B2's cap is now set from a MEASUREMENT, not the frozen grid's estimate. The
+# first fit cost 91 s (ceil(sum(runtime)) = ceil(90.152), confirmed against the
+# allocation balance), against the grid's ~40 s/fit assumption. Ten remaining
+# fits at that rate is ~910 s, so the team lead raised the run ceiling to 2,000
+# QPU seconds on 2026-09-10 and asked that 776 s remain if all of it is used.
+#
+# 1,050 s caps the BLOCK (the one fit already spent plus ten more at 91 s leaves
+# ~49 s of slack for variance) while the 2,000 s allocation ceiling is the outer
+# guard checked below. Both must hold.
+BLOCK_CAP_S = {"B1": 220.0, "G0b": 70.0, "B2": 1050.0}
+
+# Allocation floor: stop before the balance would fall below this. 3,000 granted
+# minus the 2,000 authorized for spend = 1,000 remaining, and the team lead asked
+# for 776 s to survive the full 2,000 -- which is what the arithmetic gives once
+# the 224 s already spent campaign-wide is counted.
+ALLOCATION_FLOOR_S = 776.0
+
 EXPECTED_CALL_S = 6.0                        # measured 4-5 s/fit; bound the NEXT call
+B2_EXPECTED_CALL_S = 95.0                    # MEASURED 91 s + margin; the 6.0 s default
+                                             # would let the cap be overshot by a whole fit
 UNPARSEABLE_CALL_CHARGE_S = 10.0             # conservative charge when billing is unreadable
 TUNING_SEED = 42
 
@@ -216,6 +229,24 @@ def _done():
             for r in json.loads(qp.RESULTS.read_text())["rows"]}
 
 
+def _live_balance():
+    """Current Dirac allocation in seconds, or None if it cannot be read.
+
+    Returns None rather than raising: a balance endpoint hiccup should not kill
+    a block mid-run, and the block cap still bounds the spend on its own.
+    """
+    try:
+        from qci_client import QciClient
+        c = QciClient(api_token=os.environ["QCI_TOKEN"], url=os.environ["QCI_API_URL"])
+        a = c.get_allocations()["allocations"]
+        d = a["dirac"]
+        return float(d["seconds"] if isinstance(d, dict) else d)
+    except Exception as e:                                # noqa: BLE001
+        log.warning("[HW] could not read allocation balance (%s); relying on the "
+                    "block cap alone", type(e).__name__)
+        return None
+
+
 def _spent(block: str) -> float:
     if not qp.RESULTS.exists():
         return 0.0
@@ -344,11 +375,21 @@ def run_block(block: str, only_first: bool = False):
         if key in done:
             log.info("[HW] %s exists, skipping", key); continue
         spent = _spent(block)
-        projected = spent + EXPECTED_CALL_S
+        expected = B2_EXPECTED_CALL_S if block == "B2" else EXPECTED_CALL_S
+        projected = spent + expected
         if projected >= BLOCK_CAP_S[block]:
             log.error("[HW] block %s: spend %.1f s + one call (%.1f s) would reach the "
                       "%.0f s cap -- STOPPING BEFORE the call", block, spent,
-                      EXPECTED_CALL_S, BLOCK_CAP_S[block])
+                      expected, BLOCK_CAP_S[block])
+            return
+        # Outer guard: never let the allocation fall through the floor the team
+        # lead set, whatever the block cap says. Checked against the LIVE balance
+        # rather than our own tally, because the balance is authoritative.
+        bal = _live_balance()
+        if bal is not None and bal - expected < ALLOCATION_FLOOR_S:
+            log.error("[HW] allocation %.0f s - one call (%.1f s) would fall below the "
+                      "%.0f s floor -- STOPPING BEFORE the call", bal, expected,
+                      ALLOCATION_FLOOR_S)
             return
         log.info("[HW] CALL %s/%s seed=%d %s k=%d s=%d a=%.1f hash=%s (block spend so far %.1f s)",
                  block, spec["label"], spec["seed"], spec["protocol"], spec["k"], spec["schedule"],
