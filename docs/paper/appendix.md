@@ -75,8 +75,16 @@ pool degeneracy -- off-diagonal Gram entries average 170,234.4 against a
 diagonal of 170,235, because the frozen pool's unbounded trees memorise the
 training fold: 80 to 84 of the 91 learners reproduce the training labels exactly
 and are therefore the same vector, while ZERO predict the negative class
-everywhere (A20). A penalty sweep from 0 to 4x n_train leaves it uniform even at
-zero penalty.
+everywhere (A20). A penalty sweep from 0 to 4x n_train was first read as leaving
+the solution uniform even at zero penalty; that reading was wrong, and A27
+withdraws it. At lambda = 0 uniform is not the optimum at all: equal weights over
+the 82 perfect learners score 0.0097 BELOW uniform in the objective on average,
+positive on all ten seeds. The sweep script recorded the objective after solving
+FROM uniform, and a solver started at uniform returns uniform where the objective
+cannot distinguish the candidates. What survives is the stronger statement the
+proposal makes: at zero penalty the minimiser set is a face of the simplex, so
+the penalty selects a diffuse solution near uniform rather than being irrelevant
+to it.
 
 **Mixed pool (exploratory, A11).** Four families at k=13, 312 variables, same
 splits: gram ratio 0.9975, L1 from uniform 0.126, solved-minus-uniform +0.0076 on
@@ -271,7 +279,7 @@ is the one reported here.
 
 | Gate | Criterion | Outcome | Tag |
 |------------------|------------------------------|------------------------|-----|
-| G0 | Tuned XGBoost mean AUPRC >= 0.85 | **FAIL**: 0.8296 | [SIM] |
+| G0 | Tuned XGBoost mean AUPRC >= 0.85 | **FAIL**: 0.8296. The frozen consequence was that "everything halts"; work continued, recorded as a deviation (A28) | [SIM] |
 | G0 leakage tripwire | No cell above 0.95 | PASS: 0.8368 | [SIM] |
 | Shuffled-label tripwire | Collapses to base rate | PASS: 0.0023 / 0.0017 | [SIM] |
 | G0b | Proxy-hardware rank Spearman >= 0.5 | **PASS**: 0.900 | [HW] |
@@ -294,7 +302,7 @@ this submission reports.
 
 ## B.2 Amendments
 
-Twenty-six dated amendments, A1 to A26, each with rationale and approval; full
+Twenty-eight dated amendments, A1 to A28, each with rationale and approval; full
 text in the repository. Three changed a reported figure, named here so they are
 easy to find. **A15**: the
 frozen pool's k=6 AUPRC was published as 0.7688, a five-seed mean carried into a
@@ -339,19 +347,24 @@ reads as noise; pairing cancels the shared variance and the improvement is
 unambiguous. It is the campaign's only positive result at scale.
 
 **Two things moved together, and we cannot separate them.** B2 differs from B1
-`dct` in k (13 to 17), in schedule (2 to 3), and therefore in the polynomial
-degree of the objective itself: schedule 3 adds C(17,3) = 680 three-feature
-learners, 82% of B2's 833 variables. So the honest statement is that a larger,
-richer formulation scores better -- not that the variable ceiling alone was
-costing 0.0256. Attributing the gain to the ceiling would be the same
-three-factors-at-once error section 2 of the proposal decomposes rather than
+`dct` in k (13 to 17) and in schedule (2 to 3): schedule 3 admits three-feature
+weak learners, adding 680 of B2's 833. So the honest statement is that a larger,
+richer pool scores better -- not that the variable ceiling alone was costing
+0.0256. Attributing the gain to the ceiling would be the same
+several-factors-at-once error section 2 of the proposal decomposes rather than
 commits. The disconfirming cell, k=17 at schedule 2, is 153 variables and runs
 on the proxy at zero metered cost. It is unrun, and it is the first thing a
 Phase 2 campaign should do.
 
-Note also that the convexity argument the proposal makes for the quadratic
-objective does not carry to a pool carrying three-feature terms. B2's objective
-is not the convex problem whose optimum is unique.
+**The objective is unchanged, and it stays convex.** Schedule 3 changes which
+feature subsets each weak learner reads, not the order of the Hamiltonian: a
+three-feature tree is still one variable emitting a single vector in {-1,+1}, so
+the Gram matrix J = HH^T + lambda*I stays positive semidefinite and the problem
+stays the convex quadratic on the simplex described in the proposal. Checked on
+B2's own pool rather than assumed -- H holds only the values -1 and +1, and the
+smallest eigenvalue of the 833x833 J is exactly the lambda term. The submitted
+job carries the same problem type as every other block. An earlier version of
+this section said the opposite; A27 records the withdrawal.
 
 **The device solves this configuration markedly less faithfully.** Weight cosine
 against the classical solve is **0.8192 to 0.8327 (mean 0.8272)** across
@@ -383,7 +396,7 @@ the wrong interpreter and should have been checked before it was written.
 
 # Appendix C. Reproduction and references
 
-Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A26. The
+Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A28. The
 repository at `github.com/kimmeyh/hsbc-quantum-fraud-2026` carries the pinned
 environment, both dataset checksums, the preregistration in full, the full
 reference list, and the results store, whose every row holds a configuration
@@ -398,6 +411,9 @@ from the allocation balance and their metrics computed in process, so no
 reported figure depends on a handle we do not have. Every figure in this
 submission regenerates from that repository.
 
-Comparisons. Loke et al., 2026 (ICAART): same Dirac-3 hardware, AUC-PR above 0.8
-with a heterogeneous pool against our 0.767 single-family. AutoXGB ULB 0.782 is
-its own protocol, not like-for-like.
+Comparisons. Loke et al., 2026 (ICAART QAIO, DOI 10.5220/0014628400004052): same
+Dirac-3 hardware, AUC-PR 0.8108 from a single-family KNN pool -- the best of four
+homogeneous arms -- under a 70/30 split with training-fold SMOTE, against a
+semi-supervised comparator at 0.7423. Not like-for-like with our 0.767. AutoXGB
+0.782 is reported on the Fraud-Detection-Handbook SIMULATED dataset rather than
+on ULB, and under its own protocol; it is context, not a benchmark.

@@ -58,6 +58,11 @@ REGISTERED: dict[str, str] = {
     "3.5": "IEEE-CIS prevalence, a property of the dataset",
     "3.14": "a Python version (eqc-models requires <3.14), not a measurement",
     "3.12": "a Python version (the project's Linux environment), not a measurement",
+    "10.5220": "a DOI prefix (Loke et al., ICAART 2026), not a measurement",
+    "0.7570": "Loke et al. XGBoost arm AUC-PR, their Table 4; external citation",
+    "0.6600": "Loke et al. LDA arm AUC-PR, their Table 4; external citation",
+    "0.81": "upper end of our own inferred clean-protocol equivalent 0.80-0.81, "
+            "stated in the text as an inference rather than a published figure",
     "7.4": "max L1 distance from uniform, 7.4e-06; stored as l1_from_uniform_max",
     "95.2": "uniform-arm mode share as a percentage; stored as uniform_mode_share_mean 0.9516",
     "85.7": "B2 median mode share as a percentage; gate_report.md stores it as 0.857",
