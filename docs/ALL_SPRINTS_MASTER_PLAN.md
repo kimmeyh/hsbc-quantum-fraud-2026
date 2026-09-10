@@ -186,6 +186,103 @@ docs/reviews/f36-float-tables-outcome.md.
 - Lower priority than the submission blockers, and real: the failure mode is SILENT corruption of a file that was edited successfully, which is worse than a crash
 - Depends on: nothing
 
+**F49. Solver optimality certificate, and regenerate every proxy-dependent figure (~1.5h) Priority 1 -- CRITICAL PATH**
+- Phase: Experiments / correctness
+- Platform: `experiments/src/mechanism_controls.py`, `qubo_proxy.py`
+- **THE DEFECT, verified 2026-09-10.** `solve_weighted` is FISTA with a RELATIVE-OBJECTIVE stopping test (`abs(prev-cur) <= 1e-10*(1+abs(prev))`, 5000-iteration cap). The frozen objective is nearly flat near its optimum, so that test fires while the WEIGHTS are still moving. Measured KKT residual on the cached pools: reduced-gradient spread across the support is **0.344 absolute, 4.6e-05 relative**, where a true optimum gives ~0. The stopping rule certifies the OBJECTIVE, not the SOLUTION
+- **WHAT IT INVALIDATES.** Every figure derived from the proxy solve: the "uniform to seven decimal places" claim (that is where FISTA stopped, not where the optimum is), the solved-minus-uniform AP gain, the weight-cosine fidelity numbers for B1/G0b/B2/B3, and the objective-gap percentages. Our own recomputation reproduces the published +0.002224 EXACTLY, which is the point -- both our figure and our error come from the same under-converged solver. The external reviewer's more accurate solve gives +0.003023 on the same pools
+- **WHY IT MATTERS BEYOND THE NUMBER.** The submission's central structural control is "the device and an exact classical solve of the identical Hamiltonian agree". If the classical comparator is not converged, that control is weaker than claimed, and A22's solver-fidelity result -- the strongest statement the campaign makes about the device -- rests on it
+- Fix: add a projected-gradient / KKT residual stopping test to `solve_weighted`, keep the iteration cap as a backstop, record the achieved residual in every artifact so the certificate ships with the number. Then regenerate: `score_gates.py`, both hardware summaries, and every quoted fidelity figure
+- Acceptance: KKT residual recorded and below a stated tolerance for every solve; all regenerated figures differ from the published ones by a documented amount; the full suite green; a test asserts the residual is present and within tolerance
+- **NO QPU SECONDS.** Pure classical recomputation, ~15-30 min compute plus implementation
+- **This card GATES F52 and F56** -- their text quotes figures this card changes. Do them after, not in parallel
+- Depends on: nothing
+
+**F50. Withdraw the convexity claim and correct the lambda=0 mechanism (~1h) Priority 2**
+- Phase: Finalize / correctness
+- Platform: docs/paper, experiments/PREREGISTRATION.md
+- **TWO FALSE CLAIMS, both currently published, both verified false 2026-09-10**
+- (a) `appendix.md:340` says B2 differs "in the polynomial degree of the objective itself" and `:352` says "B2's objective is not the convex problem whose optimum is unique". A24 carries the same. BOTH ARE WRONG. `weak_cls_schedule=3` selects which feature SUBSETS each weak learner reads; it does not change the Hamiltonian's order. A three-feature tree is still ONE variable emitting a single vector in {-1,+1}. Verified on B2's own pool: H holds only -1 and +1, and the smallest eigenvalue of the 833x833 J = HH^T + lambda*I is exactly the lambda term (340,470). The submitted job carries the same `normalized_qudit_hamiltonian_optimization` type as every other block
+- (b) `appendix.md` A.4 says a penalty sweep "leaves it uniform even at zero penalty" and the proposal says "the penalty is not what makes the solution uniform". FALSE. At lambda=0 the objective at equal weights over the 82 perfect learners is **-170235.0000** against uniform's **-170234.9923**. Uniform is NOT the zero-penalty optimum; the solver returns it because it STARTS there and the objective is nearly flat. The sweep script records the objective after solving FROM uniform, not AT uniform
+- **THIS CARD IS THE RECORD OF A SELF-INFLICTED DEFECT.** Claim (a) was written on 2026-09-10 in response to an internal review, published within hours, and is false. Correcting under time pressure reproduced the exact defect class the correction was meant to remove. That belongs in the amendment, not just the fix
+- Also correct: "rank-one to numerical precision" is defensible only relatively. The Gram's second eigenvalue is 15.8 against a largest of 1.55e7 (ratio 1.0e-06); an ABSOLUTE 1e-4 threshold counts 9 eigenvalues, not 1. State the threshold used
+- Acceptance: no surviving text asserts non-convexity or zero-penalty uniformity; the replacement mechanism statement matches the measured numbers; ONE amendment covers both, and says plainly that (a) was our own correction gone wrong
+- Depends on: nothing (independent of F49; the convexity facts do not move)
+
+**F51. Disclose the protocol-history deviations (~45m) Priority 3**
+- Phase: Finalize / integrity
+- Platform: docs/paper, experiments/PREREGISTRATION.md
+- **TWO HISTORY CLAIMS CONTRADICTED BY OUR OWN FROZEN RECORD, verified against commit 95751b9**
+- (a) `proposal.md:56` says of Loke et al. "We did not find this paper before freezing." The freeze names the SMU/OCBC configuration as **H1a**, with its learner families, its 0.80 reproduction target, and its exact protocol (70/30 split, train-only SMOTE, 10 seeds). The paper was known before the freeze; what is unrun is its source-protocol reproduction. Say that instead
+- (b) G0 is stated in the freeze as: below 0.85 AUPRC "the pipeline is presumed defective and **everything halts**". G0 scored FAIL and work continued. Reporting the FAIL honestly preserves the score, but it does not satisfy the stopping rule. The continuation decision, its date and its authorization must be recorded as a DEVIATION under section 11
+- **Do NOT rewrite the historical gate.** Section 11 forbids it and the honesty of the gate table is the submission's main asset. Add the deviation record beside it
+- This is the finding most damaging to the "protocol is the contribution" claim if a judge finds it unaided, and the cheapest to defuse by disclosing it ourselves
+- Acceptance: both statements corrected; the G0 continuation appears as an explicit dated deviation; the gate table still shows G0 FAIL
+- Depends on: nothing
+
+**F52. Repair the document contradictions (~1.5h) Priority 4**
+- Phase: Finalize / correctness
+- Platform: docs/paper
+- Seven internal disagreements a reviewer finds in one read. All EDIT ONLY, all verified:
+- **B1 variable count**: 78 in `proposal.md:62`, `appendix.md` A.6 and B.3's closing sentence; 91 in A.1 and B.3's table. B1 ran the FULL pair build at k=13 = **91**. 78 is the SEQUENTIAL count and belongs to the IEEE-CIS arm. The B2/B1 ratio is 833/91 = 9.2x, not 10.7x
+- **Stale ULB claims**: `proposal.md` section 6 says the ULB blocks were not re-run above the ceiling; section 2 says our later hardware "runs above it at 136 variables". B2 ran at 833. Both contradict B.3
+- **Subset orders**: section 2 says "every run reported here used one- and two-feature subsets"; B2 has 680 three-feature learners
+- **The 949 limit**: QCi documents 949 for continuous quadratic jobs too, not only integer sum-of-levels (three QCi pages, one saying 954, one giving 477 binary). Our sentence is disprovable by a QCi-literate judge
+- **Protocol naming**: A.5 says "GroupKFold-by-month"; the code does rolling-origin on 30-day TransactionDT buckets with fold sizes 85,302 / 86,524 / 8,111. The bracketed classical values are fold RANGES, not confidence intervals
+- **Tie statistics**: `tie_fraction` (1 - distinct/N) and `mode_share` (mass at the modal score) are different quantities quoted interchangeably. B2 is 92.24% tie_fraction but 85.7% mode share with ZERO warning rows -- less degenerate than B1's 94.9%/824, not more. Define both; drop the "does not improve with scale" conclusion
+- **Campaign subtotal**: `proposal.md` section 3's 37 fits / 163 s is a valid EARLIER subtotal against A.3's 61 / 1,141. Label it as such
+- Acceptance: one regenerated manifest reconciles every count, cost and status across all three PDFs
+- Depends on: **F49** (fidelity figures move)
+
+**F53. Correct the prior-work and benchmark interpretations (~1h) Priority 5**
+- Phase: Finalize / correctness
+- Platform: docs/paper
+- **Loke et al.**: their 0.8108 comes from a KNN-based ensemble under a different protocol (70/30, training-fold SMOTE); their classical comparator is CAD at 0.7423, not a tuned GBDT. Our "heterogeneous pool explains our result" reading is not what their experiment shows. It is a replication target, not an explanation
+- **CVQBoost paper**: "accuracy was never the claim" is disprovable -- the paper claims competitive AUC and an accuracy edge under ADASYN, and it does compare classical solvers (Hexaly, SLSQP). Restate as runtime-emphasis with competitive AUC
+- **Benchmark bands**: the cited IEEE-CIS 0.64-0.67 study uses STRATIFIED RANDOM splitting, so it is not a temporal benchmark and our rolling-origin result should not be measured against it. The ULB "near 0.80" is an inference, not a reported equivalent
+- **The 0.2143 subtraction**: A.5 displays 0.861 vs 0.574 (a gap of 0.287) then quotes 0.2143, which is a different pair (0.7961 - 0.5818) from an artifact whose own verdict reads NOT FOR PUBLICATION. Do not present four numbers as one controlled comparison
+- **Uncited figures**: the 0.85-0.88 band, AutoXGB 0.782, "near 0.80". One citation each with a URL
+- **FG22/5**: attribute para 11.11's actual wording (monitoring for worse outcomes among customers sharing protected characteristics), not "identifies algorithmic bias as a source of harm"
+- Acceptance: every external claim traces to a primary source at the strength stated
+- Depends on: nothing
+
+**F54. Provenance the reviewer can actually check (~1h) Priority 6**
+- Phase: Finalize / reproducibility
+- Platform: experiments/, docs/paper
+- **11 of 168 results rows have `config_hash: null`, all B2** -- against a submission that claims every row carries one. B2 has no proxy twin at 833 variables, which is WHY the hash is null; that is a reason to state the exception, not to leave the claim unqualified
+- **Raw hardware responses live under `experiments/results/pools/`, which `.gitignore` excludes.** Appendix C says they "are retained there". They are retained locally and ship with nobody. Either commit them (~1 MB) or scope the sentence
+- `hw_dispersion.json` is derived from those untracked responses, so its A.3 figure cannot be recomputed by a reviewer even though the derived file is tracked
+- **Pinned versions**: `requirements.txt` uses ranges for most numerical dependencies. State the exact resolved versions used for the reported runs
+- Acceptance: no claim about the delivered package exceeds what a fresh clone contains; the distinction between locally retained and delivered evidence is explicit
+- Depends on: nothing
+
+**F55. Add the two missing rubric sections (~2h) Priority 7**
+- Phase: Finalize / scoring
+- Platform: docs/paper/proposal.md
+- Guidelines 4.3 requires **"Feasibility and Resource Requirements"** and **"Validation Plan"** as components. The proposal has neither heading. Together those criteria carry **35% of the Phase 1 weight** (feasibility 20%, validation 15%) with nothing for a judge to score against
+- Most of the content already exists, scattered: acceptance criteria in sections 5 and 6, the MDE, the temporal protocol, the router lift. This is largely reorganisation under the required headings
+- Feasibility must state plainly that **Dirac-3 access is via QCi allocation OUTSIDE the challenge** -- the challenge provides Braket and Classiq, not QCi -- and give measured per-block seconds (B2 at 82 s/fit) against the remaining balance
+- Validation Plan must state how the 0.0268 MDE was derived (paired SD, alpha, power, n=10), since the same number is used to judge three different comparisons, and what number defines Phase 2 success
+- **Tension with F38**: both documents are already over the page limit, and this ADDS content. The two cards must be planned together
+- Acceptance: both headings present with the guidelines' wording; every rubric component has text under a matching heading
+- Depends on: F38 sequencing decision
+
+**F56. Presentation and framing corrections (~1h) Priority 8**
+- Phase: Finalize / presentation
+- Platform: docs/paper
+- **MDE used inconsistently**: H6 is dismissed as "not a finding" below MDE while B2's +0.0256 -- also below 0.0268 -- is called "unambiguous". Same threshold, opposite treatment. State that MDE describes design power, not a significance boundary
+- **Only the favourable interval is unqualified**: H1b's across-seed interval carries a caveat that it measures split dispersion rather than sampling error. B2's does not. Apply the same caveat in the same words
+- **H6 bias direction is reversed**: handicapping the classical twin biases the delta UPWARD, not negative, when that comparator sets the maximum
+- **The tuned optimizer-gain SD is 0.0028**, not the published 0.0038 (which belongs to the untuned mixed-pool comparison)
+- **"Selection bias is 0.0006"** is a sensitivity check, not a bias estimate; selection optimism remains unestimated
+- **Latency**: "CVQBoost meets the budget trivially" is unmeasured. Scope "4 to 5 seconds" to the small configurations -- the campaign spans 4 to 92 s/fit
+- **"Shadow-mode trial"** gives the challenger live decisions on days 31-60. Rename it staged, and scope "within three percentage points" to the 0.1% budget (at 0.5% it is 3.6 points)
+- **"Quantum feature engineering"**: say at first mention that the phase block is a classically computed Fourier map applied to every arm
+- **Undefined internal labels**: Sprint 4/5, F32, ADR-0013, "section 10", "item-4 controls", `dct`. Define once or remove
+- Acceptance: no claim stronger than its evidence; a non-specialist can follow every term
+- Depends on: F49 (some figures move)
+
+
 
 
 
