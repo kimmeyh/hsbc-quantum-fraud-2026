@@ -283,12 +283,70 @@ def main() -> int:
         "fits": fits,
         "total_metered_seconds": sum(float(r.get("metered_seconds") or 0) for r in rows),
         "elapsed_sec": round(time.perf_counter() - t_start, 1),
+        "by_k": _mean_by_k(rows),
         "rows": rows,
     }
     store.atomic_write_json(OUT, out)
     print(f"\n{fits} fits, {out['total_metered_seconds']}s metered")
     print(f"written: {OUT}")
     return 0
+
+
+def _mean_by_k(rows: list[dict]) -> list[dict]:
+    """Fold means per k, STORED rather than recomputed in prose.
+
+    The ladder is quoted in the papers as a mean over folds. A figure that lives
+    only in a document and in nobody's artifact is exactly what F44 exists to
+    prevent, so the runner persists the means it will be quoted by.
+    """
+    out = []
+    for k in sorted({r["k"] for r in rows if r.get("status") == "ok"}):
+        cells = [r for r in rows if r["k"] == k and r.get("status") == "ok"]
+        if not cells:
+            continue
+        n = len(cells)
+        out.append({
+            "k": k,
+            "n_variables": cells[0]["n_variables"],
+            "folds": n,
+            "auprc_mean": round(sum(c["auprc"] for c in cells) / n, 4),
+            "auc_roc_mean": round(sum(c["auc_roc"] for c in cells) / n, 4),
+            "eval_prevalence_mean": round(
+                sum(c["eval_prevalence"] for c in cells) / n, 4),
+            "metered_seconds": sum(float(c.get("metered_seconds") or 0) for c in cells),
+            "evidence_tag": "HW",
+        })
+    return out
+
+
+def _find_job_id(resp) -> str | None:
+    """Recover the job id from whatever shape the response takes.
+
+    `get_job_results` returns {"job_info": {"job_id": ...}} -- confirmed against
+    the retained campaign jobs -- and eqc-models passes the response through.
+    Searched rather than indexed, because the paid tier already changed one
+    response format out from under a hardcoded path (the device_usage_s scrape).
+    """
+    seen: list[str] = []
+
+    def walk(o):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if k == "job_id" and isinstance(v, str) and len(v) == 24:
+                    seen.append(v)
+                walk(v)
+        elif isinstance(o, (list, tuple)):
+            for v in o:
+                walk(v)
+
+    walk(resp if isinstance(resp, (dict, list, tuple))
+         else getattr(resp, "__dict__", {}))
+    if not seen:
+        import re
+        m = re.search(r"'job_id':\s*'([0-9a-f]{24})'", repr(resp))
+        if m:
+            seen.append(m.group(1))
+    return seen[0] if seen else None
 
 
 def _submit_via_eqc(client, X, y_pm1, rec: "mc.CallRecord"):
@@ -320,6 +378,13 @@ def _submit_via_eqc(client, X, y_pm1, rec: "mc.CallRecord"):
                            api_token=os.environ["QCI_TOKEN"], **cfg)
     try:
         resp = clf.fit(X, y_pm1)
+        rec.job_id = _find_job_id(resp)
+        if rec.job_id:
+            log.write(f"JOB_ID {rec.job_id}")
+        else:
+            rec.notes.append("job id not found in the response; result is not "
+                             "retrievable by id (F47 gap)")
+            log.write("WARNING no job id in response")
         rec.status = "ok"
         return {"results": {"solutions": [list(getattr(resp, "solutions", [[]])[0])]}} \
             if hasattr(resp, "solutions") else resp

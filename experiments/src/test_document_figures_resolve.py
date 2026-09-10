@@ -56,6 +56,7 @@ REGISTERED: dict[str, str] = {
     # --- dataset and protocol constants -----------------------------------
     "0.17": "ULB fraud prevalence, a property of the dataset",
     "3.5": "IEEE-CIS prevalence, a property of the dataset",
+    "3.14": "a Python version (eqc-models requires <3.14), not a measurement",
     "0.0268": "the preregistered MDE (amendment A5)",
     # --- percentages derived from stored values ---------------------------
     "50.9": "recall at 0.1% budget, percentage form of a stored rate",

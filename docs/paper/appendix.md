@@ -43,7 +43,7 @@ The test fold holds about 95 frauds in 56,746 transactions, so the 0.05% and 0.1
 
 ## A.3 Hardware campaign and score health
 
-37 metered fits over two campaigns, 163 device seconds, zero failures, zero retries, 4 to 5 s per fit; the classical solve takes milliseconds. The selected configuration carries a score-degeneracy warning on all ten seeds (95.1% of transactions share one score across 814 distinct values), so its threshold-dependent figures are weak evidence while its ranking metrics are sound.
+50 metered fits over three campaigns, 234 device seconds, zero failures, zero retries, 4 to 9 s per fit; the classical solve takes milliseconds. The third campaign is the A22 IEEE-CIS hardware ladder: 12 fits and 61 seconds under a grant of full-access time, which also retired the free-tier variable ceiling (A21) and carried one 10-second ceiling probe. The selected configuration carries a score-degeneracy warning on all ten seeds (95.1% of transactions share one score across 814 distinct values), so its threshold-dependent figures are weak evidence while its ranking metrics are sound.
 
 | Quantity | Value | Tag |
 |----------------------------------|------------------------------|-----|
@@ -131,6 +131,37 @@ GBDT 3.6x, so the ceiling limits absolute performance without being why the arm
 trails. Scope: one family set, schedule 2, continuous convex formulation. The
 integer cardinality problem, three-feature subsets and the phase representation
 are unrun.
+
+**The same ladder, on hardware (A22).** The ladder above is [SIM]: it was run on
+the classical proxy because the free-tier ceiling foreclosed the upper rungs on
+the device. A21 retired that ceiling, and block B3 then re-ran the ladder on
+Dirac-3 itself at the frozen recipe -- same pipeline, same item-4 leakage
+controls, same rolling-origin folds, only the solver differs. Twelve fits, 61
+metered seconds, 109 minutes.
+
+| k | Variables | AUPRC [HW] | AUC-ROC [HW] |
+|---|---|---|---|
+| 5 | 10 | 0.0508 | 0.5101 |
+| 9 | 36 | 0.0918 | 0.5417 |
+| 13 | 78 | 0.1468 | 0.5709 |
+| 17 | 136 | 0.1757 | 0.5906 |
+
+Mean over three folds at eval prevalence 0.0368. The k=17 cell runs 136
+continuous variables, above the retired 100-variable ceiling, and is the first
+IEEE-CIS hardware evidence that ceiling ever foreclosed.
+
+Two things follow. The ladder is monotonic on hardware, +0.0107 AUPRC per
+feature, and uncapping k=6 to k=17 roughly TRIPLES CVQBoost against the k=6
+frozen arm's 0.0523 -- so the restriction was real and materially costly, more
+so than the proxy ladder alone suggested. And it does not close the gap: 0.1757
+against LightGBM's 0.5739 leaves the best hardware cell 3.3x below the best
+classical arm. The null survives a test run at the size the method actually
+wanted, which is a stronger result than the null we could previously report.
+
+Known gap: `QBoostClassifier.fit` returns no job id and none was recoverable
+from the response, so these twelve solves are not retrievable by id after the
+fact. Cost is balance-measured and metrics were computed in process, so no
+reported figure depends on that handle.
 
 **Two qualifications.** The adversarial control never converged, hitting its
 20-round cap on every fold (final AUCs 0.945/0.888/0.887 against a target near
@@ -232,7 +263,7 @@ is the one reported here.
 | G0b | Proxy-hardware rank Spearman >= 0.5 | **PASS**: 0.900 | [HW] |
 | H1b (primary) | CVQBoost versus best tuned GBDT | **NULL**: -0.0399, interval excludes zero | [HW] |
 | H4 | Versus best structural control | PARTIAL: solver fidelity only, controls unrun | [HW] |
-| H3 (feature ladder) | Does lifting the feature restriction close the gap | **MEASURED**: slope -0.006 AUPRC per feature, negative (A.5) | [SIM] |
+| H3 (feature ladder) | Does lifting the feature restriction close the gap | **MEASURED**: no. Proxy slope -0.006 AUPRC per feature; hardware ladder to k=17 / 136 vars reaches 0.1757 against the classical 0.5739 (A.5, A22) | [SIM] + [HW] |
 | H6 (phase representation) | Does a phase representation move the delta | **MEASURED**: shift -0.0115, preregistered falsifier fired (A.6) | [SIM] |
 | H1a, H1c, H5, Phase 2 cardinality arm | Preregistered against MIQP, greedy and annealing controls | NOT RUN | [PROJ] |
 
@@ -249,7 +280,7 @@ this submission reports.
 
 ## B.2 Amendments
 
-Twenty-one dated amendments, A1 to A21, each with rationale and approval; full
+Twenty-two dated amendments, A1 to A22, each with rationale and approval; full
 text in the repository. Three changed a reported figure, named here so they are
 easy to find. **A15**: the
 frozen pool's k=6 AUPRC was published as 0.7688, a five-seed mean carried into a
@@ -265,9 +296,32 @@ than acceptance. **A12**: the free-tier 100-variable ceiling, established when a
 
 No amendment changed a gate criterion; no gate was rescored after observation.
 
+**A21 and A22** are the late pair and are worth reading together. A21 established
+by a single cheap probe that the 100-variable ceiling shaping the whole campaign
+was a billing tier, not a device limit. A22 then spent the grant on the block
+that ceiling had cost the most, the IEEE-CIS ladder, and reports it above.
+
+## B.3 Committed blocks that did not run
+
+Section 10 of the preregistration commits a run grid and provides that unrun
+blocks enter the proposal as [PROJ] with the grid cited as the plan. One block
+qualifies.
+
+**B2 (ULB full config: top-17 features, schedule 3, 833 variables, 11 fits).**
+[PROJ], never submitted, zero metered seconds. A12's ceiling foreclosed it for
+most of the campaign and A21 lifted that, so it was scheduled. It did not run for
+a reason unrelated to the device: the full pair-build that amendment A3 requires
+uniformly of every CVQBoost cell uses `fork`, which is POSIX-only, and the
+available Linux environment ships Python 3.14 while `eqc-models` requires below
+3.14. We stopped rather than work around it, because both available workarounds
+-- reimplementing the pool build, or rebuilding the environment days before
+submission -- put the frozen recipe at risk to gain one block. The honest
+statement is that B2's variable count, 833, is the largest the campaign planned
+and remains untested by us on hardware.
+
 # Appendix C. Reproduction and references
 
-Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A21. The
+Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A22. The
 repository at `github.com/kimmeyh/hsbc-quantum-fraud-2026` carries the pinned
 environment, both dataset checksums, the preregistration in full, the full
 reference list, and the results store, whose every row holds a configuration
