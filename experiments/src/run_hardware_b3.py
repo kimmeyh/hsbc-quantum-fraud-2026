@@ -58,7 +58,15 @@ MAX_FITS = 16
 
 
 def vars_at(k: int, schedule: int = SCHEDULE) -> int:
-    """Sequential pair build: k singles + k(k-3)/2 pairs."""
+    """Variable count for the sequential (pairs-only) build at schedule >= 2.
+
+    The sequential build includes pairs but NOT singles: eqc-models with
+    ``weak_cls_strategy="sequential"`` produces C(k, 2) = k*(k-1)/2
+    classifiers (qubo_proxy.py: "78 vars sequential / 91 full-pair" at k=13).
+    The expression ``k + k*(k-3)//2`` is algebraically equal to k*(k-1)//2 and
+    was written to surface the eqc-models pair-cap guard (``n*(n-3)/2 <= 0``),
+    not to imply k singles are present.
+    """
     return k + k * (k - 3) // 2 if schedule >= 2 else k
 
 
@@ -124,45 +132,6 @@ def _slice_at_k(prep: dict, k: int):
     X_tr = prep["Xtr_num"][cols].fillna(0.0).to_numpy(np.float32)
     X_ev = prep["Xev_num"].reindex(columns=cols).fillna(0.0).to_numpy(np.float32)
     return X_tr, X_ev, cols
-
-
-def _prepare_fold_unused(df, fold, k: int):
-    """Exactly the published [SIM] arm's preparation, then top-k at OUR k.
-
-    Reuses run_ieee_cvqboost's own helpers rather than restating them. The whole
-    point of B3 is that everything upstream of the solve is identical to the arm
-    already published, so any difference in the result is attributable to the
-    device rather than to a different feature set.
-
-    An earlier version ran mutual information over every raw numeric column,
-    skipping the feature pipeline and the item-4 adversarial leakage controls.
-    That would have produced a [HW] arm that is not comparable to the [SIM] one
-    -- and it stalled, because MI over 400+ columns on 590k rows is minutes per
-    fold before anything useful happens.
-    """
-    import ieee_controls
-    import ieee_features
-    import run_ieee_cvqboost as ieee
-
-    t0 = time.perf_counter()
-    parts = ieee_splits.split_xy(df, fold)
-    tr_df, ev_df = parts["X_train"], parts["X_eval"]
-    y_tr, y_ev = parts["y_train"].to_numpy(), parts["y_eval"].to_numpy()
-
-    pipe = ieee_features.IEEEFeaturePipeline()
-    Xtr_all = pipe.fit_transform(tr_df)
-    Xev_all = pipe.transform(ev_df)
-
-    day_tr = ieee_features.add_day(tr_df).to_numpy()
-    Xtr_num = Xtr_all.select_dtypes(include=[np.number])
-    ctrl = ieee_controls.apply_item4_controls(Xtr_num, y_tr, day_tr, seed=ieee.SEED)
-    surviving = ctrl["features"] or list(Xtr_num.columns)
-
-    cols = ieee._top_k_numeric(Xtr_num[surviving], y_tr, k)
-    X_tr = Xtr_num[cols].fillna(0.0).to_numpy(np.float32)
-    X_ev = (Xev_all.select_dtypes(include=[np.number])
-            .reindex(columns=cols).fillna(0.0).to_numpy(np.float32))
-    return X_tr, X_ev, y_ev, round(time.perf_counter() - t0, 1)
 
 
 def main() -> int:
