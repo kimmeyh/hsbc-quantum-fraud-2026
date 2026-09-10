@@ -12,7 +12,7 @@ date: "September 2026"
 # To QCi
 
 **Request**: 30,000 QPU seconds of Dirac-3 access
-**Enclosed, all marked DRAFT**: concept proposal, appendices, frozen preregistration with its nineteen amendments, generated gate report, the hardware run plans, and the eqc-models integration feedback.
+**Enclosed, all marked DRAFT**: concept proposal, appendices, frozen preregistration with its twenty-one amendments, generated gate report, the hardware run plans, and the eqc-models integration feedback.
 
 ## Our goal in participating
 
@@ -130,17 +130,17 @@ The first campaign showed excellent solver fidelity: hardware and an exact class
 
 The sharper result came from the control we ran afterwards. On the frozen configuration **the solved optimum is uniform to seven decimal places**, and the apparent 0.0022 AUPRC gain over uniform weights turned out to be tie-breaking: uniform weights leave 95.3% of test rows tied on one score, weight perturbations of order 1e-07 split those ties, and average precision is rank-based. Rounding the scores back returns the metric exactly.
 
-The cause is pool degeneracy, and it is measurable: off-diagonal Gram entries average 170,234.4 against a diagonal of 170,235, so any two weak learners agree on 99.999% of training rows. At 0.17% fraud prevalence a depth-limited tree predicts the negative class almost everywhere, and a pool of near-identical learners gives an optimizer nothing to weight.
+The cause is pool degeneracy, and it is measurable: off-diagonal Gram entries average 170,234.4 against a diagonal of 170,235, so any two weak learners agree on 99.999% of training rows. The frozen pool's trees are unbounded, so they memorise the training fold: 80 to 84 of the 91 learners reproduce the labels exactly and are therefore the same vector (A20; the letter as sent said majority-class collapse, which the saved pools disprove). A pool of near-identical learners gives an optimizer nothing to weight.
 
 **This is a statement about how CVQBoost is configured for extreme class imbalance, not about your hardware.** The device reproduced the exact optimum faithfully every time. The pool handed to it was the problem. We think it is worth a note in the CVQBoost documentation for anyone applying it at low prevalence, and we would rather you had it from us than from a customer who hit it silently.
 
 We then tested the fix, in two steps, and the second one is the part we think is useful to you.
 
-First, replacing the single family of depth-limited trees with four families (decision tree, LDA, logistic, KNN) moves the optimum genuinely off uniform: L1 distance 0.126 against 8.0e-08, largest weight 1.24 times uniform, with two controls confirming this is optimization rather than tie-breaking. It bought the optimizer something to do, but no accuracy.
+First, replacing the single family of unbounded trees with four families (decision tree, LDA, logistic, KNN) moves the optimum genuinely off uniform: L1 distance 0.126 against 8.0e-08, largest weight 1.24 times uniform, with two controls confirming this is optimization rather than tie-breaking. It bought the optimizer something to do, but no accuracy.
 
 Second, adding imbalance handling AT FIT TIME -- class weighting inside the tree and logistic learners as they are built, rather than reweighting the ensemble objective afterwards -- changes the pool materially: the Gram off-diagonal ratio falls from 0.9988 to 0.92. Two of our four families take no class weight, and the selected configuration also tightened the KNN neighbourhood, so the accuracy number below carries both changes; the diversity number is attributable to class weighting alone. Against the same single-family pool rebuilt at the same size on the same splits, the tuned pool gains **+0.0319 AUPRC on ten of ten seeds**, reaching 0.7700 against Loke et al.'s reported 0.8 on your hardware. That clears our own 0.0268 detectable threshold -- the first difference in this work to do so.
 
-We flag one thing about that number rather than let you find it. It reached significance only after we found and corrected a protocol violation in our own exploratory code: three modules written as standalone work skipped the deduplication our frozen protocol mandates, and had been training on 1,081 duplicate rows for two sprints. Correcting it moved the result across the threshold in our favour, which is exactly the direction that should make a reader sceptical. The mechanism is measured, not assumed: duplicate rows carry a 1.73% fraud rate against the dataset's 0.17%, a tenfold enrichment, so removing them strips memorisable positives -- and a pool of depth-limited trees, which split a duplicated row exactly, loses more than a pool that averages over neighbourhoods. The generator, the data and the per-seed values are all in the package.
+We flag one thing about that number rather than let you find it. It reached significance only after we found and corrected a protocol violation in our own exploratory code: three modules written as standalone work skipped the deduplication our frozen protocol mandates, and had been training on 1,081 duplicate rows for two sprints. Correcting it moved the result across the threshold in our favour, which is exactly the direction that should make a reader sceptical. The mechanism is measured, not assumed: duplicate rows carry a 1.73% fraud rate against the dataset's 0.17%, a tenfold enrichment, so removing them strips memorisable positives -- and a pool of unbounded trees, which split a duplicated row exactly, loses more than a pool that averages over neighbourhoods. The generator, the data and the per-seed values are all in the package.
 
 **The part worth your attention: the accuracy came from the learners, not the optimizer.** On the tuned pool the solved weights beat uniform weights by only +0.0047, an order of magnitude smaller than the learner effect and well inside our detectable threshold. So for CVQBoost at low prevalence, the leverage is in how the weak learners are built, and the optimization step is close to free either way. That is a configuration statement about your library rather than a limitation of your hardware, and it is the second thing we would put in the CVQBoost documentation alongside the degeneracy finding above.
 
@@ -154,9 +154,9 @@ per-dataset search, so treat that as a floor. The CVQBoost arm, held to the six
 features the 100-variable ceiling permits, reaches 0.0571.
 
 That gap is not a hardware result, and the control that establishes it matters
-more than the number: the same LightGBM given the SAME six features falls from
-0.5424 to 0.0734. Every model is starved at six features, and the quantum arm
-attains 85% of that constrained ceiling. All of this is a classical proxy solve
+more than the number: the same LightGBM falls from 0.5739 on the full
+feature set to 0.0734 when restricted to the SAME six features. Every model is starved at six features, and the quantum arm
+attains 78% of that constrained ceiling. All of this is a classical proxy solve
 of the identical Hamiltonian, marked [SIM]; no metered time was spent.
 
 We then ran the preregistered feature ladder to test whether the ceiling is what
@@ -205,7 +205,7 @@ Two questions we would value your view on, both single-fit experiments we would 
 
 ## A note on this package
 
-Everything enclosed is DRAFT and pre-submission. The results are as measured; the preregistration and its nineteen dated amendments show exactly what was decided before any result was seen, including the gate we failed and the two claims we had to correct. We would welcome correction on anything we have characterised wrongly about Dirac-3 -- especially the convexity argument and the free-tier ceiling -- before this becomes a public submission.
+Everything enclosed is DRAFT and pre-submission. The results are as measured; the preregistration and its twenty-one dated amendments show exactly what was decided before any result was seen, including the gate we failed and the two claims we had to correct. We would welcome correction on anything we have characterised wrongly about Dirac-3 -- especially the convexity argument and the free-tier ceiling -- before this becomes a public submission.
 
 Thank you for considering the request.
 

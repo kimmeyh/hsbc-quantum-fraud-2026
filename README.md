@@ -10,8 +10,6 @@ Working project for Harold Kimmey's Phase 1 concept proposal to the 2026 Global 
 |---|---|
 | `docs/PLAN.md` | The 8-stage submission development process with dates |
 | `docs/requirements-matrix.md` | Master requirements and evidence matrix (the acceptance checklist) |
-| `docs/trueloop-teardown.md` | Reviewer-style teardown of the public TrueLoop Compute HSBC proposal |
-| `docs/thesis-candidates.md` | Candidate central theses with recommendation |
 | `docs/source/` | Put the four official challenge PDFs here (T&C, Assessment Criteria, Submission Guidelines, HSBC Challenge Statement) |
 | `experiments/` | Code and results (Stage 2 onward) |
 | `paper/` | Outline, drafts, final PDF (Stage 4 onward) |
@@ -19,7 +17,6 @@ Working project for Harold Kimmey's Phase 1 concept proposal to the 2026 Global 
 ## Key external references
 
 - Program page: https://quantumai.thequantuminsider.com/program/
-- TrueLoop HSBC proposal (public competitor example): https://github.com/MatthewLeibel/TrueLoop-Compute-HSBC-Challenge-Reproducibility
 - Prior submission template (different challenge): held locally by the team lead, not part of this repository
 
 ## Datasets (required before anything runs)
@@ -49,4 +46,4 @@ records, and figures will not reproduce.
 ## Immediate to-do
 
 1. Copy the four official challenge PDFs into `docs/source/` so requirements can be verified against primary text, not page-1 images.
-2. Decide the central thesis (see `docs/thesis-candidates.md`).
+2. Decide the central thesis (recorded in the sprint docs; the candidate notes are held privately).

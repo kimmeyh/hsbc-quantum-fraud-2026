@@ -64,8 +64,18 @@ improvements 1, 2 and 4 applied, 3 declined; suite 173 -> 194).
 | 7 | Sep 5-6 | [DONE] F33, F34, QCi/paper update | -- |
 | 8 | Sep 6-7 | [DONE] **F3** (IEEE-CIS, all four tasks) + paper updates; F36 attempted and FAILED | -- |
 | 9 | Sep 7-8 | [DONE] F4 (H6, measured null), F14, F16; **QCi package SENT** 2026-09-08 09:59 | -- |
-| 10 | Sep 9-11 | F5 (or its named fallback) + paper updates | still time for F10; F16 shipped in Sprint 9 |
+| 10 | Sep 9 | [DONE] **F40** (segmentation) re-scoped to F40 only; gate-report undercount fixed (27/120 -> the true 37/163); 8 correctness findings from two adversarial reviews; 13 PR-review findings addressed | F37/F38 deferred to 11 |
+| 11 | Sep 10-11 | **F41, F42, F43** (correctness) then **F37 -> F38** (submission blockers); F44/F45 if they fit | correctness BEFORE page size, team-lead sequencing |
 | Finalize | Sep 12-13 | F10, **F40 (segment non-public material)** -> **F37 (repo public)** in that order, **F38 (page limits)** -- all SUBMISSION BLOCKERS; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
+
+**Sprint 12 sequencing, DECIDED 2026-09-09 (Sprint 11 improvement 5) rather than under deadline pressure.** The order is forced by two dependencies, not by preference:
+
+1. **Dirac-3 work first, if any is approved.** It produces new evidence, and evidence changes the documents. Run it in the evening window: measured queue wait is a 0.7s median after 19:00 local against the 52 minutes a 14:33 submission cost
+2. **Then F38.** The page cut must run against FINAL content or it runs twice. This is why F38 has grown at every measurement
+3. **Then F37.** Making the repository public is IRREVERSIBLE. Nothing that could still change a document should follow it
+4. **Then F10**, the submission itself, which depends on all three
+
+If the calendar forces a cut, drop the Dirac-3 work: it is the only one of the four that is not a submission blocker.
 
 Renumbered 2026-09-05: the team lead noted the project is running more than one sprint per day, so F33 took Sprint 7 and F3 moved to Sprint 8 rather than competing for the same hours. A submittable paper exists after Sprint 5; every later sprint adds evidence and re-runs the review loop on the diff. The "still time" gate is a calendar lookup against the Sep 12 evidence freeze.
 
@@ -114,6 +124,7 @@ acceptance criteria and the full failure analysis are preserved in
 docs/reviews/f36-float-tables-outcome.md.
 
 **F38. Appendix to 3 pages AND proposal to 6 (~45m) Priority 1 -- SUBMISSION BLOCKER**
+- **RE-MEASURE BEFORE CUTTING (Sprint 11 improvement 3).** Run `python scripts/page-fill-report.py` on both PDFs as the FIRST action of this card. Every recorded figure has been stale by the time the card ran: 76pt became 158pt became 229pt, because each correctness sprint adds text. Cutting against a stale number is how this card grew twice. The figure in this card is a record of what was once true, not an instruction
 - Phase: Finalize (team lead 2026-09-07, accepting the overage for now: "can we leave it in the .md for now and we will address the overage later?")
 - Platform: docs
 - **State**: appendix.pdf is 4 of 3 pages. The B.1 compound-falsification statement was added deliberately and is worth its space: section 2 of the preregistration names its own falsification test, two of its three conditions (H1b NULL at -0.0399, H3 slope -0.006) are now measured AGAINST the theory, and a submission silent on that reads as avoidance. It stays; something else pays for it
@@ -137,21 +148,7 @@ docs/reviews/f36-float-tables-outcome.md.
 - Acceptance: every numeric assertion in proposal, appendix and the QCi letter resolves to a fact record; the build fails on a stale reference; and a deliberate edit to one fact value propagates to every document that cites it
 - Depends on: nothing. Best started after F16/F10 and the submission
 
-**F40. Segment non-public material out of the working tree (~1h) Priority 1 -- BLOCKS F37**
-- Phase: Finalize (team lead 2026-09-08: "removing them going forward is enough. Add as backlog item so we can fully plan it")
-- Platform: repo/admin
-- **Why it blocks F37**: making the repository public publishes everything in the working tree. This card must complete FIRST. Destination is a sibling folder outside the repository that git cannot see, already holding the sent QCi .msg
-- **What moves, and why each**:
-  - `0Testing Feedback - all.txt` -- STRUCTURAL scan (no content read, per the CLAUDE.md rule that team-lead `0*` files are committed but never read) finds 1 email address, 1 phone number, 4 personal-name hits, 9 QCi mentions. Team-lead working notes with contact details
-  - `0QMLQI Backlog Refinement.txt` -- 71KB, 41 QCi mentions, 2 hits on an api/key/secret pattern. Those are PROBABLY discussion rather than live credentials, but confirming would require reading the file, which the standing rule forbids. That is precisely when segmentation beats inspection
-  - The other five `0*` files -- small, few flagged patterns, but they are team-lead working files with no reason to be public
-  - `experiments/reference/fourierwall2/` -- 2MB, 42 tracked files, the prior Fourier Wall / SPECTRA work. The team lead decided on 2026-09-08 that this work stays OUT of the challenge submission (test_submission_does_not_claim_prior_paid_tier_degree3_work enforces it in the documents); publishing its charts and findings in the challenge repo would contradict that decision
-- **Verified before proposing**: `.env` is NOT tracked and has never been committed. QCi job identifiers in `hw_job_ids.json` are opaque hashes with no account linkage, and the QCi letter promises them as evidence -- they STAY
-- **`fourierwall2` is safe to move**: referenced only by CHECKLIST.md, docs/adr/0013 and the master plan. NO code or test depends on the path (verified by grep over experiments/ and scripts/). Those three references need rewording to point at the external folder, not deleting -- the ADR's reasoning still stands
-- **Steps**: (1) move the files; (2) `git rm --cached` each; (3) add `0*.txt` and `experiments/reference/fourierwall2/` to .gitignore; (4) reword the three doc references; (5) write a README in the destination folder recording what moved, when, why, and from which commit; (6) re-run the full suite and `render-all.ps1`
-- **HISTORY IS NOT REWRITTEN** (team lead's explicit decision). These files remain in git history and a public repo exposes history. Accepted because the exposure is the team lead's own contact details and prior-work references, not credentials. Anyone revisiting this should know it was a decision, not an oversight
-- Acceptance: `git ls-files` returns nothing matching `0*.txt` or `fourierwall2`; the full suite passes; all ten PDFs still render; the destination README exists
-- Depends on: nothing. MUST precede F37
+(F40 segment non-public material: COMPLETED in Sprint 10, merged via PR #58 (main PR #62); history in SPRINT_10_SUMMARY.md. Removed from candidates per convention.)
 
 **F37. Make the repository public (~45m) Priority 1 -- SUBMISSION BLOCKER**
 - Phase: Finalize (team lead 2026-09-06: "It must be public upon submission ... if not already in the backlog item for final submission, please add making the repository public")
@@ -178,6 +175,41 @@ docs/reviews/f36-float-tables-outcome.md.
 
 ### Finalize (Stages 7-8)
 
+**F48. Extend the escape hook to shell metacharacters (~45m) Priority 9**
+- Phase: Finalize / tooling (Sprint 11 retrospective improvement 4, backlogged 2026-09-09)
+- Platform: .claude/hooks
+- `block-unraw-escape.ps1` catches Windows path escapes in non-raw PYTHON strings and has fired correctly several times. It does not catch SHELL metacharacters: a backtick or `$(...)` inside a quoted string passed to Bash is expanded by bash before Python ever sees it
+- **Observed in Sprint 11**: backticks inside a Python string in a Bash command were expanded as command substitution, executing a source file as shell and silently deleting the backticked filenames from a master-plan line. The edit "succeeded" and the damage was only visible on inspection
+- The fix is the same shape as the existing hook: detect backticks or `$(` inside a quoted span destined for Bash, and require the single-quoted heredoc form that suppresses expansion
+- Lower priority than the submission blockers, and real: the failure mode is SILENT corruption of a file that was edited successfully, which is worse than a crash
+- Depends on: nothing
+
+**F47. Unbuffered Dirac-3 call logging and a job-id ledger (~2h) Priority 8**
+- Phase: Finalize / infrastructure (team-lead direction 2026-09-09, raised during the F46 probe)
+- Platform: Dirac-3
+- **The problem, observed live**: the first F46 probe attempt died with no artifact and no output. Whether the ONE approved metered call had been spent was unanswerable from the repository -- only an allocation-balance query settled it (it had not). A metered call whose outcome is unrecoverable is the worst case for a Criterion H workflow, because the safe response to ambiguity is to not re-run, and that stalls the sprint
+- **Write output UNBUFFERED, character by character as received**, appended to a per-call log rather than accumulated in memory and written at the end. The team lead's framing: like a terminal capturing keystrokes. A killed process, a lost tool result or a timeout then still leaves everything received up to that instant
+- **Capture the JOB NUMBER at submission, before waiting.** QCi results are retrievable by job id AFTER completion (`QciClient.get_job_results`, `get_job_status`, `get_job_metrics`), so a captured id turns a lost connection from a lost call into a re-read. This is the single highest-value item on this card: it makes a metered call recoverable rather than repeatable
+- **A durable ledger of every request and job id**, appended before the call returns, so the record survives a crash: timestamp, configuration hash, variable count, job id, and the outcome once known. `hw_job_ids.json` already retains ids for the 27+10 completed fits, but only AFTER success; the ledger must record the INTENT first
+- **Precedent**: F30 (concurrent submission, HOLD) already designed a durable job ledger for exactly this reason -- "a restart retrieves results for in-flight jobs instead of re-billing them". That design should be reused rather than reinvented, and this card is the subset of it that has value NOW, at 3,000 granted seconds
+- **Why it matters more now than it did**: at 163 spent seconds a lost call was an annoyance. At 3,000 granted seconds and a campaign worth running, an unrecoverable call is real money and real calendar
+- **RETRIEVAL HALF BUILT 2026-09-09** (`experiments/src/job_query.py`, team-lead request): queries status, metrics and results by job id. All four endpoints are reads and consume ZERO metered seconds. Verified against the real campaign: all 27 retained ids readable six days later, full results included. What REMAINS is the capture half -- recording the id at submission, before waiting -- which is what makes the tool reliably usable rather than usable only when an id happens to have been kept
+- **The metrics carry queue and processing times SEPARATELY**, which is the data that answers "is it queued or computing?" without inferring it from CPU. Measured across all 27: queue median 0.7s against processing median 5.3s, every job submitted 19:00-20:00 local
+- Acceptance: killing a submission mid-flight leaves both the job id and the partial output on disk; a job id alone is sufficient to retrieve the result afterwards; every metered request appears in the ledger whether or not it completed
+- Depends on: nothing. Pairs with F30, which holds the fuller concurrent design
+
+**F46. Verify the QCi grant and probe the variable ceiling (~45m) Priority 3**
+- Phase: Finalize (team-lead direction 2026-09-09; added to Sprint 11 mid-sprint)
+- Platform: Dirac-3
+- **Trigger**: QCi email 2026-09-09 13:58 confirms "3,000 seconds of complimentary, full-access Dirac-3 compute time" loaded to the account. Two things need establishing before any plan is built on it: that the seconds are actually there, and whether "full-access" lifts the A12 free-tier ceiling of 100 continuous variables
+- **Step 1, ZERO metered seconds**: `qci_client.QciClient.get_allocations()` is a plain HTTP GET against the allocations endpoint. It submits no job, so it needs no Criterion H approval. Reports the balance
+- **Step 2, METERED, needs explicit per-block approval**: the smallest possible job that distinguishes the ceilings. A12 was established when a 312-variable job was refused SERVER-SIDE, so the probe is a single continuous job just above 100 variables built from an existing pool. One call, expected 4 to 5 seconds. If it is accepted the ceiling moved; if it is refused server-side, A12 stands
+- **Design the probe to be cheap and decisive**: reuse a committed pool rather than fitting anything, submit the smallest variable count that exceeds 100, and record the raw response either way. A refusal is as informative as an acceptance and costs nothing
+- **What it unblocks**: 3,000 seconds against a campaign that has spent 163 is a different regime entirely. The formulations the submission names as unrun -- the cardinality-constrained integer problem, three-feature subsets -- become runnable, and the QCi letter's "first ask" stops being hypothetical. Scope for that is a SEPARATE team-lead decision, not this card
+- **Sequencing**: MUST run before F37. Making the repository public is irreversible, and a result that changes what the papers claim should land first
+- Acceptance: the allocation balance is recorded from the API, not from the email; the ceiling question is answered by a real device response; both outcomes written to results.json with [HW] tags and job identifiers retained; A12's status is either confirmed or amended
+- Depends on: nothing. Criterion H governs step 2
+
 **F42. Correctness findings needing verification or reruns (~4h) Priority 4**
 - Phase: Finalize (Fable 5.1 adversarial review 2026-09-09; card #60)
 - Platform: docs + experiments/src
@@ -193,6 +225,16 @@ docs/reviews/f36-float-tables-outcome.md.
 - **The classical half needs NO rerun**: `run_ieee.py` already computes and stores `auc_roc` per fold and `ieee_classical.json` holds all nine -- LightGBM 0.9139, CatBoost 0.8941, XGBoost 0.8640. Reportable from stored evidence today. (An earlier analysis called this a full rerun; it had read summary keys instead of per-fold rows.) Only the CVQBoost and ladder arms lack the metric
 - Required caveat: the Kaggle leaderboard test set differs from our rolling-origin folds, so 0.9139 is NOT directly comparable to 0.9459. State it rather than inviting the comparison
 - Depends on: nothing. Page cost lands against F38, which runs last
+
+**F45. Guard evidence artifacts against diagnostic scripts (~1h) Priority 7**
+- Phase: Finalize (Sprint 10 process note, team-lead approved 2026-09-09)
+- Platform: experiments/src, scripts
+- **What happened**: the script written to REPRODUCE the review's crash finding injected a fake failed row into `results.json`, ran `score_gates.py`, and restored the store in a `finally`. The store was restored correctly. But `score_gates.py` had already written `gate_report.md` from the polluted data, so a 158-row artifact reporting a nonexistent failed fit was briefly committed. Caught on the next diff, `results.json` verified never contaminated, report regenerated from the clean store
+- **Why it is worth a card**: the restore was careful and still insufficient, because the derived artifact outlived the source it was derived from. Any future diagnostic that perturbs the store has the same hole, and the next one may not be noticed in the same turn
+- **Options to weigh at planning** (do not pre-commit): (a) a `--dry-run`/`--out` flag on `score_gates.py` so a diagnostic can render without touching the committed artifact; (b) a context manager in a test helper that snapshots and restores BOTH the store and every artifact derived from it; (c) a pre-commit check that `gate_report.md` regenerates byte-identically from `results.json`, which catches the whole class regardless of cause
+- **(c) is the strongest**: it does not depend on remembering to use a helper, and it would have caught this before the commit rather than after. It is also the same shape as the F44 consistency tests, so the two may share machinery
+- Acceptance: a deliberate perturbation of `results.json` followed by a commit attempt fails; the guard runs in CI as well as pre-commit
+- Depends on: nothing. Pairs with F44
 
 **F44. Evidence-vs-document consistency tests (~3h) Priority 6**
 - Phase: Finalize (Sprint 10 retrospective improvement 2, team-lead approved 2026-09-09)
@@ -281,7 +323,9 @@ docs/reviews/f36-float-tables-outcome.md.
 - Preserves every existing guard: spend caps computed against projected spend INCLUDING in-flight requests, frozen identical-config retry rule, B1 hash verification, unparseable-billing charge
 - Fully tested offline first (fake client simulating queue latency, out-of-order completion, crash-restart, failed job, unreadable billing); only then 2-3 real calls at window size 2, on explicit approval
 - Full card drafted at docs/sprints/drafts/F30_CARD_DRAFT.md
-- Value arrives with Phase 2 volume (81+ fit grids); not recommended before submission
+- **Measured queue behaviour, 2026-09-09**: the F46 probe submitted at 14:33 local was still queued 52 minutes later, having spent ~97 CPU-seconds on its local pool build. Flat CPU against growing wall clock is the signature of queue wait, not computation. The team lead reports the queue is ALMOST ALWAYS EMPTY AFTER 5PM LOCAL, so wall-clock cost is a function of WHEN a block runs, not what it computes
+- **The team lead's intent for this card**: enqueue 4 or more jobs at once so they run CONSECUTIVELY, raising the odds they execute back to back rather than each paying a fresh queue wait. That is a different and stronger value case than the throughput argument below
+- Value was judged to arrive with Phase 2 volume (81+ fit grids), and that judgment was made against a free tier with 163 spent seconds. With 3,000 granted seconds (F46) and queue wait as the binding cost rather than device seconds, the case is stronger: whenever a session needs more than one or two fits, serial submission wastes most of the wall clock. Still not recommended BEFORE submission, on calendar grounds alone
 - Depends on: nothing to build; live vetting needs team-lead approval (Criterion H)
 
 **F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD**

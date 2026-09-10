@@ -50,3 +50,14 @@ experiments/results/*_progress.json
 # team lead's own contact details and prior-work references, not credentials.
 0*.txt
 experiments/reference/fourierwall2/
+
+# Internal strategy notes, segmented at Sprint 11 (team-lead decision
+# 2026-09-09) before the repository goes public. A reviewer-style teardown
+# scoring a named competitor, and the positioning notes that go with it, are
+# working material rather than evidence: nothing in the proposal, appendix or
+# team profile cites either. Retained privately alongside the other segmented
+# material. Attributions to that competitor's PUBLIC work stay in the
+# requirements matrix and the frozen preregistration, because crediting public
+# prior work is the honest thing to do and the freeze forbids editing it.
+docs/trueloop-teardown.md
+docs/thesis-candidates.md
