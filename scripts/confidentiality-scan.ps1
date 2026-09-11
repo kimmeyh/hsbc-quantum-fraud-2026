@@ -8,7 +8,9 @@
 
     Categories:
       HIGH   employer references; credential values; account identifiers;
-             QPU balances tied to a named account; .env content; private repo URLs
+             QPU balances tied to a named account; .env content
+      (the private-repo-URL rule was retired 2026-09-11 when the repository
+       was made public; see the commented rule below for how to restore it)
       REVIEW absolute local paths; personal email addresses; anything naming
              a specific machine
 
@@ -26,7 +28,16 @@ $high = @(
     @{ Name = 'Employer name';            Pattern = '(?i)progressive' },
     @{ Name = 'Employer repo/remote';     Pattern = '(?i)github\.com/(?!kimmeyh)[A-Za-z0-9_.-]+' },
     @{ Name = 'API token value';          Pattern = '(?i)(api[_-]?(key|token)|QCI_TOKEN|QCI_API_KEY)\s*[=:]\s*[''"]?[A-Za-z0-9._\-]{16,}' },
-    @{ Name = 'Private repo URL';         Pattern = '(?i)hsbc-quantum-fraud-2026' },
+    # RETIRED 2026-09-11 (F37). This rule matched the repository's own name and
+    # was correct while the repository was private: citing a URL a reader cannot
+    # open is a defect, and the submission's reproducibility claims rested on it.
+    # The repository is public as of 2026-09-11 (anonymous API returns 200), so
+    # the citation is now REQUIRED rather than forbidden -- Appendix C's "every
+    # figure regenerates from the public repository" depends on it. Leaving the
+    # rule in place blocked a correct document on every scan.
+    # If visibility is ever reverted, restore this line AND re-check every
+    # document that cites the URL:
+    #     @{ Name = 'Private repo URL';    Pattern = '(?i)hsbc-quantum-fraud-2026' },
     @{ Name = 'QPU balance (account)';    Pattern = '(?i)(balance|remaining)[^.\n]{0,40}\d{3,}\s*(QPU|second)' },
     @{ Name = 'dotenv content';           Pattern = '(?m)^\s*(QCI_API_URL|QCI_TOKEN|QCI_API_KEY)\s*=' }
 )

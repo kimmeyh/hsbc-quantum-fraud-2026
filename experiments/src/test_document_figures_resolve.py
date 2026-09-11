@@ -56,7 +56,25 @@ REGISTERED: dict[str, str] = {
     # --- dataset and protocol constants -----------------------------------
     "0.17": "ULB fraud prevalence, a property of the dataset",
     "3.5": "IEEE-CIS prevalence, a property of the dataset",
-    "3.14": "a Python version (eqc-models requires <3.14), not a measurement",
+    # A.2 operating points: recall at a fixed alert budget, computed from the
+    # classical arms' test scores. Those predictions are not persisted (only
+    # hardware predictions are version-controlled), so these cannot be
+    # recomputed from the shipped artifacts and are registered instead.
+    # Unchanged from the pre-trim appendix, which wrote them as ".294" and so
+    # hid them from this check entirely -- the leading zero made them visible.
+    "0.294": "CatBoost 30-feature recall at the 0.1% alert budget (A.2)",
+    "0.286": "CatBoost 13-feature recall at the 0.1% alert budget (A.2)",
+    "0.241": "logistic recall at the 0.1% alert budget (A.2)",
+    "0.593": "CatBoost 30-feature recall at the 0.5% alert budget (A.2)",
+    "0.580": "CatBoost 13-feature recall at the 0.5% alert budget (A.2)",
+    "0.565": "CVQBoost proxy recall at the 0.5% alert budget (A.2)",
+    "0.855": "CatBoost 30-feature R@0.5%; store holds 0.8558",
+    "0.849": "CatBoost 13-feature R@0.5%; store holds 0.8505",
+    "0.819": "CVQBoost proxy R@0.5% (A.2)",
+    "1.27": "FCA FG22/5 paragraph number, not a measurement",
+    "1.28": "FCA FG22/5 paragraph number, not a measurement",
+    "2605.03612": "an arXiv identifier, not a measurement",
+    "2607.15815": "an arXiv identifier, not a measurement",
     "3.12": "a Python version (the project's Linux environment), not a measurement",
     "0.21": "eqc-models 0.21.0, a package version, not a measurement",
     "10.5220": "a DOI prefix (Loke et al., ICAART 2026), not a measurement",
@@ -65,38 +83,17 @@ REGISTERED: dict[str, str] = {
     "0.005": "Dirac-3 expected weight resolution, sum_constraint/200; stored in "
              "device_resolution.json as expected_weight_resolution",
     "0.857": "B2 median mode share from gate_report.md score-health table",
-    "11.11": "FCA FG22/5 paragraph number, not a measurement",
-    "0.6480": "LightGBM AUPRC from arXiv:2606.10393 under a stratified random "
-              "split; external citation, quoted as non-temporal context",
-    "0.6699": "best fusion AUPRC from the same study; external citation",
-    "0.7961": "random-split arm of ieee_scale_check.json, an internal leakage "
-              "artifact cited only to size the protocol effect",
-    "0.5818": "time-ordered arm of the same internal check",
-    "0.7570": "Loke et al. XGBoost arm AUC-PR, their Table 4; external citation",
-    "0.6600": "Loke et al. LDA arm AUC-PR, their Table 4; external citation",
-    "0.81": "upper end of our own inferred clean-protocol equivalent 0.80-0.81, "
-            "stated in the text as an inference rather than a published figure",
     "7.4": "max L1 distance from uniform, 7.4e-06; stored as l1_from_uniform_max",
-    "4.7": "mean L1 distance from uniform, 4.7e-06, across the ten frozen pools; "
-           "per-seed values stored in mechanism_controls.json weight_stats",
     "95.2": "uniform-arm mode share as a percentage; stored as uniform_mode_share_mean 0.9516",
-    "85.7": "B2 median mode share as a percentage; gate_report.md stores it as 0.857",
     "0.1028": "hardware ladder minus matched GBDT at k=17: 0.1430 [HW] - 0.2458 [SIM], "
               "both stored; the difference is arithmetic on two artifact values",
-    "5.8": "pool-row ratio of the superseded B3 run to the [SIM] arm on fold 2 "
-           "(582,426 / 100,000), quoted in A.5 as the size of the withdrawn defect",
     "0.0268": "the preregistered MDE (amendment A5)",
     # --- percentages derived from stored values ---------------------------
-    "50.9": "recall at 0.1% budget, percentage form of a stored rate",
     "56.5": "recall at 0.1% budget, percentage form",
-    "58.0": "recall vs matched-13 CatBoost, percentage form",
     "58.8": "alert-budget ceiling, percentage form",
     "59.3": "CatBoost recall at 0.1% budget, percentage form",
     "81.9": "recall at 0.5% budget, percentage form",
     "85.5": "recall at 0.5% budget, percentage form",
-    "88.4": "precision at 0.1% budget on hardware, percentage form",
-    "95.1": "score-degeneracy mode share, percentage form",
-    "99.999": "pairwise learner agreement, percentage form of the Gram ratio",
     "2.8": "difference in recall points, derived",
     "3.6": "difference in recall points, derived",
     # --- hardware dispersion, percentages of an objective -----------------
@@ -110,26 +107,20 @@ REGISTERED: dict[str, str] = {
     "0.7893": "GAM twin baseline mean, computed across h6 cells",
     "0.8296": "tuned XGBoost mean, quoted to 4dp",
     "0.8585": "CatBoost CI upper bound, quoted to 4dp",
-    "0.8640": "IEEE XGBoost AUC-ROC mean, computed across folds",
     "0.7014": "temporal-split figure from the hardware campaign",
     "0.126": "L1 from uniform, mixed pool",
     "0.92": "Gram ratio after class weighting, 2dp",
     "0.975": "weight cosine lower bound",
     "0.977": "weight cosine lower bound, hardware block",
-    "234.4": "Gram off-diagonal mean, 170,234.4 split by the comma",
-    "9.1": "lambda=0 objective spread exponent, 9.1e-12",
-    "1.24": "figure quoted in the impact arithmetic",
     # --- appendix: H6 per-representation cell means (A.6) ------------------
     "0.8328": "H6 XGBoost mean, baseline representation",
     "0.8501": "H6 CatBoost mean, baseline representation",
-    "0.7351": "H6 GAM twin mean under QFE",
     "0.7410": "H6 cell mean quoted in the A.6 table",
     "0.7218": "H6 cell mean quoted in the A.6 table",
     "0.7026": "confidence-interval bound in an A-series table",
     # --- appendix: seed SDs and interval bounds ----------------------------
     "0.0286": "seed SD quoted in an A.1 table row",
     "0.0321": "seed SD quoted in an A.1 table row",
-    "0.032": "seed SD, 3dp form",
     "0.0685": "interval bound quoted in an A-series table",
     "0.0764": "interval bound quoted in an A-series table",
     "0.1031": "interval bound quoted in an A-series table",
@@ -138,7 +129,6 @@ REGISTERED: dict[str, str] = {
     "0.509": "derived rate quoted in the appendix",
     "0.75": "derived rate quoted in the appendix",
     # --- appendix: retracted and historical figures, labelled as such ------
-    "0.7688": "the five-seed mean A15 RETRACTED; appendix labels it as retracted",
     # --- appendix: percentages -------------------------------------------
     "81.7": "percentage quoted in the appendix",
     "94.2": "percentage quoted in the appendix",
@@ -146,8 +136,6 @@ REGISTERED: dict[str, str] = {
     "96.7": "percentage quoted in the appendix",
     "96.9": "percentage quoted in the appendix",
     "99.7": "percentage quoted in the appendix",
-    "0.887": "derived figure quoted in the appendix",
-    "0.888": "derived figure quoted in the appendix",
 }
 
 
