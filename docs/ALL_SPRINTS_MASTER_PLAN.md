@@ -282,6 +282,80 @@ docs/reviews/f36-float-tables-outcome.md.
 - Acceptance: no claim stronger than its evidence; a non-specialist can follow every term
 - Depends on: F49 (some figures move)
 
+**F57. The 200:1 resolution argument: replace a false mechanism with a real one (~1.5h) Priority 1 -- HIGHEST VALUE**
+- Phase: Experiments / correctness
+- Platform: `docs/paper/proposal.md` s3, `appendix.md` A.4 and B.3; one classical script
+- **THE DEFECT, verified 2026-09-10.** The proposal says "our hardware-versus-proxy agreement is a confirmation of [convexity] rather than a discovery", and A.4 says that agreement "bounds any effect of Dirac-3's continuous-variable resolution: quantization coarse enough to drive the flat optimum could not reproduce it". The second is BACKWARDS and the first is uninformative. Measured on our own frozen Hamiltonian: diagonal 510,705, off-diagonals spanning **12.0**, linear terms spanning 16.0, against QCi's documented resolvable difference of max/200 = **2,553**. Every coefficient difference sits ~200x BELOW what the device can distinguish
+- **PROOF, run before writing this card.** Quantising J and C at max/200 leaves the off-diagonal with **one distinct value** and the linear terms with one. The simplex minimiser of that quantised problem is uniform to **2e-15**. So hardware returning uniform is FORCED by the device's resolution, not evidence about solver fidelity, and the agreement carries no information on this pool
+- **THE SAME LIMIT EXPLAINS B2, which we currently leave unexplained.** Sum constraint 1 over 833 learners gives a mean weight of 0.0012, below the documented expected resolution of 1/200 = 0.005. A diffuse optimum is not representable, so the device must return something sparser -- and the retained responses show exactly that: weights of 0.0009 to 0.0028 with exact zeros, against a cosine of 0.828. B2's "weak fidelity" is not the device failing; it is the device solving a sparsified version of the objective it was given
+- **THIS IS THE STRONGEST ARGUMENT IN THE SUBMISSION FOR THE PHASE 2 DIRECTION**, and it is currently absent. A device that cannot represent diffuse weight vectors over hundreds of learners is a device whose native problem is SPARSE selection -- which is precisely the cardinality-constrained formulation section 6 proposes. The physics motivates the plan instead of the plan being an assertion
+- Work: (1) rewrite the proposal s3 sentence and the A.4 bound; (2) add the resolution explanation to B.3; (3) a committed script that computes, per submitted Hamiltonian, the coefficient dynamic range and the resolvable difference, and per retained response the count of exact zeros and the smallest nonzero weight -- so both halves ship as evidence rather than as argument; (4) connect it to section 6
+- Acceptance: no surviving text claims hardware agreement confirms anything on the frozen pool; B2's cosine has a stated cause; the dynamic-range and sparsity figures are stored and quoted from the artifact
+- **NO QPU SECONDS.** ~1 hour of classical work against the 48 retained responses
+- Depends on: nothing. Do FIRST -- it is the only card that adds evidence rather than removing error
+
+**F58. Correct four claims a judge can disprove in under a minute (~1h) Priority 2**
+- Phase: Finalize / correctness
+- Platform: `docs/paper/proposal.md`, `docs/paper/appendix.md`
+- **(a) THE FALSIFIER LIST IS WRONG, AND IT IS MY ERROR FROM F55.** New section 8 names the three conditions as "a null on the primary endpoint, a negative feature-ladder slope, and a representation change that does not move the delta", then says "Two have now fired. The third, segment specialization...". B.1 has it right: the preregistration commits H1b, H3 and **H5** (segment transfer). I substituted H6 (representation) for H5 in the list and then described the third as H5 anyway, so the paragraph contradicts itself AND B.1. Under its own list all three have fired, which would mean the theory is retired -- a materially different claim from the one we intend. Correct to: H1b and H3 have fired; H5 is unrun; H6 fired its own separate falsifier
+- **(b) THE ARXIV TITLE IS WRONG.** We cite arXiv:2407.04512 as "Entropy Computing, A Paradigm for Optimization in Open Photonic Systems". The paper is "Entropy Computing: A Paradigm for Optimization in an Open Quantum System". The quoted phrase we use IS verbatim from its abstract, so only the title is wrong -- one click to disprove. Note the vendor's own title says "open quantum system", so we should take no position on that framing rather than implying the device is classical
+- **(c) THE INTEGER CAP IS 474, NOT 477.** Section 7 says "capped near 477"; section 2 says "949 on one page, 954 on another". 954 cannot be sourced -- the user guide and beginner guide both give 949. 949 levels at two per binary is 474. Drop 954
+- **(d) MODE SHARE DISAGREES WITH ITSELF.** A.3 quotes 95.1% over 814 distinct values (the gate report's MEDIAN, 0.951/814); B.3 quotes 94.9% over 824 (the MEAN). Same store, two statistics, presented as one fact. Pick the median, since that is what the score-health table reports, and use it in both places. Same for B2: 4,412 vs 4,413
+- Acceptance: each claim traces to one source with one value; the falsifier list matches B.1 exactly
+- Depends on: nothing
+
+**F59. Retire the figures F49 left behind in section 3 (~45m) Priority 3**
+- Phase: Finalize / correctness
+- Platform: `docs/paper/proposal.md` section 3
+- F49 certified the solver and moved four figures, and F52/F56 caught most consumers. Section 3 still carries three that did not get updated, all of which a reviewer cross-checking the appendix will find:
+- **"FISTA, convergence tolerance 1e-10 on the relative objective"** -- that stopping rule is exactly what F49 replaced, and A.4/A.5 now say "KKT residual below 1e-9". The proposal describes the defective solver while the appendix describes the fixed one
+- **"solved-minus-uniform +0.0022"** in the tuned-pool comparison -- the certified value is +0.0028, already corrected elsewhere in the same section
+- **"Two seed-42 controls show this is optimization rather than tie-breaking (Appendix A.4)"** -- A.4 says only "Its two mechanism controls are seed 42 only" and describes neither, so the citation points at nothing. Either state both controls with their numbers in A.4, or drop the parenthetical
+- Acceptance: no figure in section 3 disagrees with its appendix counterpart; every cross-reference resolves to text that exists
+- Depends on: **F57** (which rewrites adjacent sentences in the same paragraph)
+
+**F60. Say what the device was actually asked to do (~45m) Priority 4**
+- Phase: Finalize / presentation
+- Platform: `docs/paper/*.md`
+- **THE COLLISION.** We use "schedule 2" and "schedule 3" throughout to mean the POOL's feature-subset order. Dirac-3 has a job parameter literally named `relaxation_schedule` taking values 1 to 4, and the vendor guide discusses "schedule 2 and schedule 3" runs. A Dirac-3-literate judge reads our text as the device parameter and concludes we changed the solver setting between blocks. We did not: every fit ran `relaxation_schedule: 2`, including B2. This is the conflation the internal review flagged and we only half-fixed
+- Fix: rename to "order-2 pool" and "order-3 pool" wherever the pool is meant, and state the device parameters ONCE -- `relaxation_schedule`, `sum_constraint`, `num_samples`, `solution_precision` -- which we currently never report despite them being the whole specification of what the hardware was asked to solve
+- **This matters beyond naming.** Section 7 already tells a reviewer the resolution limit is load-bearing (F57); `sum_constraint` is what sets it. Reporting the parameters is what lets someone check F57's argument
+- Acceptance: no ambiguous "schedule" reference survives; the four device parameters appear once, in the feasibility or appendix A.3
+- Depends on: F57 (which introduces the resolution argument those parameters support)
+
+**F61. Tighten the shuffled-label control's language and criterion (~45m) Priority 5**
+- Phase: Finalize / statistical presentation
+- Platform: `docs/paper/appendix.md` A.5, `experiments/src/run_ieee.py`
+- **THE REVIEWER'S DIAGNOSIS IS WRONG BUT THE WORDING IS LOOSE.** They simulated a RANDOM scorer, found our values 7 to 17 SD below its band, and concluded the control is defective. Our control does something different and correct: it shuffles TRAINING labels only, trains a real LightGBM, and evaluates against TRUE eval labels. A model fitted to shuffled labels learns noise that can anti-correlate out of sample, so scoring BELOW prevalence is expected and is the direction that indicates no leakage. Verified by reading `run_ieee.py:211-218`
+- What is genuinely loose: (1) "collapses on every fold" implies convergence TO the base rate, when the values sit at or below it for a different and better reason; (2) the pass criterion is `shuf_ap < base * 2.0`, which would pass a fold leaking at 0.068 against a 0.034 base rate. A criterion that generous is not much of a tripwire
+- Fix: restate what the control does and why below-prevalence is the expected direction; tighten the criterion or state explicitly what it does and does not exclude
+- **Worth doing even though the reviewer was wrong**, because the next reader will make the same objection and the text should pre-empt it
+- Acceptance: the control's design is stated in one sentence; the criterion's strength is stated honestly
+- Depends on: nothing
+
+**F62. Small precision fixes across the documents (~1h) Priority 6**
+- Phase: Finalize / presentation
+- Platform: `docs/paper/*.md`
+- **Allocation arithmetic.** Section 7 says 3,000 granted, 1,141 spent, 1,961 remaining. The live endpoint confirms 1,961, but the subtraction does not work as printed because 1,141 is the CAMPAIGN total including 163 pre-grant free-tier seconds. The true grant reconciliation is 10 (probe) + **61 (the withdrawn B3 run)** + 62 + 906 = 1,039, leaving 1,961. State it that way. The 61 seconds of withdrawn work is real spend that produced no reported evidence, and saying so is more honest than a total that does not reconcile
+- **Per-fit cost.** Section 5 says the solve "bills 4 to 5 metered device seconds per fit". True at 91 variables; A.3 says 4 to 92 across the campaign and B2 averaged 82. As written it understates Phase 2 cost in the section about deployment
+- **FG22/5 selective quotation.** Our para 5.12 quote drops the source's qualifier "unless differences in outcome can be justified objectively". Restore it -- omitting a qualifier that weakens our own point is the kind of thing that costs credibility disproportionately
+- **Team profile.** "the one we withdrew and re-ran" describes no gate -- what was withdrawn was the A23 hardware ladder. And "raw device responses retained" reads as all 61 when Appendix C says 48
+- **A.6 versus A.1.** A.6 gives XGBoost 0.8328 and CatBoost 0.8185 on the baseline representation; A.1 gives 0.8296 and 0.8368 for the same models and seeds, with no explanation. If A.6's arms are untuned, say so and call that bar a floor
+- **Loke citation.** Add the title; mark the page range unverified or drop it
+- **AWS, not Braket.** The programme page promises AWS compute credits and Classiq tooling, not Amazon Braket by name
+- Acceptance: every number reconciles from its own stated inputs; no quotation omits a qualifier that cuts against us
+- Depends on: nothing
+
+**F63. A key for the internal labels (~30m) Priority 7**
+- Phase: Finalize / presentation
+- Platform: `docs/paper/*.md`
+- The documents cite "Sprint 4", "Sprint 5", "F32", "ADR-0013", "item-4 leakage controls", "section 10", and roughly thirty A-numbers, none defined. The guidelines ask that a non-specialist can follow the logic
+- Fix: replace internal labels with plain descriptions where they appear once, and add a short key for the amendments actually cited (A11, A12, A13, A17, A20, A21, A22, A23, A26, A27, A28)
+- **Sequencing note**: do this LAST among the content cards. Every card above adds or moves amendment references, so a key written earlier would be stale by the time the batch lands
+- Acceptance: no undefined internal label survives; every cited amendment appears in the key
+- Depends on: F57, F58, F59, F60, F61, F62 (all of which touch amendment references)
+
+
 
 
 
