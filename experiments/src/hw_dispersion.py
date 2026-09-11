@@ -37,6 +37,15 @@ def energies_from(text: str) -> list[float]:
 
 
 def main() -> int:
+    # Without this the empty-directory case reaches np.min([]) and raises a bare
+    # ValueError from inside the summary, hiding the actual prerequisite. The
+    # responses are now tracked (F54), so this fires only if they are deleted.
+    if not RESP_DIR.exists() or not any(RESP_DIR.glob("*.json")):
+        raise SystemExit(
+            f"no saved responses under {RESP_DIR}. They are version-controlled "
+            "because they cannot be regenerated without spending metered QPU "
+            "seconds; restore them before regenerating this evidence.")
+
     rows = json.loads(store.RESULTS.read_text())["rows"]
     by_key = {(r.get("config"), r.get("protocol"), r["seed"]): r
               for r in rows if r["arm"] == "cvqboost_hw"}
@@ -56,7 +65,14 @@ def main() -> int:
         rec = {"file": f.name, "n_samples": int(len(e)),
                "best_energy": best, "worst_energy": worst,
                "spread_relative_pct": spread_rel * 100.0,
-               "identical_draws": bool(np.allclose(e, e[0]))}
+               "identical_draws": bool(np.allclose(e, e[0])),
+               # Recorded per fit because the campaign is no longer homogeneous:
+               # B2 ran at schedule 3 and every other block at schedule 2, and
+               # pooling them would report a solver-dispersion figure that
+               # describes two different device settings at once.
+               "relaxation_schedule": ((row or {}).get("hw_config") or {}).get(
+                   "relaxation_schedule"),
+               "block": (row or {}).get("block")}
         if row and row.get("fidelity"):
             fid = row["fidelity"]
             rec["gap_to_exact_pct"] = abs(
@@ -71,12 +87,28 @@ def main() -> int:
                  "requested num_samples = 8; this is the spread ACROSS those draws "
                  "within each fit, recovered from saved responses at zero metered cost."),
         "num_samples_per_fit": 8,
-        "relaxation_schedule": 2,
         "n_fits": len(recs),
         "fits_where_all_draws_identical": sum(r["identical_draws"] for r in recs),
         "within_fit_energy_spread_pct": {
             "min": float(np.min(spreads)), "median": float(np.median(spreads)),
             "max": float(np.max(spreads)),
+        },
+        # Split by device setting. The papers quote the schedule-2 figure, which
+        # covers every block except B2; reporting one pooled number across two
+        # relaxation schedules would describe neither.
+        "by_relaxation_schedule": {
+            str(sch): {
+                "n_fits": len(g),
+                "fits_where_all_draws_identical": sum(r["identical_draws"] for r in g),
+                "spread_pct_min": float(np.min([r["spread_relative_pct"] for r in g])),
+                "spread_pct_median": float(np.median([r["spread_relative_pct"] for r in g])),
+                "spread_pct_max": float(np.max([r["spread_relative_pct"] for r in g])),
+                "blocks": sorted({r["block"] for r in g if r["block"]}),
+            }
+            for sch, g in sorted(
+                {r["relaxation_schedule"]: [x for x in recs
+                                            if x["relaxation_schedule"] == r["relaxation_schedule"]]
+                 for r in recs if r["relaxation_schedule"] is not None}.items())
         },
         "gap_best_draw_to_exact_optimum_pct": {
             "min": float(np.min(gaps)), "median": float(np.median(gaps)),

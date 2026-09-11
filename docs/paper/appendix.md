@@ -50,7 +50,7 @@ The test fold holds about 95 frauds in 56,746 transactions, so the 0.05% and 0.1
 | G0b Spearman, proxy versus hardware ranking | 0.900 (exact permutation p: one-sided 0.042) | [HW] |
 | H1b, CVQBoost minus best matched GBDT | -0.0399 [-0.0571, -0.0227], 9 of 10 seeds negative | [HW] |
 | Per-seed paired BCa intervals excluding zero | 6 of 10 | [SIM] |
-| Solver draws; identical draws; energy spread | 8; 0 of 27; median 0.019%, max 0.343% | [HW] |
+| Solver draws; identical draws; energy spread | 8; 0 of 48; median 0.020%, max 0.343% | [HW] |
 
 ## A.4 Solver fidelity and the mechanism controls
 
@@ -167,10 +167,12 @@ schedule 2.** Across the twelve individual cells the largest discrepancy is 0.00
 AUPRC, and the errors scatter in both directions -- five cells above the
 classical arm, five below, two exact -- rather than favouring either. Dirac-3
 reproduces the classical solve of the identical Hamiltonian to within about
-0.001 AUPRC at up to 136 variables. Two qualifications keep that honest. The
-classical comparator is FISTA at a 1e-10 relative tolerance, a very good
-approximate minimiser rather than an exact one; and AUPRC is not the objective
-being minimised, so either side may win a cell without anything being violated.
+0.001 AUPRC at up to 136 variables. One qualification keeps that honest: AUPRC
+is not the objective being minimised, so either side may win a cell without
+anything being violated. The classical comparator is now certified -- it stops
+on a KKT residual below 1e-9 rather than on objective change (A26) -- so
+"reproduces the classical solve" means reproduces a solution whose optimality is
+demonstrated, not merely one the solver stopped at.
 On the larger schedule-3 block the agreement is much weaker (B.3). It also sharpens the null rather than
 threatening it: CVQBoost trails the matched GBDT at every rung, by -0.1028 [HW] at
 k=17, and the device is demonstrably solving the problem it was given, so that
@@ -187,10 +189,19 @@ nowhere in this submission.
 
 **Two qualifications.** The adversarial control never converged, hitting its
 20-round cap on every fold (final AUCs 0.945/0.888/0.887 against a target near
-0.5), so drift is spread across the feature set. And our protocol run (0.574)
-sits below the published leakage-free band (0.64-0.67) while our own labelled
-scale check on a stratified random split reached 0.861 -- a random-versus-
-temporal gap of +0.2143 on THIS dataset, not on ULB. That check is recorded as a leakage artifact and is not a preregistered cell; it is cited only to size the protocol difference, never as a result.
+0.5), so drift is spread across the feature set. And our rolling-origin run
+reaches 0.5739, which should NOT be read against the published 0.6480 (LightGBM)
+and 0.6699 (best fusion) on this dataset: that study splits 60/20/20 at random
+and says so explicitly, describing itself as leakage-free in the preprocessing
+sense rather than the temporal one. A random split on time-ordered data lets a
+model interpolate across time, which our protocol forbids by construction, so
+the comparison measures protocol rather than model quality. An internal check
+sizes that difference with features held fixed: a random split scores 0.7961
+against 0.5818 under a time-ordered split of the same rows, a gap of 0.2143
+attributable to splitting alone. Three seeds, not a preregistered cell, a
+different feature recipe from ours, and recorded in its own artifact as a
+leakage artifact -- cited only to establish the order of magnitude of the
+protocol effect, never as a result.
 
 ## A.6 H6: does a phase representation move the delta?
 
@@ -302,7 +313,7 @@ this submission reports.
 
 ## B.2 Amendments
 
-Twenty-eight dated amendments, A1 to A28, each with rationale and approval; full
+Twenty-nine dated amendments, A1 to A29, each with rationale and approval; full
 text in the repository. Three changed a reported figure, named here so they are
 easy to find. **A15**: the
 frozen pool's k=6 AUPRC was published as 0.7688, a five-seed mean carried into a
@@ -396,19 +407,19 @@ the wrong interpreter and should have been checked before it was written.
 
 # Appendix C. Reproduction and references
 
-Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A28. The
-repository at `github.com/kimmeyh/hsbc-quantum-fraud-2026` carries the pinned
-environment, both dataset checksums, the preregistration in full, the full
+Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A29. The
+repository at `github.com/kimmeyh/hsbc-quantum-fraud-2026` carries the exact resolved
+environment (`experiments/requirements-lock.txt`; the range-based
+`requirements.txt` is for development and does not reproduce these
+figures), both dataset checksums, the preregistration in full, the full
 reference list, and the results store, whose every row holds a configuration
-hash and evidence tag. The 60 QCi job identifiers the client returned, their raw responses and the
-Dirac-3 parameters are retained there. One fit has none: the A21 ceiling
-probe, whose runner did not persist it and whose cost is documented from the
-allocation balance instead. Ids are held in `hw_job_ids.json` rather than only
-inside the raw responses, because those responses live under a path the
-repository does not track -- an id recoverable only on the machine that ran the
-job is not retained in any sense useful to a reviewer. Those eleven costs were measured
-from the allocation balance and their metrics computed in process, so no
-reported figure depends on a handle we do not have. Every figure in this
+hash and evidence tag. The 60 QCi job identifiers the client
+returned, the 48 raw device responses and the Dirac-3 parameters are all
+version-controlled there. One fit has none: the A21 ceiling probe, whose runner
+did not persist its identifier and whose cost is documented from the allocation
+balance instead, so no reported figure depends on a handle we do not have. Ids
+are also held in `hw_job_ids.json` rather than only inside the responses, so
+they survive independently of the response format. Every figure in this
 submission regenerates from that repository.
 
 Comparisons. Loke et al., 2026 (ICAART QAIO, DOI 10.5220/0014628400004052): same

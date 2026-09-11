@@ -59,6 +59,15 @@ REGISTERED: dict[str, str] = {
     "3.14": "a Python version (eqc-models requires <3.14), not a measurement",
     "3.12": "a Python version (the project's Linux environment), not a measurement",
     "10.5220": "a DOI prefix (Loke et al., ICAART 2026), not a measurement",
+    "2503.11273": "an arXiv identifier (Emami et al.), not a measurement",
+    "5.12": "FCA FG22/5 paragraph number, not a measurement",
+    "11.11": "FCA FG22/5 paragraph number, not a measurement",
+    "0.6480": "LightGBM AUPRC from arXiv:2606.10393 under a stratified random "
+              "split; external citation, quoted as non-temporal context",
+    "0.6699": "best fusion AUPRC from the same study; external citation",
+    "0.7961": "random-split arm of ieee_scale_check.json, an internal leakage "
+              "artifact cited only to size the protocol effect",
+    "0.5818": "time-ordered arm of the same internal check",
     "0.7570": "Loke et al. XGBoost arm AUC-PR, their Table 4; external citation",
     "0.6600": "Loke et al. LDA arm AUC-PR, their Table 4; external citation",
     "0.81": "upper end of our own inferred clean-protocol equivalent 0.80-0.81, "
@@ -86,7 +95,6 @@ REGISTERED: dict[str, str] = {
     "3.6": "difference in recall points, derived",
     # --- hardware dispersion, percentages of an objective -----------------
     "0.013": "hardware objective gap, percentage of objective value",
-    "0.019": "median within-fit energy spread, percentage",
     "0.343": "maximum within-fit energy spread, percentage",
     "0.413": "maximum hardware objective gap, percentage",
     # --- citations and identifiers ----------------------------------------
@@ -123,9 +131,6 @@ REGISTERED: dict[str, str] = {
     "0.271": "derived ratio quoted in the appendix",
     "0.295": "attainable-recall ceiling at the 0.05% budget",
     "0.509": "derived rate quoted in the appendix",
-    "0.574": "derived rate quoted in the appendix",
-    "0.64": "derived rate quoted in the appendix",
-    "0.67": "derived rate quoted in the appendix",
     "0.75": "derived rate quoted in the appendix",
     # --- appendix: retracted and historical figures, labelled as such ------
     "0.7688": "the five-seed mean A15 RETRACTED; appendix labels it as retracted",
