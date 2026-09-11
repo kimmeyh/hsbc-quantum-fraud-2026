@@ -213,8 +213,17 @@ def run(smoke: bool = False) -> dict:
         p_shuf, _ = _fit_predict("lightgbm", Xtr_k, y_shuf, Xev_k)
         shuf_ap = float(average_precision_score(y_ev, p_shuf))
         base = float(y_ev.mean())
+        # The criterion is deliberately named for what it excludes. A model
+        # fitted to permuted labels should score AT OR BELOW chance on a
+        # held-out later period -- below is common, because structure learned
+        # from noise can anti-correlate out of sample, and is not a defect.
+        # What would indicate leakage is scoring materially ABOVE the base
+        # rate. The old 2x threshold was loose enough to pass a fold at double
+        # prevalence, so both the loose gate and a tight one are recorded and
+        # the tight one is what the papers quote (F61).
         shuffled.append({"fold": fi, "shuffled_auprc": shuf_ap,
                          "base_rate": base,
+                         "at_or_below_chance": shuf_ap <= base * 1.10,
                          "collapses_to_base_rate": shuf_ap < base * 2.0})
         _progress("shuffled_control", fold=fi, shuffled_auprc=round(shuf_ap, 4),
                   base_rate=round(base, 4))

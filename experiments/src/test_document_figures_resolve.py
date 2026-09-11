@@ -62,8 +62,9 @@ REGISTERED: dict[str, str] = {
     "10.5220": "a DOI prefix (Loke et al., ICAART 2026), not a measurement",
     "2503.11273": "an arXiv identifier (Emami et al.), not a measurement",
     "5.12": "FCA FG22/5 paragraph number, not a measurement",
+    "0.005": "Dirac-3 expected weight resolution, sum_constraint/200; stored in "
+             "device_resolution.json as expected_weight_resolution",
     "0.857": "B2 median mode share from gate_report.md score-health table",
-    "94.9": "B1 mode share as a percentage; gate_report.md stores 0.951",
     "11.11": "FCA FG22/5 paragraph number, not a measurement",
     "0.6480": "LightGBM AUPRC from arXiv:2606.10393 under a stratified random "
               "split; external citation, quoted as non-temporal context",
@@ -76,6 +77,8 @@ REGISTERED: dict[str, str] = {
     "0.81": "upper end of our own inferred clean-protocol equivalent 0.80-0.81, "
             "stated in the text as an inference rather than a published figure",
     "7.4": "max L1 distance from uniform, 7.4e-06; stored as l1_from_uniform_max",
+    "4.7": "mean L1 distance from uniform, 4.7e-06, across the ten frozen pools; "
+           "per-seed values stored in mechanism_controls.json weight_stats",
     "95.2": "uniform-arm mode share as a percentage; stored as uniform_mode_share_mean 0.9516",
     "85.7": "B2 median mode share as a percentage; gate_report.md stores it as 0.857",
     "0.1028": "hardware ladder minus matched GBDT at k=17: 0.1430 [HW] - 0.2458 [SIM], "
@@ -115,7 +118,6 @@ REGISTERED: dict[str, str] = {
     "0.977": "weight cosine lower bound, hardware block",
     "234.4": "Gram off-diagonal mean, 170,234.4 split by the comma",
     "9.1": "lambda=0 objective spread exponent, 9.1e-12",
-    "8.0": "kNN neighbour count / derived constant in prose",
     "1.24": "figure quoted in the impact arithmetic",
     # --- appendix: H6 per-representation cell means (A.6) ------------------
     "0.8328": "H6 XGBoost mean, baseline representation",
