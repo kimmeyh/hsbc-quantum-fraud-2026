@@ -58,9 +58,12 @@ REGISTERED: dict[str, str] = {
     "3.5": "IEEE-CIS prevalence, a property of the dataset",
     "3.14": "a Python version (eqc-models requires <3.14), not a measurement",
     "3.12": "a Python version (the project's Linux environment), not a measurement",
+    "0.21": "eqc-models 0.21.0, a package version, not a measurement",
     "10.5220": "a DOI prefix (Loke et al., ICAART 2026), not a measurement",
     "2503.11273": "an arXiv identifier (Emami et al.), not a measurement",
     "5.12": "FCA FG22/5 paragraph number, not a measurement",
+    "0.857": "B2 median mode share from gate_report.md score-health table",
+    "94.9": "B1 mode share as a percentage; gate_report.md stores 0.951",
     "11.11": "FCA FG22/5 paragraph number, not a measurement",
     "0.6480": "LightGBM AUPRC from arXiv:2606.10393 under a stratified random "
               "split; external citation, quoted as non-temporal context",

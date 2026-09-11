@@ -112,11 +112,14 @@ check is a single seed (L1 0.0204).
 
 ## A.5 IEEE-CIS: the second dataset and the feature ladder
 
-590,540 transactions, 3 duplicates removed, 3.5% prevalence, GroupKFold-by-month
-rolling origin, reduced Deotte recipe, UID excluded. Shuffled-label control
+590,540 transactions, 3 duplicates removed, 3.5% prevalence, rolling-origin
+evaluation over 30-day TransactionDT buckets (a documented judgment call, not
+calendar months), reduced Deotte recipe, UID excluded. Evaluation periods hold
+85,302 / 86,524 / 8,111 rows, so the headline is an unweighted mean over
+unequal periods. Shuffled-label control
 collapses on every fold (0.030/0.022/0.032 vs base rates 0.035/0.034/0.042).
 AUPRC is not comparable across datasets -- its baseline IS the prevalence -- so
-0.5739 at 3.5% is a 16x lift against ULB's 490x at 0.17%.
+0.5739 at 3.5% is a 16x lift against ULB's 500x at 0.17%.
 
 Arms use ULB-tuned hyperparameters carried as a hypothesis; the section 6
 per-dataset search is unspent on IEEE-CIS, so these are floors.
@@ -217,7 +220,7 @@ the best of them ranks about fourteenth by relevance on ULB -- so reducing
 first would hand the quantum arm a pool containing no phase information and
 H6 could not be tested. The pool is therefore built over every column: 30 in
 the baseline representation and 90 under QFE, which at a sequential pair
-build is 435 and 4,005 variables against the frozen arm's 78. That is
+build is 435 and 4,005 variables against the frozen arm's 91. That is
 possible only because this arm runs entirely on the classical proxy, where
 the A12 free-tier ceiling of 100 continuous degree-2 variables does not
 apply. It was not a configuration the free tier could execute, and it remains unrun for reasons beyond that retired tier, and the shift
@@ -241,7 +244,14 @@ seeds, which is *suggestive* that the classical bar exploits the added
 representation slightly better than a weighted vote over one- and two-feature
 learners does. That would be consistent with the A.5 ladder. But 43% of the
 MDE is below the smallest difference we preregistered as detectable, so it is
-not a finding, and reporting it as one would repeat the error A15 records.
+not a finding, and reporting it as one would repeat the error A15 records. One
+consistency note, because the same threshold appears twice in this submission
+pointing opposite ways: B2's +0.0256 is also below 0.0268, and we describe it as
+a real improvement. The MDE states the effect size this DESIGN was powered to
+detect on ten seeds; it is not a significance boundary. What separates the two
+is evidence, not the threshold -- H6's shift is 0.85 of its own paired SD and
+splits 7 of 10 seeds, while B2's is unanimous at 10 of 10 with a paired interval
+excluding zero. Neither is a confirmatory result; both are exploratory.
 
 **The classical bar, which is what makes the question answerable.** Every cell
 carries a trained-frequency GAM, a GA2M and an order-matched JOINT twin
@@ -262,8 +272,11 @@ should not have to find.** The twins take a fixed input budget, and under the
 QFE representation half of it is reserved for phase columns -- which is what
 guarantees they receive the treatment at all. So a QFE twin sees fewer raw
 columns than its baseline counterpart, and if the dropped raw columns carried
-signal the QFE twin is handicapped, biasing the shift negative. That is the
-direction we observed. It cannot have affected the reported number, because a
+signal the QFE twin is handicapped. The direction of that bias is UPWARD, not
+downward: the delta is CVQBoost minus the strongest classical arm, so weakening
+a classical arm can only raise it. An earlier version of this paragraph stated
+the opposite and read the observed negative shift as confirmation, which had the
+sign backwards. It cannot have affected the reported number, because a
 twin was never the best classical arm in any of the 20 cells and the delta is
 measured against that maximum: the shift comes from CVQBoost falling further
 (0.7646 to 0.7513) than the GBDT bar did (0.8331 to 0.8313). But the bias would
@@ -313,7 +326,7 @@ this submission reports.
 
 ## B.2 Amendments
 
-Twenty-nine dated amendments, A1 to A29, each with rationale and approval; full
+Thirty dated amendments, A1 to A30, each with rationale and approval; full
 text in the repository. Three changed a reported figure, named here so they are
 easy to find. **A15**: the
 frozen pool's k=6 AUPRC was published as 0.7688, a five-seed mean carried into a
@@ -352,7 +365,7 @@ Temporal protocol: 0.7605 AUPRC, 0.9261 AUC-ROC [HW]. Prevalence 0.0017.
 
 **The larger configuration is better, and the paired test is what shows it.**
 B2 minus B1's `dct` arm on identical seeds gives **+0.0256 AUPRC, 95% CI
-[+0.0203, +0.0310], with 10 of 10 seeds favouring the larger configuration**.
+[+0.0203, +0.0310], with 10 of 10 seeds favouring the larger configuration** That interval measures split dispersion rather than sampling error, as for H1b; the direction rests on the unanimity across seeds..
 Unpaired that effect hides inside a seed-to-seed standard deviation of 0.028 and
 reads as noise; pairing cancels the shared variance and the improvement is
 unambiguous. It is the campaign's only positive result at scale.
@@ -389,13 +402,23 @@ the k=17 / schedule-2 decomposition matters.
 **It does not reach the classical bar.** The same 833-variable arm trails
 full-feature CatBoost by -0.0440. Lifting the restriction closes part of the gap
 and leaves the rest, which is the same shape as the IEEE-CIS ladder in A.5 and
-the same conclusion H1b reached at 78 variables.
+the same conclusion H1b reached at 91 variables.
 
-**Limitation.** `tie_fraction` averages 0.9224 and varies by less than 0.004
-across seeds, so the score degeneracy is structural to this configuration rather
-than a property of any one fit. B2's threshold-dependent figures are therefore
-weak evidence; its ranking metrics are sound. This is the same warning A.3
-records for the selected configuration, and it does not improve with scale.
+**Limitation, and it does not fall where we first said.** Two different tie
+statistics are easy to conflate. `tie_fraction`, one minus distinct scores over
+rows, averages 0.9224 here; MODE SHARE, the mass sitting on the single most
+common score, averages 0.857 across 4,413 distinct values. B1's selected
+configuration is the more degenerate of the two at 94.9% mode share over 824
+values, so scale did not make this worse. What matters is WHERE the tie mass
+sits: it is a single block at the BOTTOM of B2's score range holding 7 of 95
+positives, and step-wise average precision gives that block credit equal to the
+prevalence, so AUPRC is nearly insensitive to how it is ordered -- the ambiguity
+spans 0.0009, far below the effect it is used to measure. AUC-ROC is NOT
+insensitive: it awards half credit to every tied positive-negative pair, and its
+ordering ambiguity spans 0.0804, three times the paired effect. So
+AUPRC is sound for this block, while AUC-ROC and every threshold-dependent
+figure are weak evidence. An earlier version of this paragraph certified both
+ranking metrics together, which was wrong.
 
 **One earlier claim in this appendix was wrong and is withdrawn.** A previous
 version of this section reported B2 as unrunnable, citing a `fork` dependency
@@ -407,7 +430,7 @@ the wrong interpreter and should have been checked before it was written.
 
 # Appendix C. Reproduction and references
 
-Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A29. The
+Freeze commit `95751b9`, tag `prereg-freeze`, amendments A1 to A30. The
 repository at `github.com/kimmeyh/hsbc-quantum-fraud-2026` carries the exact resolved
 environment (`experiments/requirements-lock.txt`; the range-based
 `requirements.txt` is for development and does not reproduce these

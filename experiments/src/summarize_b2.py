@@ -81,6 +81,48 @@ def _degeneracy(rows: list[dict]) -> dict:
     return out
 
 
+def _tie_ambiguity() -> dict:
+    """How much of each metric is decided by tie ORDER rather than by the model.
+
+    B2 carries ~92% tie_fraction. That is nearly harmless for step-wise AP,
+    because the tie mass is one block at the BOTTOM of the score range holding 7
+    of 95 positives and AP gives such a block credit equal to the prevalence.
+    It is NOT harmless for ROC-AUC, which awards half credit to every tied
+    positive-negative pair. Bounding both by promoting then demoting the tied
+    positives is the honest way to say which ranking metric survives -- an
+    earlier write-up certified both together, which was wrong.
+    """
+    import glob
+    import numpy as np
+    from sklearn.metrics import average_precision_score, roc_auc_score
+
+    au_lo, au_hi, ap_lo, ap_hi = [], [], [], []
+    for f in sorted(glob.glob(str(RESULTS.parent / "predictions"
+                                  / "cvqboost_hw_*_stratified_*.npz"))):
+        if "_None_" not in f:                 # B2's rows are the null-hash ones
+            continue
+        d = np.load(f)
+        keys = list(d.keys())
+        pr = d["p_test"] if "p_test" in keys else d[keys[0]]
+        yt = d["y_test"] if "y_test" in keys else d[keys[1]]
+        sgn = np.where(yt == 1, 1.0, -1.0)
+        eps = 1e-9
+        au_hi.append(roc_auc_score(yt, pr + eps * sgn))
+        au_lo.append(roc_auc_score(yt, pr - eps * sgn))
+        ap_hi.append(average_precision_score(yt, pr + eps * sgn))
+        ap_lo.append(average_precision_score(yt, pr - eps * sgn))
+    if not au_lo:
+        return {}
+    m = lambda v: float(st.mean(v))           # noqa: E731
+    return {
+        "auprc_span": round(m(ap_hi) - m(ap_lo), 4),
+        "auc_roc_span": round(m(au_hi) - m(au_lo), 4),
+        "n_seeds": len(au_lo),
+        "note": ("AP is nearly insensitive to the tie block; ROC-AUC is not. "
+                 "AUPRC is sound for this block; AUC-ROC is weak evidence."),
+    }
+
+
 def build() -> dict:
     rows = [r for r in json.loads(RESULTS.read_text(encoding="utf-8"))["rows"]
             if isinstance(r, dict)]
@@ -158,6 +200,7 @@ def build() -> dict:
         # is the main caveat on the headline result. A figure that lives only in
         # prose is unchecked by construction (F44).
         "solver_fidelity": _fidelity(b2),
+        "tie_ambiguity": _tie_ambiguity(),
         "score_degeneracy": _degeneracy(strat),
         "limitation": ("tie_fraction averages 0.9224 across every seed, so this is "
                        "a STRUCTURAL property of the configuration, not a per-fit "

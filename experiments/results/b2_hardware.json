@@ -58,6 +58,12 @@
   "n": 11,
   "note": "Hardware minus classical objective; positive means the device found a worse minimum. Compare the schedule-2 B1 cells at 0.9747-0.9825 cosine."
  },
+ "tie_ambiguity": {
+  "auprc_span": 0.0009,
+  "auc_roc_span": 0.0804,
+  "n_seeds": 10,
+  "note": "AP is nearly insensitive to the tie block; ROC-AUC is not. AUPRC is sound for this block; AUC-ROC is weak evidence."
+ },
  "score_degeneracy": {
   "tie_fraction_mean": 0.9224
  },
