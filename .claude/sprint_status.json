@@ -3,13 +3,19 @@
     "number": 13,
     "name": "Submit",
     "branch": "feature/20260912_Sprint_13",
-    "status": "phase_3_planning",
+    "status": "phase_4_execution",
     "plan_doc": "docs/sprints/SPRINT_13_PLAN.md",
     "pr": null,
-    "plan_approved": false,
-    "github_issues": [],
+    "plan_approved": true,
+    "github_issues": [
+      77,
+      78,
+      79,
+      80,
+      81
+    ],
     "prior_prs": [],
-    "note": "Scope DEFINED by the team lead 2026-09-12: F10 only. F64 was selected then withdrawn the same day on methodological grounds (OFAT probe into an interaction space); it returns to the backlog as Phase 2 experiment 1. Awaiting plan approval."
+    "note": "Scope DEFINED and APPROVED by the team lead 2026-09-12: F10 only. F64 withdrawn the same day on methodological grounds; it returns to the backlog as Phase 2 experiment 1. Execution authorized without further approvals until Manual Validation, per the team lead."
   },
   "last_completed_sprint": {
     "number": 12,
