@@ -1,24 +1,15 @@
 {
   "current_sprint": {
-    "number": 12,
-    "name": "Spend the Grant, Then Submit",
-    "branch": "feature/20260910_F49_solver_certificate",
-    "status": "phase_8_delivery_cycle",
-    "plan_doc": "docs/sprints/SPRINT_12_PLAN.md",
-    "pr": 75,
-    "plan_approved": true,
-    "github_issues": [
-      71,
-      72,
-      57,
-      56,
-      69
-    ],
-    "prior_prs": [
-      73,
-      74
-    ],
-    "note": "Sprint 12 ran across two branches. PR #73 merged the B2/B3 hardware work to develop mid-sprint; PR #75 carries the response to three external reviews (F49-F63) plus F37 and F38, on a branch cut from the Sprint 12 branch per the carry-forward rule. PR #75 merged to develop and PR #76 merged develop to main on 2026-09-11. Issues 71, 72, 57 and 56 closed in the Phase 8.2 sweep; 69 (F48) remains open and returns to the backlog."
+    "number": 13,
+    "name": "Decompose, Then Submit",
+    "branch": "feature/20260912_Sprint_13",
+    "status": "phase_3_planning",
+    "plan_doc": "docs/sprints/SPRINT_13_PLAN.md",
+    "pr": null,
+    "plan_approved": false,
+    "github_issues": [],
+    "prior_prs": [],
+    "note": "Scope DEFINED by the team lead 2026-09-12: F64 then F10, nothing else. Awaiting plan approval."
   },
   "last_completed_sprint": {
     "number": 12,
@@ -31,5 +22,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-11"
+  "updated": "2026-09-12"
 }

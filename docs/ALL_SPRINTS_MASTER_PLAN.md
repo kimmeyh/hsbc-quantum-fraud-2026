@@ -141,16 +141,6 @@ Phase 2.
 - Acceptance: the cell runs on the same seeds and protocol as its two neighbours; B.3 states the decomposition instead of declining it; if the result changes what the +0.0256 is attributable to, that is an amendment
 - Depends on: nothing. It is the first thing Phase 2 should run
 
-
-
-
-
-
-
-
-
-
-
 **F2b. Hardware campaign, remaining blocks B4 and B5 (~0.5 day + approvals) Priority 20**
 - Phase: Experiments
 - Platform: Dirac-3
