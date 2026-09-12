@@ -109,7 +109,7 @@ the gain is attributable to k, it should appear at 153 under a faithful solve.
 | Risk | Mitigation |
 |---|---|
 | **Gate re-keying moves a confirmatory endpoint** | Task B diffs `Proxy cell used:` and STOPS on any change. Highest-severity risk in this sprint |
-| **Page budget is exhausted** (6/6, 3/3) | Task D presents text-before/after for Class 4 approval BEFORE editing. Any addition must displace text, not append |
+| **Appendix page budget: 2 lines** | MEASURED 2026-09-12: appendix p3 has 73 pt free = **6.1 lines** at the measured 12.0 pt pitch. Team lead's bar: F64's B.3 change must fit in **<= 2 added lines**. The proposal is NOT a constraint -- its 553 pt of page-6 slack absorbs insertions anywhere, because text before section 7 pushes section 7 down page 6 rather than off the document |
 | **A new result forces an amendment 3 days from deadline** | A32 drafted in Task C, verified against the artifact before writing (the hook enforces this) |
 | **F64 overruns and squeezes F10** | F64 is ~10 min of compute. If Task B or C slips past its estimate, DROP F64 and ship F10 alone -- the team lead's own Sprint 12 deferral reasoning |
 | **WSL dependency** | Verified working 2026-09-11; full-pair build cannot run on Windows (`fork` unavailable) |
@@ -142,6 +142,9 @@ One evidence-artifact defect:
 - Every requirements-matrix row verified against the CURRENT documents
 - Confidentiality scan: zero HIGH findings
 - Suite green; every reported number resolves to `results.json`
+- **Appendix stays at 3 pages with the B.3 change adding <= 2 lines** (73 pt /
+  6.1 lines free on p3, measured 2026-09-12). Re-run
+  `scripts/page-fill-report.py` after rendering, before the PDFs are final
 - Submission uploaded by the team lead, receipt archived
 
 ## Out of scope (defined-scope rule)
