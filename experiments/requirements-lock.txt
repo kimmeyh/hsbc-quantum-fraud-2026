@@ -10,7 +10,13 @@
 # Captured from the working interpreter via importlib.metadata on 2026-09-10.
 # The venv ships no pip module, so `pip freeze` is unavailable; this file is the
 # export. Use it, not requirements.txt, to reproduce a reported figure.
-python==3.12.10
+#
+# INTERPRETER: Python 3.12.10. Recorded as a comment, not a requirement.
+# It was a `python==3.12.10` line until 2026-09-12, which made the whole file
+# uninstallable: pip resolves `python` as a PACKAGE, finds no distribution, and
+# aborts before installing anything. Found by running this file against a fresh
+# clone rather than by reading it (F69). Create the interpreter with your own
+# tooling, then install this file into it.
 
 numpy==1.26.4
 pandas==2.3.3

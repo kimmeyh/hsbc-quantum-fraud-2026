@@ -30,6 +30,22 @@ SRC = Path(__file__).resolve().parent
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+# The IEEE-CIS CSVs are gitignored and absent on any clean checkout. Tests that
+# EXECUTE the pipeline need them; tests that assert on source do not.
+#
+# Found by F69: on a fresh public clone this file was the suite's only FAILURE,
+# crashing with FileNotFoundError while its twenty data-dependent peers skipped
+# cleanly. test_ieee_loader.py already carries this guard and says why -- "a
+# permanently red CI is one nobody reads" -- and this module simply never
+# adopted it. A first-time reproducer saw a red suite and no way to tell an
+# absent dataset from a broken repository.
+_IEEE_PRESENT = all(
+    (SRC.parents[0] / "data" / "ieee-cis" / f).exists()
+    for f in ("train_transaction.csv", "train_identity.csv"))
+needs_ieee_data = pytest.mark.skipif(
+    not _IEEE_PRESENT,
+    reason="IEEE-CIS raw CSVs not on disk (expected on a clean checkout)")
+
 
 # --- Defect 1: no class weighting -----------------------------------------
 
@@ -120,6 +136,7 @@ def test_identifier_columns_never_reach_the_feature_matrix():
 # --- Defect 3: the shuffled-label control never run ------------------------
 
 @pytest.mark.slow
+@needs_ieee_data
 def test_shuffled_label_control_is_run_and_recorded_per_fold():
     """Section 5 item 6: the control must be RUN, not declared.
 
