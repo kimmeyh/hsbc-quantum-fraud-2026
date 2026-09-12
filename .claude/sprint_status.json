@@ -3,7 +3,7 @@
     "number": 13,
     "name": "Submit",
     "branch": "feature/20260912_Sprint_13",
-    "status": "phase_7_retrospective",
+    "status": "phase_8_delivery_cycle",
     "plan_doc": "docs/sprints/SPRINT_13_PLAN.md",
     "pr": 82,
     "plan_approved": true,
@@ -15,12 +15,12 @@
       81
     ],
     "prior_prs": [],
-    "note": "F10 only. Tasks A-D complete (issues 77-80 closed). Manual Validation passed all four items 2026-09-12. Task E (#81, portal submission) remains team-lead-owned. Nine defects found and corrected across the documents, matrix and evidence artifacts; A32 registers the one that was an error in the frozen log."
+    "note": "SUBMITTED 2026-09-12. PR #82 merged to develop. The develop-to-main merge had NOT happened at close-out: main is 18 commits behind and lacks all of Sprint 13 including the submission record."
   },
   "last_completed_sprint": {
-    "number": 12,
-    "merged_pr": 75,
-    "main_merge_pr": 76,
+    "number": 13,
+    "merged_pr": 82,
+    "main_merge_pr": null,
     "docs_triad_complete": true
   },
   "prereg": {

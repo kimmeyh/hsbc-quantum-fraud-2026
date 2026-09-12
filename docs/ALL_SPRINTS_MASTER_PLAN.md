@@ -26,38 +26,38 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 10 | docs/sprints/SPRINT_10_SUMMARY.md | [OK] Complete | ~1 day (Sep 9, 2026) |
 | 11 | docs/sprints/SPRINT_11_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 9-10, 2026) |
 | 12 | docs/sprints/SPRINT_12_SUMMARY.md | [OK] Complete | ~2.5 days (Sep 10-12, 2026) |
+| 13 | docs/sprints/SPRINT_13_SUMMARY.md | [OK] Complete | ~1 day (Sep 12, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 12: Spend the Grant, Then Submit** (Sep 10-12, 2026; PR #75 to develop,
-PR #76 develop to main). Delivered **F2b blocks B2 and B3** on Dirac-3, **F37**
-(repository public), **F38** (page limits), and **F49-F63**, the response to
-three external reviews. Suite 277 -> 320. Hardware: 968 metered seconds of a
-2,000 s authorization, 23 fits, zero device failures.
-**The positive result**: B2 is the campaign's only gain at scale (A24). Eleven
-fits at 833 continuous variables against B1's matched `hw_b1_dct` arm on
-identical seeds: **+0.0256 AUPRC, 95% CI [+0.0203, +0.0310], 10 of 10 seeds**.
-Unpaired it is invisible inside a 0.030 seed-to-seed SD. It still trails
-full-feature CatBoost by 0.0440, so the null holds.
-**The sprint's defining fact**: the review found three PUBLISHED claims that were
-false, and we had written all three. The solver was not converged (A26) -- the
-stopping test certified the objective, not the solution, at KKT residual 4.6e-05.
-The convexity claim was false (A27) and had been written the previous day in
-response to an internal review, then published within hours. Uniform is not the
-zero-penalty optimum (A27), the same solved-from-versus-evaluated-at confusion in
-a second place. Every internal check had agreed with itself, because the figure
-and the error came from the same solver.
-**What the review bought**: the 200:1 resolution finding (A31). Our claim that
-hardware agreement bounded resolution effects was backwards -- on all ten pools
-nothing in the problem is visible to the device, so uniform output is forced
-rather than evidence. That turned the weakest mechanism paragraph into the
-strongest argument for Phase 2: a device that cannot spread weight over ~200
-learners has a native problem class, and it is cardinality-constrained selection.
-**Process**: the team lead's intervention -- stop, analyse both reviews fully,
-address findings through planned cards rather than reactive edits -- is what
-broke the amend-under-pressure loop. It is now a standing rule and a hook.
-Retro: docs/sprints/SPRINT_12_RETROSPECTIVE.md (all rated categories Very Good;
-all seven improvements applied, three of them made deterministic).
+**Sprint 13: Submit** (Sep 12, 2026; PR #82 to develop). Delivered **F10** and
+**FILED THE SUBMISSION** on 2026-09-12, three days before the deadline. Portal
+returned "Your submission received": proposal 6 of 6 pages, appendix 3 of 3,
+team profile 1 of 1. Suite 320 -> 321. Zero metered seconds.
+**The finding**: a sprint scoped as routine verification found NINE defects, and
+the suite caught none of them. One in the evidence artifacts (the B2 comparator
+written as 78 variables where its rows carry 91), six in the requirements matrix
+including C5 and C6 pointing at the wrong sections after F55's renumbering, and
+six in the submission documents.
+**The defect that justifies F39**: appendix A.5 quoted the IEEE matched-feature
+control as falling "from 0.5739 to 0.0734 ... fold 0", where the artifact's
+control is fold-0 to fold-0 at 0.5424 and 0.5739 is the three-fold mean from a
+different file. Both numbers are real, so a global value-set lookup accepts it --
+`test_document_figures_resolve.py` passed it and its own docstring predicts
+exactly that blind spot. Only per-claim provenance closes it.
+**A32** corrects A31's linear-term spread, which quoted 16.0 as a maximum where
+the stored values reach 28.0.
+**F64 was selected then withdrawn** the same day on the team lead's reasoning: a
+one-factor-at-a-time probe into an interaction space could return a true but
+unimportant result, and proposal section 6 already presents the cell as
+experiment 1 of six in an ordered program. Its pre-flight is preserved on the
+card so Phase 2 starts measured.
+**Process**: six findings were presented for approval and item 5 recommended
+taking NO action; all six were approved as fixes and one was backed out. The
+workflow now states that a list presented for approval contains only items to be
+changed.
+Retro: docs/sprints/SPRINT_13_RETROSPECTIVE.md (Very Good across all fourteen
+rated categories; all six improvements applied).
 
 ## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
 
@@ -72,7 +72,21 @@ all seven improvements applied, three of them made deterministic).
 | 10 | Sep 9 | [DONE] **F40** (segmentation) re-scoped to F40 only; gate-report undercount fixed (27/120 -> the true 37/163); 8 correctness findings from two adversarial reviews; 13 PR-review findings addressed | F37/F38 deferred to 11 |
 | 11 | Sep 9-10 | [DONE] **F41** (A20, mechanism corrected), **F42** (+0.0319 decomposed: the gain is class weighting, not diversity), **F43**, **F44**, **F45**, **F35**, plus **F46** (A21, ceiling LIFTED) and **F47** added mid-sprint; 15 review findings addressed | F37 and the fresh-eyes review deferred to 12 |
 | 12 | Sep 10-12 | [DONE] **F2b B2 and B3** on Dirac-3 (23 fits, 968 metered s), **F37**, **F38**, and **F49-F63** from three external reviews. F10 NOT reached | Evidence freeze held; F10 carries to Finalize |
-| Finalize | Sep 11-13 | **F10 only.** F40, F37 and F38 all DONE (Sprints 10 and 12), so F10 is the sole remaining submission blocker | no new evidence after Sep 12; never later than Sep 14 |
+| 13 | Sep 12 | [DONE] **F10**: evidence walk, requirements-matrix walk, confidentiality scan, final render, and the SUBMISSION -- filed 2026-09-12, three days early. F64 selected then withdrawn | **SUBMITTED**; 9 defects found and corrected |
+
+**THE PHASE 1 ROADMAP IS COMPLETE (2026-09-12).** Every row above is [DONE] and
+the submission is filed. The table described a run to a deadline; that deadline
+has passed in our favour and the roadmap no longer describes any pending work.
+
+What replaces it, recorded so the next refinement does not invent a schedule:
+the judging window is **16 Sep to 14 Nov 2026**, with finalists announced
+mid-November (Guidelines s2). Nothing we do changes the Phase 1 outcome, and no
+backlog item is time-bound any more. The remaining items are tech debt, tooling,
+and Phase 2 preparation, and they should be scheduled on value rather than
+against a date.
+
+The one exception is **F13, Phase 2 PoC sprint planning**, which becomes live
+only on acceptance and is correctly held until then.
 
 **Sprint 12 sequencing, DECIDED 2026-09-09 (Sprint 11 improvement 5) rather than under deadline pressure.** The order is forced by two dependencies, not by preference:
 
@@ -241,12 +255,10 @@ F55 the two missing rubric sections, F56 framing, F57 the 200:1 resolution argum
 the remaining review findings: ALL COMPLETED in Sprint 12, merged via PR #75 (main PR #76);
 history in SPRINT_12_SUMMARY.md. Removed from candidates per convention.)
 
-**F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 1 -- SUBMISSION BLOCKER**
-- Phase: Finalize
-- Platform: docs
-- Every number vs results.json; repo-wide confidential-string scan (the fourierwall2 reference files were moved OUT of the repository at Sprint 10 F40, so the scan covers what remains rather than re-verifying them in place); requirements-matrix walk; public reproducibility repo; team-lead final PDF + portal submission, receipt archived
-- Depends on: F8, F9 (both DONE, Sprint 5)
-- **Priority corrected 2026-09-11** in the Sprint 12 close-out sweep. This card read Priority 40 while the targeted roadmap has carried it as a SUBMISSION BLOCKER for the Finalize sprint since 2026-09-03. The deadline is 2026-09-15. Nothing else in the backlog outranks it
+(F10 verification, confidentiality scan, compliance walk and SUBMISSION: COMPLETED in
+Sprint 13, merged via PR #82. The submission was filed 2026-09-12, three days before
+the deadline; receipt and the four now-answered A5 unknowns in
+docs/submission/SUBMISSION_RECEIPT.md. Removed from candidates per convention.)
 
 ### External (team-lead-owned, parallel)
 

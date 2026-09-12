@@ -2,7 +2,7 @@
 
 **Purpose**: Recorded estimate-vs-actual per task, feeding SPRINT_PLANNING.md estimation (Sprint 2 retro improvement 6). Record at task completion; recompute patterns at retro Category 3.
 **Audience**: Sprint planning sessions.
-**Last Updated**: 2026-09-11
+**Last Updated**: 2026-09-12
 
 | Sprint | Task | Type | Estimate | Actual | Ratio | Note |
 |---|---|---|---|---|---|---|
@@ -28,3 +28,8 @@
 | 12 | F2b B3 block (12 metered fits, matched re-run) | compute | ~650 QPU s | 62 QPU s | 0.1 | reduced recipe far cheaper per sample than B2 |
 | 12 | F38 page limits | docs | 45m (first card) | ~5x that, across 4 re-measures | >5 | an estimate that grows 5x across one sprint is not an estimate |
 | 12 | F37 repository public | tooling | 45m | ~45m | 1.0 | pre-flip secret scan across 259 commits included |
+| 13 | Task A evidence walk (agent + own verification) | verify | 90m | ~90m | 1.0 | agent 15m in parallel; found 6 document defects |
+| 13 | Task B requirements-matrix walk, 92 rows | verify | 60m | ~60m | 1.0 | found 6 stale rows, 4 unknown before the walk |
+| 13 | Task C confidentiality scan + compliance walk | verify | 30m | ~30m | 1.0 | scripted; 0 HIGH |
+| 13 | Task D final render + page check | build | 20m | ~20m | 1.0 | run 3x in total as findings landed |
+| 13 | UNPLANNED: 6 approved corrections, A32, backout, 2 re-renders | code+docs | 0m | ~60m | n/a | findings-driven; the 30% allowance now exists for this |
