@@ -1,0 +1,2 @@
+2026-09-10T04:14:48.991837+00:00  INTENT b3_k5_fold0 vars=10 expected=4-10s (28 degree-2 anchors, within 2x) balance=2990
+2026-09-10T04:17:06.383636+00:00  BALANCE after=2985 cost=5.0

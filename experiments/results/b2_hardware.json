@@ -1,0 +1,177 @@
+{
+ "note": "B2: the ULB full config (top-17, schedule 3, 833 continuous variables) on Dirac-3. Never runnable under A12's free-tier ceiling; A21 retired that ceiling and the team lead authorised the block on 2026-09-10.",
+ "generator": "experiments/src/summarize_b2.py",
+ "source": "experiments/results/results.json (rows with block == B2)",
+ "evidence_tag": "HW",
+ "n_fits": 11,
+ "total_metered_seconds": 906.0,
+ "n_variables": 833,
+ "k": 17,
+ "schedule": 3,
+ "pair_build": "full",
+ "stratified": {
+  "n_seeds": 10,
+  "auprc_mean": 0.7928,
+  "auprc_sd": 0.0296,
+  "auprc_min": 0.7626,
+  "auprc_max": 0.8548,
+  "auc_roc_mean": 0.9423,
+  "tie_fraction_mean": 0.9224,
+  "prevalence": 0.0016741268107003137
+ },
+ "temporal": {
+  "auprc": 0.7605,
+  "auc_roc": 0.9261
+ },
+ "paired_vs_b1_dct": {
+  "design": "B2 (833 vars) minus B1 hw_b1_dct (78 vars) on IDENTICAL seeds and protocol. The like-for-like comparator: same pool family, same stratified protocol, differing only in k (17 vs 13) and schedule (3 vs 2). B1's overall mean mixes the weaker lg config and the temporal fits and is NOT the right baseline.",
+  "n_seeds": 10,
+  "per_seed": {
+   "42": 0.0134,
+   "43": 0.0182,
+   "44": 0.0255,
+   "45": 0.0315,
+   "46": 0.0147,
+   "47": 0.0299,
+   "48": 0.0372,
+   "49": 0.0183,
+   "50": 0.0285,
+   "51": 0.0392
+  },
+  "b1_dct_mean": 0.7671,
+  "mean_difference": 0.0256,
+  "sd_difference": 0.0091,
+  "ci95_bootstrap": [
+   0.0203,
+   0.031
+  ],
+  "n_boot": 10000,
+  "boot_seed": 42,
+  "seeds_favouring_b2": 10,
+  "verdict": "POSITIVE and consistent: 10 of 10 seeds favour the 833-variable configuration, mean +0.0256 AUPRC, 95% CI excludes zero. Unpaired the effect hides inside a 0.028 seed-to-seed sd; pairing cancels that variance. Lifting the ceiling produces a real improvement."
+ },
+ "solver_fidelity": {
+  "weight_cosine_min": 0.8192,
+  "weight_cosine_max": 0.8327,
+  "weight_cosine_mean": 0.8272,
+  "objective_gap_mean": 191.5,
+  "n": 11,
+  "note": "Hardware minus classical objective; positive means the device found a worse minimum. Compare the schedule-2 B1 cells at 0.9747-0.9825 cosine."
+ },
+ "score_degeneracy": {
+  "tie_fraction_mean": 0.9224
+ },
+ "limitation": "tie_fraction averages 0.9224 across every seed, so this is a STRUCTURAL property of the configuration, not a per-fit artifact. B2's threshold-dependent figures are weak evidence; its ranking metrics (AUPRC, AUC-ROC) are sound.",
+ "rows": [
+  {
+   "seed": 42,
+   "protocol": "stratified",
+   "metered_seconds": 91.0,
+   "status": "ok",
+   "auprc": 0.8231,
+   "auc_roc": 0.9547,
+   "tie_fraction": 0.9248,
+   "evidence_tag": "HW"
+  },
+  {
+   "seed": 43,
+   "protocol": "stratified",
+   "metered_seconds": 76.0,
+   "status": "ok",
+   "auprc": 0.7821,
+   "auc_roc": 0.9441,
+   "tie_fraction": 0.9239,
+   "evidence_tag": "HW"
+  },
+  {
+   "seed": 44,
+   "protocol": "stratified",
+   "metered_seconds": 79.0,
+   "status": "ok",
+   "auprc": 0.7695,
+   "auc_roc": 0.9382,
+   "tie_fraction": 0.9242,
+   "evidence_tag": "HW"
+  },
+  {
+   "seed": 45,
+   "protocol": "stratified",
+   "metered_seconds": 80.0,
+   "status": "ok",
+   "auprc": 0.8097,
+   "auc_roc": 0.947,
+   "tie_fraction": 0.9232,
+   "evidence_tag": "HW"
+  },
+  {
+   "seed": 46,
+   "protocol": "stratified",
+   "metered_seconds": 71.0,
+   "status": "ok",
+   "auprc": 0.7716,
+   "auc_roc": 0.9422,
+   "tie_fraction": 0.9217,
+   "evidence_tag": "HW"
+  },
+  {
+   "seed": 47,
+   "protocol": "stratified",
+   "metered_seconds": 92.0,
+   "status": "ok",
+   "auprc": 0.7919,
+   "auc_roc": 0.9352,
+   "tie_fraction": 0.9228,
+   "evidence_tag": "HW"
+  },
+  {
+   "seed": 48,
+   "protocol": "stratified",
+   "metered_seconds": 85.0,
+   "status": "ok",
+   "auprc": 0.8548,
+   "auc_roc": 0.967,
+   "tie_fraction": 0.9205,
+   "evidence_tag": "HW"
+  },
+  {
+   "seed": 49,
+   "protocol": "stratified",
+   "metered_seconds": 91.0,
+   "status": "ok",
+   "auprc": 0.7977,
+   "auc_roc": 0.941,
+   "tie_fraction": 0.9213,
+   "evidence_tag": "HW"
+  },
+  {
+   "seed": 50,
+   "protocol": "stratified",
+   "metered_seconds": 82.0,
+   "status": "ok",
+   "auprc": 0.7646,
+   "auc_roc": 0.9343,
+   "tie_fraction": 0.9204,
+   "evidence_tag": "HW"
+  },
+  {
+   "seed": 51,
+   "protocol": "stratified",
+   "metered_seconds": 80.0,
+   "status": "ok",
+   "auprc": 0.7626,
+   "auc_roc": 0.9191,
+   "tie_fraction": 0.9214,
+   "evidence_tag": "HW"
+  },
+  {
+   "seed": null,
+   "protocol": "temporal",
+   "metered_seconds": 79.0,
+   "status": "ok",
+   "auprc": 0.7605,
+   "auc_roc": 0.9261,
+   "tie_fraction": 0.9129,
+   "evidence_tag": "HW"
+  }
+ ]
+}
