@@ -1,7 +1,7 @@
 {
   "current_sprint": {
     "number": 13,
-    "name": "Decompose, Then Submit",
+    "name": "Submit",
     "branch": "feature/20260912_Sprint_13",
     "status": "phase_3_planning",
     "plan_doc": "docs/sprints/SPRINT_13_PLAN.md",
@@ -9,7 +9,7 @@
     "plan_approved": false,
     "github_issues": [],
     "prior_prs": [],
-    "note": "Scope DEFINED by the team lead 2026-09-12: F64 then F10, nothing else. Awaiting plan approval."
+    "note": "Scope DEFINED by the team lead 2026-09-12: F10 only. F64 was selected then withdrawn the same day on methodological grounds (OFAT probe into an interaction space); it returns to the backlog as Phase 2 experiment 1. Awaiting plan approval."
   },
   "last_completed_sprint": {
     "number": 12,
