@@ -8,15 +8,38 @@
   "median": 0.019636196911968433,
   "max": 0.3426065734911469
  },
- "by_relaxation_schedule": {
-  "2": {
-   "n_fits": 37,
+ "relaxation_schedule_all_fits": [
+  2
+ ],
+ "by_subset_order": {
+  "1": {
+   "n_fits": 1,
    "fits_where_all_draws_identical": 0,
-   "spread_pct_min": 0.0037939987392398115,
-   "spread_pct_median": 0.01896488567139794,
+   "spread_pct_min": 0.3426065734911469,
+   "spread_pct_median": 0.3426065734911469,
    "spread_pct_max": 0.3426065734911469,
    "blocks": [
+    "G0b"
+   ]
+  },
+  "2": {
+   "n_fits": 25,
+   "fits_where_all_draws_identical": 0,
+   "spread_pct_min": 0.0037939987392398115,
+   "spread_pct_median": 0.014413264563081708,
+   "spread_pct_max": 0.29292485030174026,
+   "blocks": [
     "B1",
+    "G0b"
+   ]
+  },
+  "3": {
+   "n_fits": 11,
+   "fits_where_all_draws_identical": 0,
+   "spread_pct_min": 0.007055965597838332,
+   "spread_pct_median": 0.01896488567139794,
+   "spread_pct_max": 0.07097904797611278,
+   "blocks": [
     "B2",
     "G0b"
    ]
@@ -35,6 +58,7 @@
    "worst_energy": -164653.015625,
    "spread_relative_pct": 0.05642209378795498,
    "identical_draws": false,
+   "subset_order": null,
    "relaxation_schedule": null,
    "block": null
   },
@@ -45,6 +69,7 @@
    "worst_energy": -164604.890625,
    "spread_relative_pct": 0.058970134416046247,
    "identical_draws": false,
+   "subset_order": null,
    "relaxation_schedule": null,
    "block": null
   },
@@ -55,6 +80,7 @@
    "worst_energy": -164617.921875,
    "spread_relative_pct": 0.04530222131733736,
    "identical_draws": false,
+   "subset_order": null,
    "relaxation_schedule": null,
    "block": null
   },
@@ -65,6 +91,7 @@
    "worst_energy": -164620.984375,
    "spread_relative_pct": 0.04957798471848271,
    "identical_draws": false,
+   "subset_order": null,
    "relaxation_schedule": null,
    "block": null
   },
@@ -75,6 +102,7 @@
    "worst_energy": -164629.203125,
    "spread_relative_pct": 0.04419914451554929,
    "identical_draws": false,
+   "subset_order": null,
    "relaxation_schedule": null,
    "block": null
   },
@@ -85,6 +113,7 @@
    "worst_energy": -164609.953125,
    "spread_relative_pct": 0.06437216788785013,
    "identical_draws": false,
+   "subset_order": null,
    "relaxation_schedule": null,
    "block": null
   },
@@ -95,6 +124,7 @@
    "worst_energy": -164595.90625,
    "spread_relative_pct": 0.043648489980489126,
    "identical_draws": false,
+   "subset_order": null,
    "relaxation_schedule": null,
    "block": null
   },
@@ -105,6 +135,7 @@
    "worst_energy": -164580.53125,
    "spread_relative_pct": 0.06087534880455275,
    "identical_draws": false,
+   "subset_order": null,
    "relaxation_schedule": null,
    "block": null
   },
@@ -115,6 +146,7 @@
    "worst_energy": -164615.46875,
    "spread_relative_pct": 0.03145547768914682,
    "identical_draws": false,
+   "subset_order": null,
    "relaxation_schedule": null,
    "block": null
   },
@@ -125,6 +157,7 @@
    "worst_energy": -164636.046875,
    "spread_relative_pct": 0.04648247653322686,
    "identical_draws": false,
+   "subset_order": null,
    "relaxation_schedule": null,
    "block": null
   },
@@ -135,6 +168,7 @@
    "worst_energy": -166274.125,
    "spread_relative_pct": 0.03403422416952219,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.09780380378318515
@@ -146,6 +180,7 @@
    "worst_energy": -166279.03125,
    "spread_relative_pct": 0.0194195280406429,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.10946349415239187
@@ -157,6 +192,7 @@
    "worst_energy": -166272.296875,
    "spread_relative_pct": 0.019091537816794332,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.11381622137267783
@@ -168,6 +204,7 @@
    "worst_energy": -166275.90625,
    "spread_relative_pct": 0.03447521767295475,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.09630682587102553
@@ -179,6 +216,7 @@
    "worst_energy": -166264.28125,
    "spread_relative_pct": 0.04514490330386296,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.09258900609752893
@@ -190,6 +228,7 @@
    "worst_energy": -166269.890625,
    "spread_relative_pct": 0.021524744906875178,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.1128340957860492
@@ -201,6 +240,7 @@
    "worst_energy": -166272.5,
    "spread_relative_pct": 0.014413264563081708,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.1183735558176006
@@ -212,6 +252,7 @@
    "worst_energy": -166265.4375,
    "spread_relative_pct": 0.056466610312764155,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.08058067109122491
@@ -223,6 +264,7 @@
    "worst_energy": -166272.5625,
    "spread_relative_pct": 0.019758450824710973,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.1130307667003039
@@ -234,6 +276,7 @@
    "worst_energy": -166285.5625,
    "spread_relative_pct": 0.019644193027166388,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.10533005020945453
@@ -245,6 +288,7 @@
    "worst_energy": -193978.453125,
    "spread_relative_pct": 0.02088230097347118,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.11532237116683916
@@ -256,6 +300,7 @@
    "worst_energy": -162719.375,
    "spread_relative_pct": 0.006442809598845326,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.015293054445101692
@@ -267,6 +312,7 @@
    "worst_energy": -162849.984375,
    "spread_relative_pct": 0.00929641935313039,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.015663640734383373
@@ -278,6 +324,7 @@
    "worst_energy": -163101.890625,
    "spread_relative_pct": 0.00821887968623421,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.015698424991999877
@@ -289,6 +336,7 @@
    "worst_energy": -162545.40625,
    "spread_relative_pct": 0.00856418094278464,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.015821780953533322
@@ -300,6 +348,7 @@
    "worst_energy": -162541.703125,
    "spread_relative_pct": 0.008083810175604195,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.01644675632855511
@@ -311,6 +360,7 @@
    "worst_energy": -162551.515625,
    "spread_relative_pct": 0.011917877748908961,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.014451991970167914
@@ -322,6 +372,7 @@
    "worst_energy": -162640.546875,
    "spread_relative_pct": 0.0051683394442382765,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.016432852497681498
@@ -333,6 +384,7 @@
    "worst_energy": -162724.109375,
    "spread_relative_pct": 0.009140403608347147,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.014827304299999818
@@ -344,6 +396,7 @@
    "worst_energy": -162668.5,
    "spread_relative_pct": 0.0037939987392398115,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.017921008338609525
@@ -355,6 +408,7 @@
    "worst_energy": -163060.453125,
    "spread_relative_pct": 0.011947744951766369,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.013533593997056321
@@ -366,6 +420,7 @@
    "worst_energy": -190561.375,
    "spread_relative_pct": 0.010838508680235299,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "B1",
    "gap_to_exact_pct": 0.013332955562186832
@@ -377,6 +432,7 @@
    "worst_energy": -169607.0,
    "spread_relative_pct": 0.01896488567139794,
    "identical_draws": false,
+   "subset_order": 3,
    "relaxation_schedule": 2,
    "block": "B2",
    "gap_to_exact_pct": 0.11019929941962157
@@ -388,6 +444,7 @@
    "worst_energy": -169592.59375,
    "spread_relative_pct": 0.026913888819296357,
    "identical_draws": false,
+   "subset_order": 3,
    "relaxation_schedule": 2,
    "block": "B2",
    "gap_to_exact_pct": 0.11073116942988273
@@ -399,6 +456,7 @@
    "worst_energy": -169604.578125,
    "spread_relative_pct": 0.019130920153968445,
    "identical_draws": false,
+   "subset_order": 3,
    "relaxation_schedule": 2,
    "block": "B2",
    "gap_to_exact_pct": 0.11143340666948226
@@ -410,6 +468,7 @@
    "worst_energy": -169614.0,
    "spread_relative_pct": 0.007055965597838332,
    "identical_draws": false,
+   "subset_order": 3,
    "relaxation_schedule": 2,
    "block": "B2",
    "gap_to_exact_pct": 0.11791532810996729
@@ -421,6 +480,7 @@
    "worst_energy": -169596.359375,
    "spread_relative_pct": 0.02572543327045508,
    "identical_draws": false,
+   "subset_order": 3,
    "relaxation_schedule": 2,
    "block": "B2",
    "gap_to_exact_pct": 0.10968009571514217
@@ -432,6 +492,7 @@
    "worst_energy": -169608.546875,
    "spread_relative_pct": 0.018605564519077935,
    "identical_draws": false,
+   "subset_order": 3,
    "relaxation_schedule": 2,
    "block": "B2",
    "gap_to_exact_pct": 0.10960459617859471
@@ -443,6 +504,7 @@
    "worst_energy": -169610.765625,
    "spread_relative_pct": 0.015326866144969864,
    "identical_draws": false,
+   "subset_order": 3,
    "relaxation_schedule": 2,
    "block": "B2",
    "gap_to_exact_pct": 0.11157536267672934
@@ -454,6 +516,7 @@
    "worst_energy": -169604.640625,
    "spread_relative_pct": 0.019628200796770474,
    "identical_draws": false,
+   "subset_order": 3,
    "relaxation_schedule": 2,
    "block": "B2",
    "gap_to_exact_pct": 0.11088963925327393
@@ -465,6 +528,7 @@
    "worst_energy": -169606.03125,
    "spread_relative_pct": 0.015207567639364554,
    "identical_draws": false,
+   "subset_order": 3,
    "relaxation_schedule": 2,
    "block": "B2",
    "gap_to_exact_pct": 0.11451182970622688
@@ -476,6 +540,7 @@
    "worst_energy": -169619.21875,
    "spread_relative_pct": 0.015482654959409379,
    "identical_draws": false,
+   "subset_order": 3,
    "relaxation_schedule": 2,
    "block": "B2",
    "gap_to_exact_pct": 0.10644162931386436
@@ -487,6 +552,7 @@
    "worst_energy": -197883.75,
    "spread_relative_pct": 0.015860648609737966,
    "identical_draws": false,
+   "subset_order": null,
    "relaxation_schedule": null,
    "block": null
   },
@@ -497,6 +563,7 @@
    "worst_energy": -166266.5625,
    "spread_relative_pct": 0.019947040279209707,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "G0b",
    "gap_to_exact_pct": 0.11642588491329679
@@ -508,6 +575,7 @@
    "worst_energy": -162716.5625,
    "spread_relative_pct": 0.007172618227456878,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "G0b",
    "gap_to_exact_pct": 0.01630395350417958
@@ -519,6 +587,7 @@
    "worst_energy": -147567.3125,
    "spread_relative_pct": 0.29292485030174026,
    "identical_draws": false,
+   "subset_order": 2,
    "relaxation_schedule": 2,
    "block": "G0b",
    "gap_to_exact_pct": 0.4133399972512124
@@ -530,6 +599,7 @@
    "worst_energy": -162586.578125,
    "spread_relative_pct": 0.07097904797611278,
    "identical_draws": false,
+   "subset_order": 3,
    "relaxation_schedule": 2,
    "block": "G0b",
    "gap_to_exact_pct": 0.07556286350263718
@@ -541,6 +611,7 @@
    "worst_energy": -130723.28125,
    "spread_relative_pct": 0.3426065734911469,
    "identical_draws": false,
+   "subset_order": 1,
    "relaxation_schedule": 2,
    "block": "G0b",
    "gap_to_exact_pct": 0.07337237276121386

@@ -92,3 +92,36 @@ def test_the_withdrawn_claim_does_not_return(art):
         assert "earlier version" in window, (
             f"{name} states the withdrawn resolution claim without withdrawing "
             f"it in the same breath")
+
+
+def test_dispersion_groups_on_the_pool_not_the_device():
+    """The dispersion split must key on the field that actually varies.
+
+    Caught by Copilot review on PR #75. The grouping keyed on
+    `relaxation_schedule`, which is the DIRAC-3 DEVICE parameter and is 2 for
+    every fit in the campaign, B2 included -- so the split collapsed to a single
+    group holding every block, which is exactly the pooling its own comment
+    claimed to prevent. What distinguishes B2 is `weak_cls_schedule`, the POOL
+    subset order (3 for B2, 1 or 2 elsewhere).
+
+    This is the same device-versus-pool "schedule" conflation F60 corrected in
+    the documents, reappearing in code. Pinned here so it cannot return.
+    """
+    import json
+    art = Path(__file__).resolve().parents[1] / "results" / "hw_dispersion.json"
+    if not art.exists():
+        pytest.skip("dispersion artifact absent")
+    d = json.loads(art.read_text(encoding="utf-8"))
+
+    assert "by_subset_order" in d, "dispersion is no longer split by pool order"
+    groups = d["by_subset_order"]
+    assert len(groups) > 1, (
+        "the subset-order split collapsed to one group; it is keying on a field "
+        "that does not vary, which is the defect this test exists to catch")
+    assert "3" in groups, "no order-3 group -- B2 is not being separated"
+    assert "B2" in groups["3"]["blocks"]
+    assert "B2" not in groups.get("2", {}).get("blocks", []), (
+        "B2 appears in the order-2 group; the pool order is being read wrong")
+
+    # The device parameter is constant, and saying so is the point.
+    assert d["relaxation_schedule_all_fits"] == [2]
