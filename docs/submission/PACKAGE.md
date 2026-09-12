@@ -8,9 +8,9 @@ geometry read back from the rendered PDFs, not assumed from the sources.
 
 | File | Pages | Size | SHA-256 |
 |---|---|---|---|
-| `proposal.pdf` | 6 / 6 | 62.1 KB | `1f767812aeef36a384d0b726c94223fd4b70d8c77708597816237c27994e93fc` |
-| `appendix.pdf` | 3 / 3 | 49.2 KB | `f9a9770052bbc3c1943103f3f13849e86f67e1e3f618731416886ad8be2bdcbc` |
-| `team_profile.pdf` | 1 / 1 | 27.8 KB | `857434a18020cd33b71175b4f34c949bd4bdc1110a9a989814cad09b9fd4270c` |
+| `proposal.pdf` | 6 / 6 | 62.1 KB | `15ef95badd6e7dd737fbc8efe8a42224de2f27db9df48760cee9cfd926181a3e` |
+| `appendix.pdf` | 3 / 3 | 49.2 KB | `13e1fc40a18d18dda787388e4267ce37990a7b3c85706a3608f443071fe3f5e8` |
+| `team_profile.pdf` | 1 / 1 | 27.8 KB | `d88ff8e0faf6beb019b7b088ae3365766ea1f6cd907698aa05418b5478891c4c` |
 
 All US Letter, 10.0pt dominant with nothing smaller, English. Total 139 KB
 against a 20 MB per-file cap. Three files into five upload slots.
@@ -59,4 +59,4 @@ be answered by doing it.
   1,141.0 s and 61 fits from three independent artifacts
 - Requirements matrix (Task B): all 92 rows walked against the CURRENT documents
 - Suite: 321 passed, 1 skipped (322 collected)
-- Amendments: 32 (A1-A32); A32 corrects two figures in the log itself
+- Amendments: 32 (A1-A32); A32 corrects the linear-term spread quoted in A31
