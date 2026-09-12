@@ -268,6 +268,17 @@ docs/submission/SUBMISSION_RECEIPT.md. Removed from candidates per convention.)
 
 ### HOLD Items (post-submission)
 
+**THE HOLD CONDITION EXPIRED 2026-09-12 when the submission was filed.** Every
+item below was held for one reason -- it must not compete with the submission --
+and that reason is gone. They are NOT automatically live: "no longer blocked" is
+not "selected", and the team lead sets priority. But they should be read as
+candidates at the next refinement rather than skipped as held, and the same
+applies to F39, whose card still says "HOLD until after submission".
+
+Flagged rather than re-prioritised: re-scoring nine cards is a scope decision,
+not a sweep correction.
+
+
 **F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority HOLD**
 - Phase: Experiments (moved to HOLD by team lead 2026-09-08 at Sprint 10 refinement)
 - Platform: SPECTRA, Dirac-3
