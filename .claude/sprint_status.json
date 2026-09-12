@@ -3,7 +3,7 @@
     "number": 13,
     "name": "Submit",
     "branch": "feature/20260912_Sprint_13",
-    "status": "phase_5_manual_validation",
+    "status": "phase_7_retrospective",
     "plan_doc": "docs/sprints/SPRINT_13_PLAN.md",
     "pr": 82,
     "plan_approved": true,
@@ -15,7 +15,7 @@
       81
     ],
     "prior_prs": [],
-    "note": "F10 only. Tasks A-D complete (issues 77-80 closed). Task E (#81, portal submission) is team-lead-owned. Six evidence-walk defects found and corrected with team-lead approval; A32 registers two that were errors in the frozen log. Awaiting Manual Validation."
+    "note": "F10 only. Tasks A-D complete (issues 77-80 closed). Manual Validation passed all four items 2026-09-12. Task E (#81, portal submission) remains team-lead-owned. Nine defects found and corrected across the documents, matrix and evidence artifacts; A32 registers the one that was an error in the frozen log."
   },
   "last_completed_sprint": {
     "number": 12,
