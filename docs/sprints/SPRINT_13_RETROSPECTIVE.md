@@ -183,3 +183,27 @@ the six findings enough to bring them forward.
 - **Lead Developer**: none
 - **Claude Code Development Team**: None. The remaining item is the portal upload, which is a team-lead action rather
 than a question.
+## Improvement Decisions
+
+Team lead disposition, 2026-09-12: **"all now"** -- blanket, all six applied this
+sprint.
+
+| # | Improvement | Source | Type | Disposition |
+|---|---|---|---|---|
+| 1 | A list presented for approval contains only items to be changed; "recommend no action" goes in its own section | Communication (Claude) | process | **Applied** -- SPRINT_EXECUTION_WORKFLOW.md Class 4 |
+| 2 | Verification sprints carry a stated 30% findings allowance | Effort Accuracy (Claude) | planning | **Applied** -- SPRINT_PLANNING.md |
+| 3 | Correct the CLAUDE.md claim that `store.py` enforces the schema at write time | Architecture Maintenance (Claude) | docs | **Applied** -- CLAUDE.md |
+| 4 | Label A.5's brackets as fold min/max, since A.1 uses identical notation for t-intervals | evidence walk (LOW) | Class 4 | **Applied** -- appendix A.5, with approval |
+| 5 | Guard the pool-mechanism claim, currently the suite's only skip | Testing Approach (Claude) | tech debt | **Applied as backlog** -- F67 registered |
+| 6 | Add the 0.5739 case to F39 as motivating evidence | Testing Approach (Claude) | backlog | **Applied** -- F39 card |
+
+Improvement 1 is the sprint's own failure made deterministic in the workflow:
+six findings were presented for approval, item 5 recommended taking no action,
+and the team lead reasonably approved all six as fixes. The unwanted change was
+backed out and the ambiguity is now a written rule.
+
+## Transition note
+
+Sprint 13 delivered F10's verification half. **Task E (#81), the portal upload,
+is team-lead-owned and remains open**; the sprint is otherwise complete. The
+summary document is written during Sprint 14 planning per workflow 3.2.1.

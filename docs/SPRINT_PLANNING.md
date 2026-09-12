@@ -107,6 +107,22 @@ filled its text block, with zero free space anywhere.
 A check that cannot fail is not evidence. Write the falsifier first, and if the
 dry run cannot produce the failing observation, redesign the dry run.
 
+### A verification sprint GENERATES work; budget for it (Sprint 13 improvement 2)
+
+A sprint whose tasks are "check that X is true" produces a second body of work
+the moment a check fails, and that work is invisible at planning time because it
+is contingent on findings that do not exist yet.
+
+Sprint 13 measured it. Tasks A to D were estimated at about 200 minutes and ran
+close to that. The six approved document corrections, the A32 amendment, one
+backout and two re-renders added roughly 60 minutes that no card carried. None
+of it was scope creep: every item came from a check doing exactly its job.
+
+Rule: any sprint whose scope is dominated by verification carries a stated
+**30% findings allowance** on top of its task estimates, named in the plan rather
+than absorbed silently. If the checks all pass, the allowance is returned and the
+sprint finishes early, which is the good outcome and should be recorded as such.
+
 ## Risk assessment per sprint plan
 
 Each plan lists its top risks with mitigation: for this project always consider hardware budget (Criterion H), leakage, deadline (submission-ready Sep 8), grant timing, and context/session continuity.

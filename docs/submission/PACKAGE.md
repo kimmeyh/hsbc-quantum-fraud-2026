@@ -8,9 +8,9 @@ geometry read back from the rendered PDFs, not assumed from the sources.
 
 | File | Pages | Size | SHA-256 |
 |---|---|---|---|
-| `proposal.pdf` | 6 / 6 | 62.1 KB | `15ef95badd6e7dd737fbc8efe8a42224de2f27db9df48760cee9cfd926181a3e` |
-| `appendix.pdf` | 3 / 3 | 49.2 KB | `13e1fc40a18d18dda787388e4267ce37990a7b3c85706a3608f443071fe3f5e8` |
-| `team_profile.pdf` | 1 / 1 | 27.8 KB | `d88ff8e0faf6beb019b7b088ae3365766ea1f6cd907698aa05418b5478891c4c` |
+| `proposal.pdf` | 6 / 6 | 62.1 KB | `66cbdefa459a81c41f7f8a21fd5dc29b82c7e86f72415aa72229ac5e9d777e11` |
+| `appendix.pdf` | 3 / 3 | 49.3 KB | `d1125998a7e8209c36d9dbe1edeea65276de5bfa4e5f4186cb648a24b670c242` |
+| `team_profile.pdf` | 1 / 1 | 27.8 KB | `b77eb3f26b60a5d3a2b5c8e5a1245eb97039454fbc4812f5e65c407957ce5fdc` |
 
 All US Letter, 10.0pt dominant with nothing smaller, English. Total 139 KB
 against a 20 MB per-file cap. Three files into five upload slots.
@@ -23,9 +23,8 @@ above.
 
 ## Page fill at build time
 
-    proposal    p1 674  p2 635  p3 632  p4 678  p5 636  p6 82   (6 pages)
-    appendix    p1 713  p2 640  p3 584  (3 pages, 61 pt free on p3)
-    team_profile p1 632 (1 page)
+    appendix    p1 713  p2 682  p3 584  (3 pages, 96 pt free on p3)
+    proposal 6 pages, team_profile 1 page
 
 Appendix p3 carries 61 pt free, about 5 lines at the measured 12.0 pt pitch, and
 it is the tightest constraint in the package. The six approved evidence-walk

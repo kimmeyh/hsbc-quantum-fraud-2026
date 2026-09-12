@@ -166,6 +166,16 @@ Phase 2.
 - Depends on: nothing
 
 
+**F67. Guard the pool-mechanism claim on a fresh clone (~1h) Priority 12**
+- Phase: Experiments / tooling (Sprint 13 retrospective improvement 5, 2026-09-12)
+- Platform: `experiments/src/test_pool_mechanism.py`, `experiments/results/pools/`
+- `test_pool_mechanism.py` is the suite's ONLY skip. It skips because the pool `.npz` files are gitignored, so on a fresh clone it silently does not run
+- What that leaves unguarded: the appendix A.4 claim that **80 to 84 of the 91 learners reproduce the training labels exactly and zero predict the negative class everywhere** (A20). The claim is TRUE -- it was recomputed from the raw pools during the Sprint 13 evidence walk, every seed landing in 80-84 -- but nothing in CI would notice if it stopped being true
+- The decision this needs, which is why it is an hour and not ten minutes: either the pools belong in the repository (they are large, and Appendix C already promises the figures REGENERATE rather than ship), or a small committed fixture stands in for them. Those are different answers with different reproducibility stories
+- Value: a skipped test reads as a passing suite. This is the one claim in the submission whose guard is present but inert
+- Depends on: a team-lead decision on pools-versus-fixture
+
+
 **F36. Pandoc Lua filter: floating tables for the submission PDFs -- CLOSED 2026-09-07, FAILED**
 - **VERDICT: the filter works; the problem it was built for did not exist.** The premise (preserved in the review doc, because it is wrong in an instructive way) rested on a CHARACTER-COUNT page-fill measurement, and a table-heavy page always looks short by that measure. Measured as vertical extent, every page cited below was already full: 724 / 680 / 680 / 682pt of a 792pt page, zero free space anywhere. The appendix was over its limit because it had too much content
 - **Failed criterion 1** (appendix 3 pages with the filter, 4 without): 4 and 4. **Failed criterion 6** (other documents unchanged), which is worse: floating tables in a table-dense document COSTS a page, taking gate_report.pdf from 3 to 4. Criteria 2, 3, 4, 5 and 7 pass
@@ -204,6 +214,7 @@ Removed from candidates per convention.)
 
 (F35 interpretation-layer tests, F41 mechanism correction (A20), F42 review findings, F43 IEEE-CIS AUC-ROC, F44 figure resolution, F45 evidence guard, F46 QCi grant and ceiling probe (A21), F47 metered-call wrapper: ALL COMPLETED in Sprint 11, merged via PR #66 (main PR #70); history in SPRINT_11_SUMMARY.md. Removed from candidates per convention.)
 
+- **MOTIVATING CASE ADDED 2026-09-12 (Sprint 13 evidence walk).** The strongest evidence yet for this card. Appendix A.5 quoted the IEEE matched-feature control as falling "from 0.5739 to 0.0734 ... fold 0". Both numbers are real and both are in the artifacts -- but 0.5739 is the THREE-FOLD MEAN from `ieee_classical.json` while the control is fold-0 to fold-0 and its baseline is 0.5424 in `ieee_cvqboost.json`. A global value-set lookup accepts it, because the number exists somewhere. `test_document_figures_resolve.py` passed it, and its own docstring predicts exactly this: "It does NOT catch a figure that exists in the store but is quoted in the wrong place." Only per-claim provenance -- this sentence cites THAT row -- closes it, which is what F39 is
 **F66. Record the Copilot reviewer-request procedure in the workflow (~15m) Priority 10**
 - Phase: Finalize / process (Sprint 12 retrospective category 13, 2026-09-11)
 - Platform: `docs/SPRINT_EXECUTION_WORKFLOW.md`
