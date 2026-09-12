@@ -175,7 +175,12 @@ def build() -> dict:
             "auc_roc": round(temp["metrics"]["auc_roc"], 4),
         },
         "paired_vs_b1_dct": {
-            "design": (f"B2 (833 vars) minus B1 {COMPARATOR_CONFIG} (78 vars) on "
+            # 91, not 78. A24 states it outright: "B1's variable count in that
+            # comparison is 91 (full pair build at k=13), not 78, which is the
+            # sequential count belonging to the IEEE-CIS arm." Verified against
+            # results.json rather than against the amendment's prose -- every
+            # hw_b1_dct row carries n_weak_classifiers 91.
+            "design": (f"B2 (833 vars) minus B1 {COMPARATOR_CONFIG} (91 vars) on "
                        "IDENTICAL seeds and protocol. The like-for-like comparator: "
                        "same pool family, same stratified protocol, differing only "
                        "in k (17 vs 13) and schedule (3 vs 2). B1's overall mean "

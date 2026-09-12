@@ -24,7 +24,7 @@
   "auc_roc": 0.9261
  },
  "paired_vs_b1_dct": {
-  "design": "B2 (833 vars) minus B1 hw_b1_dct (78 vars) on IDENTICAL seeds and protocol. The like-for-like comparator: same pool family, same stratified protocol, differing only in k (17 vs 13) and schedule (3 vs 2). B1's overall mean mixes the weaker lg config and the temporal fits and is NOT the right baseline.",
+  "design": "B2 (833 vars) minus B1 hw_b1_dct (91 vars) on IDENTICAL seeds and protocol. The like-for-like comparator: same pool family, same stratified protocol, differing only in k (17 vs 13) and schedule (3 vs 2). B1's overall mean mixes the weaker lg config and the temporal fits and is NOT the right baseline.",
   "n_seeds": 10,
   "per_seed": {
    "42": 0.0134,
