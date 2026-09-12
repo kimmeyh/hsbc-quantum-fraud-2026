@@ -23,36 +23,41 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 7 | docs/sprints/SPRINT_7_SUMMARY.md | [OK] Complete | ~1 day (Sep 5, 2026) |
 | 8 | docs/sprints/SPRINT_8_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 6-7, 2026) |
 | 9 | docs/sprints/SPRINT_9_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 7-8, 2026) |
+| 10 | docs/sprints/SPRINT_10_SUMMARY.md | [OK] Complete | ~1 day (Sep 9, 2026) |
+| 11 | docs/sprints/SPRINT_11_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 9-10, 2026) |
+| 12 | docs/sprints/SPRINT_12_SUMMARY.md | [OK] Complete | ~2.5 days (Sep 10-12, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 9: Representation, and Paying What We Promised** (Sep 7-8, 2026; PR #53).
-Delivered **F4** (H6, the last preregistered experimental arm), **F14** (the
-eqc-models feedback package QCi's letter had promised) and **F16** (minimal CI
-with a dirty-tree gate). ZERO metered Dirac-3 seconds.
-**The finding**: H6 is a measured null. The QFE phase representation shifts the
-quantum-minus-classical delta by -0.0115 against a paired SD of 0.0135, which is
-43% of our 0.0268 MDE and negative on 7 of 10 seeds. Reported as "a small
-negative shift that does not reach claimable size" -- not "no effect", not
-"widens the gap". The framing was fixed in writing BEFORE any result was seen,
-which mattered: between four and nine seeds an apparent monotonic negative drift
-reached ratio 0.70, and seed 46 broke it in both runs to within 0.0003.
-**The sprint's defining fact**: the same arm ran THREE times and two runs were
-discarded, 18.9 hours of compute against a 10-minute estimate. Run 1 crashed on
-a spline basis refitted on TEST data. Run 2 completed 20/20 cells cleanly and
-was discarded because two of three classical twins never received the
-representation under test -- they ranked inputs by variance, and ULB's Time
-column has variance 2.3e9 against whitened phase columns at 1.0. Both defects
-share a shape: the code ran, the numbers were plausible, and the experiment was
-not the experiment the preregistration specifies.
-**What the fix bought**: not a different number -- a GBDT was the best classical
-arm in all 20 cells either way -- but a different meaning. The corrected GAM
-twin scores 0.7893 against the quantum arm's 0.7646, where before it scored
-0.2590 and was noise. "Best classical" now denotes a bar that can exploit
-periodic structure, which is what makes the comparison survive the Fourier Wall
-objection.
-Retro: docs/sprints/SPRINT_9_RETROSPECTIVE.md (15 categories all Very Good;
-improvements 1, 2 and 4 applied, 3 declined; suite 173 -> 194).
+**Sprint 12: Spend the Grant, Then Submit** (Sep 10-12, 2026; PR #75 to develop,
+PR #76 develop to main). Delivered **F2b blocks B2 and B3** on Dirac-3, **F37**
+(repository public), **F38** (page limits), and **F49-F63**, the response to
+three external reviews. Suite 277 -> 320. Hardware: 968 metered seconds of a
+2,000 s authorization, 23 fits, zero device failures.
+**The positive result**: B2 is the campaign's only gain at scale (A24). Eleven
+fits at 833 continuous variables against B1's matched `hw_b1_dct` arm on
+identical seeds: **+0.0256 AUPRC, 95% CI [+0.0203, +0.0310], 10 of 10 seeds**.
+Unpaired it is invisible inside a 0.030 seed-to-seed SD. It still trails
+full-feature CatBoost by 0.0440, so the null holds.
+**The sprint's defining fact**: the review found three PUBLISHED claims that were
+false, and we had written all three. The solver was not converged (A26) -- the
+stopping test certified the objective, not the solution, at KKT residual 4.6e-05.
+The convexity claim was false (A27) and had been written the previous day in
+response to an internal review, then published within hours. Uniform is not the
+zero-penalty optimum (A27), the same solved-from-versus-evaluated-at confusion in
+a second place. Every internal check had agreed with itself, because the figure
+and the error came from the same solver.
+**What the review bought**: the 200:1 resolution finding (A31). Our claim that
+hardware agreement bounded resolution effects was backwards -- on all ten pools
+nothing in the problem is visible to the device, so uniform output is forced
+rather than evidence. That turned the weakest mechanism paragraph into the
+strongest argument for Phase 2: a device that cannot spread weight over ~200
+learners has a native problem class, and it is cardinality-constrained selection.
+**Process**: the team lead's intervention -- stop, analyse both reviews fully,
+address findings through planned cards rather than reactive edits -- is what
+broke the amend-under-pressure loop. It is now a standing rule and a hook.
+Retro: docs/sprints/SPRINT_12_RETROSPECTIVE.md (all rated categories Very Good;
+all seven improvements applied, three of them made deterministic).
 
 ## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
 
@@ -66,8 +71,8 @@ improvements 1, 2 and 4 applied, 3 declined; suite 173 -> 194).
 | 9 | Sep 7-8 | [DONE] F4 (H6, measured null), F14, F16; **QCi package SENT** 2026-09-08 09:59 | -- |
 | 10 | Sep 9 | [DONE] **F40** (segmentation) re-scoped to F40 only; gate-report undercount fixed (27/120 -> the true 37/163); 8 correctness findings from two adversarial reviews; 13 PR-review findings addressed | F37/F38 deferred to 11 |
 | 11 | Sep 9-10 | [DONE] **F41** (A20, mechanism corrected), **F42** (+0.0319 decomposed: the gain is class weighting, not diversity), **F43**, **F44**, **F45**, **F35**, plus **F46** (A21, ceiling LIFTED) and **F47** added mid-sprint; 15 review findings addressed | F37 and the fresh-eyes review deferred to 12 |
-| 12 | Sep 10-12 | **F37 -> F38 -> F10** in that order, plus the fresh-eyes review; Dirac-3 work only if the calendar allows | SUBMISSION SPRINT; evidence freeze Sep 12 |
-| Finalize | Sep 12-13 | F10, **F40 (segment non-public material)** -> **F37 (repo public)** in that order, **F38 (page limits)** -- all SUBMISSION BLOCKERS; submit Sep 13 | no new evidence after Sep 12; never later than Sep 14 |
+| 12 | Sep 10-12 | [DONE] **F2b B2 and B3** on Dirac-3 (23 fits, 968 metered s), **F37**, **F38**, and **F49-F63** from three external reviews. F10 NOT reached | Evidence freeze held; F10 carries to Finalize |
+| Finalize | Sep 11-13 | **F10 only.** F40, F37 and F38 all DONE (Sprints 10 and 12), so F10 is the sole remaining submission blocker | no new evidence after Sep 12; never later than Sep 14 |
 
 **Sprint 12 sequencing, DECIDED 2026-09-09 (Sprint 11 improvement 5) rather than under deadline pressure.** The order is forced by two dependencies, not by preference:
 
@@ -97,6 +102,23 @@ classical solve is NOT trivially available, so a small optimizer contribution on
 a CONVEX problem does not predict a small one on an NP-hard problem. Deciding
 now would be deciding without the evidence that Phase 2 exists to gather.
 
+**NEW EVIDENCE 2026-09-11 (Sprint 12, F57/A31), recorded without deciding.** The
+200:1 resolution finding bears directly on this question and points toward F25.
+On all ten B2 pools the diagonal of J is 510,705 while off-diagonals span at most
+20.0, against a resolvable difference of 2,554: nothing in the CONTINUOUS problem
+is visible to the device. Quantised at that resolution the off-diagonal collapses
+to one distinct value and the minimiser is uniform to 2e-15. The same limit
+explains B2's 0.83 weight cosine -- a diffuse optimum over 833 learners averages
+0.0012 per weight against a 0.005 resolution and is not representable.
+
+That is an argument that the continuous formulation is the wrong ask of this
+hardware, not that the optimizer has little leverage. A device that cannot spread
+weight over ~200 learners has a native problem class, and it is
+cardinality-constrained selection -- F25. It does NOT resolve the F33 reading
+above, which is about where leverage sits rather than which formulation the
+device can represent. Both are still open and the decision still waits for
+Phase 2.
+
 ## Next Sprint Candidates
 
 ### Experiments (Stage 3 of the master timeline; submission-ready Sep 8)
@@ -104,256 +126,6 @@ now would be deciding without the evidence that Phase 2 exists to gather.
 (F1 classical evidence campaign and F18 Dirac-3 notes mining: COMPLETED in Sprint 3, merged via PR #13; history in SPRINT_3_SUMMARY.md. Removed from candidates per convention. F1 residual -- the section-6 CVQBoost proxy tuning -- continues as F22.)
 
 (F22 CVQBoost proxy tuning and F2 hardware blocks B1+G0b: COMPLETED in Sprint 4, merged via PR #21; history in SPRINT_4_SUMMARY.md. F21 baseline research and F7 results memo likewise complete. Removed from candidates per convention. F2's remaining blocks B2/B3/B4/B5 continue as F2b below, gated on the QCi grant.)
-
-**F2b. Hardware campaign, remaining blocks (~0.5 day + approvals) Priority 20**
-- Phase: Experiments
-- Platform: Dirac-3
-- B2 (ULB full config, 816 vars, 11 fits, ~450 s), B3 (IEEE-CIS + H3 ladder, 16 fits, ~650 s), B4 (SPECTRA, 15 fits, ~450 s), B5 (QSVM sign-augmented, 12 fits, ~15 s); frozen spend priority B3 > B2 > ladder > B4
-- B1 + G0b already executed (Sprint 4, 120 QPU s); ~380 s of the current balance remain, so B5 is affordable now and the rest need the grant
-- Depends on: QCi grant; per-block team-lead approval (Criterion H)
-- **MEASURED 2026-09-10 (Sprint 12), B2 cost is no longer an estimate.** One fit at 833 variables, degree 3, seed 42 cost **91 metered seconds** -- not the ~40 s/fit the grid assumed. `ceil(sum(runtime))` predicted it exactly (runtime sum 90.152 s, balance 2929 -> 2838), which also validates the billing rule at degree 3 and 833 variables, far outside its degree-2 anchors. Per-sample cost is 11.27 s against B3's ~0.6 s, an **18.8x** step
-- **RESULT of that fit: AUPRC 0.8231, AUC-ROC 0.9547 [HW]**, against B1's 0.7351 mean (78 vars, 22 fits) and full-feature CatBoost's 0.8368 (10 seeds). The closest CVQBoost has come to the production bar on ULB, in exactly the configuration A12's ceiling foreclosed. CAVEAT: tie_fraction 0.9248, so its threshold-dependent figures are weak evidence while its ranking metrics are sound
-- **The remaining TEN fits would cost ~910 s**, over the 900 s sprint ceiling on their own. A partial block (3 or 5 seeds) gives a mean with some spread at proportional cost. Team-lead decision; the anchor now exists so it can be made on measured numbers
-- **Runner gap found the same day**: `run_hardware.py` writes its block artifact only at block completion, so a process that dies after a billed call leaves no `b2_hardware.json`. The Sprint 12 B2 fit did exactly that (WSL teardown on parent-shell exit, no traceback). Nothing was lost -- the raw response, predictions `.npz` and a full `results.json` row with `metered_seconds: 91.0` all persisted first -- but a per-fit artifact write would make that guarantee structural rather than lucky
-
-**F36. Pandoc Lua filter: floating tables for the submission PDFs -- CLOSED 2026-09-07, FAILED**
-- **VERDICT: the filter works; the problem it was built for did not exist.** The premise (preserved in the review doc, because it is wrong in an instructive way) rested on a CHARACTER-COUNT page-fill measurement, and a table-heavy page always looks short by that measure. Measured as vertical extent, every page cited below was already full: 724 / 680 / 680 / 682pt of a 792pt page, zero free space anywhere. The appendix was over its limit because it had too much content
-- **Failed criterion 1** (appendix 3 pages with the filter, 4 without): 4 and 4. **Failed criterion 6** (other documents unchanged), which is worse: floating tables in a table-dense document COSTS a page, taking gate_report.pdf from 3 to 4. Criteria 2, 3, 4, 5 and 7 pass
-- Filter RETAINED but UNREGISTERED at `scripts/pandoc/float-tables.lua`, opt-in through `render-pdf.ps1 -LuaFilter`, which nothing passes. `render-all.ps1` is unchanged. Do not enable it without reading `docs/reviews/f36-float-tables-outcome.md`
-- **What the card actually produced, and it is worth more than the filter**: `scripts/page-fill-report.py` now measures vertical extent in points instead of counting characters, and excludes the page-number folio, which sat at the same depth on every page and so made every page report zero free space -- including a nearly empty last page, the one case the tool exists to flag. `experiments/src/test_page_fill_report.py` covers both defects and all four tests fail against the previous implementation
-- **The appendix DID reach 3 pages**, by the team lead's two suggestions: set pipe-table column widths from the longest cell each column holds (every table used `|---|---|`, giving "30" and "[SIM]" the same width as a sentence; removed 9 of 20 spilled lines with no content change), and move reference material to the public repository. It has since gone back to 4 with the B.1 compound-falsification statement, tracked as F38
-- **Process lesson**: the card's dry run could not have failed. Deleting five tables removes their content AND their space, so the document was always going to shrink. It never distinguished "tables take room" from "tables waste room". A check that cannot fail is not evidence
-
-The original card body is pruned as shipped. Its premise, the seven
-acceptance criteria and the full failure analysis are preserved in
-docs/reviews/f36-float-tables-outcome.md.
-
-**F38. Appendix to 3 pages AND proposal to 6 (~3h, RE-ESTIMATED) Priority 1 -- SUBMISSION BLOCKER**
-- **RE-MEASURED 2026-09-10 after the internal review: proposal 8 of 6 pages, appendix 7 of 3. The cut is now roughly 1,290pt + 2,550pt = ~3,840pt.** The review's corrections (confound disclosure, solver-fidelity caveat, job-id provenance) each added text, all of it load-bearing. 689 -> 2,028 -> 3,197 -> ~3,840pt in one day. Every growth step has been a correction that made the submission more honest, which is the tension this card now embodies: the accurate version does not fit. Earlier readings follow.
-- **RE-MEASURED 2026-09-10 after the B2 block landed: the appendix must shed ~1,907pt and the proposal ~1,290pt, TOTAL ~3,197pt. The proposal is now 8 of 6 pages and the appendix 6 of 3.** B2's paired result is the campaign's one clean positive for CVQBoost and earned space in both documents; the cut grew accordingly. This card has gone 689pt -> 2,028pt -> 3,197pt in one day. It is no longer an editing task and cannot be done by trimming restatement: at this size it means removing or relocating whole sections. The team lead has deferred it until after the agent review. Earlier readings follow as the record of how fast it grows.
-- **MEASURED 2026-09-10 at Sprint 12 close-out, AFTER the B3 write-up: appendix needs a 1,469pt cut, proposal needs 559pt. TOTAL 2,028pt.** The appendix is now 6 of 3 pages, not 4 of 3: A22 added the hardware ladder to A.5 and a new B.3 section for the unrun B2 block. THIS CARD HAS TRIPLED SINCE SPRINT 11 AND IS NO LONGER A 3-HOUR CARD -- re-estimate it before committing to a sprint. The earlier reading follows, kept as the record of how fast this grows: appendix 250pt, proposal 439pt.** The proposal figure was 81pt at Sprint 10 planning and 21pt before that: page 7 now carries 467pt where it carried 70pt, because two correctness sprints added roughly two-thirds of a page. THIS IS NO LONGER A 45-MINUTE CARD
-- **RE-MEASURE BEFORE CUTTING (Sprint 11 improvement 3).** Run `python scripts/page-fill-report.py` on both PDFs as the FIRST action of this card. Every recorded figure has been stale by the time the card ran: 76pt became 158pt became 229pt, because each correctness sprint adds text. Cutting against a stale number is how this card grew twice. The figure in this card is a record of what was once true, not an instruction
-- Phase: Finalize (team lead 2026-09-07, accepting the overage for now: "can we leave it in the .md for now and we will address the overage later?")
-- Platform: docs
-- **State (2026-09-10, Sprint 12)**: appendix.pdf is **6 of 3** pages and proposal.pdf is 7 of 6. Pages 4, 5 and 6 of the appendix must vanish entirely against only 10pt of slack on pages 1-3. A judgment call is now unavoidable and belongs to the team lead: at this size the cut cannot come from restatement alone, so it will have to drop or relocate whole subsections. The most likely candidates are the A.6 phase-representation write-up and the new B.3, both of which are real evidence -- which is why this is a decision, not an edit. Prior state, for the record: appendix.pdf was 4 of 3 pages. The B.1 compound-falsification statement was added deliberately and is worth its space: section 2 of the preregistration names its own falsification test, two of its three conditions (H1b NULL at -0.0399, H3 slope -0.006) are now measured AGAINST the theory, and a submission silent on that reads as avoidance. It stays; something else pays for it
-- **Already measured, so this does not need rediscovering**: as of 2026-09-07, 100pt spills onto page 4 against only 24pt of reclaimable slack. `python scripts/page-fill-report.py docs/paper/out/appendix.pdf` now reports "genuine LENGTH problem: about 76pt of content has to go". NOTE the verdict CHANGED during Sprint 8: it read FIX THE BREAK (121pt reclaimable) until the Copilot review correction added the untuned-arms qualification, which consumed the slack. Re-run the report before acting; do not trust this line
-- **Candidate, already drafted and reverted once**: condensing Appendix C's artifact list to one sentence recovers about 3 lines and was measured to work. It was reverted only because the team lead chose to defer rather than cut under time pressure
-- **Do NOT cut**: any figure, control, caveat, the A15/A17/A12 disclosures, or the compound-criterion statement. The 2026-09-06 pass already removed all restatement that was free to remove; what remains is evidence
-- Acceptance: `python scripts/check-page-limits.py` reports OK 3 of 3, AND a numeric diff against the current render shows no figure lost (the 2026-09-06 method: extract all decimals from both PDFs and compare as sets)
-- **Sprint 9 update (2026-09-07)**: the H6 arm (F4) lands an A.5/A.6 write-up in the same appendix, so the cut is larger than 76pt by whatever H6 needs. Sequence matters: write H6 FIRST, then cut once against the real total, rather than cutting to 3 pages and immediately breaking it again
-- **Sprint 9 update (2026-09-08)**: the H6 write-up landed, so BOTH documents are now over. appendix 4 of 3, proposal 7 of 6. Both page-limit cases are xfail(strict) tied to this card, so each FAILS once its document is back under limit and the markers cannot outlive the fix
-- Risk: an over-limit appendix is a submission-rules failure independent of content quality. Must not reach Sep 13 unresolved
-- Depends on: nothing
-
-**F39. Fact database: one source of truth for every asserted fact (~1-2 days) Priority 2 -- HOLD until after submission**
-- Phase: Post-submission / Phase 2 tooling (team lead, Sprint 8 retrospective 2026-09-07: "We need to create a 'fact database' ... It states facts that we can confirm with confidence intervals between 0.0% and 99.9%. There are likely over 1,000 and this makes it difficult to keep track of ... if we need to update the baseline facts it should be here and then all other sources use this as the basis")
-- Platform: tooling
-- **The problem it solves, with this sprint's evidence**: the same fact is currently restated in many documents with no link between the copies. Sprint 8 alone found the QCi letter asserting "twelve amendments" when the enclosed preregistration had seventeen; A15 corrected a k=6 AUPRC published as 0.7688 when the true value was 0.7629, a figure that had been carried from a five-seed run into a ten-seed writeup; and A17 forced recomputation of every A11/A13 figure across four documents. Each was caught by a human reading, or by a one-off script written for that one check
-- **Scale**: the team lead estimates over 1,000 asserted facts. The current control is `score_gates.py` regenerating gate figures plus ad-hoc verification scripts; neither covers prose assertions, and nothing covers cross-document consistency
-- **Design direction (team lead: research Cycorp/cyc.com, functionally representative, NOT a LISP reimplementation)**: each fact carries an identifier, a value, a provenance pointer to the results row or source that establishes it, an evidence tag ([HW]/[SIM]/[PROJ]), and a CONFIDENCE between 0.0% and 99.9%. Documents reference facts by identifier rather than restating values, and a build step resolves references and fails on an unresolved or stale one. The confidence field is the part worth taking from Cyc: it forces "how sure are we" to be recorded next to the claim rather than carried in someone's head
-- **Why confidence intervals matter here specifically**: this project already distinguishes measured from projected via evidence tags, but not strong-measured from weak-measured. The score-degeneracy caveat, the single-seed spot checks, and the adversarial control that never converged are all facts we assert with genuinely different confidence, and today that distinction lives only in prose
-- **Explicitly held until after submission** (team lead: "We may hold this until after submission"). It is infrastructure, and eight days out the risk of touching every document exceeds the benefit
-- Acceptance: every numeric assertion in proposal, appendix and the QCi letter resolves to a fact record; the build fails on a stale reference; and a deliberate edit to one fact value propagates to every document that cites it
-- Depends on: nothing. Best started after F16/F10 and the submission
-
-(F40 segment non-public material: COMPLETED in Sprint 10, merged via PR #58 (main PR #62); history in SPRINT_10_SUMMARY.md. Removed from candidates per convention.)
-
-**F37. Make the repository public (~45m) Priority 1 -- SUBMISSION BLOCKER**
-- Phase: Finalize (team lead 2026-09-06: "It must be public upon submission ... if not already in the backlog item for final submission, please add making the repository public")
-- Platform: repo/admin
-- **Why it blocks**: `docs/paper/appendix.md` Appendix C cites `github.com/kimmeyh/hsbc-quantum-fraud-2026` for the pinned environment, both dataset checksums, the preregistration in full, the full reference list, and all 37 QCi job identifiers with their raw responses and Dirac-3 parameters. That citation is what lets the appendix meet its hard 3-page limit: the material was moved OUT of the PDF and INTO the repository. An anonymous request to the GitHub API returned 404 on 2026-09-06, so the repository is private today and the citation is currently a dead link
-- **Must happen BEFORE the confidentiality scan is meaningful**: the repo root holds team-lead `0*` working files, which CLAUDE.md says to commit but never read. Those and anything else not intended for publication have to be resolved before the visibility flip, not after
-- Steps: (1) run `scripts/confidentiality-scan.ps1` over the full history, not just the tip; (2) resolve every `0*` root working file with the team lead -- remove, or confirm publishable; (3) confirm the QCi job records and any hardware-response payloads carry no account or credential material; (4) confirm both dataset licences permit redistribution of derived checksums and results (ULB and IEEE-CIS raw data are NOT redistributed, only checksums); (5) flip visibility; (6) verify anonymously -- `curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/kimmeyh/hsbc-quantum-fraud-2026` must return 200, and the appendix URL must resolve in a logged-out browser
-- **Acceptance**: an anonymous fetch of the repository URL succeeds AND `experiments/requirements.txt`, `experiments/PREREGISTRATION.md` and the results store are all reachable without authentication. Verified logged out, not from an authenticated session
-- Risk: history rewriting after publication is not reliable, so anything published is published. The scan and the `0*` resolution are the whole cost of this card; the visibility flip itself is one click
-- Depends on: nothing. Can run any time before Sep 13, and EARLIER is safer -- it is the one submission step that cannot be undone
-
-
-(F3 IEEE-CIS: COMPLETED in Sprint 8, all four tasks, merged via PR #47; history in SPRINT_8_SUMMARY.md. Removed from candidates per convention.)
-
-### Paper (Stages 4-6)
-
-### Finalize (Stages 7-8)
-
-(F35 interpretation-layer tests, F41 mechanism correction (A20), F42 review findings, F43 IEEE-CIS AUC-ROC, F44 figure resolution, F45 evidence guard, F46 QCi grant and ceiling probe (A21), F47 metered-call wrapper: ALL COMPLETED in Sprint 11, merged via PR #66 (main PR #70); history in SPRINT_11_SUMMARY.md. Removed from candidates per convention.)
-
-**F48. Extend the escape hook to shell metacharacters (~45m) Priority 9**
-- Phase: Finalize / tooling (Sprint 11 retrospective improvement 4, backlogged 2026-09-09)
-- Platform: .claude/hooks
-- `block-unraw-escape.ps1` catches Windows path escapes in non-raw PYTHON strings and has fired correctly several times. It does not catch SHELL metacharacters: a backtick or `$(...)` inside a quoted string passed to Bash is expanded by bash before Python ever sees it
-- **Observed in Sprint 11**: backticks inside a Python string in a Bash command were expanded as command substitution, executing a source file as shell and silently deleting the backticked filenames from a master-plan line. The edit "succeeded" and the damage was only visible on inspection
-- The fix is the same shape as the existing hook: detect backticks or `$(` inside a quoted span destined for Bash, and require the single-quoted heredoc form that suppresses expansion
-- Lower priority than the submission blockers, and real: the failure mode is SILENT corruption of a file that was edited successfully, which is worse than a crash
-- Depends on: nothing
-
-**F49. Solver optimality certificate, and regenerate every proxy-dependent figure (~1.5h) Priority 1 -- CRITICAL PATH**
-- Phase: Experiments / correctness
-- Platform: `experiments/src/mechanism_controls.py`, `qubo_proxy.py`
-- **THE DEFECT, verified 2026-09-10.** `solve_weighted` is FISTA with a RELATIVE-OBJECTIVE stopping test (`abs(prev-cur) <= 1e-10*(1+abs(prev))`, 5000-iteration cap). The frozen objective is nearly flat near its optimum, so that test fires while the WEIGHTS are still moving. Measured KKT residual on the cached pools: reduced-gradient spread across the support is **0.344 absolute, 4.6e-05 relative**, where a true optimum gives ~0. The stopping rule certifies the OBJECTIVE, not the SOLUTION
-- **WHAT IT INVALIDATES.** Every figure derived from the proxy solve: the "uniform to seven decimal places" claim (that is where FISTA stopped, not where the optimum is), the solved-minus-uniform AP gain, the weight-cosine fidelity numbers for B1/G0b/B2/B3, and the objective-gap percentages. Our own recomputation reproduces the published +0.002224 EXACTLY, which is the point -- both our figure and our error come from the same under-converged solver. The external reviewer's more accurate solve gives +0.003023 on the same pools
-- **WHY IT MATTERS BEYOND THE NUMBER.** The submission's central structural control is "the device and an exact classical solve of the identical Hamiltonian agree". If the classical comparator is not converged, that control is weaker than claimed, and A22's solver-fidelity result -- the strongest statement the campaign makes about the device -- rests on it
-- Fix: add a projected-gradient / KKT residual stopping test to `solve_weighted`, keep the iteration cap as a backstop, record the achieved residual in every artifact so the certificate ships with the number. Then regenerate: `score_gates.py`, both hardware summaries, and every quoted fidelity figure
-- Acceptance: KKT residual recorded and below a stated tolerance for every solve; all regenerated figures differ from the published ones by a documented amount; the full suite green; a test asserts the residual is present and within tolerance
-- **NO QPU SECONDS.** Pure classical recomputation, ~15-30 min compute plus implementation
-- **This card GATES F52 and F56** -- their text quotes figures this card changes. Do them after, not in parallel
-- Depends on: nothing
-
-**F50. Withdraw the convexity claim and correct the lambda=0 mechanism (~1h) Priority 2**
-- Phase: Finalize / correctness
-- Platform: docs/paper, experiments/PREREGISTRATION.md
-- **TWO FALSE CLAIMS, both currently published, both verified false 2026-09-10**
-- (a) `appendix.md:340` says B2 differs "in the polynomial degree of the objective itself" and `:352` says "B2's objective is not the convex problem whose optimum is unique". A24 carries the same. BOTH ARE WRONG. `weak_cls_schedule=3` selects which feature SUBSETS each weak learner reads; it does not change the Hamiltonian's order. A three-feature tree is still ONE variable emitting a single vector in {-1,+1}. Verified on B2's own pool: H holds only -1 and +1, and the smallest eigenvalue of the 833x833 J = HH^T + lambda*I is exactly the lambda term (340,470). The submitted job carries the same `normalized_qudit_hamiltonian_optimization` type as every other block
-- (b) `appendix.md` A.4 says a penalty sweep "leaves it uniform even at zero penalty" and the proposal says "the penalty is not what makes the solution uniform". FALSE. At lambda=0 the objective at equal weights over the 82 perfect learners is **-170235.0000** against uniform's **-170234.9923**. Uniform is NOT the zero-penalty optimum; the solver returns it because it STARTS there and the objective is nearly flat. The sweep script records the objective after solving FROM uniform, not AT uniform
-- **THIS CARD IS THE RECORD OF A SELF-INFLICTED DEFECT.** Claim (a) was written on 2026-09-10 in response to an internal review, published within hours, and is false. Correcting under time pressure reproduced the exact defect class the correction was meant to remove. That belongs in the amendment, not just the fix
-- Also correct: "rank-one to numerical precision" is defensible only relatively. The Gram's second eigenvalue is 15.8 against a largest of 1.55e7 (ratio 1.0e-06); an ABSOLUTE 1e-4 threshold counts 9 eigenvalues, not 1. State the threshold used
-- Acceptance: no surviving text asserts non-convexity or zero-penalty uniformity; the replacement mechanism statement matches the measured numbers; ONE amendment covers both, and says plainly that (a) was our own correction gone wrong
-- Depends on: nothing (independent of F49; the convexity facts do not move)
-
-**F51. Disclose the protocol-history deviations (~45m) Priority 3**
-- Phase: Finalize / integrity
-- Platform: docs/paper, experiments/PREREGISTRATION.md
-- **TWO HISTORY CLAIMS CONTRADICTED BY OUR OWN FROZEN RECORD, verified against commit 95751b9**
-- (a) `proposal.md:56` says of Loke et al. "We did not find this paper before freezing." The freeze names the SMU/OCBC configuration as **H1a**, with its learner families, its 0.80 reproduction target, and its exact protocol (70/30 split, train-only SMOTE, 10 seeds). The paper was known before the freeze; what is unrun is its source-protocol reproduction. Say that instead
-- (b) G0 is stated in the freeze as: below 0.85 AUPRC "the pipeline is presumed defective and **everything halts**". G0 scored FAIL and work continued. Reporting the FAIL honestly preserves the score, but it does not satisfy the stopping rule. The continuation decision, its date and its authorization must be recorded as a DEVIATION under section 11
-- **Do NOT rewrite the historical gate.** Section 11 forbids it and the honesty of the gate table is the submission's main asset. Add the deviation record beside it
-- This is the finding most damaging to the "protocol is the contribution" claim if a judge finds it unaided, and the cheapest to defuse by disclosing it ourselves
-- Acceptance: both statements corrected; the G0 continuation appears as an explicit dated deviation; the gate table still shows G0 FAIL
-- Depends on: nothing
-
-**F52. Repair the document contradictions (~1.5h) Priority 4**
-- Phase: Finalize / correctness
-- Platform: docs/paper
-- Seven internal disagreements a reviewer finds in one read. All EDIT ONLY, all verified:
-- **B1 variable count**: 78 in `proposal.md:62`, `appendix.md` A.6 and B.3's closing sentence; 91 in A.1 and B.3's table. B1 ran the FULL pair build at k=13 = **91**. 78 is the SEQUENTIAL count and belongs to the IEEE-CIS arm. The B2/B1 ratio is 833/91 = 9.2x, not 10.7x
-- **Stale ULB claims**: `proposal.md` section 6 says the ULB blocks were not re-run above the ceiling; section 2 says our later hardware "runs above it at 136 variables". B2 ran at 833. Both contradict B.3
-- **Subset orders**: section 2 says "every run reported here used one- and two-feature subsets"; B2 has 680 three-feature learners
-- **The 949 limit**: QCi documents 949 for continuous quadratic jobs too, not only integer sum-of-levels (three QCi pages, one saying 954, one giving 477 binary). Our sentence is disprovable by a QCi-literate judge
-- **Protocol naming**: A.5 says "GroupKFold-by-month"; the code does rolling-origin on 30-day TransactionDT buckets with fold sizes 85,302 / 86,524 / 8,111. The bracketed classical values are fold RANGES, not confidence intervals
-- **Tie statistics**: `tie_fraction` (1 - distinct/N) and `mode_share` (mass at the modal score) are different quantities quoted interchangeably. B2 is 92.24% tie_fraction but 85.7% mode share with ZERO warning rows -- less degenerate than B1's 94.9%/824, not more. Define both; drop the "does not improve with scale" conclusion
-- **Campaign subtotal**: `proposal.md` section 3's 37 fits / 163 s is a valid EARLIER subtotal against A.3's 61 / 1,141. Label it as such
-- Acceptance: one regenerated manifest reconciles every count, cost and status across all three PDFs
-- Depends on: **F49** (fidelity figures move)
-
-**F53. Correct the prior-work and benchmark interpretations (~1h) Priority 5**
-- Phase: Finalize / correctness
-- Platform: docs/paper
-- **Loke et al.**: their 0.8108 comes from a KNN-based ensemble under a different protocol (70/30, training-fold SMOTE); their classical comparator is CAD at 0.7423, not a tuned GBDT. Our "heterogeneous pool explains our result" reading is not what their experiment shows. It is a replication target, not an explanation
-- **CVQBoost paper**: "accuracy was never the claim" is disprovable -- the paper claims competitive AUC and an accuracy edge under ADASYN, and it does compare classical solvers (Hexaly, SLSQP). Restate as runtime-emphasis with competitive AUC
-- **Benchmark bands**: the cited IEEE-CIS 0.64-0.67 study uses STRATIFIED RANDOM splitting, so it is not a temporal benchmark and our rolling-origin result should not be measured against it. The ULB "near 0.80" is an inference, not a reported equivalent
-- **The 0.2143 subtraction**: A.5 displays 0.861 vs 0.574 (a gap of 0.287) then quotes 0.2143, which is a different pair (0.7961 - 0.5818) from an artifact whose own verdict reads NOT FOR PUBLICATION. Do not present four numbers as one controlled comparison
-- **Uncited figures**: the 0.85-0.88 band, AutoXGB 0.782, "near 0.80". One citation each with a URL
-- **FG22/5**: attribute para 11.11's actual wording (monitoring for worse outcomes among customers sharing protected characteristics), not "identifies algorithmic bias as a source of harm"
-- Acceptance: every external claim traces to a primary source at the strength stated
-- Depends on: nothing
-
-**F54. Provenance the reviewer can actually check (~1h) Priority 6**
-- Phase: Finalize / reproducibility
-- Platform: experiments/, docs/paper
-- **11 of 168 results rows have `config_hash: null`, all B2** -- against a submission that claims every row carries one. B2 has no proxy twin at 833 variables, which is WHY the hash is null; that is a reason to state the exception, not to leave the claim unqualified
-- **Raw hardware responses live under `experiments/results/pools/`, which `.gitignore` excludes.** Appendix C says they "are retained there". They are retained locally and ship with nobody. Either commit them (~1 MB) or scope the sentence
-- `hw_dispersion.json` is derived from those untracked responses, so its A.3 figure cannot be recomputed by a reviewer even though the derived file is tracked
-- **Pinned versions**: `requirements.txt` uses ranges for most numerical dependencies. State the exact resolved versions used for the reported runs
-- Acceptance: no claim about the delivered package exceeds what a fresh clone contains; the distinction between locally retained and delivered evidence is explicit
-- Depends on: nothing
-
-**F55. Add the two missing rubric sections (~2h) Priority 7**
-- Phase: Finalize / scoring
-- Platform: docs/paper/proposal.md
-- Guidelines 4.3 requires **"Feasibility and Resource Requirements"** and **"Validation Plan"** as components. The proposal has neither heading. Together those criteria carry **35% of the Phase 1 weight** (feasibility 20%, validation 15%) with nothing for a judge to score against
-- Most of the content already exists, scattered: acceptance criteria in sections 5 and 6, the MDE, the temporal protocol, the router lift. This is largely reorganisation under the required headings
-- Feasibility must state plainly that **Dirac-3 access is via QCi allocation OUTSIDE the challenge** -- the challenge provides Braket and Classiq, not QCi -- and give measured per-block seconds (B2 at 82 s/fit) against the remaining balance
-- Validation Plan must state how the 0.0268 MDE was derived (paired SD, alpha, power, n=10), since the same number is used to judge three different comparisons, and what number defines Phase 2 success
-- **Tension with F38**: both documents are already over the page limit, and this ADDS content. The two cards must be planned together
-- Acceptance: both headings present with the guidelines' wording; every rubric component has text under a matching heading
-- Depends on: F38 sequencing decision
-
-**F56. Presentation and framing corrections (~1h) Priority 8**
-- Phase: Finalize / presentation
-- Platform: docs/paper
-- **MDE used inconsistently**: H6 is dismissed as "not a finding" below MDE while B2's +0.0256 -- also below 0.0268 -- is called "unambiguous". Same threshold, opposite treatment. State that MDE describes design power, not a significance boundary
-- **Only the favourable interval is unqualified**: H1b's across-seed interval carries a caveat that it measures split dispersion rather than sampling error. B2's does not. Apply the same caveat in the same words
-- **H6 bias direction is reversed**: handicapping the classical twin biases the delta UPWARD, not negative, when that comparator sets the maximum
-- **The tuned optimizer-gain SD is 0.0028**, not the published 0.0038 (which belongs to the untuned mixed-pool comparison)
-- **"Selection bias is 0.0006"** is a sensitivity check, not a bias estimate; selection optimism remains unestimated
-- **Latency**: "CVQBoost meets the budget trivially" is unmeasured. Scope "4 to 5 seconds" to the small configurations -- the campaign spans 4 to 92 s/fit
-- **"Shadow-mode trial"** gives the challenger live decisions on days 31-60. Rename it staged, and scope "within three percentage points" to the 0.1% budget (at 0.5% it is 3.6 points)
-- **"Quantum feature engineering"**: say at first mention that the phase block is a classically computed Fourier map applied to every arm
-- **Undefined internal labels**: Sprint 4/5, F32, ADR-0013, "section 10", "item-4 controls", `dct`. Define once or remove
-- Acceptance: no claim stronger than its evidence; a non-specialist can follow every term
-- Depends on: F49 (some figures move)
-
-**F57. The 200:1 resolution argument: replace a false mechanism with a real one (~1.5h) Priority 1 -- HIGHEST VALUE**
-- Phase: Experiments / correctness
-- Platform: `docs/paper/proposal.md` s3, `appendix.md` A.4 and B.3; one classical script
-- **THE DEFECT, verified 2026-09-10.** The proposal says "our hardware-versus-proxy agreement is a confirmation of [convexity] rather than a discovery", and A.4 says that agreement "bounds any effect of Dirac-3's continuous-variable resolution: quantization coarse enough to drive the flat optimum could not reproduce it". The second is BACKWARDS and the first is uninformative. Measured on our own frozen Hamiltonian: diagonal 510,705, off-diagonals spanning **12.0**, linear terms spanning 16.0, against QCi's documented resolvable difference of max/200 = **2,553**. Every coefficient difference sits ~200x BELOW what the device can distinguish
-- **PROOF, run before writing this card.** Quantising J and C at max/200 leaves the off-diagonal with **one distinct value** and the linear terms with one. The simplex minimiser of that quantised problem is uniform to **2e-15**. So hardware returning uniform is FORCED by the device's resolution, not evidence about solver fidelity, and the agreement carries no information on this pool
-- **THE SAME LIMIT EXPLAINS B2, which we currently leave unexplained.** Sum constraint 1 over 833 learners gives a mean weight of 0.0012, below the documented expected resolution of 1/200 = 0.005. A diffuse optimum is not representable, so the device must return something sparser -- and the retained responses show exactly that: weights of 0.0009 to 0.0028 with exact zeros, against a cosine of 0.828. B2's "weak fidelity" is not the device failing; it is the device solving a sparsified version of the objective it was given
-- **THIS IS THE STRONGEST ARGUMENT IN THE SUBMISSION FOR THE PHASE 2 DIRECTION**, and it is currently absent. A device that cannot represent diffuse weight vectors over hundreds of learners is a device whose native problem is SPARSE selection -- which is precisely the cardinality-constrained formulation section 6 proposes. The physics motivates the plan instead of the plan being an assertion
-- Work: (1) rewrite the proposal s3 sentence and the A.4 bound; (2) add the resolution explanation to B.3; (3) a committed script that computes, per submitted Hamiltonian, the coefficient dynamic range and the resolvable difference, and per retained response the count of exact zeros and the smallest nonzero weight -- so both halves ship as evidence rather than as argument; (4) connect it to section 6
-- Acceptance: no surviving text claims hardware agreement confirms anything on the frozen pool; B2's cosine has a stated cause; the dynamic-range and sparsity figures are stored and quoted from the artifact
-- **NO QPU SECONDS.** ~1 hour of classical work against the 48 retained responses
-- Depends on: nothing. Do FIRST -- it is the only card that adds evidence rather than removing error
-
-**F58. Correct four claims a judge can disprove in under a minute (~1h) Priority 2**
-- Phase: Finalize / correctness
-- Platform: `docs/paper/proposal.md`, `docs/paper/appendix.md`
-- **(a) THE FALSIFIER LIST IS WRONG, AND IT IS MY ERROR FROM F55.** New section 8 names the three conditions as "a null on the primary endpoint, a negative feature-ladder slope, and a representation change that does not move the delta", then says "Two have now fired. The third, segment specialization...". B.1 has it right: the preregistration commits H1b, H3 and **H5** (segment transfer). I substituted H6 (representation) for H5 in the list and then described the third as H5 anyway, so the paragraph contradicts itself AND B.1. Under its own list all three have fired, which would mean the theory is retired -- a materially different claim from the one we intend. Correct to: H1b and H3 have fired; H5 is unrun; H6 fired its own separate falsifier
-- **(b) THE ARXIV TITLE IS WRONG.** We cite arXiv:2407.04512 as "Entropy Computing, A Paradigm for Optimization in Open Photonic Systems". The paper is "Entropy Computing: A Paradigm for Optimization in an Open Quantum System". The quoted phrase we use IS verbatim from its abstract, so only the title is wrong -- one click to disprove. Note the vendor's own title says "open quantum system", so we should take no position on that framing rather than implying the device is classical
-- **(c) THE INTEGER CAP IS 474, NOT 477.** Section 7 says "capped near 477"; section 2 says "949 on one page, 954 on another". 954 cannot be sourced -- the user guide and beginner guide both give 949. 949 levels at two per binary is 474. Drop 954
-- **(d) MODE SHARE DISAGREES WITH ITSELF.** A.3 quotes 95.1% over 814 distinct values (the gate report's MEDIAN, 0.951/814); B.3 quotes 94.9% over 824 (the MEAN). Same store, two statistics, presented as one fact. Pick the median, since that is what the score-health table reports, and use it in both places. Same for B2: 4,412 vs 4,413
-- Acceptance: each claim traces to one source with one value; the falsifier list matches B.1 exactly
-- Depends on: nothing
-
-**F59. Retire the figures F49 left behind in section 3 (~45m) Priority 3**
-- Phase: Finalize / correctness
-- Platform: `docs/paper/proposal.md` section 3
-- F49 certified the solver and moved four figures, and F52/F56 caught most consumers. Section 3 still carries three that did not get updated, all of which a reviewer cross-checking the appendix will find:
-- **"FISTA, convergence tolerance 1e-10 on the relative objective"** -- that stopping rule is exactly what F49 replaced, and A.4/A.5 now say "KKT residual below 1e-9". The proposal describes the defective solver while the appendix describes the fixed one
-- **"solved-minus-uniform +0.0022"** in the tuned-pool comparison -- the certified value is +0.0028, already corrected elsewhere in the same section
-- **"Two seed-42 controls show this is optimization rather than tie-breaking (Appendix A.4)"** -- A.4 says only "Its two mechanism controls are seed 42 only" and describes neither, so the citation points at nothing. Either state both controls with their numbers in A.4, or drop the parenthetical
-- Acceptance: no figure in section 3 disagrees with its appendix counterpart; every cross-reference resolves to text that exists
-- Depends on: **F57** (which rewrites adjacent sentences in the same paragraph)
-
-**F60. Say what the device was actually asked to do (~45m) Priority 4**
-- Phase: Finalize / presentation
-- Platform: `docs/paper/*.md`
-- **THE COLLISION.** We use "schedule 2" and "schedule 3" throughout to mean the POOL's feature-subset order. Dirac-3 has a job parameter literally named `relaxation_schedule` taking values 1 to 4, and the vendor guide discusses "schedule 2 and schedule 3" runs. A Dirac-3-literate judge reads our text as the device parameter and concludes we changed the solver setting between blocks. We did not: every fit ran `relaxation_schedule: 2`, including B2. This is the conflation the internal review flagged and we only half-fixed
-- Fix: rename to "order-2 pool" and "order-3 pool" wherever the pool is meant, and state the device parameters ONCE -- `relaxation_schedule`, `sum_constraint`, `num_samples`, `solution_precision` -- which we currently never report despite them being the whole specification of what the hardware was asked to solve
-- **This matters beyond naming.** Section 7 already tells a reviewer the resolution limit is load-bearing (F57); `sum_constraint` is what sets it. Reporting the parameters is what lets someone check F57's argument
-- Acceptance: no ambiguous "schedule" reference survives; the four device parameters appear once, in the feasibility or appendix A.3
-- Depends on: F57 (which introduces the resolution argument those parameters support)
-
-**F61. Tighten the shuffled-label control's language and criterion (~45m) Priority 5**
-- Phase: Finalize / statistical presentation
-- Platform: `docs/paper/appendix.md` A.5, `experiments/src/run_ieee.py`
-- **THE REVIEWER'S DIAGNOSIS IS WRONG BUT THE WORDING IS LOOSE.** They simulated a RANDOM scorer, found our values 7 to 17 SD below its band, and concluded the control is defective. Our control does something different and correct: it shuffles TRAINING labels only, trains a real LightGBM, and evaluates against TRUE eval labels. A model fitted to shuffled labels learns noise that can anti-correlate out of sample, so scoring BELOW prevalence is expected and is the direction that indicates no leakage. Verified by reading `run_ieee.py:211-218`
-- What is genuinely loose: (1) "collapses on every fold" implies convergence TO the base rate, when the values sit at or below it for a different and better reason; (2) the pass criterion is `shuf_ap < base * 2.0`, which would pass a fold leaking at 0.068 against a 0.034 base rate. A criterion that generous is not much of a tripwire
-- Fix: restate what the control does and why below-prevalence is the expected direction; tighten the criterion or state explicitly what it does and does not exclude
-- **Worth doing even though the reviewer was wrong**, because the next reader will make the same objection and the text should pre-empt it
-- Acceptance: the control's design is stated in one sentence; the criterion's strength is stated honestly
-- Depends on: nothing
-
-**F62. Small precision fixes across the documents (~1h) Priority 6**
-- Phase: Finalize / presentation
-- Platform: `docs/paper/*.md`
-- **Allocation arithmetic.** Section 7 says 3,000 granted, 1,141 spent, 1,961 remaining. The live endpoint confirms 1,961, but the subtraction does not work as printed because 1,141 is the CAMPAIGN total including 163 pre-grant free-tier seconds. The true grant reconciliation is 10 (probe) + **61 (the withdrawn B3 run)** + 62 + 906 = 1,039, leaving 1,961. State it that way. The 61 seconds of withdrawn work is real spend that produced no reported evidence, and saying so is more honest than a total that does not reconcile
-- **Per-fit cost.** Section 5 says the solve "bills 4 to 5 metered device seconds per fit". True at 91 variables; A.3 says 4 to 92 across the campaign and B2 averaged 82. As written it understates Phase 2 cost in the section about deployment
-- **FG22/5 selective quotation.** Our para 5.12 quote drops the source's qualifier "unless differences in outcome can be justified objectively". Restore it -- omitting a qualifier that weakens our own point is the kind of thing that costs credibility disproportionately
-- **Team profile.** "the one we withdrew and re-ran" describes no gate -- what was withdrawn was the A23 hardware ladder. And "raw device responses retained" reads as all 61 when Appendix C says 48
-- **A.6 versus A.1.** A.6 gives XGBoost 0.8328 and CatBoost 0.8185 on the baseline representation; A.1 gives 0.8296 and 0.8368 for the same models and seeds, with no explanation. If A.6's arms are untuned, say so and call that bar a floor
-- **Loke citation.** Add the title; mark the page range unverified or drop it
-- **AWS, not Braket.** The programme page promises AWS compute credits and Classiq tooling, not Amazon Braket by name
-- Acceptance: every number reconciles from its own stated inputs; no quotation omits a qualifier that cuts against us
-- Depends on: nothing
-
-**F63. A key for the internal labels (~30m) Priority 7**
-- Phase: Finalize / presentation
-- Platform: `docs/paper/*.md`
-- The documents cite "Sprint 4", "Sprint 5", "F32", "ADR-0013", "item-4 leakage controls", "section 10", and roughly thirty A-numbers, none defined. The guidelines ask that a non-specialist can follow the logic
-- Fix: replace internal labels with plain descriptions where they appear once, and add a short key for the amendments actually cited (A11, A12, A13, A17, A20, A21, A22, A23, A26, A27, A28)
-- **Sequencing note**: do this LAST among the content cards. Every card above adds or moves amendment references, so a key written earlier would be stale by the time the batch lands
-- Acceptance: no undefined internal label survives; every cited amendment appears in the key
-- Depends on: F57, F58, F59, F60, F61, F62 (all of which touch amendment references)
 
 **F64. Decompose the B2 confound: the k=17 order-2 cell (~45m) Priority 1 -- SPRINT 13**
 - Phase: Experiments / correctness
@@ -379,11 +151,97 @@ docs/reviews/f36-float-tables-outcome.md.
 
 
 
-**F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 40**
+**F2b. Hardware campaign, remaining blocks B4 and B5 (~0.5 day + approvals) Priority 20**
+- Phase: Experiments
+- Platform: Dirac-3
+- **B1 + G0b DONE** (Sprint 4, 120 QPU s). **B2 DONE** (Sprint 12, 11 fits, 906 s, A24). **B3 DONE** (Sprint 12, 12 fits, 62 s, A23 after the A22 withdrawal and matched re-run). Only B4 and B5 remain
+- **B4** (SPECTRA, 15 fits, ~450 s) and **B5** (QSVM sign-augmented, 12 fits, ~15 s). B5 is cheap enough to run inside any remaining balance; B4 is the one that needs a real allocation decision
+- B4 overlaps **F5** (SPECTRA in-segment replication), which sits in HOLD. They are the same block from two angles and should be reconciled before either is scheduled
+- Neither is a submission blocker. Both are post-submission work on the current calendar
+- Depends on: per-block team-lead approval (Criterion H); allocation balance
+- **The billing rule is now validated far outside its anchors.** B2's first fit at 833 variables, degree 3 cost 91 metered seconds where the grid assumed ~40. `ceil(sum(runtime))` predicted it exactly (runtime sum 90.152 s, balance 2929 -> 2838). Per-sample cost 11.27 s against B3's ~0.6 s, an **18.8x** step. Use measured per-sample cost, not the original grid, for any B4 estimate
+
+
+**F65. Per-fit artifact write in the hardware runner (~45m) Priority 11**
+- Phase: Experiments / tooling (lifted out of the F2b card in the Sprint 12 close-out sweep, 2026-09-11, where it had no F# of its own)
+- Platform: `experiments/src/run_hardware.py`
+- `run_hardware.py` writes its block artifact only at BLOCK completion, so a process that dies after a billed call leaves no `bN_hardware.json` even though the money is spent
+- **Observed in Sprint 12**: the first B2 fit did exactly that (WSL teardown on parent-shell exit, no traceback). Nothing was lost, because the raw response, the predictions `.npz` and a full `results.json` row with `metered_seconds: 91.0` had all persisted first. That was lucky, not structural
+- The fix is to write or append the block artifact after each fit rather than at the end, so a dead process leaves a partial artifact instead of none
+- Value: it prevents PAID evidence from being unrecoverable. At 91 metered seconds per B2-class fit, one lost fit is real money against a finite allocation
+- Depends on: nothing
+
+
+**F36. Pandoc Lua filter: floating tables for the submission PDFs -- CLOSED 2026-09-07, FAILED**
+- **VERDICT: the filter works; the problem it was built for did not exist.** The premise (preserved in the review doc, because it is wrong in an instructive way) rested on a CHARACTER-COUNT page-fill measurement, and a table-heavy page always looks short by that measure. Measured as vertical extent, every page cited below was already full: 724 / 680 / 680 / 682pt of a 792pt page, zero free space anywhere. The appendix was over its limit because it had too much content
+- **Failed criterion 1** (appendix 3 pages with the filter, 4 without): 4 and 4. **Failed criterion 6** (other documents unchanged), which is worse: floating tables in a table-dense document COSTS a page, taking gate_report.pdf from 3 to 4. Criteria 2, 3, 4, 5 and 7 pass
+- Filter RETAINED but UNREGISTERED at `scripts/pandoc/float-tables.lua`, opt-in through `render-pdf.ps1 -LuaFilter`, which nothing passes. `render-all.ps1` is unchanged. Do not enable it without reading `docs/reviews/f36-float-tables-outcome.md`
+- **What the card actually produced, and it is worth more than the filter**: `scripts/page-fill-report.py` now measures vertical extent in points instead of counting characters, and excludes the page-number folio, which sat at the same depth on every page and so made every page report zero free space -- including a nearly empty last page, the one case the tool exists to flag. `experiments/src/test_page_fill_report.py` covers both defects and all four tests fail against the previous implementation
+- **The appendix DID reach 3 pages**, by the team lead's two suggestions: set pipe-table column widths from the longest cell each column holds (every table used `|---|---|`, giving "30" and "[SIM]" the same width as a sentence; removed 9 of 20 spilled lines with no content change), and move reference material to the public repository. It has since gone back to 4 with the B.1 compound-falsification statement, tracked as F38
+- **Process lesson**: the card's dry run could not have failed. Deleting five tables removes their content AND their space, so the document was always going to shrink. It never distinguished "tables take room" from "tables waste room". A check that cannot fail is not evidence
+
+The original card body is pruned as shipped. Its premise, the seven
+acceptance criteria and the full failure analysis are preserved in
+docs/reviews/f36-float-tables-outcome.md.
+
+(F38 appendix to 3 pages AND proposal to 6: COMPLETED in Sprint 12, merged via PR #75.
+proposal 6 of 6, appendix 3 of 3, team profile 1 of 1. Removed from candidates per convention.)
+
+**F39. Fact database: one source of truth for every asserted fact (~1-2 days) Priority 2 -- HOLD until after submission**
+- Phase: Post-submission / Phase 2 tooling (team lead, Sprint 8 retrospective 2026-09-07: "We need to create a 'fact database' ... It states facts that we can confirm with confidence intervals between 0.0% and 99.9%. There are likely over 1,000 and this makes it difficult to keep track of ... if we need to update the baseline facts it should be here and then all other sources use this as the basis")
+- Platform: tooling
+- **The problem it solves, with this sprint's evidence**: the same fact is currently restated in many documents with no link between the copies. Sprint 8 alone found the QCi letter asserting "twelve amendments" when the enclosed preregistration had seventeen; A15 corrected a k=6 AUPRC published as 0.7688 when the true value was 0.7629, a figure that had been carried from a five-seed run into a ten-seed writeup; and A17 forced recomputation of every A11/A13 figure across four documents. Each was caught by a human reading, or by a one-off script written for that one check
+- **Scale**: the team lead estimates over 1,000 asserted facts. The current control is `score_gates.py` regenerating gate figures plus ad-hoc verification scripts; neither covers prose assertions, and nothing covers cross-document consistency
+- **Design direction (team lead: research Cycorp/cyc.com, functionally representative, NOT a LISP reimplementation)**: each fact carries an identifier, a value, a provenance pointer to the results row or source that establishes it, an evidence tag ([HW]/[SIM]/[PROJ]), and a CONFIDENCE between 0.0% and 99.9%. Documents reference facts by identifier rather than restating values, and a build step resolves references and fails on an unresolved or stale one. The confidence field is the part worth taking from Cyc: it forces "how sure are we" to be recorded next to the claim rather than carried in someone's head
+- **Why confidence intervals matter here specifically**: this project already distinguishes measured from projected via evidence tags, but not strong-measured from weak-measured. The score-degeneracy caveat, the single-seed spot checks, and the adversarial control that never converged are all facts we assert with genuinely different confidence, and today that distinction lives only in prose
+- **Explicitly held until after submission** (team lead: "We may hold this until after submission"). It is infrastructure, and eight days out the risk of touching every document exceeds the benefit
+- Acceptance: every numeric assertion in proposal, appendix and the QCi letter resolves to a fact record; the build fails on a stale reference; and a deliberate edit to one fact value propagates to every document that cites it
+- Depends on: nothing. Best started after F16/F10 and the submission
+
+(F40 segment non-public material: COMPLETED in Sprint 10, merged via PR #58 (main PR #62); history in SPRINT_10_SUMMARY.md. Removed from candidates per convention.)
+
+(F37 make the repository public: COMPLETED in Sprint 12, merged via PR #75. Verified
+anonymously -- HTTP 200, freeze commit 95751b9 resolves, `prereg-freeze` tag intact.
+Removed from candidates per convention.)
+
+### Paper (Stages 4-6)
+
+### Finalize (Stages 7-8)
+
+(F35 interpretation-layer tests, F41 mechanism correction (A20), F42 review findings, F43 IEEE-CIS AUC-ROC, F44 figure resolution, F45 evidence guard, F46 QCi grant and ceiling probe (A21), F47 metered-call wrapper: ALL COMPLETED in Sprint 11, merged via PR #66 (main PR #70); history in SPRINT_11_SUMMARY.md. Removed from candidates per convention.)
+
+**F66. Record the Copilot reviewer-request procedure in the workflow (~15m) Priority 10**
+- Phase: Finalize / process (Sprint 12 retrospective category 13, 2026-09-11)
+- Platform: `docs/SPRINT_EXECUTION_WORKFLOW.md`
+- Requesting a Copilot review needs the actor `copilot-pull-request-reviewer[bot]` (node id `BOT_kgDOCnlnWA`). NOT `Copilot`, and NOT `copilot-swe-agent`. The wrong name fails SILENTLY
+- Compounding it: the REST `requested_reviewers` field returns only users, never bots, so a SUCCESSFUL bot request reads back as an empty list. There is no way to confirm from that field that the request landed
+- **Observed in Sprint 12**: PR #73 never received a review for this reason and nobody noticed until PR #75 was being set up
+- A cross-repository skill already documents the three silent-failure modes and the working GraphQL procedure. This card is the in-repo pointer to it, so the workflow document does not depend on the skill being loaded
+- Value: it prevents a review step from silently not happening. The failure is invisible by construction, which is what makes it worth writing down
+- Depends on: nothing
+
+
+**F48. Extend the escape hook to shell metacharacters (~45m) Priority 9**
+- Phase: Finalize / tooling (Sprint 11 retrospective improvement 4, backlogged 2026-09-09)
+- Platform: .claude/hooks
+- `block-unraw-escape.ps1` catches Windows path escapes in non-raw PYTHON strings and has fired correctly several times. It does not catch SHELL metacharacters: a backtick or `$(...)` inside a quoted string passed to Bash is expanded by bash before Python ever sees it
+- **Observed in Sprint 11**: backticks inside a Python string in a Bash command were expanded as command substitution, executing a source file as shell and silently deleting the backticked filenames from a master-plan line. The edit "succeeded" and the damage was only visible on inspection
+- The fix is the same shape as the existing hook: detect backticks or `$(` inside a quoted span destined for Bash, and require the single-quoted heredoc form that suppresses expansion
+- Lower priority than the submission blockers, and real: the failure mode is SILENT corruption of a file that was edited successfully, which is worse than a crash
+- Depends on: nothing
+
+(F49 solver optimality certificate, F50 convexity withdrawal, F51 protocol-history
+deviations, F52 document contradictions, F53 prior-work interpretations, F54 provenance,
+F55 the two missing rubric sections, F56 framing, F57 the 200:1 resolution argument, F58-F63
+the remaining review findings: ALL COMPLETED in Sprint 12, merged via PR #75 (main PR #76);
+history in SPRINT_12_SUMMARY.md. Removed from candidates per convention.)
+
+**F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 1 -- SUBMISSION BLOCKER**
 - Phase: Finalize
 - Platform: docs
 - Every number vs results.json; repo-wide confidential-string scan (the fourierwall2 reference files were moved OUT of the repository at Sprint 10 F40, so the scan covers what remains rather than re-verifying them in place); requirements-matrix walk; public reproducibility repo; team-lead final PDF + portal submission, receipt archived
-- Depends on: F8, F9
+- Depends on: F8, F9 (both DONE, Sprint 5)
+- **Priority corrected 2026-09-11** in the Sprint 12 close-out sweep. This card read Priority 40 while the targeted roadmap has carried it as a SUBMISSION BLOCKER for the Finalize sprint since 2026-09-03. The deadline is 2026-09-15. Nothing else in the backlog outranks it
 
 ### External (team-lead-owned, parallel)
 
