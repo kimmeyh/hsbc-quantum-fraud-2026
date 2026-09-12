@@ -11,9 +11,17 @@ AFTER a sprint's consequences are known. A plan records intent and a
 retrospective records process; the summary is where the sprint says what it
 actually established, and it is the one a later reader reaches for first.
 
-Scope note: the CURRENT sprint is exempt from the summary requirement, because
-3.2.1 has it created during Sprint N+1 planning. Only completed sprints are
-checked.
+Scope note: the CURRENT sprint is exempt from BOTH the summary and the
+retrospective, because 3.2.1 binds every "completed sprint" and the one in
+flight has neither yet -- the retrospective lands at Phase 7, the summary during
+N+1 planning. Only the plan is owed while a sprint is live.
+
+That exemption was too narrow when first written (summary only), and this guard
+fired against Sprint 13's own plan document the moment it was created. Fixed and
+verified by injection: with the current sprint set to 13, removing COMPLETED
+Sprint 11's retrospective still fails with
+`assert not ['SPRINT_11_RETROSPECTIVE.md']`, and restoring it passes. The
+exemption covers the live sprint only, not the rule.
 """
 from __future__ import annotations
 
@@ -55,8 +63,13 @@ def test_every_completed_sprint_has_all_three_documents():
     missing: list[str] = []
     for n in _sprint_numbers():
         for kind in ("PLAN", "RETROSPECTIVE", "SUMMARY"):
-            if kind == "SUMMARY" and n == current:
-                continue                                 # written in N+1 planning
+            # 3.2.1 binds every COMPLETED sprint. The sprint in flight has a
+            # plan and owes the other two at its own close-out: the
+            # retrospective at Phase 7, the summary during N+1 planning.
+            # Demanding either mid-sprint fails the moment a plan is written,
+            # which is how this guard first fired against Sprint 13's own plan.
+            if n == current and kind in ("SUMMARY", "RETROSPECTIVE"):
+                continue
             f = SPRINTS / f"SPRINT_{n}_{kind}.md"
             if not f.exists():
                 missing.append(f.name)

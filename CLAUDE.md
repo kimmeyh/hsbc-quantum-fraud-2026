@@ -10,7 +10,7 @@ Guidance for Claude Code sessions in this repository. The authoritative process 
 - code that produces the evidence: `experiments/src/*.py`, `scripts/*`
 - documents that interpret it: `docs/*.md`
 
-The evidence files have their own verification path: `score_gates.py` regenerates every reported figure, `docs/STATISTICAL_REVIEW_CHECKLIST.md` is walked before any figure becomes gate evidence, and `store.py` enforces the section-11 schema at write time. Reviewing the data files consumes large review budget for no signal and has caused review runs to stall (Sprint 3 and Sprint 4).
+The evidence files have their own verification path: `score_gates.py` regenerates every reported figure, `docs/STATISTICAL_REVIEW_CHECKLIST.md` is walked before any figure becomes gate evidence, and the section-11 row schema is enforced by `test_row_schema.py` in CI. (Corrected 2026-09-12: this line previously said `store.py` enforces the schema AT WRITE TIME. It does not -- `store.py` does config hashing, atomic writes and a lock, and validates no fields, so a malformed row is written successfully and caught afterwards by the suite. An overstated guarantee is worse than a documented gap, because it invites reliance that is not there.) Reviewing the data files consumes large review budget for no signal and has caused review runs to stall (Sprint 3 and Sprint 4).
 
 ## Standing rules (see docs/SPRINT_PROCESS.md for the full set)
 

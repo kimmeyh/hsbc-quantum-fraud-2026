@@ -127,3 +127,38 @@ def test_the_artifact_regenerates_from_committed_code(art):
     assert r.returncode == 0, (
         "b2_hardware.json does not match a fresh regeneration: "
         + r.stdout + r.stderr)
+
+
+def test_the_comparator_variable_count_matches_the_rows_it_describes(art):
+    """The quoted comparator size must equal what hw_b1_dct rows actually carry.
+
+    Found in the Sprint 13 evidence walk: the design string read "(78 vars)"
+    against a comparator whose every row carries n_weak_classifiers 91. A24 had
+    already corrected this in prose -- "B1's variable count in that comparison
+    is 91 (full pair build at k=13), not 78, which is the sequential count
+    belonging to the IEEE-CIS arm" -- and the generator still wrote 78 into the
+    shipped evidence artifact.
+
+    The number is hand-written into an f-string, so nothing tied it to the rows.
+    This test does the tying: it reads the count out of results.json and asserts
+    the artifact's prose agrees. Verified by injection -- reverting the string to
+    "(78 vars)" fails here with the 91-vs-78 mismatch, and restoring it passes.
+
+    Scope note: only the published documents are authoritative for the reader,
+    and both stated 91 correctly throughout. This defect lived in the generated
+    artifact alone, which is precisely the layer a reader is invited to check.
+    """
+    import json as _json
+
+    rows = _json.loads((ART.parent / "results.json").read_text(
+        encoding="utf-8"))["rows"]
+    counts = {r["n_weak_classifiers"] for r in rows
+              if r.get("config") == "hw_b1_dct"}
+    assert len(counts) == 1, f"hw_b1_dct rows disagree on size: {counts}"
+    n = counts.pop()
+
+    design = art["paired_vs_b1_dct"]["design"]
+    assert f"({n} vars)" in design, (
+        f"the comparator is quoted at a size the rows do not support: "
+        f"hw_b1_dct carries {n} weak classifiers, but the design string reads "
+        f"{design!r}. A24 records this exact error (91, not 78).")
