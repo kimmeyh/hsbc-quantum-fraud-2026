@@ -1,95 +1,187 @@
-# Joint Checklist: Submission-Ready by Sep 8, 2026
+# Joint Checklist
 
-Owners: **H** = Harold (only you can do it), **C** = Claude (I do it), **H+C** = decision or review done together.
-Mark items `[x]` as they complete. This list is the working agenda; `docs/requirements-matrix.md` is the final acceptance gate.
-Last reconciled: 2026-09-08 (Sprint 9 close).
+Owners: **H** = Harold (only you can do it), **C** = Claude (I do it), **H+C** =
+decision or review done together. Mark items `[x]` as they complete.
+`docs/requirements-matrix.md` remains the final acceptance gate.
 
-## Standing rule: Dirac-3 hardware budget
+**Restructured 2026-09-12 (F71).** This file was titled "Submission-Ready by
+Sep 8, 2026" and carried eighteen unchecked boxes against work that had shipped
+weeks earlier, because ticking them depended on remembering. It now runs in
+three sections, newest phase first: what is live now, what Phase 2 would need,
+and the completed Phase 1 record corrected to what actually happened.
 
-All development and debugging runs use the local proxy (the classical solve of the identical QUBO; `USE_DIRAC_EQC=0` pattern). Every metered Dirac-3 run requires team-lead approval with the expected call count stated in advance. Hardware is reserved for the preregistered [HW] result rows in the run grid (PREREGISTRATION section 10).
+---
 
-## Stage 0 to 1: Requirements and thesis (Aug 29 to 30) - COMPLETE
+# 1. PRE-PHASE 2 (live: 2026-09-12 to finalist notification)
 
-- [x] **H**: Locate the four official PDFs (provided locally, Aug 30)
-- [x] **C**: PDFs copied to `docs/source/`; all four read in full; requirements matrix verified line by line (page limits confirmed: 6-page proposal + 3-page appendix, PDF, min 10pt, 20 MB; team profile is a separate portal component)
-- [x] **C**: Braket question resolved: exec summary "asks" for Braket, scope allows any quantum/quantum-inspired framework, hardware optional and not penalized. Positioning: Dirac-3 as measured [HW] evidence + phase-active Braket-simulator arm + Phase 2 Braket plan
-- [x] **H**: Team name decided: "Claude Shannon's Fraud Catchers" (docs/team-name.md, with Claude Code disclosure language)
-- [x] **H+C**: Thesis decided (Aug 30): performance-first framing, scoped to provable wins; H1b promotion to blanket claim only on Stage 3 evidence. Overall goal recorded: best predictions/inference, quantum or not
-- [x] **H**: Winning QML results located: FourierWall2 repo (in-segment CVQBoost wins, tuned config); analyzed in docs/evidence-inventory.md 3a/3b; 42 evidence files were copied to `experiments/reference/fourierwall2/` and MOVED OUT of the repository at Sprint 10 (F40); they are retained privately outside the repository and are not part of the submission
-- [x] **H**: Portal account confirmed (Sprint 2, F12): submission = 5-slot file upload; fields recorded in requirements-matrix A5/A5b; team profile ships as a one-page PDF; nothing uploaded until the final package
+Phase 1 is submitted. Finalist notification and the Phase 2 PoC sprint both
+land **mid-November 2026** (Guidelines s2), so there is no gap between hearing
+and starting. **Nothing here is time-bound**, and nothing here may touch the
+submitted documents.
 
-## QCi sponsorship (parallel track)
+## Standing constraints during the wait
 
-- [x] **C**: Sponsorship letter drafted, merged with H's draft (V3: two-account story, measured QPU costs, ~500 s balance, functional variable-limit ask); canonical in docs/qci-sponsorship-request.md
-- [x] **C**: Outlook draft "[v3]" saved to Drafts folder (delete v1/v2 drafts)
-- [x] **H**: QCi letter taken over and handled by team lead; declared completed 2026-08-30 (F11)
-- [x] **C**: Phase 1 call-count arithmetic behind the ask (v1.1 run grid: 81 fits, ~2,300-2,600 QPU s vs ~3,000 requested); refresh the letter only if the frozen grid changes materially
+- [x] **C**: The three submission documents are a RECORD, not a draft. A hook
+      refuses edits without recorded approval
+- [x] **C**: History is never rewritten and `prereg-freeze` never moves. Two
+      commits are cited in judged PDFs that cannot be corrected. A hook refuses
+      force-pushes and tag moves
+- [ ] **H+C**: Any new experiment is dated post-submission and reported as such,
+      never folded back into the submitted claims
+
+## Repository durability
+
+- [x] **C**: README rebuilt for a public reader: what was submitted, how to
+      retrieve it as submitted, how to reproduce, what cannot be reproduced
+- [x] **C**: Reproduce steps EXECUTED against a fresh clone, not drafted
+- [x] **C**: CHANGELOG backfilled and wired into the delivery cycle (8.1.1)
+- [ ] **C**: F67 -- the pool-mechanism guard is the suite's only skip and is
+      inert on a fresh clone. Needs a decision: pools in the repository, or a
+      committed fixture?
+
+## Phase 2 preparation (no metered spend, no commitment)
+
+- [ ] **C**: F39 -- fact-database investigation and ADR. Design only, starts
+      off-repository
+- [ ] **C**: F72 -- reference-paper library proposal. Design only, gated on
+      F39's storage decision
+- [ ] **H+C**: F64 -- the k=17 order-2 cell is Phase 2 experiment 1. Pre-flight
+      is done and recorded; the run itself waits for acceptance
+- [ ] **H**: Optional -- gate-based groundwork on a free platform (PennyLane or
+      Qiskit both port to Braket). Self-funded, `[SIM]` until it runs on
+      hardware, and NOT part of the Phase 1 record
+
+## If notification arrives
+
+- [ ] **H**: Record the outcome and the date in `docs/submission/`
+- [ ] **H+C**: If selected, open the Phase 2 section below and plan properly
+      (F13). If not selected, the repository stands as the public record of a
+      null reported honestly
+
+---
+
+# 2. PHASE 2 (if selected; PoC sprint begins mid-Nov 2026)
+
+Drafted 2026-09-12 from the proposal's own commitments so that acceptance does
+not start from a blank page. **Every item here is provisional** until the
+Phase 2 brief arrives, and the brief overrides this list.
+
+## Confidentiality changes on acceptance
+
+- [ ] **H**: T&C s7 binds only on receiving sponsor problem statements,
+      technical briefings, compute resources or other non-public material. From
+      that point, treat all of it as confidential and keep it OUT of this public
+      repository
+- [ ] **H+C**: Decide where Phase 2 work lives. The public repository is a
+      Phase 1 asset; Phase 2 may need a private one
+
+## The six experiments, in the order the proposal commits to
+
+- [ ] **C**: 1. Isolate the confound -- the 153-variable ULB cell at k=17,
+      subset order 2. Zero device seconds. Pre-flight already done (F64)
+- [ ] **C**: 2. Temporal validity -- IEEE-CIS rolling-origin folds supply the
+      test ULB's two-day span cannot. No configuration is recommended for a
+      production path until this is settled
+- [ ] **H+C**: 3. Cardinality-constrained selection on Dirac-3's integer solver,
+      against a time-capped MIQP, greedy, and simulated annealing. **A win
+      against a certified-optimal classical solve is a result; a win against no
+      control is not**
+- [ ] **C**: 4. Replication under source protocol -- H1a reproduces Loke et al.
+      under their split and comparator, then re-evaluates under ours
+- [ ] **H+C**: 5. The gate-based arm on Amazon Braket or Classiq, against a
+      matched classical baseline, **reported whatever the outcome**. The
+      proposal commits to this unconditionally
+- [ ] **C**: 6. Remaining hardware blocks B4 and B5 (F2b), if the allocation
+      supports them
+
+## Resourcing, per proposal section 3
+
+- [ ] **H**: Confirm what compute the PoC sprint provides. T&C s1 promises
+      "access to compute resources, tooling, and expert support" to finalists
+      and s9 disclaims all warranties over it
+- [ ] **H**: Dirac-3 allocation for Phase 2. 1,961 of the 3,000 granted seconds
+      remain from Phase 1
+- [ ] **H+C**: Latency benchmark (p50/p95/p99) against the 100-300 ms envelope,
+      which Phase 1 states as a target rather than a measurement (D10)
+- [ ] **H+C**: Calibration layer fitted, which Phase 1 specifies but does not
+      fit (D1)
+
+## Deliverable
+
+- [ ] **C**: Preregister the Phase 2 protocol BEFORE any result is seen, as
+      Phase 1 did. It is the thing this project does best and the reason the
+      null is credible
+
+---
+
+# 3. CHALLENGE SUBMISSION (Phase 1, COMPLETE 2026-09-12)
+
+Corrected 2026-09-12 to what actually happened. Eighteen items below were
+delivered but never ticked; they are marked complete with the sprint that
+delivered them, because a checklist that disagrees with the repository is worse
+than none.
+
+## Standing rule: Dirac-3 hardware budget (held throughout)
+
+Every metered run required team-lead approval with the expected call count
+stated in advance. Final: **61 fits, 1,141 metered seconds, zero device
+failures, zero retries**.
+
+## Stage 0 to 1: Requirements and thesis (Aug 29 to 30)
+
+- [x] **H+C**: Four official challenge PDFs staged and verified byte-identical
+      against the portal copies (2026-09-04)
+- [x] **C**: Requirements matrix built, 92 rows, walked line by line at Stage 8
+- [x] **H+C**: Thesis fixed: can a quantum-inspired training step beat a tuned
+      GBDT on the metric a fraud team uses, under a protocol that cannot move
+      after the result is seen
 
 ## Stage 2: Experiment design (Aug 30 to 31)
 
-- [x] **C**: PREREGISTRATION drafted (v1.0) with hypotheses, gates, metrics, splits, seeds, budgets
-- [x] **C**: Independent reviews run (Sonnet + Opus) plus methods research (docs/research-baselines-best-practices.md); all 45+ proposals adjudicated (docs/prereg-review-adjudication.md); v1.1 produced with single primary endpoint, G0 recalibrated to the honest ULB band, proxy=structural-control design, de-personalized language
-- [x] **C**: Reference library complete: all six methodology papers read IN FULL, summaries and design implications in docs/references.md; PDFs in docs/papers/
-- [x] **C**: Environment set up and smoke-tested: .venv (Python 3.12.10), XGBoost 3.4.1, LightGBM 4.7.0, CatBoost 1.2.10, scikit-learn 1.9.0, Optuna, SHAP, imbalanced-learn, eqc-models 0.21.0, qci-client 5.0.2; QBoostClassifier weak_cls knobs verified
-- [x] **C**: Harness skeleton written and smoke-tested on synthetic data only (experiments/src: data.py, tune.py, metrics.py)
-- [x] **C**: ULB data located on disk (`XGBvHQXGB\datasets\creditcard.csv` + x1 split); no download needed
-- [x] **H+C**: PREREGISTRATION v1.1 FROZEN (H approved 2026-08-30; commit 95751b9, tag prereg-freeze, amendment A1)
-- [x] **C**: metrics.py at v1.1 spec, 11 known-answer tests passing (BCa vs scipy, Wilson vs statsmodels)
-- [x] **C**: Pilot variance run complete: ULB 10-seed untuned-XGB mean AP 0.8268, seed SD 0.0243, MDE(10) 0.0242 (experiments/PILOT_VARIANCE.md)
-- [x] **C**: Sprint 1 closed with all acceptance criteria evidenced (docs/sprints/SPRINT_1_PLAN.md); PR #1 ready for merge to develop
-- [x] **C**: SPECTRA datasets downloaded and staged into `experiments/data/spectra/` (all four CSVs, filenames match the FourierWall2 pipeline)
-- [x] **H**: Kaggle OAuth completed and IEEE-CIS rules accepted (Aug 30); legacy env-var credentials removed after they were found shadowing the OAuth cache
-- [x] **C**: IEEE-CIS downloaded and staged into `experiments/data/ieee-cis/` (train_transaction 651.7 MB, train_identity, test files, 1.3 GB total)
-- [x] **C**: Sprint process adopted (docs/SPRINT_PROCESS.md); private GitHub remote live at github.com/kimmeyh/hsbc-quantum-fraud-2026 with main/develop branches; Sprint 1 plan drafted awaiting approval
+- [x] **C**: Preregistration v1.1 FROZEN at commit 95751b9, tag
+      `prereg-freeze`. Amended 32 times, never rewritten
+- [x] **C**: Gates with numeric pass criteria, fixed before any run
 
-## Stage 3: Experiments (Sep 1 to 4)
+## Stage 3: Experiments (Sep 1 to 10)
 
-- [x] **C**: Tuned classical arms: XGBoost, LightGBM, CatBoost, full features, 100 Optuna trials each (Sprint 3); G0 scored as committed = FAIL (tuned-XGB mean AP 0.8296 vs 0.85; no leakage flag); framing decided at F7 gate review; F21 researches the protocol gap
-- [x] **C**: Matched-feature classical arms and logistic control (MI top-13 on train per seed; Sprint 3, 40 rows)
-- [x] **C**: Pilot seed-variance run and minimum-detectable-effect statement (done Sprint 1: mean AP 0.8268, seed SD 0.0243, MDE(10) 0.0242; experiments/PILOT_VARIANCE.md)
-- [x] **C**: CVQBoost arm tuned entirely on the proxy: pipeline + exact-Hamiltonian solve (Sprint 3), section-6 100-trial tuning (Sprint 4, F22); starting config retained by the validation-AP rule; tuned lg config lifts the score-health quarantine
-- [ ] **C**: QFE phase-representation arms (Fourier Wall recipe) for every model, including trained-frequency GAM/GA2M/JOINT twins in H6 cells
-- [ ] **C**: IEEE-CIS reduced Deotte recipe implemented per prereg section 5 (UID excluded, named aggregates, leakage controls, shuffled-label positive control)
-- [ ] **C**: Temporal protocols: IEEE-CIS GroupKFold-by-month rolling origin; ULB temporal sensitivity split; classical-refit fairness control on any drift claim
-- [x] **H+C**: B1 + G0b approved and executed 2026-09-03 (27 fits, 120 QPU s, 0 failures; G0b PASS Spearman 0.900). B2/B3/B4/B5 remain gated on the QCi grant, spend priority B3 > B2 > H3 ladder > B4
-- [x] **C**: results.json per schema (147 rows: 120 [SIM], 27 [HW]), CIs per spec, one-page results memo (docs/RESULTS_MEMO.md, Sprint 4)
-- [x] **H+C**: Gate review done 2026-09-03/04: G0 FAIL as committed, G0b PASS (0.900), H1b null, H4 partial; headline framing DECIDED (production-bound program spine). Gate table refreshes with each later evidence sprint
+- [x] **C**: ULB classical arms, ten seeds, stratified 60/20/20
+- [x] **C**: CVQBoost proxy -- the exact classical solve of the identical
+      Hamiltonian, which is what makes the hardware comparison meaningful
+- [x] **C**: QFE phase-representation arm (H6) with trained-frequency GAM, GA2M
+      and JOINT twins -- *delivered Sprint 9, A18/A19; measured null at -0.0115*
+- [x] **C**: IEEE-CIS reduced Deotte recipe, UID excluded, leakage controls --
+      *delivered Sprint 8, F3*
+- [x] **C**: Temporal protocols: IEEE-CIS GroupKFold-by-month rolling origin and
+      ULB temporal split -- *delivered Sprint 8*
+- [x] **C**: Hardware blocks B1, G0b, B2, B3 on Dirac-3 -- *Sprints 4 and 12*
+- [x] **C**: Shuffled-label control run on every fold, not merely declared
 
-## Stages 4 to 5: Outline and draft (Sep 4 to 6)
+## Stages 4 to 6: Paper (Sep 4 to 11)
 
-- [ ] **C**: Paper outline, seven sections mapped to rubric plus appendices (results, preregistration registry with gate table, reproduction, references from docs/references.md)
-- [ ] **H+C**: Approve outline
-- [ ] **C**: Draft V1 with [HW]/[SIM]/[PROJ] tags on every number; prevalence beside every AUPRC
-## Stage 3 to 6: Evidence campaign (Sep 4 to 8) - COMPLETE
+- [x] **C**: Outline, seven sections mapped to the rubric -- *delivered Sprint 5*
+- [x] **H+C**: Outline approved
+- [x] **C**: Draft with [HW]/[SIM]/[PROJ] on every number and prevalence beside
+      every AUPRC
+- [x] **H**: Team Capability content approved -- *Sprint 12, with the LLM-review
+      disclosure added*
+- [x] **C**: Domain-reviewer pass and revision
+- [x] **C**: Quantum-reviewer pass -- *three external LLM reviews, Sprint 12;
+      they found three FALSE published claims, all withdrawn (A26, A27)*
+- [x] **C**: Rubric-scoring pass -- *F55 found two required sections missing
+      entirely, together 35% of the Phase 1 weight*
+- [x] **H**: Independent read-through as the reviewer
 
-- [x] **C**: ULB evidence complete: tuned GBDT trio, CVQBoost frozen and mixed pools, 37 metered Dirac-3 fits over two campaigns (163 device seconds, zero failures, zero retries)
-- [x] **C**: Solver fidelity established: hardware minus exact proxy -0.0010 AUPRC with the interval containing zero, weight cosine 0.975 to 0.999, hardware objective never below the exact minimum (Sprint 4-6)
-- [x] **C**: The pool-degeneracy finding: the frozen optimum is uniform to seven decimal places, and the apparent gain over uniform weights is tie-breaking. Cause measured, not inferred: off-diagonal Gram entries average 170,234.4 against a diagonal of 170,235 (Sprint 6, A6)
-- [x] **C**: Tuned pool (F33): fit-time class weighting makes the pool genuinely diverse, +0.0319 AUPRC at matched size on 10 of 10 seeds, the first difference in this project to exceed the 0.0268 MDE. The accuracy came from the LEARNERS, not the optimizer (Sprint 7, A13/A14/A16)
-- [x] **C**: IEEE-CIS second dataset (F3): 590,540 transactions, rolling origin by month, three classical arms, CVQBoost proxy arms, and the H3 ladder at 12 scoreable cells. The ladder answers the ceiling question AGAINST our interest: slope -0.006 per feature, so lifting the ceiling does not close the gap (Sprint 8)
-- [x] **C**: H6 representation arm (F4): a measured null. The QFE phase representation shifts the delta by -0.0115 against a paired SD of 0.0135, 43% of the MDE. Reported as a shift too small to claim rather than as "no effect" (Sprint 9, A18)
-- [x] **C**: Protocol violation A17 found, recorded and corrected: three exploratory fold builders had skipped the section 4 deduplication, and every affected figure was recomputed (Sprint 8)
-- [x] **C**: eqc-models integration feedback package written for QCi, every claim cited to file and line (Sprint 9, F14)
-- [x] **H**: QCi sponsorship request SENT 2026-09-08 09:59:03 -0400 (tagged `qci-letter-sent-20260908`); acknowledged, no substantive reply yet
-- [x] **C**: Minimal CI on PRs with a dirty-tree gate, after a test overwrote an evidence file in Sprint 8 (Sprint 9, F16)
+## Stages 7 to 8: Finalize and submit (Sep 11 to 12)
 
-## Stage 7 to 8: Paper, review and submission (Sep 8 to 13)
-
-- [ ] **H**: Write or approve Team Capability content (education, GIC 2026 entry, repos, honest gaps, Claude Code disclosure)
-
-## Stage 6: Adversarial reviews (Sep 6 to 7)
-
-- [ ] **C**: Domain-reviewer pass, findings, revision V2
-- [ ] **C**: Quantum-reviewer pass (including: is the gate-based arm phase-active, are the encoding diagnostics reported, does any claim exceed its evidence tag), findings, revision V3
-- [ ] **C**: Rubric-scoring pass, fix lowest criterion
-- [ ] **H**: Independent read-through as the reviewer; flag anything unclear or unconvincing
-
-## Stages 7 to 8: Finalize (Sep 7 to 8)
-
-- [ ] **C**: Verify every number in the paper against `results.json`
-- [ ] **C**: Pre-publication confidentiality scan of the entire repo and paper: no employer-repo URLs or org names in remotes/links, no account identifiers, no API keys or .env content, no QPU balance figures tied to a named account. Grep for the known-sensitive strings plus "github.com" and "sandbox" before anything goes public. F40 (DONE, Sprint 10) moved `experiments/reference/fourierwall2/` and the `0*` team-lead files OUT of the repository, so this scan covers what remains rather than re-verifying those in place. NOTE: history is deliberately not rewritten, so the scan must cover full history, not just the tip. F40 BLOCKED F37
-- [ ] **C**: Freeze and publish the reproducibility repo (public GitHub under kimmeyh); link in appendix as supplementary material
-- [ ] **C**: Compliance walk of `requirements-matrix.md` against the final PDF (every A/B/C/D/E row)
-- [ ] **H**: Final approval of PDF
-- [ ] **H**: Produce final PDF with correct filename and title block ("Claude Shannon's Fraud Catchers", HSBC track)
-- [ ] **H**: Submit via portal (Sep 8 or 9, never later than Sep 14); save confirmation receipt into `docs/`
+- [x] **C**: Every number in the paper verified against `results.json` --
+      *Sprint 13 Task A; found nine defects the suite caught none of*
+- [x] **C**: Pre-publication confidentiality scan -- *0 HIGH; the one REVIEW is
+      the required contact block*
+- [x] **C**: Reproducibility repository public -- *F37, Sprint 12, verified
+      anonymously*
+- [x] **C**: Compliance walk of every requirements-matrix row -- *Sprint 13
+      Task B; six rows contradicted the shipped documents*
+- [x] **H**: Final PDFs approved: 6 / 3 / 1 pages, US Letter, 10.0pt
+- [x] **H**: **SUBMITTED via the portal 2026-09-12**, three days early. Receipt
+      and the four now-answered A5 unknowns in
+      `docs/submission/SUBMISSION_RECEIPT.md`

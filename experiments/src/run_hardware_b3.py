@@ -230,7 +230,22 @@ def main() -> int:
             "by_k": _mean_by_k(rows),
             "rows": rows,
         }
-        store.atomic_write_json(OUT, out)
+        # A DRY RUN MUST NEVER OVERWRITE THE EVIDENCE FILE.
+        #
+        # Found the hard way in Sprint 14: `--dry-run --ks 5` replaced the
+        # committed b3_hardware.json -- 12 real fits and 62 metered seconds --
+        # with three dry-run placeholder rows. `git checkout` restored it, but
+        # nothing in the runner would have stopped the loss, and the overwrite
+        # reported success.
+        #
+        # The defect predates F65: the end-of-loop write had it too. F65 made it
+        # far easier to hit, because the artifact is now written after every fit
+        # rather than once, so a dry run no longer has to finish to destroy the
+        # file. Sprint 8 learned this same lesson on a different runner -- "a
+        # smoke run must never overwrite the evidence file" -- and the rule did
+        # not travel to this one.
+        target = OUT.with_name("b3_hardware.dryrun.json") if args.dry_run else OUT
+        store.atomic_write_json(target, out)
         return out
 
     # Folds OUTSIDE, k INSIDE: prep is 582s per fold and does not depend on k,
@@ -318,7 +333,8 @@ def main() -> int:
     _write_artifact(rows, fits, args, t_start, complete=True)
     total = sum(float(r.get("metered_seconds") or 0) for r in rows)
     print(f"\n{fits} fits, {total}s metered")
-    print(f"written: {OUT}")
+    written = OUT.with_name("b3_hardware.dryrun.json") if args.dry_run else OUT
+    print(f"written: {written}")
     return 0
 
 

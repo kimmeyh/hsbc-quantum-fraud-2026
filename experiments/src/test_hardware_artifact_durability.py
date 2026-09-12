@@ -84,3 +84,35 @@ def test_the_artifact_records_whether_the_block_completed():
     assert '"complete": bool(complete)' in body, (
         "the block artifact must carry a `complete` field, so a partial write "
         "from an interrupted run is distinguishable from a finished block")
+
+
+@pytest.mark.skipif(not RUNNER.exists(), reason="B3 runner absent")
+def test_a_dry_run_cannot_overwrite_the_evidence_file():
+    """`--dry-run` must write somewhere else entirely.
+
+    FOUND THE HARD WAY in Sprint 14, by running it. `--dry-run --ks 5` replaced
+    the committed b3_hardware.json -- 12 real fits and 62 metered seconds of
+    [HW] evidence -- with three dry-run placeholder rows, and reported success.
+    `git checkout` restored it; nothing in the runner would have stopped the
+    loss.
+
+    The defect PREDATES the F65 per-fit write, which had the same exposure at
+    the end of the loop. F65 made it far easier to hit, because the artifact is
+    now written after every fit and a dry run no longer has to finish to destroy
+    the file.
+
+    Sprint 8 learned this exact lesson on a different runner -- "a smoke run must
+    never overwrite the evidence file" -- and the rule never travelled here. That
+    is what a test is for and a note is not.
+
+    Verified by injection: replacing the `target` expression with a bare `OUT`
+    fails this test; restoring the conditional passes.
+    """
+    body = RUNNER.read_text(encoding="utf-8")
+    assert 'if args.dry_run else OUT' in body, (
+        "run_hardware_b3.py must redirect its artifact write when --dry-run is "
+        "set. A dry run that overwrites the evidence file destroys metered "
+        "results that cost real money and cannot be re-run for free.")
+    assert 'store.atomic_write_json(target, out)' in body, (
+        "the artifact write must go to the redirected `target`, not to OUT "
+        "directly, or the dry-run guard above is decorative")
