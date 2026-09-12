@@ -72,7 +72,13 @@ def test_the_observed_b2_weights_match_the_prediction(art):
 
 def test_the_withdrawn_claim_does_not_return(art):
     """The prose half. A26/A31 withdrew 'that agreement bounds any effect of
-    resolution'; if it reappears, the artifact and the paper disagree."""
+    resolution'; if it reappears, the artifact and the paper disagree.
+
+    VERIFIED BY INJECTION, and it MATTERED: the first version of this guard
+    passed vacuously because the marker phrase wraps across a line break in the
+    source, so the substring never matched and nothing could fail it. Stripping
+    the withdrawal markers from the appendix now turns it red.
+    """
     papers = ART.resolve().parents[2] / "docs" / "paper"
     for name in ("proposal.md", "appendix.md"):
         body = (papers / name).read_text(encoding="utf-8").lower()
@@ -106,6 +112,9 @@ def test_dispersion_groups_on_the_pool_not_the_device():
 
     This is the same device-versus-pool "schedule" conflation F60 corrected in
     the documents, reappearing in code. Pinned here so it cannot return.
+
+    VERIFIED BY INJECTION: writing a single collapsed group back into the
+    artifact turns this red; the real three-group split passes.
     """
     import json
     art = Path(__file__).resolve().parents[1] / "results" / "hw_dispersion.json"

@@ -51,6 +51,9 @@ def test_the_old_stopping_rule_would_fail_this_bar():
     Reproduces the previous rule -- stop when the relative objective change is
     below 1e-10 -- and asserts its residual is orders of magnitude worse. If
     someone reinstates an objective-based test, this fails.
+
+    This test IS the injection: it runs the defective stopping rule directly and
+    measures that it fails the bar, rather than trusting that it would.
     """
     H, y = _pool()
     lam = qp.LAMBDA_MULT * len(y)
@@ -78,7 +81,11 @@ def test_the_old_stopping_rule_would_fail_this_bar():
 
 
 def test_kkt_residual_detects_a_deliberately_bad_point():
-    """A certificate that passes everything certifies nothing."""
+    """A certificate that passes everything certifies nothing.
+
+    This test IS the injection: it hands the residual a simplex vertex far from
+    the optimum and requires it to be rejected, proving the certificate can fail.
+    """
     H, y = _pool()
     lam = qp.LAMBDA_MULT * len(y)
     J = (H @ H.T) + lam * np.eye(H.shape[0])

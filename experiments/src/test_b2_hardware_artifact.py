@@ -100,6 +100,10 @@ def test_h1b_endpoint_is_not_computed_over_b2(art):
     When B2 first ran it won score_gates' best-validation-AP selection, silently
     replacing the B1 grid H1b ranges over and deleting the H4 solver-fidelity
     line. The report must still emit that line with B2 present.
+
+    VERIFIED BY INJECTION: reverting the score_gates cell filter to its former
+    form regenerates a report with no H4 line and this test fails; restoring the
+    filter passes it.
     """
     report = (ART.parent / "gate_report.md").read_text(encoding="utf-8")
     assert "minus exact proxy" in report, (
