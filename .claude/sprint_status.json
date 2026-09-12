@@ -3,7 +3,7 @@
     "number": 14,
     "name": "Make the Record Durable",
     "branch": "feature/20260912_Sprint_14",
-    "status": "phase_4_execution",
+    "status": "phase_5_manual_validation",
     "plan_doc": "docs/sprints/SPRINT_14_PLAN.md",
     "pr": null,
     "plan_approved": true,
@@ -20,7 +20,7 @@
       93
     ],
     "prior_prs": [],
-    "note": "Scope DEFINED and APPROVED 2026-09-12. F68 first. F39 and F72 start OFF-repository per the team lead. F69 reproduce section executed against a fresh clone. Execution authorized to Manual Validation without further approvals."
+    "note": "All ten tasks complete, issues #84-93 closed plus legacy #69. Suite 321 -> 329 local; a clean clone of the branch runs 296 passed / 16 skipped / 0 failed. Two ADRs proposed (0014 fact database, 0015 reference library), both awaiting team-lead acceptance."
   },
   "last_completed_sprint": {
     "number": 13,
