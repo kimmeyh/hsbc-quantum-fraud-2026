@@ -197,6 +197,42 @@ def main() -> int:
     fits = 0
     t_start = time.perf_counter()
 
+    def _write_artifact(rows, fits, args, t_start, complete):
+        """Write the block artifact. Called after EVERY fit, not only at the end.
+
+        F65. The runner used to build this dict once, after the loop, so a
+        process that died after a billed call left NO artifact even though the
+        money was spent. Sprint 12's first B2 fit did exactly that -- a WSL
+        teardown on parent-shell exit, no traceback. Nothing was lost that time
+        because the raw response, the predictions and a full results.json row
+        had all persisted first, which was luck rather than structure.
+
+        At roughly 5 seconds per B3 fit the loss would have been small; at the
+        91 metered seconds a B2-class fit costs, one lost fit is real money
+        against a finite allocation.
+
+        `complete` records whether the loop finished, so a reader can tell a
+        partial artifact from a whole one instead of guessing from the count.
+        """
+        out = {
+            "note": ("B3: IEEE-CIS arm on Dirac-3 at the frozen recipe. A12's 100-variable "
+                     "ceiling forced the published [SIM] arm down to k=6; A21 lifted it."),
+            "generator": "experiments/src/run_hardware_b3.py",
+            "evidence_tag": "HW",
+            "schedule": SCHEDULE,
+            "k_ladder": list(args.ks),
+            "num_samples": NUM_SAMPLES,
+            "dry_run": bool(args.dry_run),
+            "complete": bool(complete),
+            "fits": fits,
+            "total_metered_seconds": sum(float(r.get("metered_seconds") or 0) for r in rows),
+            "elapsed_sec": round(time.perf_counter() - t_start, 1),
+            "by_k": _mean_by_k(rows),
+            "rows": rows,
+        }
+        store.atomic_write_json(OUT, out)
+        return out
+
     # Folds OUTSIDE, k INSIDE: prep is 582s per fold and does not depend on k,
     # so preparing once and slicing per k turns 2.0 hours into 31 minutes.
     stop_all = False
@@ -253,6 +289,7 @@ def main() -> int:
                              "job_id": rec.job_id,
                              "metered_seconds": rec.measured_seconds})
                 fits += 1
+                _write_artifact(rows, fits, args, t_start, complete=False)
                 continue
 
             w = _weights(res, n_vars)
@@ -272,26 +309,15 @@ def main() -> int:
                 "eval_prevalence": float(np.mean(yev)),
             })
             fits += 1
+            # Persist BEFORE printing: the artifact is the evidence, and a crash
+            # between the billed call and the write is the case F65 exists for.
+            _write_artifact(rows, fits, args, t_start, complete=False)
             print(f"  job={rec.job_id} cost={rec.measured_seconds}s "
                   f"AUPRC={rows[-1]['auprc']:.4f}", flush=True)
 
-    out = {
-        "note": ("B3: IEEE-CIS arm on Dirac-3 at the frozen recipe. A12's 100-variable "
-                 "ceiling forced the published [SIM] arm down to k=6; A21 lifted it."),
-        "generator": "experiments/src/run_hardware_b3.py",
-        "evidence_tag": "HW",
-        "schedule": SCHEDULE,
-        "k_ladder": list(args.ks),
-        "num_samples": NUM_SAMPLES,
-        "dry_run": bool(args.dry_run),
-        "fits": fits,
-        "total_metered_seconds": sum(float(r.get("metered_seconds") or 0) for r in rows),
-        "elapsed_sec": round(time.perf_counter() - t_start, 1),
-        "by_k": _mean_by_k(rows),
-        "rows": rows,
-    }
-    store.atomic_write_json(OUT, out)
-    print(f"\n{fits} fits, {out['total_metered_seconds']}s metered")
+    _write_artifact(rows, fits, args, t_start, complete=True)
+    total = sum(float(r.get("metered_seconds") or 0) for r in rows)
+    print(f"\n{fits} fits, {total}s metered")
     print(f"written: {OUT}")
     return 0
 
