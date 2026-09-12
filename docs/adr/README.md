@@ -32,3 +32,4 @@ Adopted from the spamfilter-multi ADR system (F15 review) with one addition: eve
 | [0011](0011-secrets-and-credential-handling.md) | Secrets and credential handling | Accepted | 2026-08-30 |
 | [0012](0012-pdf-rendering-toolchain.md) | PDF rendering toolchain: pandoc to docx to Word | Accepted | 2026-09-04 |
 | [0013](0013-h6-qfe-twin-design.md) | H6 QFE representation and order-matched classical twin design | Proposed | 2026-09-05 |
+| [0014](0014-fact-database.md) | Fact database: SQLite plus committed export, three record classes, starts outside this repository | Proposed | 2026-09-12 |
