@@ -105,31 +105,23 @@ def test_page_size_is_letter_or_a4(pdf: Path) -> None:
 
 
 def _page_limit_params():
-    """Page-limit cases, with the appendix marked xfail while F38 is open.
+    """Page-limit cases. Every document is now a hard check.
 
-    The team lead deferred all PDF sizing work to Finalize (2026-09-07), so the
-    appendix is knowingly 4 of 3 pages until F38 runs. Left unmarked this test
-    reports a hard failure on every run for days, and a suite that is always
-    red is one where a REAL regression looks like the existing red line.
+    These carried a strict xfail while F38 was open and both documents were
+    knowingly over limit -- the appendix at 4 of 3, the proposal at 7 of 6.
+    strict=True was chosen so the marker would FAIL the moment a document came
+    back under limit, making it impossible for the exemption to outlive the
+    problem. On 2026-09-11 both did: the trimmed sources render at 6 of 6 and
+    3 of 3, the markers fired as designed, and they are deleted here.
 
-    strict=True is deliberate: the marker fails if the appendix ever comes back
-    under limit while still marked, so it cannot outlive the problem it
-    describes. Whoever closes F38 is forced to delete it.
+    Do not reintroduce an xfail to quiet this test. Going over the limit is a
+    submission-rules failure the rules call out explicitly ("submissions
+    exceeding the page limit may be returned or assessed only on the first 6
+    pages"), so a red line here is the correct signal, not noise.
     """
     out = []
     for name, limit in sorted(PAGE_LIMITS.items()):
-        marks = []
-        if name in ("appendix.pdf", "proposal.pdf"):
-            marks.append(pytest.mark.xfail(
-                strict=True,
-                reason="F38 (SUBMISSION BLOCKER): appendix 4 of 3, proposal 7 "
-                       "of 6 after the H6 write-up landed. PDF sizing deferred "
-                       "to Finalize by the team lead (2026-09-07: 'do not worry "
-                       "about doc size as we will address the doc size for "
-                       "submission in the next sprint'). strict=True means this "
-                       "marker FAILS once a document is back under limit, so it "
-                       "cannot outlive F38."))
-        out.append(pytest.param(name, limit, marks=marks, id=name))
+        out.append(pytest.param(name, limit, id=name))
     return out
 
 

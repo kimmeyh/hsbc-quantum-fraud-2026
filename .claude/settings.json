@@ -27,6 +27,21 @@
             "timeout": 15
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\block-unapproved-submission-edit.ps1\"",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\block-reactive-amendment.ps1\"",
+            "timeout": 15
+          }
+        ]
       }
     ],
     "Stop": [

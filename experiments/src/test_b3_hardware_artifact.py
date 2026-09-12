@@ -140,6 +140,9 @@ def test_pools_were_built_on_the_same_rows_as_the_sim_arm(art):
     Every other test in this file passed throughout. This one is the difference
     between testing that the numbers are consistent and testing that they mean
     what the paper says they mean.
+
+    VERIFIED BY INJECTION: setting n_pool_rows to n_train_rows in the artifact
+    reproduces the original defect and this test goes red; restoring it passes.
     """
     import run_ieee_h3
 

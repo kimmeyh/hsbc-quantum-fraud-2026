@@ -6,7 +6,17 @@ __pycache__/
 .env
 experiments/results/*.png
 experiments/results/*.log
-experiments/results/pools/
+# Pools: ignore the CONTENTS (not the directory, or the negation below cannot
+# re-include -- same defect class as the predictions block further down). The
+# .npz pools are 47 MB and rebuildable via scripts/wsl_build_pools.sh.
+experiments/results/pools/*
+# EXCEPTION: the raw Dirac-3 responses are NOT regenerable without spending
+# metered QPU seconds -- the same criterion that version-controls the hardware
+# predictions below. 1.13 MB across 48 files. Appendix C claims they are
+# retained in the repository; before F54 they were retained only locally, so
+# that claim shipped false. Scanned for account identifiers before committing:
+# zero findings, and the responses carry no org/account/token fields at all.
+!experiments/results/pools/hw_responses/
 docs/source/*.pdf
 docs/papers/*.pdf
 .secrets-patterns.txt
@@ -61,3 +71,5 @@ experiments/reference/fourierwall2/
 # prior work is the honest thing to do and the freeze forbids editing it.
 docs/trueloop-teardown.md
 docs/thesis-candidates.md
+.claude/.submission-edit-approved
+.claude/.amendment-verified

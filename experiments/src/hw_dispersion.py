@@ -37,6 +37,15 @@ def energies_from(text: str) -> list[float]:
 
 
 def main() -> int:
+    # Without this the empty-directory case reaches np.min([]) and raises a bare
+    # ValueError from inside the summary, hiding the actual prerequisite. The
+    # responses are now tracked (F54), so this fires only if they are deleted.
+    if not RESP_DIR.exists() or not any(RESP_DIR.glob("*.json")):
+        raise SystemExit(
+            f"no saved responses under {RESP_DIR}. They are version-controlled "
+            "because they cannot be regenerated without spending metered QPU "
+            "seconds; restore them before regenerating this evidence.")
+
     rows = json.loads(store.RESULTS.read_text())["rows"]
     by_key = {(r.get("config"), r.get("protocol"), r["seed"]): r
               for r in rows if r["arm"] == "cvqboost_hw"}
@@ -56,7 +65,25 @@ def main() -> int:
         rec = {"file": f.name, "n_samples": int(len(e)),
                "best_energy": best, "worst_energy": worst,
                "spread_relative_pct": spread_rel * 100.0,
-               "identical_draws": bool(np.allclose(e, e[0]))}
+               "identical_draws": bool(np.allclose(e, e[0])),
+               # Recorded per fit because the campaign is no longer homogeneous:
+               # B2's pool admits three-feature learners where every other block
+               # uses one- and two-feature learners, so pooling them would report
+               # one dispersion figure across two different pool constructions.
+               #
+               # The field that distinguishes them is weak_cls_schedule (the POOL
+               # subset order: 3 for B2, 1 or 2 elsewhere). An earlier version
+               # keyed on relaxation_schedule, which is the DIRAC-3 DEVICE
+               # parameter and is 2 for every fit in the campaign, B2 included --
+               # so the split collapsed to a single group containing everything,
+               # which is exactly the pooling it claimed to prevent. That was the
+               # same device-versus-pool "schedule" conflation F60 corrected in
+               # the documents, reappearing in the code. Caught by review.
+               "subset_order": ((row or {}).get("hw_config") or {}).get(
+                   "weak_cls_schedule"),
+               "relaxation_schedule": ((row or {}).get("hw_config") or {}).get(
+                   "relaxation_schedule"),
+               "block": (row or {}).get("block")}
         if row and row.get("fidelity"):
             fid = row["fidelity"]
             rec["gap_to_exact_pct"] = abs(
@@ -71,12 +98,35 @@ def main() -> int:
                  "requested num_samples = 8; this is the spread ACROSS those draws "
                  "within each fit, recovered from saved responses at zero metered cost."),
         "num_samples_per_fit": 8,
-        "relaxation_schedule": 2,
         "n_fits": len(recs),
         "fits_where_all_draws_identical": sum(r["identical_draws"] for r in recs),
         "within_fit_energy_spread_pct": {
             "min": float(np.min(spreads)), "median": float(np.median(spreads)),
             "max": float(np.max(spreads)),
+        },
+        # Split by device setting. The papers quote the schedule-2 figure, which
+        # covers every block except B2; reporting one pooled number across two
+        # relaxation schedules would describe neither.
+        # The DEVICE parameter, stated once because it is constant: every fit in
+        # the campaign ran relaxation_schedule 2, so it separates nothing.
+        "relaxation_schedule_all_fits": sorted(
+            {r["relaxation_schedule"] for r in recs
+             if r["relaxation_schedule"] is not None}),
+        # The POOL construction, which does vary and is what the papers mean by
+        # "order-2" and "order-3".
+        "by_subset_order": {
+            str(order): {
+                "n_fits": len(g),
+                "fits_where_all_draws_identical": sum(r["identical_draws"] for r in g),
+                "spread_pct_min": float(np.min([r["spread_relative_pct"] for r in g])),
+                "spread_pct_median": float(np.median([r["spread_relative_pct"] for r in g])),
+                "spread_pct_max": float(np.max([r["spread_relative_pct"] for r in g])),
+                "blocks": sorted({r["block"] for r in g if r["block"]}),
+            }
+            for order, g in sorted(
+                {r["subset_order"]: [x for x in recs
+                                     if x["subset_order"] == r["subset_order"]]
+                 for r in recs if r["subset_order"] is not None}.items())
         },
         "gap_best_draw_to_exact_optimum_pct": {
             "min": float(np.min(gaps)), "median": float(np.median(gaps)),
