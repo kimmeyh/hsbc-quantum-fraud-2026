@@ -1,29 +1,26 @@
 {
   "current_sprint": {
-    "number": 12,
-    "name": "Spend the Grant, Then Submit",
-    "branch": "feature/20260910_F49_solver_certificate",
+    "number": 13,
+    "name": "Submit",
+    "branch": "feature/20260912_Sprint_13",
     "status": "phase_7_retrospective",
-    "plan_doc": "docs/sprints/SPRINT_12_PLAN.md",
-    "pr": 75,
+    "plan_doc": "docs/sprints/SPRINT_13_PLAN.md",
+    "pr": 82,
     "plan_approved": true,
     "github_issues": [
-      71,
-      72,
-      57,
-      56,
-      69
+      77,
+      78,
+      79,
+      80,
+      81
     ],
-    "prior_prs": [
-      73,
-      74
-    ],
-    "note": "Sprint 12 ran across two branches. PR #73 merged the B2/B3 hardware work to develop mid-sprint; PR #75 carries the response to three external reviews (F49-F63) plus F37 and F38, on a branch cut from the Sprint 12 branch per the carry-forward rule."
+    "prior_prs": [],
+    "note": "F10 only. Tasks A-D complete (issues 77-80 closed). Manual Validation passed all four items 2026-09-12. Task E (#81, portal submission) remains team-lead-owned. Nine defects found and corrected across the documents, matrix and evidence artifacts; A32 registers the one that was an error in the frozen log."
   },
   "last_completed_sprint": {
-    "number": 11,
-    "merged_pr": 66,
-    "main_merge_pr": 70,
+    "number": 12,
+    "merged_pr": 75,
+    "main_merge_pr": 76,
     "docs_triad_complete": true
   },
   "prereg": {
