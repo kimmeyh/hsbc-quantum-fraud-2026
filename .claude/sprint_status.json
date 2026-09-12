@@ -1,26 +1,20 @@
 {
   "current_sprint": {
-    "number": 13,
-    "name": "Submit",
-    "branch": "feature/20260912_Sprint_13",
-    "status": "phase_8_delivery_cycle",
-    "plan_doc": "docs/sprints/SPRINT_13_PLAN.md",
-    "pr": 82,
-    "plan_approved": true,
-    "github_issues": [
-      77,
-      78,
-      79,
-      80,
-      81
-    ],
+    "number": 14,
+    "name": "Make the Record Durable",
+    "branch": "feature/20260912_Sprint_14",
+    "status": "phase_3_planning",
+    "plan_doc": "docs/sprints/SPRINT_14_PLAN.md",
+    "pr": null,
+    "plan_approved": false,
+    "github_issues": [],
     "prior_prs": [],
-    "note": "SUBMITTED 2026-09-12. PR #82 merged to develop. The develop-to-main merge had NOT happened at close-out: main is 18 commits behind and lacks all of Sprint 13 including the submission record."
+    "note": "Scope DEFINED by the team lead 2026-09-12: F68-F72 (new), F39 rescoped to design, plus F66, F48, F65, F67. F68 first. Awaiting plan approval."
   },
   "last_completed_sprint": {
     "number": 13,
     "merged_pr": 82,
-    "main_merge_pr": null,
+    "main_merge_pr": 83,
     "docs_triad_complete": true
   },
   "prereg": {
