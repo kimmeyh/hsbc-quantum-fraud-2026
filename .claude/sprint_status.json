@@ -2,10 +2,10 @@
   "current_sprint": {
     "number": 12,
     "name": "Spend the Grant, Then Submit",
-    "branch": "feature/20260910_Sprint_12",
-    "status": "phase_4_execution",
+    "branch": "feature/20260910_F49_solver_certificate",
+    "status": "phase_7_retrospective",
     "plan_doc": "docs/sprints/SPRINT_12_PLAN.md",
-    "pr": null,
+    "pr": 75,
     "plan_approved": true,
     "github_issues": [
       71,
@@ -13,7 +13,12 @@
       57,
       56,
       69
-    ]
+    ],
+    "prior_prs": [
+      73,
+      74
+    ],
+    "note": "Sprint 12 ran across two branches. PR #73 merged the B2/B3 hardware work to develop mid-sprint; PR #75 carries the response to three external reviews (F49-F63) plus F37 and F38, on a branch cut from the Sprint 12 branch per the carry-forward rule."
   },
   "last_completed_sprint": {
     "number": 11,
@@ -26,5 +31,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-10"
+  "updated": "2026-09-12"
 }

@@ -355,6 +355,21 @@ docs/reviews/f36-float-tables-outcome.md.
 - Acceptance: no undefined internal label survives; every cited amendment appears in the key
 - Depends on: F57, F58, F59, F60, F61, F62 (all of which touch amendment references)
 
+**F64. Decompose the B2 confound: the k=17 order-2 cell (~45m) Priority 1 -- SPRINT 13**
+- Phase: Experiments / correctness
+- Platform: classical proxy (`qubo_proxy.py`, `mechanism_controls.py`)
+- **THE MISSING MIDDLE OF A THREE-POINT LADDER.** B2's +0.0256 is the campaign's only positive result at scale, and two factors moved to produce it: k (13 -> 17) and subset order (2 -> 3). We hold both ends and neither middle:
+  - k=13, order 2, 91 vars -> 0.7671 **[have]**
+  - k=17, order 2, **153 vars** -> ? **[MISSING]**
+  - k=17, order 3, 833 vars -> 0.7928 **[have]**
+- Running the middle cell splits the gain into "more features" and "richer learners". Appendix B.3 currently has to say the disconfirming cell is unrun, about the one experiment that would resolve its own headline claim's confound
+- **THE PHYSICS PREDICTS AN ANSWER, which is what makes it a test rather than a data point.** A31 established the device cannot spread weight over more than about 200 learners. At 153 variables it CAN; at 833 it cannot. If the gain is attributable to k, it should appear at 153 under a faithful solve. If it needs three-feature learners, it will not. Either outcome is informative, and one of them would materially change what B.3 claims
+- **ZERO METERED SECONDS.** Classical proxy only, ten pool builds at 153 variables
+- **Why it was NOT run in Sprint 12** (team lead decision, 2026-09-12): the submission documents were final and within limits, PR #75 was merge-ready, and the deadline was 2026-09-15. A new result means new figures in a 6-of-6-page proposal and possibly another amendment. The submission is stronger finished than with one more experiment squeezed into its last days. Deferred deliberately, not overlooked
+- Acceptance: the cell runs on the same seeds and protocol as its two neighbours; B.3 states the decomposition instead of declining it; if the result changes what the +0.0256 is attributable to, that is an amendment
+- Depends on: nothing. It is the first thing Phase 2 should run
+
+
 
 
 
