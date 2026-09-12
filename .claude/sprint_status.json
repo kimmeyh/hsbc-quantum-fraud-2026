@@ -3,9 +3,9 @@
     "number": 13,
     "name": "Submit",
     "branch": "feature/20260912_Sprint_13",
-    "status": "phase_4_execution",
+    "status": "phase_5_manual_validation",
     "plan_doc": "docs/sprints/SPRINT_13_PLAN.md",
-    "pr": null,
+    "pr": 82,
     "plan_approved": true,
     "github_issues": [
       77,
@@ -15,7 +15,7 @@
       81
     ],
     "prior_prs": [],
-    "note": "Scope DEFINED and APPROVED by the team lead 2026-09-12: F10 only. F64 withdrawn the same day on methodological grounds; it returns to the backlog as Phase 2 experiment 1. Execution authorized without further approvals until Manual Validation, per the team lead."
+    "note": "F10 only. Tasks A-D complete (issues 77-80 closed). Task E (#81, portal submission) is team-lead-owned. Six evidence-walk defects found and corrected with team-lead approval; A32 registers two that were errors in the frozen log. Awaiting Manual Validation."
   },
   "last_completed_sprint": {
     "number": 12,
