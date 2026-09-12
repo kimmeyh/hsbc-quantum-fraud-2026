@@ -82,6 +82,42 @@ regeneration claim false for the first reader who tries it.**
 | I | **F39** | Fact-database investigation and ADR. Design only | 240m | Opus + **team lead** |
 | J | **F72** | Reference-library proposal. Design only, gated on I's storage decision | 180m | Opus + **team lead** |
 
+### F69's reproduce section: how it gets executed (team lead asked, 2026-09-12)
+
+**Against a FRESH CLONE in a scratch directory, never this working tree.**
+
+This tree cannot test the README. It holds a built `.venv`, staged datasets that
+are not redistributable, and cached pool `.npz` files. Every one of those would
+let a broken instruction appear to work, which is the same
+passes-for-the-wrong-reason failure the injection standard exists to catch.
+
+The procedure, run in this order:
+
+1. `git clone` the PUBLIC URL into the scratch directory, anonymously where
+   possible, so the clone sees exactly what a stranger sees
+2. Create a fresh virtual environment by the README's own words
+3. Install from the README's own command, against the committed lock file
+4. Run the quick test the README names, and record what it actually prints
+5. Run each major test group the README names, and record which ones PASS,
+   which SKIP for want of data, and which FAIL
+6. Write the caveats from that record, not from memory
+
+**The expected and correct outcome is a partial pass.** The ULB, IEEE-CIS and
+SPECTRA datasets are not redistributed -- their licences do not permit it -- so
+data-dependent tests must skip on a fresh clone. The README's job is to say so
+plainly and tell the reader how to stage the data, not to imply a clean full run
+that nobody can reproduce.
+
+If a step fails for any reason other than absent data, that is a defect in the
+repository and it is fixed in this sprint rather than documented around.
+
+### F39 and F72 start OFF-repository (team lead, 2026-09-12)
+
+Both begin outside this repository. Some or all of either may be brought in
+later, and that is a separate decision made on the evidence rather than now.
+Consequence for this sprint: neither card adds runtime dependencies here, and
+F39's ADR records the boundary as provisional rather than settled.
+
 **Sequence**: A first, by direction and by merit -- it repairs a control that is
 currently absent. Then B (depends on A's as-submitted section), then C, D in
 either order. E, F, G are independent and can interleave. H needs a decision. I

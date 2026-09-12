@@ -3,13 +3,24 @@
     "number": 14,
     "name": "Make the Record Durable",
     "branch": "feature/20260912_Sprint_14",
-    "status": "phase_3_planning",
+    "status": "phase_4_execution",
     "plan_doc": "docs/sprints/SPRINT_14_PLAN.md",
     "pr": null,
-    "plan_approved": false,
-    "github_issues": [],
+    "plan_approved": true,
+    "github_issues": [
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93
+    ],
     "prior_prs": [],
-    "note": "Scope DEFINED by the team lead 2026-09-12: F68-F72 (new), F39 rescoped to design, plus F66, F48, F65, F67. F68 first. Awaiting plan approval."
+    "note": "Scope DEFINED and APPROVED 2026-09-12. F68 first. F39 and F72 start OFF-repository per the team lead. F69 reproduce section executed against a fresh clone. Execution authorized to Manual Validation without further approvals."
   },
   "last_completed_sprint": {
     "number": 13,
