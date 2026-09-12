@@ -56,6 +56,13 @@ REGISTERED: dict[str, str] = {
     # --- dataset and protocol constants -----------------------------------
     "0.17": "ULB fraud prevalence, a property of the dataset",
     "3.5": "IEEE-CIS prevalence, a property of the dataset",
+    "3.14": "a Python version (eqc-models requires <3.14), not a measurement",
+    "3.12": "a Python version (the project's Linux environment), not a measurement",
+    "85.7": "B2 median mode share as a percentage; gate_report.md stores it as 0.857",
+    "0.1028": "hardware ladder minus matched GBDT at k=17: 0.1430 [HW] - 0.2458 [SIM], "
+              "both stored; the difference is arithmetic on two artifact values",
+    "5.8": "pool-row ratio of the superseded B3 run to the [SIM] arm on fold 2 "
+           "(582,426 / 100,000), quoted in A.5 as the size of the withdrawn defect",
     "0.0268": "the preregistered MDE (amendment A5)",
     # --- percentages derived from stored values ---------------------------
     "50.9": "recall at 0.1% budget, percentage form of a stored rate",

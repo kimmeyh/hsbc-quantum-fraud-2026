@@ -294,8 +294,16 @@ def main() -> int:
     # DELIBERATELY exact, not startswith: H1b is a preregistered endpoint over
     # the B1 cells, and cvqboost_hw_mixed is a different arm (F32 mixed pool).
     # Widening this would silently change what the primary endpoint measures.
+    # B1 cells only, and now ENFORCED rather than merely intended. B2 (833 vars,
+    # A24) is also arm cvqboost_hw / stratified with 10 seeds, so once it ran it
+    # won the best-validation-AP selection below and silently displaced the H1b
+    # endpoint -- and because B2 has no proxy counterpart at 833 variables its
+    # config_hash is null, so the H4 solver-fidelity line vanished with it.
+    # H1b is a PREREGISTERED endpoint over the B1 grid; which cells it ranges
+    # over is not something a later block may change by being better.
     hw_cells = {k: v for k, v in by_cell.items() if k[0] == "cvqboost_hw" and k[2] == "stratified"
-                and len(v) >= N_SEEDS}   # B1 cells only; G0b cells are single-seed
+                and len(v) >= N_SEEDS
+                and all(r.get("block") in (None, "B1") for r in v)}
     gbdt_matched = {a: {r["seed"]: r["metrics"]["auprc"] for r in by_cell.get((a, "matched13"), [])}
                     for a in ("xgboost", "lightgbm", "catboost")}
     hw_complete = {a: c for a, c in gbdt_matched.items() if len(c) >= N_SEEDS}

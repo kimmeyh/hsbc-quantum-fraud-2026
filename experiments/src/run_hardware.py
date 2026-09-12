@@ -54,8 +54,26 @@ RANKING = qp.RESULTS_DIR / "proxy_ranking.json"
 SEEDS = qp.SEEDS
 PAIR_BUILD = "full"
 MAX_RETRIES = 2
-BLOCK_CAP_S = {"B1": 220.0, "G0b": 70.0}     # 2x the request's expected upper bound
+# B2's cap is now set from a MEASUREMENT, not the frozen grid's estimate. The
+# first fit cost 91 s (ceil(sum(runtime)) = ceil(90.152), confirmed against the
+# allocation balance), against the grid's ~40 s/fit assumption. Ten remaining
+# fits at that rate is ~910 s, so the team lead raised the run ceiling to 2,000
+# QPU seconds on 2026-09-10 and asked that 776 s remain if all of it is used.
+#
+# 1,050 s caps the BLOCK (the one fit already spent plus ten more at 91 s leaves
+# ~49 s of slack for variance) while the 2,000 s allocation ceiling is the outer
+# guard checked below. Both must hold.
+BLOCK_CAP_S = {"B1": 220.0, "G0b": 70.0, "B2": 1050.0}
+
+# Allocation floor: stop before the balance would fall below this. 3,000 granted
+# minus the 2,000 authorized for spend = 1,000 remaining, and the team lead asked
+# for 776 s to survive the full 2,000 -- which is what the arithmetic gives once
+# the 224 s already spent campaign-wide is counted.
+ALLOCATION_FLOOR_S = 776.0
+
 EXPECTED_CALL_S = 6.0                        # measured 4-5 s/fit; bound the NEXT call
+B2_EXPECTED_CALL_S = 95.0                    # MEASURED 91 s + margin; the 6.0 s default
+                                             # would let the cap be overshot by a whole fit
 UNPARSEABLE_CALL_CHARGE_S = 10.0             # conservative charge when billing is unreadable
 TUNING_SEED = 42
 
@@ -66,6 +84,21 @@ B1_VARIANTS = [
      "wp": {"max_iter": 300, "class_weight": "balanced"}, "alpha": 0.5,
      "proxy_hash": "bf9e473250b773fa"},
 ]
+
+
+# B2: the frozen grid's ULB full config (preregistration section 10). Never ran
+# under A12's 100-variable ceiling; A21 lifted it. schedule 3 adds triples, so
+# 17 + C(17,2) + C(17,3) = 833 variables against B1's 78.
+#
+# MEASURED before scheduling: the pool build alone is 735s per fit, so 11 fits
+# is ~135 minutes of local CPU before a second is billed. The device cost is
+# UNANCHORED -- qpu_cost_model has no degree-3 observation within 2x of 833
+# variables -- which is why the first fit reports its real cost before the rest
+# proceed.
+B2_VARIANT = {
+    "label": "hw_b2_full", "k": 17, "schedule": 3, "wt": "dct", "wp": {},
+    "alpha": 2.0, "proxy_hash": None,   # no proxy counterpart at this size
+}
 
 
 def verify_proxy_hashes() -> None:
@@ -79,6 +112,8 @@ def verify_proxy_hashes() -> None:
     if qp.RESULTS.exists():
         known |= {r.get("config_hash") for r in json.loads(qp.RESULTS.read_text())["rows"]
                   if r.get("arm") == "cvqboost_proxy"}
+    # B2 is excluded: it has no proxy counterpart at 833 variables, so there is
+    # no hash to verify. Its provenance is the frozen grid itself.
     missing = [v["proxy_hash"] for v in B1_VARIANTS if v["proxy_hash"] not in known]
     if missing:
         raise SystemExit(
@@ -176,6 +211,10 @@ def _cells(block: str):
                        schedule=p["schedule"], alpha=p["lambda_alpha"], seed=TUNING_SEED,
                        protocol="stratified", proxy_hash=c["config_hash"],
                        proxy_val_ap=c["val_ap"], rank=i)
+    elif block == "B2":
+        for seed in SEEDS:
+            yield dict(block="B2", seed=seed, protocol="stratified", **B2_VARIANT)
+        yield dict(block="B2", seed=TUNING_SEED, protocol="temporal", **B2_VARIANT)
     else:
         for v in B1_VARIANTS:
             for seed in SEEDS:
@@ -186,8 +225,32 @@ def _cells(block: str):
 def _done():
     if not qp.RESULTS.exists():
         return set()
+    # Only SUCCESSFUL cells count as done. Without the status filter a failed
+    # row was treated as complete, so the cell was skipped forever on resume:
+    # a failed fit was both uncounted in _spent() and never retried. The
+    # preregistration (section 11) requires a cell to be retried up to twice and
+    # then reported as failed -- never silently dropped.
     return {(r["arm"], r.get("config"), r["seed"], r.get("protocol"))
-            for r in json.loads(qp.RESULTS.read_text())["rows"]}
+            for r in json.loads(qp.RESULTS.read_text())["rows"]
+            if r.get("status") != "failed"}
+
+
+def _live_balance():
+    """Current Dirac allocation in seconds, or None if it cannot be read.
+
+    Returns None rather than raising: a balance endpoint hiccup should not kill
+    a block mid-run, and the block cap still bounds the spend on its own.
+    """
+    try:
+        from qci_client import QciClient
+        c = QciClient(api_token=os.environ["QCI_TOKEN"], url=os.environ["QCI_API_URL"])
+        a = c.get_allocations()["allocations"]
+        d = a["dirac"]
+        return float(d["seconds"] if isinstance(d, dict) else d)
+    except Exception as e:                                # noqa: BLE001
+        log.warning("[HW] could not read allocation balance (%s); relying on the "
+                    "block cap alone", type(e).__name__)
+        return None
 
 
 def _spent(block: str) -> float:
@@ -247,7 +310,28 @@ def run_cell(spec) -> dict:
            "features_used": cols, "evidence_tag": "HW", "retry_count": retries,
            "timestamps": {"started": t0, "finished": None}}
     if resp is None:
-        row.update({"status": "failed", "error": err, "metered_seconds": None, "metrics": None})
+        # A failed cell is NOT a free cell. The retry loop above makes up to
+        # MAX_RETRIES+1 real submissions, and a failure AFTER the device has run
+        # (result-parse error, post-submit timeout, a changed response schema) is
+        # billed by QCi regardless. Recording None here let _spent() coerce it to
+        # 0.0, so a cell that failed three times at B2's measured 91 s could burn
+        # ~273 device seconds while the block guard still read zero -- enough to
+        # overshoot a 1,050 s cap by 21% and defeat Criterion H.
+        #
+        # Charge the same conservative rate the success path already uses when
+        # billing is unreadable, once per attempt actually made. The estimate is
+        # deliberately an UNDER-count of a real 91 s fit rather than a guess at
+        # it: the point is that failures move the counter, not that this number
+        # is exact. The allocation floor, read from the live balance, is what
+        # bounds the true spend.
+        charged = UNPARSEABLE_CALL_CHARGE_S * (retries + 1)
+        row.update({"status": "failed", "error": err,
+                    "metered_seconds": charged,
+                    "metered_seconds_parsed": False,
+                    "cost_source": (f"estimated: {retries + 1} attempt(s) x "
+                                    f"{UNPARSEABLE_CALL_CHARGE_S:.0f} s, charged because a "
+                                    f"failed submission may still have been billed"),
+                    "metrics": None})
         row["timestamps"]["finished"] = time.strftime("%Y-%m-%dT%H:%M:%S")
         store.append_row(row)
         return row
@@ -305,6 +389,10 @@ def run_cell(spec) -> dict:
 
 def run_block(block: str, only_first: bool = False):
     _require_wsl(); _load_env()
+    # True once the allocation balance has been read successfully at least once.
+    # Before that, an unreadable balance stops the block: we will not spend with
+    # the floor unenforced when we have never confirmed we can see it.
+    balance_ok = False
     if block == "B1":
         verify_proxy_hashes()
     done = _done()
@@ -318,12 +406,46 @@ def run_block(block: str, only_first: bool = False):
         if key in done:
             log.info("[HW] %s exists, skipping", key); continue
         spent = _spent(block)
-        projected = spent + EXPECTED_CALL_S
+        expected = B2_EXPECTED_CALL_S if block == "B2" else EXPECTED_CALL_S
+        projected = spent + expected
         if projected >= BLOCK_CAP_S[block]:
             log.error("[HW] block %s: spend %.1f s + one call (%.1f s) would reach the "
                       "%.0f s cap -- STOPPING BEFORE the call", block, spent,
-                      EXPECTED_CALL_S, BLOCK_CAP_S[block])
+                      expected, BLOCK_CAP_S[block])
             return
+        # Outer guard: never let the allocation fall through the floor the team
+        # lead set, whatever the block cap says. Checked against the LIVE balance
+        # rather than our own tally, because the balance is authoritative.
+        # Outer guard: never let the allocation fall through the floor the team
+        # lead set, whatever the block cap says. Read from the LIVE balance
+        # rather than our own tally, because the balance is authoritative.
+        #
+        # FAILS CLOSED. An unreadable balance used to skip this check entirely,
+        # which is precisely backwards for a spend guard: the floor exists
+        # because the cap alone was judged insufficient, so losing the floor
+        # silently leaves the weaker guard doing the work. The response schema
+        # has already changed once under this account (see _find_job_id in
+        # run_hardware_b3.py), so a KeyError here is a real scenario, not a
+        # hypothetical -- and unlike an auth failure it does NOT stop the fits
+        # from billing normally.
+        bal = _live_balance()
+        if bal is None:
+            if balance_ok:
+                log.warning("[HW] balance unreadable this iteration; proceeding on "
+                            "the block cap because an earlier read succeeded")
+            else:
+                log.error("[HW] allocation balance could not be read and none has "
+                          "been read this run -- STOPPING BEFORE the call rather "
+                          "than spending with the %.0f s floor unenforced",
+                          ALLOCATION_FLOOR_S)
+                return
+        else:
+            balance_ok = True
+            if bal - expected < ALLOCATION_FLOOR_S:
+                log.error("[HW] allocation %.0f s - one call (%.1f s) would fall below "
+                          "the %.0f s floor -- STOPPING BEFORE the call", bal, expected,
+                          ALLOCATION_FLOOR_S)
+                return
         log.info("[HW] CALL %s/%s seed=%d %s k=%d s=%d a=%.1f hash=%s (block spend so far %.1f s)",
                  block, spec["label"], spec["seed"], spec["protocol"], spec["k"], spec["schedule"],
                  spec["alpha"], spec["proxy_hash"], spent)
@@ -340,10 +462,10 @@ def run_block(block: str, only_first: bool = False):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["plan", "first", "g0b", "b1"])
+    ap.add_argument("cmd", choices=["plan", "first", "g0b", "b1", "b2", "b2-first"])
     args = ap.parse_args()
     if args.cmd == "plan":
-        for b in ("G0b", "B1"):
+        for b in ("G0b", "B1", "B2"):
             specs = list(_cells(b))
             print(f"{b}: {len(specs)} calls")
             for s in specs:
@@ -354,6 +476,14 @@ def main() -> int:
         run_block("G0b", only_first=True)
     elif args.cmd == "g0b":
         run_block("G0b")
+    elif args.cmd == "b2-first":
+        # ONE fit, to establish the cost anchor before the other ten. B2's
+        # per-fit cost is unanchored (no degree-3 observation within 2x of 833
+        # variables), and the team lead approved the block in advance while
+        # asleep.
+        run_block("B2", only_first=True)
+    elif args.cmd == "b2":
+        run_block("B2")
     else:
         run_block("B1")
     return 0
