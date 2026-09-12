@@ -30908,7 +30908,7 @@
    "pool_variant": "dct",
    "pair_build": "full",
    "n_vars_expected": 833,
-   "config_hash": null,
+   "config_hash": "c21a923a5d48bbf3",
    "hw_config": {
     "lambda_coef": 340470.0,
     "weak_cls_schedule": 3,
@@ -31115,7 +31115,8 @@
     "hw_weight_sum": 1.0000007,
     "proxy_val_auprc_same_pool": 0.7557831635286316
    },
-   "energies_n": 8
+   "energies_n": 8,
+   "proxy_hash": null
   },
   {
    "arm": "cvqboost_hw",
@@ -31127,7 +31128,7 @@
    "pool_variant": "dct",
    "pair_build": "full",
    "n_vars_expected": 833,
-   "config_hash": null,
+   "config_hash": "c21a923a5d48bbf3",
    "hw_config": {
     "lambda_coef": 340470.0,
     "weak_cls_schedule": 3,
@@ -31334,7 +31335,8 @@
     "hw_weight_sum": 0.9999984,
     "proxy_val_auprc_same_pool": 0.8650135149423933
    },
-   "energies_n": 8
+   "energies_n": 8,
+   "proxy_hash": null
   },
   {
    "arm": "cvqboost_hw",
@@ -31346,7 +31348,7 @@
    "pool_variant": "dct",
    "pair_build": "full",
    "n_vars_expected": 833,
-   "config_hash": null,
+   "config_hash": "c21a923a5d48bbf3",
    "hw_config": {
     "lambda_coef": 340470.0,
     "weak_cls_schedule": 3,
@@ -31553,7 +31555,8 @@
     "hw_weight_sum": 1.0000005,
     "proxy_val_auprc_same_pool": 0.8049932749975474
    },
-   "energies_n": 8
+   "energies_n": 8,
+   "proxy_hash": null
   },
   {
    "arm": "cvqboost_hw",
@@ -31565,7 +31568,7 @@
    "pool_variant": "dct",
    "pair_build": "full",
    "n_vars_expected": 833,
-   "config_hash": null,
+   "config_hash": "c21a923a5d48bbf3",
    "hw_config": {
     "lambda_coef": 340470.0,
     "weak_cls_schedule": 3,
@@ -31772,7 +31775,8 @@
     "hw_weight_sum": 0.9999998999999999,
     "proxy_val_auprc_same_pool": 0.7594727443507564
    },
-   "energies_n": 8
+   "energies_n": 8,
+   "proxy_hash": null
   },
   {
    "arm": "cvqboost_hw",
@@ -31784,7 +31788,7 @@
    "pool_variant": "dct",
    "pair_build": "full",
    "n_vars_expected": 833,
-   "config_hash": null,
+   "config_hash": "c21a923a5d48bbf3",
    "hw_config": {
     "lambda_coef": 340470.0,
     "weak_cls_schedule": 3,
@@ -31991,7 +31995,8 @@
     "hw_weight_sum": 0.9999999999999999,
     "proxy_val_auprc_same_pool": 0.8020493271274787
    },
-   "energies_n": 8
+   "energies_n": 8,
+   "proxy_hash": null
   },
   {
    "arm": "cvqboost_hw",
@@ -32003,7 +32008,7 @@
    "pool_variant": "dct",
    "pair_build": "full",
    "n_vars_expected": 833,
-   "config_hash": null,
+   "config_hash": "c21a923a5d48bbf3",
    "hw_config": {
     "lambda_coef": 340470.0,
     "weak_cls_schedule": 3,
@@ -32210,7 +32215,8 @@
     "hw_weight_sum": 1.0000001,
     "proxy_val_auprc_same_pool": 0.8123550737648897
    },
-   "energies_n": 8
+   "energies_n": 8,
+   "proxy_hash": null
   },
   {
    "arm": "cvqboost_hw",
@@ -32222,7 +32228,7 @@
    "pool_variant": "dct",
    "pair_build": "full",
    "n_vars_expected": 833,
-   "config_hash": null,
+   "config_hash": "c21a923a5d48bbf3",
    "hw_config": {
     "lambda_coef": 340470.0,
     "weak_cls_schedule": 3,
@@ -32429,7 +32435,8 @@
     "hw_weight_sum": 1.0,
     "proxy_val_auprc_same_pool": 0.7968165017525277
    },
-   "energies_n": 8
+   "energies_n": 8,
+   "proxy_hash": null
   },
   {
    "arm": "cvqboost_hw",
@@ -32441,7 +32448,7 @@
    "pool_variant": "dct",
    "pair_build": "full",
    "n_vars_expected": 833,
-   "config_hash": null,
+   "config_hash": "c21a923a5d48bbf3",
    "hw_config": {
     "lambda_coef": 340470.0,
     "weak_cls_schedule": 3,
@@ -32648,7 +32655,8 @@
     "hw_weight_sum": 0.9999998999999999,
     "proxy_val_auprc_same_pool": 0.8037355628299779
    },
-   "energies_n": 8
+   "energies_n": 8,
+   "proxy_hash": null
   },
   {
    "arm": "cvqboost_hw",
@@ -32660,7 +32668,7 @@
    "pool_variant": "dct",
    "pair_build": "full",
    "n_vars_expected": 833,
-   "config_hash": null,
+   "config_hash": "c21a923a5d48bbf3",
    "hw_config": {
     "lambda_coef": 340470.0,
     "weak_cls_schedule": 3,
@@ -32867,7 +32875,8 @@
     "hw_weight_sum": 0.9999994,
     "proxy_val_auprc_same_pool": 0.8377605140512336
    },
-   "energies_n": 8
+   "energies_n": 8,
+   "proxy_hash": null
   },
   {
    "arm": "cvqboost_hw",
@@ -32879,7 +32888,7 @@
    "pool_variant": "dct",
    "pair_build": "full",
    "n_vars_expected": 833,
-   "config_hash": null,
+   "config_hash": "c21a923a5d48bbf3",
    "hw_config": {
     "lambda_coef": 340470.0,
     "weak_cls_schedule": 3,
@@ -33086,7 +33095,8 @@
     "hw_weight_sum": 1.0000002000000001,
     "proxy_val_auprc_same_pool": 0.850582891641581
    },
-   "energies_n": 8
+   "energies_n": 8,
+   "proxy_hash": null
   },
   {
    "arm": "cvqboost_hw",
@@ -33098,7 +33108,7 @@
    "pool_variant": "dct",
    "pair_build": "full",
    "n_vars_expected": 833,
-   "config_hash": null,
+   "config_hash": "c21a923a5d48bbf3",
    "hw_config": {
     "lambda_coef": 397216.0,
     "weak_cls_schedule": 3,
@@ -33305,7 +33315,8 @@
     "hw_weight_sum": 0.9999988,
     "proxy_val_auprc_same_pool": 0.8187941021819304
    },
-   "energies_n": 8
+   "energies_n": 8,
+   "proxy_hash": null
   }
  ]
 }

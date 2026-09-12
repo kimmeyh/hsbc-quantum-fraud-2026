@@ -44,6 +44,13 @@ def _hamiltonian(path: str):
     return H @ H.T, -2.0 * (H @ y), H.shape[0]
 
 
+def _pool_arrays(path: str):
+    """Raw prediction matrix and labels, for checks that need the learners
+    themselves rather than the Hamiltonian they induce."""
+    d = np.load(path)
+    return d["H_tr"].astype(float), np.where(d["y_tr01"] == 1, 1, -1).astype(float)
+
+
 def _solve(J, C, w0):
     obj = lambda w: w @ J @ w + C @ w          # noqa: E731
     r = minimize(obj, w0, method="SLSQP", bounds=[(0.0, 1.0)] * len(w0),
@@ -76,6 +83,21 @@ def main() -> int:
         uniform = np.full(n, 1.0 / n)
         _, obj_uniform = _solve(J, C, uniform)   # solved FROM uniform
 
+        # Is uniform actually optimal at lambda = 0? Evaluate the objective AT
+        # uniform against equal weights over the learners that fit the training
+        # fold exactly. The appendix once said the sweep "leaves it uniform even
+        # at zero penalty"; that read the objective after solving FROM uniform,
+        # which a solver returns unchanged where the objective cannot separate
+        # the candidates. This is the direct check (A27).
+        H, y = _pool_arrays(path)
+        obj_at = lambda v: float(v @ J @ v + C @ v)          # noqa: E731
+        perfect = np.where((H * y).min(axis=1) > 0)[0]
+        uniform_penalty = None
+        if len(perfect):
+            vp = np.zeros(n)
+            vp[perfect] = 1.0 / len(perfect)
+            uniform_penalty = obj_at(uniform) - obj_at(vp)
+
         sols, objs = [], []
         for _ in range(args.starts):
             w, o = _solve(J, C, rng.dirichlet(np.ones(n)))
@@ -93,6 +115,7 @@ def main() -> int:
             "n_variables": int(n),
             "starts": int(args.starts),
             "obj_from_uniform": obj_uniform,
+            "uniform_objective_penalty": uniform_penalty,
             "obj_random_min": float(np.min(objs)),
             "obj_random_max": float(np.max(objs)),
             "obj_relative_spread": float((np.max(objs) - np.min(objs)) / abs(np.mean(objs))),
@@ -117,6 +140,15 @@ def main() -> int:
             "l1_from_uniform_max": float(np.max([r["l1_from_uniform_max"] for r in per_seed])),
             "l1_pairwise_mean": float(np.mean([r["l1_pairwise_mean"] for r in per_seed])),
             "obj_relative_spread_max": float(np.max([r["obj_relative_spread"] for r in per_seed])),
+            # How much WORSE uniform is than the perfect-learner set at lambda=0.
+            # Positive means uniform is not the optimum, which is the direct
+            # disproof of the withdrawn "uniform even at zero penalty" claim.
+            "uniform_objective_penalty_mean": float(np.mean(
+                [r["uniform_objective_penalty"] for r in per_seed
+                 if r["uniform_objective_penalty"] is not None])),
+            "uniform_objective_penalty_positive_seeds": sum(
+                1 for r in per_seed
+                if (r["uniform_objective_penalty"] or 0) > 0),
         },
     }
     store.atomic_write_json(OUT, out)

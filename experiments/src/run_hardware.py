@@ -305,7 +305,22 @@ def run_cell(spec) -> dict:
     row_seed = spec["seed"] if spec["protocol"] == "stratified" else None
     row = {"arm": "cvqboost_hw", "dataset": "ulb", "protocol": spec["protocol"], "seed": row_seed,
            "block": spec["block"], "config": spec["label"], "pool_variant": spec["wt"],
-           "pair_build": PAIR_BUILD, "n_vars_expected": n_vars, "config_hash": spec["proxy_hash"],
+           "pair_build": PAIR_BUILD, "n_vars_expected": n_vars,
+           # config_hash is what every reported number traces by, so it must
+           # exist for every row. It was previously set to spec["proxy_hash"],
+           # which conflates two different things: B2 has no PROXY counterpart
+           # at 833 variables, but it still has a fully determined CONFIG. The
+           # null propagated into 11 of 168 rows, put 11 prediction files on the
+           # name `cvqboost_hw_None_stratified_<seed>` where a second null-hash
+           # arm would collide, and deleted the H4 solver-fidelity line from the
+           # gate report when B2 won a selection keyed on it (F54, F52).
+           "config_hash": spec["proxy_hash"] or store.config_hash(
+               {"label": spec["label"], "k": spec["k"], "schedule": spec["schedule"],
+                "weak_type": spec["wt"], "weak_params": dict(spec["wp"]),
+                "alpha": spec["alpha"], "pair_build": PAIR_BUILD}),
+           # Kept separate and explicit: no proxy twin exists at this size, which
+           # is a fact about the comparison, not about the configuration.
+           "proxy_hash": spec["proxy_hash"],
            "hw_config": {k: (v if k != "weak_cls_params" else dict(v)) for k, v in cfg.items()},
            "features_used": cols, "evidence_tag": "HW", "retry_count": retries,
            "timestamps": {"started": t0, "finished": None}}
