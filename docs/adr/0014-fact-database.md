@@ -40,7 +40,7 @@ Its own docstring states the gap, and Sprint 13 then demonstrated it exactly:
 
 That is the `0.5739` defect. Both numbers are real, so a global value-set lookup
 accepts either anywhere. **Closing it needs per-claim provenance — this sentence
-cites THAT row — which is what a fact database is.**
+cites THAT row — which is what an evidence base is.**
 
 ### The second and third record classes
 
@@ -100,8 +100,10 @@ findings, quality levels attached, revision expected -- matches what this
 actually holds. It also reuses vocabulary already in the project, since
 `[HW]`/`[SIM]`/`[PROJ]` are *evidence* tags.
 
-F39 remains "the fact database card" in the backlog and in conversation. The
-card is not renamed; the artifact is.
+**Superseded 2026-09-13:** the CARD is renamed too. F39 is the Evidence Based
+Database card everywhere it is live. CHANGELOG entries keep their original
+wording, because rewriting a dated record is the retroactive edit this project
+now forbids.
 
 **PRIVATE HAS A CONSEQUENCE, stated here so it is a decision and not a
 surprise.** This repository is public and judged. While `EvidenceBasedDB` is
@@ -196,6 +198,12 @@ Repeat until it is achievable. Record the level that worked.
 is that a reader can follow along and grow what they understand: if everything
 AROUND a hard term is explained lower, almost all of it is understandable well
 before the hard term, and the hard term becomes reachable rather than a wall.
+
+Grades 13 to 16 are college freshman through senior and are **acceptable, not
+deficient** -- a motivated reader reaches them. The level that warrants attention
+is **postgraduate, 17 and above**, and specifically a CLUSTER of it: that is
+where a reader cannot climb without prior specialist training, which is the one
+case the ladder cannot fix.
 
 That reframing matters more than it first appears. Reading level is a property
 of a **path**, not of a term in isolation. A grade-11 term sitting in grade-9
@@ -317,20 +325,47 @@ preregistration governs methodology; this is an engineering decision around it.
 1. ~~Repository name and visibility.~~ **DECIDED 2026-09-13**: named
    **Evidence Based DB**, repository `EvidenceBasedDB`, **private for now**. See
    section 0, including the citation constraint that privacy imposes.
-2. **Does the glossary ship?** It could be a repository asset only, or become a
-   Phase 2 submission appendix. That changes the register and the review bar.
-3. **Who authors the 151 proposal-set definitions**, and at what pace? Measured,
-   not estimated, and materially smaller than the "over 1,000" working figure
-   once scoped to the submitted documents. It remains the largest single cost
-   here.
-4. **Is a grade-13-or-higher cluster a trigger to revise the DOCUMENT** rather
-   than only to record the level? Recommendation: treat it as a signal worth
-   reviewing, never an automatic edit. The Phase 1 documents are frozen; this
-   applies to Phase 2 writing.
+2. ~~Does the glossary ship?~~ **DECIDED 2026-09-13: INTERNAL for now.** A
+   repository asset, not a submission appendix. Consequence: the review bar is
+   ours rather than a judge's, so entries may be drafted and improved in place
+   instead of needing to be right before they appear. Revisit for Phase 2, where
+   a glossary is a plausible appendix and the audience widens.
+3. ~~Who authors the 151 proposal-set definitions?~~ **DECIDED 2026-09-13:
+   source them from existing dictionaries and references wherever possible, and
+   Claude drafts the rest for the team lead to review.**
+
+   This changes the cost materially. Most of the 43 acronyms have standard
+   expansions that need no invention -- AUPRC, GBDT, PCA, KNN, LDA are defined
+   in any ML reference. The work concentrates in two places: terms this project
+   uses in a SCOPED sense (see `fidelity`), where a general dictionary
+   definition would be wrong for our usage, and the grade-11-and-above tail
+   where no source writes at that level.
+
+   **A sourced definition carries its source in `provenance`, exactly like an
+   asserted number.** A definition with no source and no author is the same
+   defect class as a figure with no artifact.
+4. ~~Is a grade-13-or-higher cluster a trigger to revise the document?~~
+   **DECIDED 2026-09-13: no. The threshold is POSTGRADUATE, grade 17 and above.**
+
+   The team lead's reasoning, and it corrects mine: grades 13 to 16 are college
+   freshman through senior. A term that lands there is not a problem, because a
+   motivated reader reaches it -- which is the whole point of the escalation
+   ladder. **A cluster at POSTGRADUATE level is the signal worth addressing**,
+   because that is where the reader cannot climb without prior specialist
+   training.
+
+   | Grade | Level | Verdict |
+   |---|---|---|
+   | 8-12 | Middle and high school | Target range |
+   | 13-16 | College freshman to senior | Acceptable; reachable |
+   | 17+ | Postgraduate | **Cluster here is a finding** |
+
+   Still a review signal and never an automatic edit. The Phase 1 documents are
+   frozen; this applies to Phase 2 writing.
 
 ## References
 
-- F39 (this card), F44 (`test_document_figures_resolve.py`), F72 (reference
+- F39 (this card, the Evidence Based Database), F44 (`test_document_figures_resolve.py`), F72 (reference
   library, gated on this storage decision)
 - Amendments A15, A19, A24; findings F52, and the Sprint 13 evidence walk
 - `docs/sprints/SPRINT_13_SUMMARY.md`, `docs/sprints/SPRINT_8_RETROSPECTIVE.md`

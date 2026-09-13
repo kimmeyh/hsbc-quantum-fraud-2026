@@ -255,7 +255,8 @@ docs/reviews/f36-float-tables-outcome.md.
 (F38 appendix to 3 pages AND proposal to 6: COMPLETED in Sprint 12, merged via PR #75.
 proposal 6 of 6, appendix 3 of 3, team profile 1 of 1. Removed from candidates per convention.)
 
-**F39. Fact database: investigation, design and ADR (~1-2 days) Priority 6 -- SPRINT 14 (design only, NOT a build)**
+**F39. Evidence Based Database: investigation, design and ADR (~1-2 days) Priority 6 -- SPRINT 14 (design only, NOT a build)**
+- **RENAMED 2026-09-13 (team lead): the card and the artifact are both the Evidence Based Database.** It was "fact database" from Sprint 8. The rename is not cosmetic: 0.7688 sat in four documents and was not a fact, and the unconverged solver produced figures that were not facts, so a store called a FACT database asserts the property it exists to check. Repository `EvidenceBasedDB`, private for now. Quotes below are left verbatim as they were written
 - Phase: Post-submission / Phase 2 tooling (team lead, Sprint 8 retrospective 2026-09-07: "We need to create a 'fact database' ... It states facts that we can confirm with confidence intervals between 0.0% and 99.9%. There are likely over 1,000 and this makes it difficult to keep track of ... if we need to update the baseline facts it should be here and then all other sources use this as the basis")
 - Platform: tooling
 - **The problem it solves, with this sprint's evidence**: the same fact is currently restated in many documents with no link between the copies. Sprint 8 alone found the QCi letter asserting "twelve amendments" when the enclosed preregistration had seventeen; A15 corrected a k=6 AUPRC published as 0.7688 when the true value was 0.7629, a figure that had been carried from a five-seed run into a ten-seed writeup; and A17 forced recomputation of every A11/A13 figure across four documents. Each was caught by a human reading, or by a one-off script written for that one check

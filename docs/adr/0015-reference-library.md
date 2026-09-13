@@ -5,7 +5,7 @@
 **Proposed.** Awaiting team-lead acceptance or rejection. **No implementation is
 authorised by this document**; F72 is investigation and design only.
 
-Depends on **ADR-0014** (fact database) for its storage decision. If 0014 is
+Depends on **ADR-0014** (Evidence Based Database) for its storage decision. If 0014 is
 rejected or its storage changed, this ADR changes with it.
 
 ## Date
@@ -205,14 +205,23 @@ None. This is tooling outside the frozen methodology and requires no amendment.
 2. ~~Which papers seed it?~~ **DECIDED 2026-09-13**: the submission's own
    reference list seeds it. That is the set most likely to be re-read during
    judging, and the set where a misreading has already cost us twice (F53, A28).
-3. **Is `checked_against_source` a hard gate for `verdict: use`?** Recommendation:
-   yes, and now enforceable: `never` is an explicit value, so the gate is a
-   comparison rather than a null check. An unverified paper can be cited as
-   `unverified`, but should not support a decision.
+3. ~~Is `checked_against_source` a hard gate for `verdict: use`?~~ **DECIDED
+   2026-09-13: YES, adopted provisionally -- try it and watch for trouble.**
+
+   Enforceable because `never` is explicit, so the gate is a comparison rather
+   than a null check. An unverified paper may be cited as `unverified` but
+   cannot support a decision.
+
+   **Adopted with the expectation that it might chafe**, and the failure mode to
+   watch for is a specific one: if the gate makes people record a perfunctory
+   check just to clear it, it has made things worse rather than better -- a
+   date in a field that nobody honoured is weaker evidence than an honest
+   `never`. If that starts happening, the right response is to relax the gate,
+   not to tighten the wording. Revisit after the seed set is loaded.
 
 ## References
 
-- ADR-0014 (fact database), F39, F72
+- ADR-0014 (Evidence Based Database), F39, F72
 - F53 (AutoXGB dataset misattribution), A28 (the Loke et al. prior-work claim)
 - Sprint 12: the review agent that correctly rejected its own reviewer's FG22/5 claim
 - `docs/references.md`, `docs/research-baselines-best-practices.md`
