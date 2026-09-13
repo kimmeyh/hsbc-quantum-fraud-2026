@@ -10,10 +10,14 @@ produced them are runnable.
 
 **The headline result is a null, and it is reported as one.** A quantum-inspired
 training step (CVQBoost on QCi's Dirac-3) trails a tuned gradient-boosted
-classical detector by 0.0399 AUPRC on the ULB benchmark, on nine of ten seeds.
-One configuration is positive at scale: an 833-variable arm gains +0.0256 AUPRC
-on ten of ten seeds, and it still trails full-feature CatBoost. No quantum
-advantage is claimed.
+classical detector on the ULB benchmark. One configuration is positive at scale
+and still trails full-feature CatBoost. No quantum advantage is claimed.
+
+The figures behind that paragraph are not restated here. They live in
+[`experiments/results/gate_report.md`](experiments/results/gate_report.md),
+regenerated from the row store by `python experiments/src/score_gates.py`, and
+in the proposal's own results table. A number copied into a README is a number
+that goes stale.
 
 ## What was submitted
 
@@ -52,12 +56,12 @@ references never move**; a hook refuses force-pushes and tag moves.
 
 | Path | What it is |
 |---|---|
-| [`experiments/PREREGISTRATION.md`](experiments/PREREGISTRATION.md) | **FROZEN** methodology: hypotheses, gates with numeric pass criteria, splits, seeds, budget. Changes only by dated amendment (32 so far, A1-A32) |
+| [`experiments/PREREGISTRATION.md`](experiments/PREREGISTRATION.md) | **FROZEN** methodology: hypotheses, gates with numeric pass criteria, splits, seeds, budget. Changes only by dated amendment; the log at the top of that file is the count |
 | [`experiments/results/results.json`](experiments/results/results.json) | The row store. Every reported number originates here with a config hash and an evidence tag |
-| [`experiments/results/gate_report.md`](experiments/results/gate_report.md) | Regenerated gate scoring: G0 FAIL, G0b PASS, H1b NULL, H4 PARTIAL |
-| [`docs/requirements-matrix.md`](docs/requirements-matrix.md) | 92-row acceptance checklist against the four official challenge PDFs |
+| [`experiments/results/gate_report.md`](experiments/results/gate_report.md) | Regenerated gate scoring, verdicts included. Rebuild with `python experiments/src/score_gates.py` |
+| [`docs/requirements-matrix.md`](docs/requirements-matrix.md) | The acceptance checklist, walked row by row against the four official challenge PDFs before submission |
 | [`docs/submission/`](docs/submission/) | Submission receipt, package manifest, compliance walk |
-| [`docs/sprints/`](docs/sprints/) | Plan, retrospective and summary for each of 14 sprints |
+| [`docs/sprints/`](docs/sprints/) | Plan, retrospective and summary for every sprint |
 | `CHECKLIST-Phase1.md` | The Phase 1 record. **CLOSED 2026-09-12 and never updated** |
 | `CHECKLIST-Phase2-pre.md` | Live work during the review window |
 | `CHECKLIST-Phase2.md` | Dormant until selection; the six committed experiments |
@@ -105,8 +109,9 @@ interpreter used was Python 3.12.10, recorded as a comment in the lock file.
 python -m pytest experiments/src/test_metrics.py -q
 ```
 
-Expected: **12 passed in about 5 seconds**. These are known-answer tests over
-the statistical primitives and need no data.
+These are known-answer tests over the statistical primitives and need no data,
+so they run in seconds. The counts are whatever the suite reports; this file
+deliberately does not restate them.
 
 ### 4. Run the full suite
 
@@ -114,18 +119,21 @@ the statistical primitives and need no data.
 python -m pytest experiments/src/ -q
 ```
 
-Expected on a fresh clone: **296 passed, 16 skipped, 0 failed**, in about 35
-seconds.
+**Expect zero failures and some skips.** The exact counts are whatever pytest
+reports, and they are not restated here: this paragraph was written with one set
+of numbers and was wrong within the same sprint, which is precisely the failure
+one-source-of-truth avoids.
 
-**The 16 skips are correct and expected.** They are the tests that need raw
+**The skips are correct and expected.** They are the tests that need raw
 datasets, which are not redistributed here because their licences do not permit
 it. A fresh clone cannot run them, and they skip rather than fail so that a red
-suite always means a real defect.
+suite always means a real defect. Each skip states its own reason; run with
+`-rs` to see them.
 
-One group that used to skip no longer does: the pool-mechanism guard runs
-against a committed fixture (`experiments/results/pool_mechanism_fixture.npz`,
-0.83 MB) so that the mechanism claim in appendix A.4 is checked on a fresh
-clone rather than only on a machine that has the pools.
+The pool-mechanism guard is deliberately NOT among them: it runs against a
+committed fixture (`experiments/results/pool_mechanism_fixture.npz`) so the
+mechanism claim in appendix A.4 is checked on a fresh clone rather than only on
+a machine that happens to have the pools.
 
 To skip the one long-running test during iteration:
 
@@ -158,14 +166,16 @@ Set `HSBC_ULB_CSV` to override the ULB location.
 
 ### What you cannot reproduce, and why
 
-**The hardware rows.** 61 metered fits on QCi's Dirac-3 over 1,141 device
-seconds, tagged **[HW]**. They need a funded QCi account, and the allocation was
-a grant to this project. What IS reproducible is their classical counterpart:
-every hardware fit solves a Hamiltonian that `experiments/src/mechanism_controls.py`
-solves exactly, and the agreement between them is itself a reported result.
+**The hardware rows**, tagged **[HW]**. They ran on QCi's Dirac-3 against a
+grant to this project and need a funded account. Campaign totals -- fits, metered
+seconds, and how many carry a retained job identifier -- are in
+[`experiments/results/qpu_cost_ledger.json`](experiments/results/qpu_cost_ledger.json)
+and the appendix, not restated here.
 
-Raw device responses for 48 of the 61 fits, and job identifiers for 60, are
-committed under `experiments/results/`.
+What IS reproducible is their classical counterpart: every hardware fit solves a
+Hamiltonian that `experiments/src/mechanism_controls.py` solves exactly, and the
+agreement between them is itself a reported result. Raw device responses and job
+identifiers are committed under `experiments/results/`.
 
 ## Repository layout
 
@@ -194,7 +204,7 @@ Three published claims were found false during external review and withdrawn
 (A26, A27) rather than quietly corrected. The amendment log carries them,
 including one correction that was itself wrong.
 
-Development ran as 14 sprints with retrospectives; `docs/sprints/` holds the
+Development ran in sprints with retrospectives; `docs/sprints/` holds the
 record.
 
 ## Status
