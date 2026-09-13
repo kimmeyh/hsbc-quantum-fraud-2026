@@ -13,7 +13,7 @@ Adapted 2026-08-30 from spamfilter-multi's SPRINT_EXECUTION_WORKFLOW.md (its har
 | **SPRINT_RETROSPECTIVE.md** | Retrospective protocol and the 16x4 template |
 | **BACKLOG_REFINEMENT.md** | Refinement passes and the authoritative presentation format |
 | **SPRINT_PROCESS.md** | One-page overlay: branch model, carry-forward, standing rules |
-| **CHECKLIST.md** (repo root) | The submission-wide task ledger (Phase 1 deliverable map) |
+| **CHECKLIST-Phase2-pre.md** (repo root) | The submission-wide task ledger (Phase 1 deliverable map) |
 | **experiments/PREREGISTRATION.md** | FROZEN protocol; amendment discipline overrides everything here |
 
 ## Phase Cheat Sheet
@@ -22,7 +22,7 @@ Consult this line at the START and END of every phase; state which steps were do
 
 | Phase | Top actions | Done when |
 |---|---|---|
-| **1. Backlog Refinement** | MANDATORY every sprint, no request needed. Read master plan + CHECKLIST.md; present candidates in BACKLOG_REFINEMENT.md format (read its format section IN THE SAME TURN first); capture selection | Team lead has picked items; no scope questions open |
+| **1. Backlog Refinement** | MANDATORY every sprint, no request needed. Read master plan + CHECKLIST-Phase2-pre.md; present candidates in BACKLOG_REFINEMENT.md format (read its format section IN THE SAME TURN first); capture selection | Team lead has picked items; no scope questions open |
 | **2. Sprint Pre-Kickoff** | Verify previous PR merged; sprint issues closed; working tree clean; develop current; venv tests green (`pytest experiments/src -q`) | All gates green |
 | **3. Kickoff & Planning** | Draft `docs/sprints/SPRINT_N_PLAN.md`; verify plan against branch state (3.2.2.1); create GitHub issue per task + DRAFT PR (3.3.1); get explicit 3.7 approval | Team lead says "plan approved" -- durable authorization for Phases 4-7 |
 | **4. Execution** | Implement tasks in plan order; run `pytest experiments/src -q` after each; commit with issue number; results only through the frozen protocol | All acceptance criteria met; tests green |
@@ -51,7 +51,7 @@ Consult this line at the START and END of every phase; state which steps were do
 ## Phase detail (adaptations from the source; consult spamfilter's doc for rationale history)
 
 ### Phase 1: Backlog Refinement (mandatory, every sprint)
-- 1.1 Read ALL_SPRINTS_MASTER_PLAN.md and repo-root CHECKLIST.md; identify stale/obsolete items; re-prioritize.
+- 1.1 Read ALL_SPRINTS_MASTER_PLAN.md and repo-root CHECKLIST-Phase2-pre.md; identify stale/obsolete items; re-prioritize.
 - 1.2 Present candidates in the BACKLOG_REFINEMENT.md "Backlog Presentation Format" -- Summary Index first, `**<ID>. <Title> (~<effort>) Priority <N>**` items, phase-group headers, HOLD one-liners, no grid tables, real registered IDs (F#/Issue #N). Read the format section in the same turn before producing it.
 - 1.3 Record selection; update master plan; commit.
 

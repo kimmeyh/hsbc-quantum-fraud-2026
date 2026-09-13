@@ -32,7 +32,7 @@ Surface with the template phrasing; wait.
 ## Standing rules
 
 - `--no-verify` is banned; the pre-commit confidentiality hook stays active.
-- Repo-root `CHECKLIST.md` is the submission deliverable ledger, reconciled at every sprint close; ALL_SPRINTS_MASTER_PLAN.md is the sprint-scoping view.
+- Repo-root `CHECKLIST-Phase2-pre.md` is the submission deliverable ledger, reconciled at every sprint close; ALL_SPRINTS_MASTER_PLAN.md is the sprint-scoping view.
 - Every reported number originates in results.json with an evidence tag.
 - Team-lead `0*` working files at repo root: commit neutrally, never read.
 

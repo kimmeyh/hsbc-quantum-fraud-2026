@@ -58,6 +58,9 @@ references never move**; a hook refuses force-pushes and tag moves.
 | [`docs/requirements-matrix.md`](docs/requirements-matrix.md) | 92-row acceptance checklist against the four official challenge PDFs |
 | [`docs/submission/`](docs/submission/) | Submission receipt, package manifest, compliance walk |
 | [`docs/sprints/`](docs/sprints/) | Plan, retrospective and summary for each of 14 sprints |
+| `CHECKLIST-Phase1.md` | The Phase 1 record. **CLOSED 2026-09-12 and never updated** |
+| `CHECKLIST-Phase2-pre.md` | Live work during the review window |
+| `CHECKLIST-Phase2.md` | Dormant until selection; the six committed experiments |
 | [`docs/adr/`](docs/adr/) | Architecture decision records |
 
 **Evidence tags** appear on every figure: **[HW]** measured on Dirac-3
@@ -111,13 +114,18 @@ the statistical primitives and need no data.
 python -m pytest experiments/src/ -q
 ```
 
-Expected on a fresh clone: **256 passed, 21 skipped, 0 failed**, in about 25
+Expected on a fresh clone: **296 passed, 16 skipped, 0 failed**, in about 35
 seconds.
 
-**The 21 skips are correct and expected.** They are the tests that need raw
+**The 16 skips are correct and expected.** They are the tests that need raw
 datasets, which are not redistributed here because their licences do not permit
 it. A fresh clone cannot run them, and they skip rather than fail so that a red
 suite always means a real defect.
+
+One group that used to skip no longer does: the pool-mechanism guard runs
+against a committed fixture (`experiments/results/pool_mechanism_fixture.npz`,
+0.83 MB) so that the mechanism claim in appendix A.4 is checked on a fresh
+clone rather than only on a machine that has the pools.
 
 To skip the one long-running test during iteration:
 
