@@ -1,4 +1,4 @@
-# ADR-0014: Fact database — storage, schema and repository boundary
+# ADR-0014: Evidence Based DB — storage, schema and repository boundary
 
 ## Status
 
@@ -85,6 +85,34 @@ scope decision the inventory earned, and it makes the reading-level commitment
 honest rather than aspirational.
 
 ## Decision
+
+### 0. It is called the Evidence Based DB, and it is PRIVATE for now
+
+**Team lead, 2026-09-13.** Name: **Evidence Based DB**. Repository:
+**`EvidenceBasedDB`**. Visibility: **private**.
+
+The name was chosen over "fact database", which this project had used since
+Sprint 8, and the reason is this repository's own record. `0.7688` appeared in
+four documents and was not a fact. The unconverged solver produced figures that
+were not facts. A store called a *fact* database asserts the very property it
+exists to check; "evidence base" is the term whose established usage -- graded
+findings, quality levels attached, revision expected -- matches what this
+actually holds. It also reuses vocabulary already in the project, since
+`[HW]`/`[SIM]`/`[PROJ]` are *evidence* tags.
+
+F39 remains "the fact database card" in the backlog and in conversation. The
+card is not renamed; the artifact is.
+
+**PRIVATE HAS A CONSEQUENCE, stated here so it is a decision and not a
+surprise.** This repository is public and judged. While `EvidenceBasedDB` is
+private, **no citation from this repository may depend on it resolving** -- a
+reader following a pointer into a private repository gets a 404, which is the
+dangling-reference defect this project keeps finding, in a new place.
+
+So for as long as it is private, the rule in section 5 is not a preference but a
+constraint: citations carry their claim and provenance inline, and the library id
+is an identifier for someone who already has access. Revisit if and when it
+goes public.
 
 ### 1. It starts OUTSIDE this repository
 
@@ -286,10 +314,9 @@ preregistration governs methodology; this is an engineering decision around it.
 
 ## Open questions for the team lead
 
-1. **Repository name and visibility.** Public makes citations resolvable for a
-   reader of this public repository; private keeps an unfinished tool private.
-   Recommendation: **public once it holds anything worth citing**, private
-   before that.
+1. ~~Repository name and visibility.~~ **DECIDED 2026-09-13**: named
+   **Evidence Based DB**, repository `EvidenceBasedDB`, **private for now**. See
+   section 0, including the citation constraint that privacy imposes.
 2. **Does the glossary ship?** It could be a repository asset only, or become a
    Phase 2 submission appendix. That changes the register and the review bar.
 3. **Who authors the 151 proposal-set definitions**, and at what pace? Measured,

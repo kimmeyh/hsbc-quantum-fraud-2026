@@ -57,7 +57,15 @@ every citation into it carries enough inline context to stand alone.
 
 ## Decision
 
-### 1. Same repository as the fact database, or a sibling under the same decision
+### 1. Lives in the Evidence Based DB
+
+**Decided 2026-09-13**: the reference library is a record class inside
+**`EvidenceBasedDB`** (ADR-0014), which is **private for now**. Papers are a
+fourth class beside `assertion`, `acronym` and `term`.
+
+While that repository is private, section 5's inline-citation rule is a hard
+constraint rather than a preference: a pointer into a private repository does
+not resolve for the public reader this repository has.
 
 F39 and F72 are the same shape: **structured records carrying provenance and
 confidence, retrievable, maintained outside prose.** They should share the
@@ -191,10 +199,12 @@ None. This is tooling outside the frozen methodology and requires no amendment.
 
 ## Open questions for the team lead
 
-1. **Does this share ADR-0014's repository, or sit beside it?** Recommendation:
-   same repository, separate table. One decision, one export pipeline.
-2. **Which papers seed it?** The submission's own reference list is the obvious
-   start, and it is already the set most likely to be re-read during judging.
+1. ~~Does this share ADR-0014's repository, or sit beside it?~~ **DECIDED
+   2026-09-13**: same repository (`EvidenceBasedDB`), separate record class. One
+   decision, one export pipeline.
+2. ~~Which papers seed it?~~ **DECIDED 2026-09-13**: the submission's own
+   reference list seeds it. That is the set most likely to be re-read during
+   judging, and the set where a misreading has already cost us twice (F53, A28).
 3. **Is `checked_against_source` a hard gate for `verdict: use`?** Recommendation:
    yes, and now enforceable: `never` is an explicit value, so the gate is a
    comparison rather than a null check. An unverified paper can be cited as

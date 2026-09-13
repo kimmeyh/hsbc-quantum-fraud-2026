@@ -32,5 +32,5 @@ Adopted from the spamfilter-multi ADR system (F15 review) with one addition: eve
 | [0011](0011-secrets-and-credential-handling.md) | Secrets and credential handling | Accepted | 2026-08-30 |
 | [0012](0012-pdf-rendering-toolchain.md) | PDF rendering toolchain: pandoc to docx to Word | Accepted | 2026-09-04 |
 | [0013](0013-h6-qfe-twin-design.md) | H6 QFE representation and order-matched classical twin design | Proposed | 2026-09-05 |
-| [0014](0014-fact-database.md) | Fact database: SQLite plus committed export, three record classes, reading level escalates 8 to 20, starts outside this repository | Proposed | 2026-09-12 |
-| [0015](0015-reference-library.md) | Reference-paper library: same store as ADR-0014, records not PDFs, search before embeddings | Proposed | 2026-09-12 |
+| [0014](0014-fact-database.md) | Evidence Based DB: SQLite plus committed export, three record classes, reading level escalates 8 to 20; private repo `EvidenceBasedDB` | Proposed | 2026-09-12 |
+| [0015](0015-reference-library.md) | Reference-paper library: a record class in the Evidence Based DB, records not PDFs, search before embeddings | Proposed | 2026-09-12 |
