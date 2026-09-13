@@ -129,7 +129,9 @@ Every record, regardless of class, carries:
 | `provenance` | Pointer to what establishes it: a `results.json` row + config hash, an artifact path, an amendment, an external citation |
 | `evidence_tag` | `HW` \| `SIM` \| `PROJ` \| `N/A` — reuses the existing vocabulary rather than inventing one |
 | `confidence` | 0.0 to 99.9 percent (Cyc-derived; see below) |
-| `fidelity` | `exact` \| `scoped` \| `consequence` -- how faithful the plain definition is. See section 5 |
+| `fidelity` | `exact` \| `scoped` \| `consequence` -- how FAITHFUL the definition is. See section 5 |
+| `reading_level` | US grade level the definition actually achieves, 8 to 20. How HARD it is. See section 5 |
+| `prerequisites` | Ids of records a reader needs first. The escalation ladder's rungs |
 | `updated` | Date, and the amendment or issue that moved it |
 
 Class-specific fields:
@@ -156,45 +158,78 @@ every citation and **fails on an unresolved or stale one**. This is the
 mechanism that would have caught A15, the amendment-count drift, and the 78/91
 split.
 
-### 5. The reading-level target is a constraint, and a `fidelity` field keeps it honest
+### 5. Reading level ESCALATES one grade at a time, and the target is a path not a term
 
-`plain_definition` targets 8th-grade math, science and English for the proposal
-set. The inventory tested this by writing sample definitions, and the target is
-achievable for the large majority -- the pattern that works is: say what the
-thing does or answers, then anchor it with one real number from our own results,
-and never define jargon with more jargon.
+**Team lead, 2026-09-12.** Start every definition at 8th grade. Where an honest
+definition is not achievable at that level, go up ONE grade and try again.
+Repeat until it is achievable. Record the level that worked.
 
-**But it is NOT achievable for every term without distorting the meaning, and
-the schema must admit that rather than paper over it.** Every record carries a
-`fidelity` field:
+**The ceiling is PhD (grade 20), and reaching it is not a failure.** The purpose
+is that a reader can follow along and grow what they understand: if everything
+AROUND a hard term is explained lower, almost all of it is understandable well
+before the hard term, and the hard term becomes reachable rather than a wall.
 
-| Value | Meaning |
-|---|---|
-| `exact` | The plain definition is simply correct |
-| `scoped` | True for THIS paper's usage; would be wrong as a general definition |
-| `consequence` | States what the term implies for our result, not what it means |
+That reframing matters more than it first appears. Reading level is a property
+of a **path**, not of a term in isolation. A grade-11 term sitting in grade-9
+surroundings is climbable. The same term surrounded by other grade-11 terms is
+not. **This is why `prerequisites` is part of the schema and not a nicety**: it
+records the rungs, so the ladder can be checked for gaps rather than assumed.
 
-Seven terms were identified where a naive simplification would be actively
-false, and they are the ones a careful reader would catch:
+#### The escalation, worked on the terms that failed at 8
 
-- **convex** -- "bowl-shaped, one lowest point" is wrong in 833 dimensions where
-  the minimiser set is a flat face, which is exactly what our own appendix says.
-  The easy gloss contradicts the document.
-- **simplex** -- "weights sum to 1" is right but cannot reach "the minimiser set
-  is a face of the simplex", which is the load-bearing use.
-- **split dispersion, not sampling error** -- the whole point is that the
-  interval does NOT mean what a reader assumes. A friendly paraphrase destroys
-  the honesty this phrase exists to provide.
-- **BCa interval** -- there is no honest 8th-grade rendering of "accelerated".
-- **rank-one to numerical precision** -- eigenvalues have no 8th-grade handle;
-  only the consequence is expressible.
-- **effective analog resolution / 23 dB** -- 200:1 simplifies; decibels do not.
-- **step-wise average precision** -- calling it "the standard way" erases a
-  deliberate methodological commitment.
+Tested rather than asserted. The earlier draft of this ADR declared seven terms
+unachievable; escalation rescues most of them.
 
-This matters beyond tidiness. The submission's credibility rests on not
-overclaiming, and a glossary that quietly overclaims about its own definitions
-would undercut the thing it is meant to support.
+| Term | 8 | 9 | 10 | 11 | Achieved |
+|---|---|---|---|---|---|
+| convex | NO | **yes** | | | **9** |
+| BCa interval | NO | **yes** | | | **9** |
+| simplex | NO | **yes** | | | **9** |
+| split dispersion, not sampling error | NO | **yes** | | | **9** |
+| step-wise average precision | NO | | **yes** | | **10** |
+| effective analog resolution (200:1) | **yes** | | | | **8** |
+| 23 dB dynamic range | NO | NO | NO | **yes** | **11** |
+| rank-one to numerical precision | NO | NO | NO | **yes** | **11** |
+
+**"Convex" is the case that proves the rule.** At 8th grade the natural gloss is
+"bowl-shaped, so there is one lowest point" -- which CONTRADICTS our own appendix,
+where the minimiser set is a face of the simplex, a flat region rather than a
+point. At 9th grade it works: *"The problem has no false bottoms. Any lowest
+point you find is genuinely the lowest, so there is no risk of getting stuck
+somewhere that only looks best."* That drops the false uniqueness and keeps the
+property that actually matters -- it is why a classical solve is a valid check on
+the device.
+
+A flat `fidelity: consequence` would have written that term off. One grade of
+escalation recovered an honest definition. **The measured failure is worth more
+than the binary one**, and the earlier draft was simply wrong to give up.
+
+#### The distribution is itself a finding
+
+Grade levels across the glossary say something about the submission that no
+individual entry does: a cluster of grade-13-and-above terms in one section is
+evidence that the SECTION is over-jargoned, not merely that its vocabulary is
+hard. That is a document-quality signal, available for free once the field
+exists, and it is worth watching in Phase 2 where the audience widens.
+
+#### `fidelity` and `reading_level` are different axes, and both are kept
+
+- `reading_level` answers **how hard**.
+- `fidelity` answers **how faithful**.
+
+They are independent. "Hamiltonian" reaches 8th grade comfortably and is still
+`scoped`: the definition is true for this paper's usage -- a table of costs the
+machine minimises -- and would be wrong as a general physics definition. A
+physics-literate judge must not read it as an error, so the record says so.
+
+Keeping only one of the two fields would lose real information either way.
+
+#### Why this survives contact with the project's standards
+
+The submission's credibility rests on not overclaiming. A glossary that quietly
+overclaimed about its own definitions -- shipping a comfortable falsehood because
+the honest version was harder -- would undercut the thing it exists to support.
+Escalation is what makes the honest version reachable instead of abandoned.
 
 ## Alternatives considered
 
@@ -261,6 +296,10 @@ preregistration governs methodology; this is an engineering decision around it.
    not estimated, and materially smaller than the "over 1,000" working figure
    once scoped to the submitted documents. It remains the largest single cost
    here.
+4. **Is a grade-13-or-higher cluster a trigger to revise the DOCUMENT** rather
+   than only to record the level? Recommendation: treat it as a signal worth
+   reviewing, never an automatic edit. The Phase 1 documents are frozen; this
+   applies to Phase 2 writing.
 
 ## References
 

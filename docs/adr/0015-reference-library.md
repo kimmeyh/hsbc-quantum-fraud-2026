@@ -84,11 +84,23 @@ from a fact about a number — which is the problem both cards exist to solve.
 | `verdict` | `use` \| `cite-only` \| `contradicts-us` \| `superseded` \| `unverified` |
 | `confidence` | 0.0–99.9%, as ADR-0014 |
 | `fidelity` | `exact` \| `scoped` \| `consequence`, as ADR-0014 |
-| `checked_against_source` | Date, and by whom or what. **Blank means nobody opened the paper** |
+| `checked_against_source` | **REQUIRED.** A date plus who or what checked it, or the literal `never`. See below |
 
-The last field is the one that earns the build. F53 and A28 were both failures
-of *nobody having checked the source recently enough*, and a blank field is
-visible where a confident summary is not.
+The last field is the one that earns the build, and it is **required with an
+explicit `never` rather than left blank** (team lead, 2026-09-12). Blank is
+ambiguous: it cannot distinguish *nobody has checked this* from *someone forgot
+to fill the field*, and those call for opposite responses. `never` is a
+statement a person made; a blank is an absence a reader has to interpret, which
+is the same reasoning that makes a skipped test worse than a failing one.
+
+F53 and A28 were both failures of nobody having checked the source recently
+enough. A record that says `never` out loud is visible in a way a confident
+summary is not.
+
+It also carries `reading_level`, `fidelity` and `prerequisites` from ADR-0014.
+A paper summary is subject to the same escalation rule as a glossary term:
+start at 8th grade, climb one grade at a time until honest, record where it
+landed.
 
 `contradicts-us` is a deliberate verdict value. A library that can only record
 supporting work is a bibliography for a conclusion already reached.
@@ -184,8 +196,9 @@ None. This is tooling outside the frozen methodology and requires no amendment.
 2. **Which papers seed it?** The submission's own reference list is the obvious
    start, and it is already the set most likely to be re-read during judging.
 3. **Is `checked_against_source` a hard gate for `verdict: use`?** Recommendation:
-   yes. An unverified paper can be cited as `unverified`, but should not be
-   allowed to support a decision.
+   yes, and now enforceable: `never` is an explicit value, so the gate is a
+   comparison rather than a null check. An unverified paper can be cited as
+   `unverified`, but should not support a decision.
 
 ## References
 
