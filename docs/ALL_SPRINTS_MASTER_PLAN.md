@@ -273,6 +273,7 @@ proposal 6 of 6, appendix 3 of 3, team profile 1 of 1. Removed from candidates p
 - **Cyc-derived scoring fields are carried on every record type**, including the ones not yet used, so the schema does not need widening later. The confidence field (0.0% to 99.9%) is the part worth taking from Cyc: it forces "how sure are we" to sit next to the claim
 - **Why the glossary half is not decoration**: the submission is read by judges who are not all specialists, and the Guidelines say explicitly that a non-specialist reviewer must be able to follow the technical approach. A maintained glossary at a defined reading level is the mechanism for that, and it is reusable in Phase 2 where the audience widens again
 - Acceptance for THIS card: an ADR the team lead can approve or reject, naming the storage tool, the record schema for all three classes (assertions, acronyms, terms), the maintenance model, the repository boundary, and how this project cites into it. No implementation
+- **DONE 2026-09-13: ADR-0014 ACCEPTED.** The design card is complete. Scope was corrected during the review -- the HSBC glossary is use case ONE, not the boundary; the target is a domain knowledge base over QML, ML, QC and the major QC platforms. Building is a SEPARATE card and is not authorised by the ADR
 - Depends on: nothing. Its storage decision gates F72
 
 (F40 segment non-public material: COMPLETED in Sprint 10, merged via PR #58 (main PR #62); history in SPRINT_10_SUMMARY.md. Removed from candidates per convention.)

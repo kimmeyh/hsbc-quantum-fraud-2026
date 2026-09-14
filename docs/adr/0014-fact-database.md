@@ -2,8 +2,19 @@
 
 ## Status
 
-**Proposed.** Awaiting team-lead acceptance or rejection. **No implementation is
-authorised by this document**; F39 is investigation and design only.
+**ACCEPTED 2026-09-13** by the team lead.
+
+What acceptance covers: the storage decision (SQLite first, committed text
+export, named triggers for NoSQL and graph), the three record classes and their
+schema spine, contexts rather than tags, the escalating reading level with its
+postgraduate threshold, and the repository boundary (`EvidenceBasedDB`, private).
+
+What it does NOT cover: **no implementation is authorised by this document.**
+F39 was scoped as investigation and design, and building is a separate decision
+with its own card. ADR-0015, which depends on this one's storage decision,
+remains Proposed.
+
+Supersedes nothing. Amended by later ADRs if the named triggers fire.
 
 ## Date
 
