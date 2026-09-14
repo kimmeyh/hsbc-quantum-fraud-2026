@@ -12,6 +12,58 @@ rejected or its storage changed, this ADR changes with it.
 
 2026-09-12
 
+## Maturity: EARLY INNOVATION, revision expected
+
+**Team lead, 2026-09-14: these ADRs and the database itself cannot be written in
+stone. After importing roughly 20 papers we expect to find that some of this
+works, some does not, and some fields need adding. That is expected, not
+failure.**
+
+This matters because "Accepted" on an ADR normally signals a settled decision --
+the PDF toolchain, the results-store schema, the branch model. Those were
+accepted after the practice had been exercised. **This design has not yet met a
+single imported paper.** Reading it with the same finality would be a category
+error, and would make the first necessary change feel like a defeat.
+
+### The first checkpoint: 20 papers
+
+At approximately 20 imported papers, review both ADRs against what actually
+happened and record the answers:
+
+| Question | What a bad answer looks like |
+|---|---|
+| Which fields were never filled? | A field nobody populated is dead weight; remove it |
+| Which fields were filled with the same value every time? | Not carrying information; probably belongs in the context |
+| What did we want to record and have nowhere to put? | The additions this checkpoint exists to find |
+| How long did team-lead adjudication take per paper? | The number the whole design is constrained by (2c) |
+| Did the tiers land where predicted? | If everything is `read`, tiering is theatre |
+| Did any `supports` or `contradicts` link get used? | scite's 0.8% says these are rare; zero at 20 papers is uninformative, zero at 200 is a finding |
+
+**Revising after that review is the expected outcome, not an admission.** A
+design that survives its first twenty papers unchanged has probably not been
+tested against them.
+
+### What revision does NOT mean
+
+Two things stay stable through the early phase, because changing them costs more
+than it saves:
+
+1. **Provenance on every record.** The reason this system exists. A field can
+   come or go; a record that cannot say where its value came from is the defect
+   the whole thing is built against.
+2. **Contexts as the partitioning mechanism.** Adding contexts is expected;
+   replacing contexts with tags would undo the one structural idea taken from
+   forty years of Cyc.
+
+Everything else is provisional until the practice says otherwise.
+
+### How revisions get recorded
+
+Not by editing these ADRs in place. **A dated amendment section at the bottom**,
+naming what changed and what observation forced it -- the same discipline the
+preregistration uses, and for the same reason: a document that silently becomes
+correct teaches nobody why it was wrong.
+
 ## Context
 
 ### What the team lead asked for
