@@ -167,21 +167,8 @@ test_hook_registration.py. Removed from candidates per convention.)
 found an uninstallable lock file and a test that crashed where its peers skipped.
 Removed from candidates per convention.)
 
-**F70. CHANGELOG backfilled and wired into the close-out (~1.5h) Priority 3 -- SPRINT 14**
-- Phase: Finalize / process (team lead, 2026-09-12)
-- Platform: `CHANGELOG.md`, `docs/SPRINT_EXECUTION_WORKFLOW.md`
-- **MEASURED 2026-09-12: the CHANGELOG stops at 2026-09-04.** Eight days are missing (Sep 5 to 12), covering Sprints 7 through 13 -- the entire hardware campaign, all three external reviews, the page-limit work, the public-repository flip and the submission itself
-- Backfill from what can be recovered: git history, the sprint summaries, the amendment log and the merged PRs. Where a day cannot be reconstructed with confidence, say so rather than inventing it
-- **The process half matters more than the backfill.** Add the CHANGELOG update to the Phase 8 close-out, positioned after the PR merges and BEFORE backlog refinement, so the gap cannot silently reopen
-- Acceptance: every day with commits from 2026-09-05 onward has an entry or an explicit note that it could not be reconstructed; the workflow names the step and its position
-- Depends on: nothing
-
-(F71 CHECKLIST restructured: COMPLETED in Sprint 14. Three files, three change
-policies. Removed from candidates per convention.)
-
-(F72 reference-paper library: DESIGN COMPLETED in Sprint 14 as ADR-0015, ACCEPTED.
-Building is a separate card and is not authorised by the ADR. Removed from
-candidates per convention.)
+(F70 CHANGELOG backfilled and wired into the close-out: COMPLETED in Sprint 14.
+Workflow step 8.1.1 now runs before backlog refinement. Removed per convention.)
 
 **F73. The submission explained at an 8th-grade level (~6-10h) Priority 1 -- NEXT SPRINT**
 - Phase: Post-submission / communication (team lead, Sprint 14 retrospective 2026-09-14)
@@ -231,20 +218,31 @@ candidates per convention.)
 (F65 per-fit artifact write: COMPLETED in Sprint 14. Also fixed a dry run that
 overwrote committed evidence. Removed from candidates per convention.)
 
+**F77. Build the Evidence Based DB: repository, schema, and the first 20 papers (~2-3 days) Priority 2**
+- Phase: Evidence Based DB / build (gap found in the Sprint 14 close-out sweep, 2026-09-14)
+- Platform: a NEW private repository, `EvidenceBasedDB`
+- **This card exists because nothing else creates the thing.** ADR-0014 and ADR-0015 are both ACCEPTED and both say explicitly that they do NOT authorise implementation. F75 actions the 20-paper checkpoint and depends on ~20 papers already being loaded. So the accepted design had no card that builds it, and F75 could never have become actionable
+- Scope: create the private repository; copy the sprint methodology in (process docs, ADRs, testing strategy, CI, the hooks); implement the SQLite store and the committed text export; implement the three record classes plus the paper class; load the submission's own reference list as the seed set
+- **The measurement that matters more than the code**: minutes of team-lead adjudication per accepted record. ADR-0014 names it as the number the whole design is constrained by, and it is unknown. At five minutes a record the domain ambition needs rethinking; at thirty seconds it is safe. Record it per record from the first one, not retrospectively
+- **Deliberately NOT in scope**: inference, the graph store, embeddings. ADR-0014 names the triggers for the last two and ADR-0015 for the third; none has fired. Lenat's footnote 9 is the standing argument against the first
+- Acceptance: the repository exists with the methodology copied in; the four record classes are implemented and exported; the seed set is loaded; adjudication time is recorded per record; F75's checkpoint is actionable
+- Depends on: ADR-0014 and ADR-0015 (both ACCEPTED). Gates F75
+
+
 **F75. Action the 20-paper ADR checkpoint (~2h) Priority 6**
 - Phase: Evidence Based DB / process (Sprint 14 retrospective improvement 5, 2026-09-14)
 - Platform: `docs/adr/0014-fact-database.md`, `0015-reference-library.md`
 - Both ADRs promise a review at approximately 20 imported papers, with six named questions and the bad answer stated for each. **A promise in a document is exactly what this project keeps having to replace with a mechanism**, and an unactioned checkpoint is a note nobody reads
 - The question that matters most is the measured one: how long team-lead adjudication takes per paper. At five minutes, 2,000 papers is 160 hours and the design needs rethinking; at thirty seconds the ambition is safe. Everything else in the checkpoint is schema tuning
 - Revisions are recorded as dated amendments at the bottom of each ADR, never as edits in place
-- Depends on: EvidenceBasedDB existing and holding ~20 papers
+- Depends on: **F77** (which builds it) and ~20 papers loaded
 
 **F76. Guard the shared vocabulary between ADR-0014 and ADR-0015 (~1h) Priority 7**
 - Phase: Evidence Based DB / tooling (Sprint 14 retrospective improvement 6, 2026-09-14)
 - Platform: cross-repository, `EvidenceBasedDB`
 - ADR-0015's `applicability` field now points at ADR-0014's context list rather than carrying its own enumeration. That was the right call -- two lists naming the same things is how B1's variable count came to read 78 in three documents and 91 in two -- **but nothing enforces that they agree**
 - A test that fails when a record names a context the schema does not define, and when the ADRs' stated context lists diverge from the database's
-- Depends on: EvidenceBasedDB existing
+- Depends on: **F77** (which builds it)
 
 
 (F67 pool-mechanism guard: COMPLETED in Sprint 14. Runs on a fresh clone against a
@@ -266,32 +264,10 @@ docs/reviews/f36-float-tables-outcome.md.
 (F38 appendix to 3 pages AND proposal to 6: COMPLETED in Sprint 12, merged via PR #75.
 proposal 6 of 6, appendix 3 of 3, team profile 1 of 1. Removed from candidates per convention.)
 
-**F39. Evidence Based Database: investigation, design and ADR (~1-2 days) Priority 6 -- SPRINT 14 (design only, NOT a build)**
-- **RENAMED 2026-09-13 (team lead): the card and the artifact are both the Evidence Based Database.** It was "fact database" from Sprint 8. The rename is not cosmetic: 0.7688 sat in four documents and was not a fact, and the unconverged solver produced figures that were not facts, so a store called a FACT database asserts the property it exists to check. Repository `EvidenceBasedDB`, private for now. Quotes below are left verbatim as they were written
-- Phase: Post-submission / Phase 2 tooling (team lead, Sprint 8 retrospective 2026-09-07: "We need to create a 'fact database' ... It states facts that we can confirm with confidence intervals between 0.0% and 99.9%. There are likely over 1,000 and this makes it difficult to keep track of ... if we need to update the baseline facts it should be here and then all other sources use this as the basis")
-- Platform: tooling
-- **The problem it solves, with this sprint's evidence**: the same fact is currently restated in many documents with no link between the copies. Sprint 8 alone found the QCi letter asserting "twelve amendments" when the enclosed preregistration had seventeen; A15 corrected a k=6 AUPRC published as 0.7688 when the true value was 0.7629, a figure that had been carried from a five-seed run into a ten-seed writeup; and A17 forced recomputation of every A11/A13 figure across four documents. Each was caught by a human reading, or by a one-off script written for that one check
-- **Scale**: the team lead estimates over 1,000 asserted facts. The current control is `score_gates.py` regenerating gate figures plus ad-hoc verification scripts; neither covers prose assertions, and nothing covers cross-document consistency
-- **Design direction (team lead: research Cycorp/cyc.com, functionally representative, NOT a LISP reimplementation)**: each fact carries an identifier, a value, a provenance pointer to the results row or source that establishes it, an evidence tag ([HW]/[SIM]/[PROJ]), and a CONFIDENCE between 0.0% and 99.9%. Documents reference facts by identifier rather than restating values, and a build step resolves references and fails on an unresolved or stale one. The confidence field is the part worth taking from Cyc: it forces "how sure are we" to be recorded next to the claim rather than carried in someone's head
-- **Why confidence intervals matter here specifically**: this project already distinguishes measured from projected via evidence tags, but not strong-measured from weak-measured. The score-degeneracy caveat, the single-seed spot checks, and the adversarial control that never converged are all facts we assert with genuinely different confidence, and today that distinction lives only in prose
-- **Explicitly held until after submission** (team lead: "We may hold this until after submission"). It is infrastructure, and eight days out the risk of touching every document exceeds the benefit
-- Acceptance: every numeric assertion in proposal, appendix and the QCi letter resolves to a fact record; the build fails on a stale reference; and a deliberate edit to one fact value propagates to every document that cites it
-- **RESCOPED 2026-09-12 (team lead). This card is now PRE-BUILD INVESTIGATION AND DESIGN, ending in an ADR, not an implementation.** Deep-dive the problem and propose: which storage tool holds the database, how records are maintained and by whom, how documents cite into it, and how the build validates references. The hold condition ("until after submission") expired when the submission was filed
-- **It may live in its OWN REPOSITORY** and be consumed by this one. This project becomes its first use case rather than its owner. That decision belongs in the ADR, and it should be made together with F72's storage decision rather than separately -- both are "structured records with provenance and confidence, retrievable, maintained outside prose"
-- **SCOPE ADDED 2026-09-12 (team lead): the database covers vocabulary, not only figures.** Two record classes beyond the numeric assertions already described:
-  - **Every acronym used in the repository** (CPU, KKT, AUPRC, MDE, BCa, QUBO, EQC, ...) with its expansion (Central Processing Unit, Karush-Kuhn-Tucker) and a description written at an **8th-grade math, science and English level**. Where a visual helps, a link to an image or short animation
-  - **Every technical word and phrase in the proposal, appendix and repository** (machine learning, intellectual property, test-fold prevalence, metered fits, Spearman correlation, BCa intervals, Hamiltonian, KKT residual, ...) with a 1-3 sentence description at the same reading level, and a visual link where one helps
-- **Cyc-derived scoring fields are carried on every record type**, including the ones not yet used, so the schema does not need widening later. The confidence field (0.0% to 99.9%) is the part worth taking from Cyc: it forces "how sure are we" to sit next to the claim
-- **Why the glossary half is not decoration**: the submission is read by judges who are not all specialists, and the Guidelines say explicitly that a non-specialist reviewer must be able to follow the technical approach. A maintained glossary at a defined reading level is the mechanism for that, and it is reusable in Phase 2 where the audience widens again
-- Acceptance for THIS card: an ADR the team lead can approve or reject, naming the storage tool, the record schema for all three classes (assertions, acronyms, terms), the maintenance model, the repository boundary, and how this project cites into it. No implementation
-- **DONE 2026-09-13: ADR-0014 ACCEPTED.** The design card is complete. Scope was corrected during the review -- the HSBC glossary is use case ONE, not the boundary; the target is a domain knowledge base over QML, ML, QC and the major QC platforms. Building is a SEPARATE card and is not authorised by the ADR
-- Depends on: nothing. Its storage decision gates F72
-
-(F40 segment non-public material: COMPLETED in Sprint 10, merged via PR #58 (main PR #62); history in SPRINT_10_SUMMARY.md. Removed from candidates per convention.)
-
-(F37 make the repository public: COMPLETED in Sprint 12, merged via PR #75. Verified
-anonymously -- HTTP 200, freeze commit 95751b9 resolves, `prereg-freeze` tag intact.
-Removed from candidates per convention.)
+(F39 Evidence Based Database investigation and design: COMPLETED in Sprint 14 as
+ADR-0014, ACCEPTED with early-innovation status and a 20-paper checkpoint.
+Building is a SEPARATE card and is not authorised by the ADR. Removed per
+convention; F75 actions the checkpoint.)
 
 ### Paper (Stages 4-6)
 
