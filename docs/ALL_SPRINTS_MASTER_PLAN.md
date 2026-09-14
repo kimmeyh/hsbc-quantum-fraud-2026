@@ -8,7 +8,7 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 - **During Sprint N+1 planning (Phase 3.2.1)**: create `docs/sprints/SPRINT_N_SUMMARY.md` for the just-finished sprint and link it here.
 - **IDs**: F# for all features/process/tech-debt items; next available number; never reuse.
 - **Estimates**: minutes/hours from recorded actuals; `[no-history]` where uncalibrated.
-- The repo-root `CHECKLIST.md` remains the submission-wide deliverable ledger; this document is the sprint-scoping view over it. Keep them consistent; CHECKLIST wins on deliverable truth, this file wins on sprint sequencing.
+- `CHECKLIST-Phase2-pre.md` is the LIVE deliverable ledger; this document is the sprint-scoping view over it. Keep them consistent; the checklist wins on deliverable truth, this file wins on sprint sequencing. (`CHECKLIST-Phase1.md` is the CLOSED Phase 1 record and is never updated; `CHECKLIST-Phase2.md` is dormant until selection. The repo-root `CHECKLIST.md` was split into those three on 2026-09-12 and no longer exists.)
 
 ## Past Sprint Summary
 
@@ -26,38 +26,52 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 10 | docs/sprints/SPRINT_10_SUMMARY.md | [OK] Complete | ~1 day (Sep 9, 2026) |
 | 11 | docs/sprints/SPRINT_11_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 9-10, 2026) |
 | 12 | docs/sprints/SPRINT_12_SUMMARY.md | [OK] Complete | ~2.5 days (Sep 10-12, 2026) |
+| 13 | docs/sprints/SPRINT_13_SUMMARY.md | [OK] Complete | ~1 day (Sep 12, 2026) |
+| 14 | docs/sprints/SPRINT_14_SUMMARY.md | [OK] Complete | ~2 days (Sep 12-14, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 12: Spend the Grant, Then Submit** (Sep 10-12, 2026; PR #75 to develop,
-PR #76 develop to main). Delivered **F2b blocks B2 and B3** on Dirac-3, **F37**
-(repository public), **F38** (page limits), and **F49-F63**, the response to
-three external reviews. Suite 277 -> 320. Hardware: 968 metered seconds of a
-2,000 s authorization, 23 fits, zero device failures.
-**The positive result**: B2 is the campaign's only gain at scale (A24). Eleven
-fits at 833 continuous variables against B1's matched `hw_b1_dct` arm on
-identical seeds: **+0.0256 AUPRC, 95% CI [+0.0203, +0.0310], 10 of 10 seeds**.
-Unpaired it is invisible inside a 0.030 seed-to-seed SD. It still trails
-full-feature CatBoost by 0.0440, so the null holds.
-**The sprint's defining fact**: the review found three PUBLISHED claims that were
-false, and we had written all three. The solver was not converged (A26) -- the
-stopping test certified the objective, not the solution, at KKT residual 4.6e-05.
-The convexity claim was false (A27) and had been written the previous day in
-response to an internal review, then published within hours. Uniform is not the
-zero-penalty optimum (A27), the same solved-from-versus-evaluated-at confusion in
-a second place. Every internal check had agreed with itself, because the figure
-and the error came from the same solver.
-**What the review bought**: the 200:1 resolution finding (A31). Our claim that
-hardware agreement bounded resolution effects was backwards -- on all ten pools
-nothing in the problem is visible to the device, so uniform output is forced
-rather than evidence. That turned the weakest mechanism paragraph into the
-strongest argument for Phase 2: a device that cannot spread weight over ~200
-learners has a native problem class, and it is cardinality-constrained selection.
-**Process**: the team lead's intervention -- stop, analyse both reviews fully,
-address findings through planned cards rather than reactive edits -- is what
-broke the amend-under-pressure loop. It is now a standing rule and a hook.
-Retro: docs/sprints/SPRINT_12_RETROSPECTIVE.md (all rated categories Very Good;
-all seven improvements applied, three of them made deterministic).
+**Sprint 14: Make the Record Durable** (Sep 12-14, 2026; PR #94 to develop).
+Delivered **F68-F72** plus the four carried tooling cards **F48, F65, F66, F67**,
+and the Evidence Based DB design that followed them. Zero metered seconds.
+
+Test counts are deliberately NOT restated here. `README.md` was rewritten in
+this same sprint to stop doing exactly that, with the reason given in its own
+words: a paragraph "written with one set of numbers and was wrong within the
+same sprint". This document then restated counts anyway and they were wrong
+within the same PR -- an adversarial review found the fresh-clone figure stale
+and the local figure matching no reproducible measurement. Run the suite; it
+reports its own counts.
+**The finding that reordered the sprint**: BOTH Edit-matcher hooks had NEVER RUN.
+`.claude/settings.json` registered them with a single backslash before `block-`,
+which JSON parses as U+0008, so the path resolved to a file that does not exist
+and Claude Code skipped it silently -- since the commit that created them. The
+Sprint 13 retrospective had recorded one of them as working. Every
+submission-document edit that sprint was unguarded; the process held because the
+team lead approved each change in conversation, not because anything enforced it.
+**Every task found something its card did not anticipate.** `requirements-lock.txt`
+was UNINSTALLABLE -- a `python==3.12.10` line made pip abort before installing
+anything, so the documented reproduction command failed at step one for every
+reader. A test crashed on a clean checkout where its twenty peers skipped. A dry
+run OVERWROTE the committed b3_hardware.json during verification, and the
+"artifact untouched" check that missed it had run before the background job
+finished: a mistimed verification reads exactly like a passing one.
+**The guard that failed its own test**: `test_changelog_currency.py` was written
+with a 14-day threshold and PASSED on the eight-day lapse it existed to catch.
+Caught only by running the injection rather than assuming it.
+**Measured effect for a stranger**: on a fresh public clone the pool-mechanism
+guard now RUNS rather than skipping, so the A20 claim in appendix A.4 is checked
+for anyone who clones. The skip count fell because of it. Exact figures come
+from running the suite on a fresh clone, not from this sentence.
+**The design half**: ADR-0014 (Evidence Based DB) ACCEPTED with early-innovation
+status and a 20-paper checkpoint; ADR-0015 (reference library) Proposed. Four
+team-lead corrections changed the design materially -- agent economics invalidate
+the collector's-fallacy arithmetic, `applicability` collapses into contexts,
+a paper is a SOURCE OF ASSERTIONS rather than a record, and neither ADR is
+written in stone. Primary-source research on Cyc corrected two things this
+project had recorded as fact.
+Retro: docs/sprints/SPRINT_14_RETROSPECTIVE.md (Very Good across all rated
+categories; all six improvements applied).
 
 ## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
 
@@ -72,7 +86,21 @@ all seven improvements applied, three of them made deterministic).
 | 10 | Sep 9 | [DONE] **F40** (segmentation) re-scoped to F40 only; gate-report undercount fixed (27/120 -> the true 37/163); 8 correctness findings from two adversarial reviews; 13 PR-review findings addressed | F37/F38 deferred to 11 |
 | 11 | Sep 9-10 | [DONE] **F41** (A20, mechanism corrected), **F42** (+0.0319 decomposed: the gain is class weighting, not diversity), **F43**, **F44**, **F45**, **F35**, plus **F46** (A21, ceiling LIFTED) and **F47** added mid-sprint; 15 review findings addressed | F37 and the fresh-eyes review deferred to 12 |
 | 12 | Sep 10-12 | [DONE] **F2b B2 and B3** on Dirac-3 (23 fits, 968 metered s), **F37**, **F38**, and **F49-F63** from three external reviews. F10 NOT reached | Evidence freeze held; F10 carries to Finalize |
-| Finalize | Sep 11-13 | **F10 only.** F40, F37 and F38 all DONE (Sprints 10 and 12), so F10 is the sole remaining submission blocker | no new evidence after Sep 12; never later than Sep 14 |
+| 13 | Sep 12 | [DONE] **F10**: evidence walk, requirements-matrix walk, confidentiality scan, final render, and the SUBMISSION -- filed 2026-09-12, three days early. F64 selected then withdrawn | **SUBMITTED**; 9 defects found and corrected |
+
+**THE PHASE 1 ROADMAP IS COMPLETE (2026-09-12).** Every row above is [DONE] and
+the submission is filed. The table described a run to a deadline; that deadline
+has passed in our favour and the roadmap no longer describes any pending work.
+
+What replaces it, recorded so the next refinement does not invent a schedule:
+the judging window is **16 Sep to 14 Nov 2026**, with finalists announced
+mid-November (Guidelines s2). Nothing we do changes the Phase 1 outcome, and no
+backlog item is time-bound any more. The remaining items are tech debt, tooling,
+and Phase 2 preparation, and they should be scheduled on value rather than
+against a date.
+
+The one exception is **F13, Phase 2 PoC sprint planning**, which becomes live
+only on acceptance and is correctly held until then.
 
 **Sprint 12 sequencing, DECIDED 2026-09-09 (Sprint 11 improvement 5) rather than under deadline pressure.** The order is forced by two dependencies, not by preference:
 
@@ -127,6 +155,73 @@ Phase 2.
 
 (F22 CVQBoost proxy tuning and F2 hardware blocks B1+G0b: COMPLETED in Sprint 4, merged via PR #21; history in SPRINT_4_SUMMARY.md. F21 baseline research and F7 results memo likewise complete. Removed from candidates per convention. F2's remaining blocks B2/B3/B4/B5 continue as F2b below, gated on the QCi grant.)
 
+**F68. Freeze the submitted artifacts the way the preregistration is frozen (~2h) Priority 1 -- SPRINT 14, FIRST**
+- Phase: Finalize / governance (team lead, 2026-09-12)
+- Platform: `.claude/hooks`, `.claude/settings.json`, `README.md`
+- The three submission documents were JUDGED as filed on 2026-09-12. They are now a record, not a draft, and should be protected the way `PREREGISTRATION.md` is
+- **A DEFECT FOUND WHILE PLANNING THIS CARD, and it is why the card goes first.** Both Edit-matcher hooks -- `block-unapproved-submission-edit.ps1` and `block-reactive-amendment.ps1` -- have NEVER RUN. `.claude/settings.json` registers them as `...\\hooks\block-...`, and the single backslash before `b` is a JSON backspace escape, so the path resolves to `hooks\x08lock-...` which does not exist. Claude Code skips a hook whose file is absent, silently. Broken since commit `7a57065`, the commit that created them
+- Consequence, stated plainly: the Sprint 13 retrospective recorded "the Class 4 hook worked exactly as designed". That was FALSE. Every submission-document edit in Sprint 13 was unguarded. The process held because the team lead approved each change in conversation, not because anything enforced it
+- This is F48's defect class -- a silent escape corruption -- in the file that registers the guard against it
+- Scope: (1) fix both registrations and prove they fire by injection; (2) add a test asserting every registered hook path exists on disk and contains no control characters, so the class cannot return silently; (3) extend the submission-edit hook to cover history rewrites and tag moves affecting `prereg-freeze` and the submission commit; (4) document in the README how to find, fork and clone the repository exactly as submitted
+- Acceptance: both hooks demonstrably block, verified by injection; a test fails if any registered hook path is unresolvable; README carries the as-submitted retrieval instructions
+- Depends on: nothing
+
+**F69. README rebuilt for a public repository (~2h) Priority 2 -- SPRINT 14**
+- Phase: Finalize / documentation (team lead, 2026-09-12)
+- Platform: `README.md`
+- The repository has been public since 2026-09-11 and the README still reads as a private working note: it points at a `paper/` path that does not exist, and its "Immediate to-do" asks for the challenge PDFs that were staged weeks ago
+- Required sections: where to find the key summary documents; a HOW TO REPRODUCE section (clone, environment setup, virtual environment, how to run one quick test, how to run each major test with its caveats -- notably that the pool-dependent tests need data that is not redistributed); and the as-submitted retrieval instructions from F68
+- Style: standard open-source README conventions adapted to an evidence repository rather than a library -- what this is, what was submitted, how to verify a claim, how to reproduce, what is deliberately absent and why
+- **The reproduce section must be TESTED by following it, not written from memory.** Appendix C claims every figure regenerates from this repository; a README that does not actually work makes that claim false for the first reader who tries
+- Acceptance: a reader with no prior context can clone, set up, and run a test from the README alone
+- Depends on: F68 for the as-submitted section
+
+**F70. CHANGELOG backfilled and wired into the close-out (~1.5h) Priority 3 -- SPRINT 14**
+- Phase: Finalize / process (team lead, 2026-09-12)
+- Platform: `CHANGELOG.md`, `docs/SPRINT_EXECUTION_WORKFLOW.md`
+- **MEASURED 2026-09-12: the CHANGELOG stops at 2026-09-04.** Eight days are missing (Sep 5 to 12), covering Sprints 7 through 13 -- the entire hardware campaign, all three external reviews, the page-limit work, the public-repository flip and the submission itself
+- Backfill from what can be recovered: git history, the sprint summaries, the amendment log and the merged PRs. Where a day cannot be reconstructed with confidence, say so rather than inventing it
+- **The process half matters more than the backfill.** Add the CHANGELOG update to the Phase 8 close-out, positioned after the PR merges and BEFORE backlog refinement, so the gap cannot silently reopen
+- Acceptance: every day with commits from 2026-09-05 onward has an entry or an explicit note that it could not be reconstructed; the workflow names the step and its position
+- Depends on: nothing
+
+**F71. CHECKLIST restructured into three phases (~1.5h) Priority 4 -- SPRINT 14**
+- Phase: Finalize / process (team lead, 2026-09-12)
+- Platform: `CHECKLIST-Phase1.md`, `CHECKLIST-Phase2-pre.md`, `CHECKLIST-Phase2.md`
+- The checklist is titled "Submission-Ready by Sep 8, 2026" and still carries 18 unchecked boxes against work that is finished or abandoned. It describes a deadline that has passed
+- Restructure into three sections in this order: (1) PRE-PHASE 2, the live list covering the wait from 2026-09-12 to finalist notification in mid-November; (2) PHASE 2, populated from the proposal's own six-experiment programme and section 3 resourcing, to be filled out properly if selected; (3) CHALLENGE SUBMISSION, the completed Phase 1 list, corrected to reflect what actually happened and marked done
+- The correction pass on section 3 is real work: items were added, dropped and re-scoped across thirteen sprints, and the checklist tracked none of it
+- Acceptance: the first section is actionable today; the third reflects actuals rather than the original plan
+- Depends on: nothing
+
+**F72. Reference-paper library with retrieval, outside this repository (~4h investigation + design) Priority 5 -- SPRINT 14 (design only)**
+- Phase: Phase 2 preparation / tooling (team lead, 2026-09-12)
+- Platform: TBD, a separate repository
+- The team lead wants deep-dive summaries of QML, quantum-computing and classical-ML papers -- analysed for applicability to Dirac-3, to gate-based work via Braket and Classiq, and to non-quantum tensor methods -- stored OUTSIDE this repository but referenceable FROM it, and searchable in a RAG-like way for future use
+- **This card is investigation and design, not a build.** Deliverable is a proposal: where the library lives, what a paper record holds (citation, claim extracted, applicability verdict, confidence, link to any local artifact), how retrieval works, and how this repository cites into it without depending on it
+- Design constraint that makes this non-trivial: a reference cited from a public evidence repository must resolve for a reader who does not have the other repository. Either the library is public too, or citations carry enough inline context to stand alone
+- **Overlaps F39 deliberately.** Both are "structured records with provenance and confidence, retrievable, maintained outside prose". They should share a storage decision rather than making two, and F39 runs first because it has the concrete use case
+- Acceptance: a written proposal the team lead can approve or reject, naming the storage tool and the maintenance model
+- **DONE 2026-09-14: ADR-0015 ACCEPTED.** Restructured in review: a paper is a SOURCE OF ASSERTIONS rather than a record, tiers mean adjudication depth, certainty is GRADE-derived with named reasons, and applicability points at ADR-0014 contexts. Building is a separate card
+- Depends on: F39's storage decision
+
+
+**F73. The submission explained at an 8th-grade level (~6-10h) Priority 1 -- NEXT SPRINT**
+- Phase: Post-submission / communication (team lead, Sprint 14 retrospective 2026-09-14)
+- Platform: a new document in the repository root or `docs/`, alongside the submitted papers
+- **What it is**: a learning document explaining the proposal and appendix submitted 2026-09-12, written for an 8th grader working alone or in a group of three. Structured like a paper -- topics, sub-topics, references to outside sources -- not like a FAQ
+- **The reading-level rule is the one ADR-0014 already defines**: start at 8th grade; where an honest explanation is not achievable, go up ONE grade and retry; record the level that landed. This is a new APPLICATION of an existing mechanism, not a new mechanism
+- **Required disclaimer**, team lead's wording: it is a good and reasonably accurate document, with no guarantee of 100% accuracy and no expectation that the reader will fully understand on first reading
+- **The hard part is identifying what a reader needs that the submission assumes.** The datasets are the named example: what they are, how they were gathered, what they represent, why we used them, how they map to a real business situation, what the key features are and why, and how machine learning predicts from them. That list is a starting point and the card expects it to grow
+- **Licensing pre-flight DONE 2026-09-14** (`docs/research/dataset-reference-licensing.md`): ULB is DbCL v1.0 and may be copied, including commercially; IEEE-CIS is Vesta competition data and must be paraphrased and cited, never copied; SPECTRA is unverified. Conclusion: write every dataset explanation in our own words regardless, since one reuse right out of three is not worth the inconsistency
+- **Falsifier**: give it to someone who has not read the submission and ask them to explain back what CVQBoost is and why the result is a null. If they cannot, the document has not worked, however good it reads
+- Acceptance: every section states the grade level it achieved; the disclaimer is present; every dataset is attributed with its licence; a reader with no quantum or ML background can follow the argument from problem to null result
+- Depends on: nothing. The outline in F74 is part of this card, not separate
+
+**F74. Outline for the explanatory document -- FOLDED INTO F73**
+- (Not a separate card. The team lead's suggested outline -- challenge as written from the three challenge documents, then each dataset, then how ML is done against each -- is F73's spine. Splitting it would let the outline drift from the draft it describes. Recorded here so the suggestion is not lost, and struck as an independent item.)
+
+
 **F64. Decompose the B2 confound: the k=17 order-2 cell (~45m) Priority 1 -- PHASE 2 EXPERIMENT 1**
 - Phase: Experiments / correctness
 - Platform: classical proxy (`qubo_proxy.py`, `mechanism_controls.py`)
@@ -166,6 +261,22 @@ Phase 2.
 - Depends on: nothing
 
 
+**F75. Action the 20-paper ADR checkpoint (~2h) Priority 6**
+- Phase: Evidence Based DB / process (Sprint 14 retrospective improvement 5, 2026-09-14)
+- Platform: `docs/adr/0014-fact-database.md`, `0015-reference-library.md`
+- Both ADRs promise a review at approximately 20 imported papers, with six named questions and the bad answer stated for each. **A promise in a document is exactly what this project keeps having to replace with a mechanism**, and an unactioned checkpoint is a note nobody reads
+- The question that matters most is the measured one: how long team-lead adjudication takes per paper. At five minutes, 2,000 papers is 160 hours and the design needs rethinking; at thirty seconds the ambition is safe. Everything else in the checkpoint is schema tuning
+- Revisions are recorded as dated amendments at the bottom of each ADR, never as edits in place
+- Depends on: EvidenceBasedDB existing and holding ~20 papers
+
+**F76. Guard the shared vocabulary between ADR-0014 and ADR-0015 (~1h) Priority 7**
+- Phase: Evidence Based DB / tooling (Sprint 14 retrospective improvement 6, 2026-09-14)
+- Platform: cross-repository, `EvidenceBasedDB`
+- ADR-0015's `applicability` field now points at ADR-0014's context list rather than carrying its own enumeration. That was the right call -- two lists naming the same things is how B1's variable count came to read 78 in three documents and 91 in two -- **but nothing enforces that they agree**
+- A test that fails when a record names a context the schema does not define, and when the ADRs' stated context lists diverge from the database's
+- Depends on: EvidenceBasedDB existing
+
+
 **F67. Guard the pool-mechanism claim on a fresh clone (~1h) Priority 12**
 - Phase: Experiments / tooling (Sprint 13 retrospective improvement 5, 2026-09-12)
 - Platform: `experiments/src/test_pool_mechanism.py`, `experiments/results/pools/`
@@ -191,7 +302,8 @@ docs/reviews/f36-float-tables-outcome.md.
 (F38 appendix to 3 pages AND proposal to 6: COMPLETED in Sprint 12, merged via PR #75.
 proposal 6 of 6, appendix 3 of 3, team profile 1 of 1. Removed from candidates per convention.)
 
-**F39. Fact database: one source of truth for every asserted fact (~1-2 days) Priority 2 -- HOLD until after submission**
+**F39. Evidence Based Database: investigation, design and ADR (~1-2 days) Priority 6 -- SPRINT 14 (design only, NOT a build)**
+- **RENAMED 2026-09-13 (team lead): the card and the artifact are both the Evidence Based Database.** It was "fact database" from Sprint 8. The rename is not cosmetic: 0.7688 sat in four documents and was not a fact, and the unconverged solver produced figures that were not facts, so a store called a FACT database asserts the property it exists to check. Repository `EvidenceBasedDB`, private for now. Quotes below are left verbatim as they were written
 - Phase: Post-submission / Phase 2 tooling (team lead, Sprint 8 retrospective 2026-09-07: "We need to create a 'fact database' ... It states facts that we can confirm with confidence intervals between 0.0% and 99.9%. There are likely over 1,000 and this makes it difficult to keep track of ... if we need to update the baseline facts it should be here and then all other sources use this as the basis")
 - Platform: tooling
 - **The problem it solves, with this sprint's evidence**: the same fact is currently restated in many documents with no link between the copies. Sprint 8 alone found the QCi letter asserting "twelve amendments" when the enclosed preregistration had seventeen; A15 corrected a k=6 AUPRC published as 0.7688 when the true value was 0.7629, a figure that had been carried from a five-seed run into a ten-seed writeup; and A17 forced recomputation of every A11/A13 figure across four documents. Each was caught by a human reading, or by a one-off script written for that one check
@@ -200,7 +312,16 @@ proposal 6 of 6, appendix 3 of 3, team profile 1 of 1. Removed from candidates p
 - **Why confidence intervals matter here specifically**: this project already distinguishes measured from projected via evidence tags, but not strong-measured from weak-measured. The score-degeneracy caveat, the single-seed spot checks, and the adversarial control that never converged are all facts we assert with genuinely different confidence, and today that distinction lives only in prose
 - **Explicitly held until after submission** (team lead: "We may hold this until after submission"). It is infrastructure, and eight days out the risk of touching every document exceeds the benefit
 - Acceptance: every numeric assertion in proposal, appendix and the QCi letter resolves to a fact record; the build fails on a stale reference; and a deliberate edit to one fact value propagates to every document that cites it
-- Depends on: nothing. Best started after F16/F10 and the submission
+- **RESCOPED 2026-09-12 (team lead). This card is now PRE-BUILD INVESTIGATION AND DESIGN, ending in an ADR, not an implementation.** Deep-dive the problem and propose: which storage tool holds the database, how records are maintained and by whom, how documents cite into it, and how the build validates references. The hold condition ("until after submission") expired when the submission was filed
+- **It may live in its OWN REPOSITORY** and be consumed by this one. This project becomes its first use case rather than its owner. That decision belongs in the ADR, and it should be made together with F72's storage decision rather than separately -- both are "structured records with provenance and confidence, retrievable, maintained outside prose"
+- **SCOPE ADDED 2026-09-12 (team lead): the database covers vocabulary, not only figures.** Two record classes beyond the numeric assertions already described:
+  - **Every acronym used in the repository** (CPU, KKT, AUPRC, MDE, BCa, QUBO, EQC, ...) with its expansion (Central Processing Unit, Karush-Kuhn-Tucker) and a description written at an **8th-grade math, science and English level**. Where a visual helps, a link to an image or short animation
+  - **Every technical word and phrase in the proposal, appendix and repository** (machine learning, intellectual property, test-fold prevalence, metered fits, Spearman correlation, BCa intervals, Hamiltonian, KKT residual, ...) with a 1-3 sentence description at the same reading level, and a visual link where one helps
+- **Cyc-derived scoring fields are carried on every record type**, including the ones not yet used, so the schema does not need widening later. The confidence field (0.0% to 99.9%) is the part worth taking from Cyc: it forces "how sure are we" to sit next to the claim
+- **Why the glossary half is not decoration**: the submission is read by judges who are not all specialists, and the Guidelines say explicitly that a non-specialist reviewer must be able to follow the technical approach. A maintained glossary at a defined reading level is the mechanism for that, and it is reusable in Phase 2 where the audience widens again
+- Acceptance for THIS card: an ADR the team lead can approve or reject, naming the storage tool, the record schema for all three classes (assertions, acronyms, terms), the maintenance model, the repository boundary, and how this project cites into it. No implementation
+- **DONE 2026-09-13: ADR-0014 ACCEPTED.** The design card is complete. Scope was corrected during the review -- the HSBC glossary is use case ONE, not the boundary; the target is a domain knowledge base over QML, ML, QC and the major QC platforms. Building is a SEPARATE card and is not authorised by the ADR
+- Depends on: nothing. Its storage decision gates F72
 
 (F40 segment non-public material: COMPLETED in Sprint 10, merged via PR #58 (main PR #62); history in SPRINT_10_SUMMARY.md. Removed from candidates per convention.)
 
@@ -241,12 +362,10 @@ F55 the two missing rubric sections, F56 framing, F57 the 200:1 resolution argum
 the remaining review findings: ALL COMPLETED in Sprint 12, merged via PR #75 (main PR #76);
 history in SPRINT_12_SUMMARY.md. Removed from candidates per convention.)
 
-**F10. Verification, confidentiality scan, compliance walk, submission (~0.5 day) Priority 1 -- SUBMISSION BLOCKER**
-- Phase: Finalize
-- Platform: docs
-- Every number vs results.json; repo-wide confidential-string scan (the fourierwall2 reference files were moved OUT of the repository at Sprint 10 F40, so the scan covers what remains rather than re-verifying them in place); requirements-matrix walk; public reproducibility repo; team-lead final PDF + portal submission, receipt archived
-- Depends on: F8, F9 (both DONE, Sprint 5)
-- **Priority corrected 2026-09-11** in the Sprint 12 close-out sweep. This card read Priority 40 while the targeted roadmap has carried it as a SUBMISSION BLOCKER for the Finalize sprint since 2026-09-03. The deadline is 2026-09-15. Nothing else in the backlog outranks it
+(F10 verification, confidentiality scan, compliance walk and SUBMISSION: COMPLETED in
+Sprint 13, merged via PR #82. The submission was filed 2026-09-12, three days before
+the deadline; receipt and the four now-answered A5 unknowns in
+docs/submission/SUBMISSION_RECEIPT.md. Removed from candidates per convention.)
 
 ### External (team-lead-owned, parallel)
 
@@ -255,6 +374,17 @@ history in SPRINT_12_SUMMARY.md. Removed from candidates per convention.)
 (F4 H6 representation arm, F14 eqc-models feedback package, and F16 minimal CI: COMPLETED in Sprint 9, merged via PR #53 (main PR #54); history in SPRINT_9_SUMMARY.md. All three removed from candidates per convention.)
 
 ### HOLD Items (post-submission)
+
+**THE HOLD CONDITION EXPIRED 2026-09-12 when the submission was filed.** Every
+item below was held for one reason -- it must not compete with the submission --
+and that reason is gone. They are NOT automatically live: "no longer blocked" is
+not "selected", and the team lead sets priority. But they should be read as
+candidates at the next refinement rather than skipped as held, and the same
+applies to F39, whose card still says "HOLD until after submission".
+
+Flagged rather than re-prioritised: re-scoring nine cards is a scope decision,
+not a sweep correction.
+
 
 **F5. SPECTRA in-segment replication, block B4 (~0.5 day) Priority HOLD**
 - Phase: Experiments (moved to HOLD by team lead 2026-09-08 at Sprint 10 refinement)
