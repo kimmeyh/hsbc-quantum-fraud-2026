@@ -84,6 +84,70 @@ the appendix-only statistical tail is allowed a higher register.** That is a
 scope decision the inventory earned, and it makes the reading-level commitment
 honest rather than aspirational.
 
+### SCOPE CORRECTION, 2026-09-13 (team lead)
+
+**The 151 glossary records are the FIRST USE CASE, not the scope.** I had been
+treating the HSBC submission's vocabulary as the boundary. It is not. The target
+is a domain knowledge base covering:
+
+- **quantum machine learning**
+- **machine learning** generally
+- **quantum computing**
+- **each of the major quantum computing platforms** and their differences
+
+That is a different order of magnitude, and it changes four things I had
+settled. Recording them here rather than quietly revising, because the earlier
+sizing is what several decisions rested on.
+
+**1. The sizing argument weakens, and the "we are not Cyc" defence with it.**
+"151 records is why this is tractable" no longer holds. A domain base over
+QML/ML/QC is thousands of terms with real structure between them. Still far
+short of Cyc's tens of millions, and still bounded by being a DOMAIN rather than
+common sense -- but the honest comparison is now "a technical encyclopedia",
+not "a project glossary".
+
+**2. Authorship economics become the central design question**, where before
+they were a footnote. Cyc's answer was 2,000 person-years, and their finding
+that LARGER TEAMS REDUCED productivity [LM23 p13] is a warning about
+coordination, not about effort. Our answer has to be agent-drafted and
+human-adjudicated, with the adjudication cost per record held low enough that it
+does not become the bottleneck. **That is the number to design against**, and it
+is measurable: minutes of team-lead review per accepted record.
+
+**3. Contexts multiply, and this is where Cyc's mechanism starts to earn its
+keep.** Three contexts served one project. A domain base needs at least:
+
+| Context | Holds |
+|---|---|
+| `world` | Mathematics, physics, facts true independent of platform |
+| `ml` | Machine learning generally |
+| `qc` | Quantum computing generally |
+| `qml` | The intersection, which is NOT the union of the two |
+| `platform:dirac-3` | QCi's continuous-variable optimizer |
+| `platform:braket` | AWS gate-based access |
+| `platform:classiq` | Circuit synthesis |
+| `platform:ibm-q`, `platform:ionq`, ... | As needed |
+| `method` | How we build and reason, including about this library |
+| `hsbc-2026` | The first use case's project-specific assertions |
+
+**The platform contexts are the strongest argument for microtheories over
+tags.** "Dynamic range" means something different on a photonic analog optimizer
+than on a superconducting gate machine. "Qubit count" is not even defined on
+Dirac-3. A tag cannot express that; a context with factored-out assumptions can
+hold both without contradiction, which is exactly what Cyc built contexts for --
+"Cyc can reason within the StarWars context and name several Jedi, and not have
+a contradiction with the same question being asked in the RealWorld context"
+[LM23 p15].
+
+**4. The build order changes.** The glossary-first plan still holds, because the
+HSBC vocabulary is a real slice that exercises the schema. But it is now
+explicitly a PILOT whose purpose is to learn the authorship cost before
+committing to the domain, not a deliverable that completes the work.
+
+**What does NOT change**: determinate facts stay computed rather than stored;
+heuristics still name what they stand in for; provenance is still required; and
+Lenat's footnote 9 is still the argument against building a general reasoner.
+
 ## Decision
 
 ### 0. It is called the Evidence Based DB, and it is PRIVATE for now
@@ -179,6 +243,39 @@ measured from projected via evidence tags, but **not strong-measured from
 weak-measured**. The score-degeneracy caveat, the single-seed spot checks, and
 the adversarial control that never converged are asserted with genuinely
 different confidence, and today that lives only in prose.
+
+### 3b. Contexts, not tags, and there are three of them
+
+**Cyc's microtheories are the right mechanism**, and they are better than a
+project/world flag for a reason that is not obvious until you read why they
+exist: a context factors out the assumptions its assertions SHARE, so records
+inside it get terser and reasoning within it gets faster. "Every assertion in
+the 2023 context doesn't need to start out 'In the year 2023...'"
+[LM23 p15].
+
+Initial contexts, settled 2026-09-13 when the first non-project record arrived:
+
+| Context | Holds | Example |
+|---|---|---|
+| `hsbc-2026` | Assertions specific to this project | amendment count; campaign totals; B2's +0.0256 |
+| `world` | True independent of any project | 2+2=4; E=mc^2; standard acronym expansions |
+| `method` | How we build and reason, including about this library | arXiv:2308.04445 |
+
+The third one was not in the original sketch and was forced by the first record
+the library will hold. arXiv:2308.04445 is neither project evidence nor a world
+fact: it is methodology for the tool being built. Discovering that on record one
+is a good sign for the mechanism and a bad sign for designing contexts in
+advance.
+
+**Rule for adding a context**: only when assertions genuinely share an
+assumption the existing contexts do not. Cyc has about 10,000, kept down by
+COMPUTING contexts (`IntersectContexts`) rather than reifying every combination
+[LM23 p15]. Three is the right number to start with; the failure mode to avoid
+is a context per project, which is a tag wearing a costume.
+
+**Why this matters for reuse**: a future project inherits `world` and `method`
+for free and adds only its own context. That is the whole argument for the
+library living outside this repository.
 
 ### 4. Citation and validation
 
@@ -369,4 +466,5 @@ preregistration governs methodology; this is an engineering decision around it.
   library, gated on this storage decision)
 - Amendments A15, A19, A24; findings F52, and the Sprint 13 evidence walk
 - `docs/sprints/SPRINT_13_SUMMARY.md`, `docs/sprints/SPRINT_8_RETROSPECTIVE.md`
-- Cycorp (cyc.com), for the confidence-scoring idea only
+- `docs/research/cyc-knowledge-representation.md` -- primary-source research on Cyc, read 2026-09-13. It CORRECTS two things this ADR originally assumed: Cyc has four composite truth values rather than five, and carries NO numeric confidence on assertions, so the confidence field here is our own design and must stand on its own merits
+- Lenat, D. and Marcus, G., arXiv:2308.04445 (2023), cited above as [LM23]

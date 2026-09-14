@@ -113,6 +113,70 @@ landed.
 `contradicts-us` is a deliberate verdict value. A library that can only record
 supporting work is a bibliography for a conclusion already reached.
 
+### 2b. Contexts, and the first record
+
+**Team lead, 2026-09-13: arXiv:2308.04445 enters the library, and it is NOT
+associated with the HSBC challenge.** That is the first record, and it is a
+useful test because it is the first one whose context is not `hsbc-2026`.
+
+It also surfaces something the two-context sketch (`hsbc-2026` versus `world`)
+did not cover. This paper is neither: it is not evidence for a fraud-detection
+claim, and it is not a general world fact. It is **methodology for the library
+itself** -- we are building an evidence base partly from what it says about how
+Cyc does it.
+
+So the initial contexts are three, not two:
+
+| Context | Holds | Example |
+|---|---|---|
+| `hsbc-2026` | Assertions specific to this project | amendment count, campaign totals, B2's +0.0256 |
+| `world` | Facts true independent of any project | 2+2=4, E=mc^2, standard acronym expansions |
+| `method` | How we build and reason, including about the library | arXiv:2308.04445 |
+
+Cyc's lesson applies here directly: contexts factor out shared assumptions
+rather than tagging records, so assertions inside one get terser and reasoning
+within it gets faster. About 10,000 named contexts exist in Cyc, kept down by
+COMPUTING contexts rather than reifying every combination [LM23 p15]. Three is
+the right number to start with, and the rule is to add a context only when
+assertions genuinely share an assumption that the existing ones do not.
+
+**A paper record is scoped by context, not by project tag.** A future project
+reusing the library gets `world` and `method` for free and adds its own context.
+
+#### The first record, as it would be written
+
+    id:                       lenat-marcus-2023-trustworthy-ai
+    context:                  method
+    citation:                 Lenat, D. and Marcus, G., "Getting from Generative
+                              AI to Trustworthy AI: What LLMs might learn from
+                              Cyc", arXiv:2308.04445, 31 July 2023
+    access:                   arXiv:2308.04445
+    claim:                    16 desiderata for trustworthy AI; Cyc addresses
+                              them via EL/HL separation, contexts,
+                              argumentation-not-proof, and 1,100 specialised
+                              reasoners
+    evidence:                 Position paper. No experiment. Claims about Cyc
+                              are first-author testimony, not independently
+                              measured
+    applicability:            none (to the fraud problem); method (to this library)
+    verdict:                  use
+    confidence:               high on what Cyc DOES; lower on whether the
+                              approach generalises, since the paper is advocacy
+                              by Cyc's creator
+    fidelity:                 exact
+    reading_level:            13
+    checked_against_source:   2026-09-13, Claude, read pp. 1-16 directly
+    notes:                    Footnote 9 is the load-bearing finding: the general
+                              theorem prover timed out on a million consecutive
+                              queries and was turned off a decade ago
+
+**Note what `evidence` and `confidence` are doing there.** This is a position
+paper by Cyc's own creator, and the record says so. Cyc's behaviour is reported
+by the person with the strongest interest in reporting it favourably. That does
+not make it wrong -- footnote 9 is a costly admission against interest and is
+more credible for it -- but a record that said `confidence: high` flat would be
+overclaiming, which is the failure this whole design exists to prevent.
+
 ### 3. Copyright: store records, never redistribute papers
 
 The `access` field holds a DOI, an arXiv id, or a local path **outside version
