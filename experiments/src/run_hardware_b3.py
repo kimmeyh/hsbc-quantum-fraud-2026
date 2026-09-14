@@ -289,6 +289,11 @@ def main() -> int:
             if args.dry_run:
                 rows.append({"k": k, "fold": fi, "n_variables": int(n_vars),
                              "build_seconds": round(build_s, 1), "dry_run": True})
+                # Write here too. F65's invariant is "after EVERY fit", and the
+                # durability guard asserts it; skipping this branch made the
+                # code and the guard disagree about what the rule is, even
+                # though a dry run is not billed. Goes to the dryrun artifact.
+                _write_artifact(rows, fits, args, t_start, complete=False)
                 continue
 
             rec = mc.CallRecord(

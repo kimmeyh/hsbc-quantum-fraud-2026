@@ -47,7 +47,7 @@ happened and record the answers:
 | Which fields were never filled? | A field nobody populated is dead weight; remove it |
 | Which fields were filled with the same value every time? | Not carrying information; probably belongs in the context |
 | What did we want to record and have nowhere to put? | The additions this checkpoint exists to find |
-| How long did team-lead adjudication take per paper? | The number the whole design is constrained by (2c) |
+| How long did team-lead adjudication take per paper? | The number the whole design is constrained by (ADR-0015 section 2c) |
 | Did the tiers land where predicted? | If everything is `read`, tiering is theatre |
 | Did any `supports` or `contradicts` link get used? | scite's 0.8% says these are rare; zero at 20 papers is uninformative, zero at 200 is a finding |
 
@@ -330,7 +330,8 @@ Every record, regardless of class, carries:
 | `value` | The number, the expansion, or the definition |
 | `provenance` | Pointer to what establishes it: a `results.json` row + config hash, an artifact path, an amendment, an external citation |
 | `evidence_tag` | `HW` \| `SIM` \| `PROJ` \| `N/A` -- reuses the existing vocabulary rather than inventing one |
-| `confidence` | 0.0 to 99.9 percent (Cyc-derived; see below) |
+| `certainty` | `high` \| `moderate` \| `low` \| `very-low`. DERIVED, never chosen. See ADR-0015 section 2e |
+| `certainty_reasons` | REQUIRED whenever certainty is not the starting level. The named reasons that moved it |
 | `fidelity` | `exact` \| `scoped` \| `consequence` -- how FAITHFUL the definition is. See section 5 |
 | `reading_level` | US grade level the definition actually achieves, 8 to 20. How HARD it is. See section 5 |
 | `prerequisites` | Ids of records a reader needs first. The escalation ladder's rungs |
@@ -344,13 +345,26 @@ Class-specific fields:
 - **`term`**: `plain_definition` (1–3 sentences, 8th-grade), `visual`,
   `see_also`.
 
-**Cyc-derived scoring fields are carried on every class from the start**, even
-where unused today, so the schema does not need widening later. The one that
-earns its place immediately is `confidence`: this project already separates
-measured from projected via evidence tags, but **not strong-measured from
-weak-measured**. The score-degeneracy caveat, the single-seed spot checks, and
-the adversarial control that never converged are asserted with genuinely
-different confidence, and today that lives only in prose.
+**Scoring fields are carried on every class from the start**, even where unused
+today, so the schema does not need widening later. The one that earns its place
+immediately is `certainty`: this project already separates measured from
+projected via evidence tags, but **not strong-measured from weak-measured**. The
+score-degeneracy caveat, the single-seed spot checks, and the adversarial
+control that never converged are asserted with genuinely different certainty,
+and today that lives only in prose.
+
+**This was a 0.0 to 99.9 percent `confidence` field until 2026-09-14**, and the
+change is worth recording rather than quietly making. Two things were wrong with
+the percentage. It is unfalsifiable -- `62%` cannot be argued with, which makes
+it a weaker instrument than it looks in a project whose whole posture is that
+claims should be checkable. And it was labelled "Cyc-derived" when the research
+in `../research/cyc-knowledge-representation.md` establishes that **Cyc carries
+no numeric confidence on assertions at all**; the library's own first record
+holds that fact as `cyc-no-numeric-confidence`.
+
+ADR-0015 section 2e replaced it with the GRADE model -- four levels, a starting
+level set by the evidence tag, and NAMED reasons for every move. The reasons are
+the audit trail, and they are the part worth having.
 
 ### 3b. Contexts, not tags: three at pilot, ten-plus at domain scale
 
@@ -582,5 +596,37 @@ preregistration governs methodology; this is an engineering decision around it.
   library, gated on this storage decision)
 - Amendments A15, A19, A24; findings F52, and the Sprint 13 evidence walk
 - `docs/sprints/SPRINT_13_SUMMARY.md`, `docs/sprints/SPRINT_8_RETROSPECTIVE.md`
-- `docs/research/cyc-knowledge-representation.md` -- primary-source research on Cyc, read 2026-09-13. It CORRECTS two things this ADR originally assumed: Cyc has four composite truth values rather than five, and carries NO numeric confidence on assertions, so the confidence field here is our own design and must stand on its own merits
+- [`../research/cyc-knowledge-representation.md`](../research/cyc-knowledge-representation.md) -- primary-source research on Cyc, read 2026-09-13. It CORRECTS two things this ADR originally assumed: Cyc has four composite truth values rather than five, and carries NO numeric confidence on assertions, so the confidence field here is our own design and must stand on its own merits
 - Lenat, D. and Marcus, G., arXiv:2308.04445 (2023), cited above as [LM23]
+
+## Amendments
+
+Recorded rather than edited in place, because this ADR is Accepted. Each entry
+names what changed and what observation forced it.
+
+**2026-09-14 (A1): ADR-0015 is ACCEPTED; the Status section above is stale.**
+The Status section says "ADR-0015, which depends on this one's storage decision,
+remains Proposed". It was accepted on 2026-09-14, after this document. Found by
+an adversarial review of PR #94.
+
+Worth recording as an amendment rather than a typo fix, because it is this
+project's signature defect appearing between the two ADRs written to prevent it:
+one value, maintained in three places -- 0014's Status, 0015's Status, and
+`README.md` -- where one moved and the other did not. ADR-0015 section 22-28
+argues at length that leaving a decision Proposed when the practice has settled
+produces "a practice that is settled and a record that says otherwise". That is
+precisely the state the stale sentence described.
+
+**2026-09-14 (A2): `confidence` replaced by `certainty` plus
+`certainty_reasons` on every record class.** The schema spine mandated a 0.0 to
+99.9 percent `confidence` field while ADR-0015 section 2e abolished it as
+unfalsifiable, so the assertion class required both a field and its own
+replacement. The percentage was also labelled "Cyc-derived" against research
+establishing that Cyc carries no numeric confidence at all. Found by the same
+review.
+
+**2026-09-14 (A3): `class` gains a fourth value, `paper`.** Section 3 defined
+`class` as `assertion | acronym | term` and claimed the schema would not need
+widening. ADR-0015 section 1 adds papers as a fourth class. The claim was wrong
+within a day, which is the argument for the 20-paper checkpoint rather than
+against the schema.

@@ -6,7 +6,7 @@ Goal: a Phase 1 concept proposal strong enough to be selected as a finalist, sco
 
 Governing principle: requirements, then thesis, then experiments, then results, then paper. Never paper first.
 
-The joint task checklist with owners is in `CHECKLIST.md`. This file holds the stage logic and exit tests.
+The joint task checklist with owners is in `CHECKLIST-Phase2-pre.md` (live); `CHECKLIST-Phase1.md` holds the closed Phase 1 record. This file holds the stage logic and exit tests.
 
 ## Rubric weights (Phase 1)
 

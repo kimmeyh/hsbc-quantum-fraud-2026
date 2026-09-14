@@ -169,9 +169,13 @@ Set `HSBC_ULB_CSV` to override the ULB location.
 
 **The hardware rows**, tagged **[HW]**. They ran on QCi's Dirac-3 against a
 grant to this project and need a funded account. Campaign totals -- fits, metered
-seconds, and how many carry a retained job identifier -- are in
-[`experiments/results/qpu_cost_ledger.json`](experiments/results/qpu_cost_ledger.json)
-and the appendix, not restated here.
+seconds, and how many carry a retained job identifier -- are in the appendix and
+in [`experiments/results/hw_job_ids.json`](experiments/results/hw_job_ids.json),
+not restated here.
+
+`qpu_cost_ledger.json` is a PARTIAL record and is deliberately not named first:
+it was last regenerated on 2026-09-09 and predates blocks B2 and B3, so its
+totals understate the campaign. It remains accurate for the calls it covers.
 
 What IS reproducible is their classical counterpart: every hardware fit solves a
 Hamiltonian that `experiments/src/mechanism_controls.py` solves exactly, and the

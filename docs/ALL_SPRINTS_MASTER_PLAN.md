@@ -8,7 +8,7 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 - **During Sprint N+1 planning (Phase 3.2.1)**: create `docs/sprints/SPRINT_N_SUMMARY.md` for the just-finished sprint and link it here.
 - **IDs**: F# for all features/process/tech-debt items; next available number; never reuse.
 - **Estimates**: minutes/hours from recorded actuals; `[no-history]` where uncalibrated.
-- The repo-root `CHECKLIST.md` remains the submission-wide deliverable ledger; this document is the sprint-scoping view over it. Keep them consistent; CHECKLIST wins on deliverable truth, this file wins on sprint sequencing.
+- `CHECKLIST-Phase2-pre.md` is the LIVE deliverable ledger; this document is the sprint-scoping view over it. Keep them consistent; the checklist wins on deliverable truth, this file wins on sprint sequencing. (`CHECKLIST-Phase1.md` is the CLOSED Phase 1 record and is never updated; `CHECKLIST-Phase2.md` is dormant until selection. The repo-root `CHECKLIST.md` was split into those three on 2026-09-12 and no longer exists.)
 
 ## Past Sprint Summary
 
@@ -33,8 +33,15 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 
 **Sprint 14: Make the Record Durable** (Sep 12-14, 2026; PR #94 to develop).
 Delivered **F68-F72** plus the four carried tooling cards **F48, F65, F66, F67**,
-and the Evidence Based DB design that followed them. Suite **321 -> 329**. Zero
-metered seconds.
+and the Evidence Based DB design that followed them. Zero metered seconds.
+
+Test counts are deliberately NOT restated here. `README.md` was rewritten in
+this same sprint to stop doing exactly that, with the reason given in its own
+words: a paragraph "written with one set of numbers and was wrong within the
+same sprint". This document then restated counts anyway and they were wrong
+within the same PR -- an adversarial review found the fresh-clone figure stale
+and the local figure matching no reproducible measurement. Run the suite; it
+reports its own counts.
 **The finding that reordered the sprint**: BOTH Edit-matcher hooks had NEVER RUN.
 `.claude/settings.json` registered them with a single backslash before `block-`,
 which JSON parses as U+0008, so the path resolved to a file that does not exist
@@ -52,9 +59,10 @@ finished: a mistimed verification reads exactly like a passing one.
 **The guard that failed its own test**: `test_changelog_currency.py` was written
 with a 14-day threshold and PASSED on the eight-day lapse it existed to catch.
 Caught only by running the injection rather than assuming it.
-**Measured effect for a stranger**: a fresh public clone went from 256 passed /
-21 skipped to 296 / 16 -- forty more assertions running for anyone who clones,
-and the A20 mechanism claim guarded for the first time.
+**Measured effect for a stranger**: on a fresh public clone the pool-mechanism
+guard now RUNS rather than skipping, so the A20 claim in appendix A.4 is checked
+for anyone who clones. The skip count fell because of it. Exact figures come
+from running the suite on a fresh clone, not from this sentence.
 **The design half**: ADR-0014 (Evidence Based DB) ACCEPTED with early-innovation
 status and a 20-paper checkpoint; ADR-0015 (reference library) Proposed. Four
 team-lead corrections changed the design materially -- agent economics invalidate
@@ -179,7 +187,7 @@ Phase 2.
 
 **F71. CHECKLIST restructured into three phases (~1.5h) Priority 4 -- SPRINT 14**
 - Phase: Finalize / process (team lead, 2026-09-12)
-- Platform: `CHECKLIST.md`
+- Platform: `CHECKLIST-Phase1.md`, `CHECKLIST-Phase2-pre.md`, `CHECKLIST-Phase2.md`
 - The checklist is titled "Submission-Ready by Sep 8, 2026" and still carries 18 unchecked boxes against work that is finished or abandoned. It describes a deadline that has passed
 - Restructure into three sections in this order: (1) PRE-PHASE 2, the live list covering the wait from 2026-09-12 to finalist notification in mid-November; (2) PHASE 2, populated from the proposal's own six-experiment programme and section 3 resourcing, to be filled out properly if selected; (3) CHALLENGE SUBMISSION, the completed Phase 1 list, corrected to reflect what actually happened and marked done
 - The correction pass on section 3 is real work: items were added, dropped and re-scoped across thirteen sprints, and the checklist tracked none of it

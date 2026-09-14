@@ -27,7 +27,7 @@ are independent, and ADR-0014 is both Accepted and early-innovation. Leaving
 gap this project keeps finding -- a practice that is settled and a record that
 says otherwise.
 
-Depends on **ADR-0014** (Evidence Based Database) for its storage decision. If
+Depends on **[ADR-0014](0014-fact-database.md)** (Evidence Based Database) for its storage decision. If
 0014's storage changes, this ADR changes with it.
 
 ### What remains genuinely open
@@ -214,8 +214,8 @@ A paper summary is subject to the same escalation rule as a glossary term:
 start at 8th grade, climb one grade at a time until honest, record where it
 landed.
 
-`contradicts-us` is a deliberate verdict value. A library that can only record
-supporting work is a bibliography for a conclusion already reached.
+The `contradicts` relation in section 2f is deliberate. A library that can only
+record supporting work is a bibliography for a conclusion already reached.
 
 ### 2b2. A paper is a SOURCE OF ASSERTIONS, not a record in itself
 
@@ -612,13 +612,13 @@ collected and not used.
 ### A folder of PDFs with a README
 - **Description**: what most projects do.
 - **Pros**: zero build; zero schema.
-- **Cons**: no provenance, no verdict, no record of whether anyone checked the source. It is exactly the state that produced F53 and A28.
+- **Cons**: no provenance, no extracted assertions, no record of whether anyone checked the source. It is exactly the state that produced F53 and A28.
 - **Why rejected**: the failure mode is already on record, twice.
 
 ### A reference manager (Zotero, Mendeley)
 - **Description**: adopt an existing tool.
 - **Pros**: mature; handles citation formats; already has PDF management.
-- **Cons**: its data model is bibliographic, not analytical. There is no natural home for `applicability`, `verdict`, or `checked_against_source`, which are the fields that would have prevented our actual defects. Exporting into our own schema means maintaining two systems.
+- **Cons**: its data model is bibliographic, not analytical. There is no natural home for `applicability`, `yields`, or `checked_against_source`, which are the fields that would have prevented our actual defects. Exporting into our own schema means maintaining two systems.
 - **Why rejected**: it solves citation formatting, which is not the problem.
 
 ### A separate store from the fact database
@@ -637,7 +637,7 @@ collected and not used.
 
 ### Positive
 - Paper claims become checkable, with a visible record of whether anyone checked.
-- `contradicts-us` gives disconfirming work a place to live.
+- The `contradicts` relation gives disconfirming work a place to live.
 - Shares one storage decision with F39 instead of inventing a second.
 - Phase 2 starts with a searchable body of prior work rather than a folder.
 
@@ -646,7 +646,7 @@ collected and not used.
 - Writing a good paper record is slow; a bad one is worse than none because it
   looks authoritative.
 - **A summary can be confidently wrong.** `checked_against_source` and
-  `confidence` are the mitigations, and neither is automatic.
+  `certainty_reasons` are the mitigations, and neither is automatic.
 
 ### Neutral
 - Adds a fourth record class to a schema designed for extension.
@@ -666,6 +666,14 @@ None. This is tooling outside the frozen methodology and requires no amendment.
 3. ~~Is `checked_against_source` a hard gate for `verdict: use`?~~ **DECIDED
    2026-09-13: YES, adopted provisionally -- try it and watch for trouble.**
 
+   **RE-EXPRESSED 2026-09-14**, because the restructure in section 2b2 deleted
+   `verdict` from the paper record: a paper is not true or false, its assertions
+   are. The gate is now on **tier**, which section 2c already defines: a paper
+   reaches `read` only when `checked_against_source` is not `never`, and an
+   assertion may not be cited in one of our documents unless the paper that
+   yields it has reached `read`. Same rule, expressed against a field that
+   exists.
+
    Enforceable because `never` is explicit, so the gate is a comparison rather
    than a null check. An unverified paper may be cited as `unverified` but
    cannot support a decision.
@@ -682,7 +690,7 @@ None. This is tooling outside the frozen methodology and requires no amendment.
 - ADR-0014 (Evidence Based Database), F39, F72
 - F53 (AutoXGB dataset misattribution), A28 (the Loke et al. prior-work claim)
 - Sprint 12: the review agent that correctly rejected its own reviewer's FG22/5 claim
-- `docs/research/paper-library-prior-art.md` -- prior-art research, 2026-09-14: the
+- [`../research/paper-library-prior-art.md`](../research/paper-library-prior-art.md) -- prior-art research, 2026-09-14: the
   collector's fallacy, systematic-review screening tiers, scite's citation-intent
   distribution, and GRADE's derived-certainty model. It is the source for sections
   2c, 2e and 2f, and for the falsifier above
