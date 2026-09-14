@@ -31,45 +31,48 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 
 ## Last Completed Sprint
 
-**Sprint 14: Make the Record Durable** (Sep 12-14, 2026; PR #94 to develop).
-Delivered **F68-F72** plus the four carried tooling cards **F48, F65, F66, F67**,
-and the Evidence Based DB design that followed them. Zero metered seconds.
+**Sprint 14: Make the Record Durable** (Sep 12-14, 2026; PR #94 to develop, PR
+#95 to main). Delivered **F68-F72** plus the four carried tooling cards **F48,
+F65, F66, F67**, and the Evidence Based DB design that followed them. Zero
+metered seconds.
 
-Test counts are deliberately NOT restated here. `README.md` was rewritten in
-this same sprint to stop doing exactly that, with the reason given in its own
-words: a paragraph "written with one set of numbers and was wrong within the
-same sprint". This document then restated counts anyway and they were wrong
-within the same PR -- an adversarial review found the fresh-clone figure stale
-and the local figure matching no reproducible measurement. Run the suite; it
-reports its own counts.
-**The finding that reordered the sprint**: BOTH Edit-matcher hooks had NEVER RUN.
-`.claude/settings.json` registered them with a single backslash before `block-`,
-which JSON parses as U+0008, so the path resolved to a file that does not exist
-and Claude Code skipped it silently -- since the commit that created them. The
-Sprint 13 retrospective had recorded one of them as working. Every
-submission-document edit that sprint was unguarded; the process held because the
-team lead approved each change in conversation, not because anything enforced it.
-**Every task found something its card did not anticipate.** `requirements-lock.txt`
-was UNINSTALLABLE -- a `python==3.12.10` line made pip abort before installing
-anything, so the documented reproduction command failed at step one for every
-reader. A test crashed on a clean checkout where its twenty peers skipped. A dry
-run OVERWROTE the committed b3_hardware.json during verification, and the
-"artifact untouched" check that missed it had run before the background job
-finished: a mistimed verification reads exactly like a passing one.
-**The guard that failed its own test**: `test_changelog_currency.py` was written
+Counts are deliberately not restated here. `README.md` was rewritten in this
+sprint to stop restating them, and this document did it anyway and was wrong
+within the same PR. Run the suite.
+
+**The finding that reordered the sprint**: BOTH Edit-matcher hooks had NEVER
+RUN. A single backslash before `block-` in `.claude/settings.json` is a JSON
+backspace escape, so the path resolved to a file that does not exist and Claude
+Code skipped it silently, since the commit that created them. The Sprint 13
+retrospective had recorded one of them as working. Every submission-document
+edit that sprint was unguarded.
+
+**Every task found something its card did not anticipate.**
+`requirements-lock.txt` was UNINSTALLABLE, so the documented reproduction
+command failed at step one for every reader. A test crashed on a clean checkout
+where twenty peers skipped. A dry run OVERWROTE the committed b3_hardware.json
+during verification, and the check that missed it had run before the background
+job finished: a mistimed verification reads exactly like a passing one.
+
+**The guard that failed its own test**: the CHANGELOG currency guard was written
 with a 14-day threshold and PASSED on the eight-day lapse it existed to catch.
-Caught only by running the injection rather than assuming it.
-**Measured effect for a stranger**: on a fresh public clone the pool-mechanism
-guard now RUNS rather than skipping, so the A20 claim in appendix A.4 is checked
-for anyone who clones. The skip count fell because of it. Exact figures come
-from running the suite on a fresh clone, not from this sentence.
-**The design half**: ADR-0014 (Evidence Based DB) ACCEPTED with early-innovation
-status and a 20-paper checkpoint; ADR-0015 (reference library) Proposed. Four
-team-lead corrections changed the design materially -- agent economics invalidate
-the collector's-fallacy arithmetic, `applicability` collapses into contexts,
-a paper is a SOURCE OF ASSERTIONS rather than a record, and neither ADR is
-written in stone. Primary-source research on Cyc corrected two things this
-project had recorded as fact.
+
+**Two reviews found 20 defects, all addressed.** Copilot's first was LIVE, not
+hypothetical: Windows backslashes in resolved paths meant 0 of 7 hooks resolved
+on POSIX, and CI had been red on four consecutive commits unnoticed. The
+adversarial Claude review found a merge blocker that is the sharpest comment on
+the sprint: the dry-run guard was VACUOUS and its replacement was vacuous too,
+both defeated by the same injection. **A sprint whose theme was eliminating
+guards that cannot fail shipped a flagship guard that could not fail, twice.**
+
+**The design half**: ADR-0014 and ADR-0015 both ACCEPTED with early-innovation
+status and a 20-paper checkpoint; neither authorises implementation. Four
+team-lead corrections changed the design materially -- the scope is a domain
+knowledge base rather than one project's glossary, agent economics invalidate
+the collector's-fallacy arithmetic, `applicability` collapses into contexts, and
+a paper is a SOURCE OF ASSERTIONS rather than a record. Primary-source research
+corrected two things this project had recorded as fact about Cyc.
+
 Retro: docs/sprints/SPRINT_14_RETROSPECTIVE.md (Very Good across all rated
 categories; all six improvements applied).
 
@@ -87,6 +90,7 @@ categories; all six improvements applied).
 | 11 | Sep 9-10 | [DONE] **F41** (A20, mechanism corrected), **F42** (+0.0319 decomposed: the gain is class weighting, not diversity), **F43**, **F44**, **F45**, **F35**, plus **F46** (A21, ceiling LIFTED) and **F47** added mid-sprint; 15 review findings addressed | F37 and the fresh-eyes review deferred to 12 |
 | 12 | Sep 10-12 | [DONE] **F2b B2 and B3** on Dirac-3 (23 fits, 968 metered s), **F37**, **F38**, and **F49-F63** from three external reviews. F10 NOT reached | Evidence freeze held; F10 carries to Finalize |
 | 13 | Sep 12 | [DONE] **F10**: evidence walk, requirements-matrix walk, confidentiality scan, final render, and the SUBMISSION -- filed 2026-09-12, three days early. F64 selected then withdrawn | **SUBMITTED**; 9 defects found and corrected |
+| 14 | Sep 12-14 | [DONE] **F68-F72** plus **F48, F65, F66, F67**; two ADRs accepted for the Evidence Based DB. Two dead hooks found and fixed | **20 review findings**, all addressed; 2 vacuous guards caught by review |
 
 **THE PHASE 1 ROADMAP IS COMPLETE (2026-09-12).** Every row above is [DONE] and
 the submission is filed. The table described a run to a deadline; that deadline
@@ -155,26 +159,13 @@ Phase 2.
 
 (F22 CVQBoost proxy tuning and F2 hardware blocks B1+G0b: COMPLETED in Sprint 4, merged via PR #21; history in SPRINT_4_SUMMARY.md. F21 baseline research and F7 results memo likewise complete. Removed from candidates per convention. F2's remaining blocks B2/B3/B4/B5 continue as F2b below, gated on the QCi grant.)
 
-**F68. Freeze the submitted artifacts the way the preregistration is frozen (~2h) Priority 1 -- SPRINT 14, FIRST**
-- Phase: Finalize / governance (team lead, 2026-09-12)
-- Platform: `.claude/hooks`, `.claude/settings.json`, `README.md`
-- The three submission documents were JUDGED as filed on 2026-09-12. They are now a record, not a draft, and should be protected the way `PREREGISTRATION.md` is
-- **A DEFECT FOUND WHILE PLANNING THIS CARD, and it is why the card goes first.** Both Edit-matcher hooks -- `block-unapproved-submission-edit.ps1` and `block-reactive-amendment.ps1` -- have NEVER RUN. `.claude/settings.json` registers them as `...\\hooks\block-...`, and the single backslash before `b` is a JSON backspace escape, so the path resolves to `hooks\x08lock-...` which does not exist. Claude Code skips a hook whose file is absent, silently. Broken since commit `7a57065`, the commit that created them
-- Consequence, stated plainly: the Sprint 13 retrospective recorded "the Class 4 hook worked exactly as designed". That was FALSE. Every submission-document edit in Sprint 13 was unguarded. The process held because the team lead approved each change in conversation, not because anything enforced it
-- This is F48's defect class -- a silent escape corruption -- in the file that registers the guard against it
-- Scope: (1) fix both registrations and prove they fire by injection; (2) add a test asserting every registered hook path exists on disk and contains no control characters, so the class cannot return silently; (3) extend the submission-edit hook to cover history rewrites and tag moves affecting `prereg-freeze` and the submission commit; (4) document in the README how to find, fork and clone the repository exactly as submitted
-- Acceptance: both hooks demonstrably block, verified by injection; a test fails if any registered hook path is unresolvable; README carries the as-submitted retrieval instructions
-- Depends on: nothing
+(F68 freeze the submitted artifacts: COMPLETED in Sprint 14, merged via PR #94.
+Both Edit-matcher hooks had never run; fixed, injection-proven, and guarded by
+test_hook_registration.py. Removed from candidates per convention.)
 
-**F69. README rebuilt for a public repository (~2h) Priority 2 -- SPRINT 14**
-- Phase: Finalize / documentation (team lead, 2026-09-12)
-- Platform: `README.md`
-- The repository has been public since 2026-09-11 and the README still reads as a private working note: it points at a `paper/` path that does not exist, and its "Immediate to-do" asks for the challenge PDFs that were staged weeks ago
-- Required sections: where to find the key summary documents; a HOW TO REPRODUCE section (clone, environment setup, virtual environment, how to run one quick test, how to run each major test with its caveats -- notably that the pool-dependent tests need data that is not redistributed); and the as-submitted retrieval instructions from F68
-- Style: standard open-source README conventions adapted to an evidence repository rather than a library -- what this is, what was submitted, how to verify a claim, how to reproduce, what is deliberately absent and why
-- **The reproduce section must be TESTED by following it, not written from memory.** Appendix C claims every figure regenerates from this repository; a README that does not actually work makes that claim false for the first reader who tries
-- Acceptance: a reader with no prior context can clone, set up, and run a test from the README alone
-- Depends on: F68 for the as-submitted section
+(F69 README rebuilt for a public repository: COMPLETED in Sprint 14. Executing it
+found an uninstallable lock file and a test that crashed where its peers skipped.
+Removed from candidates per convention.)
 
 **F70. CHANGELOG backfilled and wired into the close-out (~1.5h) Priority 3 -- SPRINT 14**
 - Phase: Finalize / process (team lead, 2026-09-12)
@@ -185,26 +176,12 @@ Phase 2.
 - Acceptance: every day with commits from 2026-09-05 onward has an entry or an explicit note that it could not be reconstructed; the workflow names the step and its position
 - Depends on: nothing
 
-**F71. CHECKLIST restructured into three phases (~1.5h) Priority 4 -- SPRINT 14**
-- Phase: Finalize / process (team lead, 2026-09-12)
-- Platform: `CHECKLIST-Phase1.md`, `CHECKLIST-Phase2-pre.md`, `CHECKLIST-Phase2.md`
-- The checklist is titled "Submission-Ready by Sep 8, 2026" and still carries 18 unchecked boxes against work that is finished or abandoned. It describes a deadline that has passed
-- Restructure into three sections in this order: (1) PRE-PHASE 2, the live list covering the wait from 2026-09-12 to finalist notification in mid-November; (2) PHASE 2, populated from the proposal's own six-experiment programme and section 3 resourcing, to be filled out properly if selected; (3) CHALLENGE SUBMISSION, the completed Phase 1 list, corrected to reflect what actually happened and marked done
-- The correction pass on section 3 is real work: items were added, dropped and re-scoped across thirteen sprints, and the checklist tracked none of it
-- Acceptance: the first section is actionable today; the third reflects actuals rather than the original plan
-- Depends on: nothing
+(F71 CHECKLIST restructured: COMPLETED in Sprint 14. Three files, three change
+policies. Removed from candidates per convention.)
 
-**F72. Reference-paper library with retrieval, outside this repository (~4h investigation + design) Priority 5 -- SPRINT 14 (design only)**
-- Phase: Phase 2 preparation / tooling (team lead, 2026-09-12)
-- Platform: TBD, a separate repository
-- The team lead wants deep-dive summaries of QML, quantum-computing and classical-ML papers -- analysed for applicability to Dirac-3, to gate-based work via Braket and Classiq, and to non-quantum tensor methods -- stored OUTSIDE this repository but referenceable FROM it, and searchable in a RAG-like way for future use
-- **This card is investigation and design, not a build.** Deliverable is a proposal: where the library lives, what a paper record holds (citation, claim extracted, applicability verdict, confidence, link to any local artifact), how retrieval works, and how this repository cites into it without depending on it
-- Design constraint that makes this non-trivial: a reference cited from a public evidence repository must resolve for a reader who does not have the other repository. Either the library is public too, or citations carry enough inline context to stand alone
-- **Overlaps F39 deliberately.** Both are "structured records with provenance and confidence, retrievable, maintained outside prose". They should share a storage decision rather than making two, and F39 runs first because it has the concrete use case
-- Acceptance: a written proposal the team lead can approve or reject, naming the storage tool and the maintenance model
-- **DONE 2026-09-14: ADR-0015 ACCEPTED.** Restructured in review: a paper is a SOURCE OF ASSERTIONS rather than a record, tiers mean adjudication depth, certainty is GRADE-derived with named reasons, and applicability points at ADR-0014 contexts. Building is a separate card
-- Depends on: F39's storage decision
-
+(F72 reference-paper library: DESIGN COMPLETED in Sprint 14 as ADR-0015, ACCEPTED.
+Building is a separate card and is not authorised by the ADR. Removed from
+candidates per convention.)
 
 **F73. The submission explained at an 8th-grade level (~6-10h) Priority 1 -- NEXT SPRINT**
 - Phase: Post-submission / communication (team lead, Sprint 14 retrospective 2026-09-14)
@@ -251,15 +228,8 @@ Phase 2.
 - **The billing rule is now validated far outside its anchors.** B2's first fit at 833 variables, degree 3 cost 91 metered seconds where the grid assumed ~40. `ceil(sum(runtime))` predicted it exactly (runtime sum 90.152 s, balance 2929 -> 2838). Per-sample cost 11.27 s against B3's ~0.6 s, an **18.8x** step. Use measured per-sample cost, not the original grid, for any B4 estimate
 
 
-**F65. Per-fit artifact write in the hardware runner (~45m) Priority 11**
-- Phase: Experiments / tooling (lifted out of the F2b card in the Sprint 12 close-out sweep, 2026-09-11, where it had no F# of its own)
-- Platform: `experiments/src/run_hardware.py`
-- `run_hardware.py` writes its block artifact only at BLOCK completion, so a process that dies after a billed call leaves no `bN_hardware.json` even though the money is spent
-- **Observed in Sprint 12**: the first B2 fit did exactly that (WSL teardown on parent-shell exit, no traceback). Nothing was lost, because the raw response, the predictions `.npz` and a full `results.json` row with `metered_seconds: 91.0` had all persisted first. That was lucky, not structural
-- The fix is to write or append the block artifact after each fit rather than at the end, so a dead process leaves a partial artifact instead of none
-- Value: it prevents PAID evidence from being unrecoverable. At 91 metered seconds per B2-class fit, one lost fit is real money against a finite allocation
-- Depends on: nothing
-
+(F65 per-fit artifact write: COMPLETED in Sprint 14. Also fixed a dry run that
+overwrote committed evidence. Removed from candidates per convention.)
 
 **F75. Action the 20-paper ADR checkpoint (~2h) Priority 6**
 - Phase: Evidence Based DB / process (Sprint 14 retrospective improvement 5, 2026-09-14)
@@ -277,15 +247,9 @@ Phase 2.
 - Depends on: EvidenceBasedDB existing
 
 
-**F67. Guard the pool-mechanism claim on a fresh clone (~1h) Priority 12**
-- Phase: Experiments / tooling (Sprint 13 retrospective improvement 5, 2026-09-12)
-- Platform: `experiments/src/test_pool_mechanism.py`, `experiments/results/pools/`
-- `test_pool_mechanism.py` is the suite's ONLY skip. It skips because the pool `.npz` files are gitignored, so on a fresh clone it silently does not run
-- What that leaves unguarded: the appendix A.4 claim that **80 to 84 of the 91 learners reproduce the training labels exactly and zero predict the negative class everywhere** (A20). The claim is TRUE -- it was recomputed from the raw pools during the Sprint 13 evidence walk, every seed landing in 80-84 -- but nothing in CI would notice if it stopped being true
-- The decision this needs, which is why it is an hour and not ten minutes: either the pools belong in the repository (they are large, and Appendix C already promises the figures REGENERATE rather than ship), or a small committed fixture stands in for them. Those are different answers with different reproducibility stories
-- Value: a skipped test reads as a passing suite. This is the one claim in the submission whose guard is present but inert
-- Depends on: a team-lead decision on pools-versus-fixture
-
+(F67 pool-mechanism guard: COMPLETED in Sprint 14. Runs on a fresh clone against a
+committed 0.83 MB int8 fixture, chosen from three measured options. Removed from
+candidates per convention.)
 
 **F36. Pandoc Lua filter: floating tables for the submission PDFs -- CLOSED 2026-09-07, FAILED**
 - **VERDICT: the filter works; the problem it was built for did not exist.** The premise (preserved in the review doc, because it is wrong in an instructive way) rested on a CHARACTER-COUNT page-fill measurement, and a table-heavy page always looks short by that measure. Measured as vertical extent, every page cited below was already full: 724 / 680 / 680 / 682pt of a 792pt page, zero free space anywhere. The appendix was over its limit because it had too much content
@@ -336,36 +300,13 @@ Removed from candidates per convention.)
 (F35 interpretation-layer tests, F41 mechanism correction (A20), F42 review findings, F43 IEEE-CIS AUC-ROC, F44 figure resolution, F45 evidence guard, F46 QCi grant and ceiling probe (A21), F47 metered-call wrapper: ALL COMPLETED in Sprint 11, merged via PR #66 (main PR #70); history in SPRINT_11_SUMMARY.md. Removed from candidates per convention.)
 
 - **MOTIVATING CASE ADDED 2026-09-12 (Sprint 13 evidence walk).** The strongest evidence yet for this card. Appendix A.5 quoted the IEEE matched-feature control as falling "from 0.5739 to 0.0734 ... fold 0". Both numbers are real and both are in the artifacts -- but 0.5739 is the THREE-FOLD MEAN from `ieee_classical.json` while the control is fold-0 to fold-0 and its baseline is 0.5424 in `ieee_cvqboost.json`. A global value-set lookup accepts it, because the number exists somewhere. `test_document_figures_resolve.py` passed it, and its own docstring predicts exactly this: "It does NOT catch a figure that exists in the store but is quoted in the wrong place." Only per-claim provenance -- this sentence cites THAT row -- closes it, which is what F39 is
-**F66. Record the Copilot reviewer-request procedure in the workflow (~15m) Priority 10**
-- Phase: Finalize / process (Sprint 12 retrospective category 13, 2026-09-11)
-- Platform: `docs/SPRINT_EXECUTION_WORKFLOW.md`
-- Requesting a Copilot review needs the actor `copilot-pull-request-reviewer[bot]` (node id `BOT_kgDOCnlnWA`). NOT `Copilot`, and NOT `copilot-swe-agent`. The wrong name fails SILENTLY
-- Compounding it: the REST `requested_reviewers` field returns only users, never bots, so a SUCCESSFUL bot request reads back as an empty list. There is no way to confirm from that field that the request landed
-- **Observed in Sprint 12**: PR #73 never received a review for this reason and nobody noticed until PR #75 was being set up
-- A cross-repository skill already documents the three silent-failure modes and the working GraphQL procedure. This card is the in-repo pointer to it, so the workflow document does not depend on the skill being loaded
-- Value: it prevents a review step from silently not happening. The failure is invisible by construction, which is what makes it worth writing down
-- Depends on: nothing
+(F66 Copilot reviewer-request procedure: COMPLETED in Sprint 14, and CORRECTED
+again during it: the working call is GraphQL requestReviews with botIds, not
+userIds, and REST returns HTTP 200 while attaching nothing. Removed per convention.)
 
-
-**F48. Extend the escape hook to shell metacharacters (~45m) Priority 9**
-- Phase: Finalize / tooling (Sprint 11 retrospective improvement 4, backlogged 2026-09-09)
-- Platform: .claude/hooks
-- `block-unraw-escape.ps1` catches Windows path escapes in non-raw PYTHON strings and has fired correctly several times. It does not catch SHELL metacharacters: a backtick or `$(...)` inside a quoted string passed to Bash is expanded by bash before Python ever sees it
-- **Observed in Sprint 11**: backticks inside a Python string in a Bash command were expanded as command substitution, executing a source file as shell and silently deleting the backticked filenames from a master-plan line. The edit "succeeded" and the damage was only visible on inspection
-- The fix is the same shape as the existing hook: detect backticks or `$(` inside a quoted span destined for Bash, and require the single-quoted heredoc form that suppresses expansion
-- Lower priority than the submission blockers, and real: the failure mode is SILENT corruption of a file that was edited successfully, which is worse than a crash
-- Depends on: nothing
-
-(F49 solver optimality certificate, F50 convexity withdrawal, F51 protocol-history
-deviations, F52 document contradictions, F53 prior-work interpretations, F54 provenance,
-F55 the two missing rubric sections, F56 framing, F57 the 200:1 resolution argument, F58-F63
-the remaining review findings: ALL COMPLETED in Sprint 12, merged via PR #75 (main PR #76);
-history in SPRINT_12_SUMMARY.md. Removed from candidates per convention.)
-
-(F10 verification, confidentiality scan, compliance walk and SUBMISSION: COMPLETED in
-Sprint 13, merged via PR #82. The submission was filed 2026-09-12, three days before
-the deadline; receipt and the four now-answered A5 unknowns in
-docs/submission/SUBMISSION_RECEIPT.md. Removed from candidates per convention.)
+(F48 shell-metacharacter hook: COMPLETED in Sprint 14 after three iterations, each
+correction driven by a false positive against a real command. Removed from
+candidates per convention.)
 
 ### External (team-lead-owned, parallel)
 

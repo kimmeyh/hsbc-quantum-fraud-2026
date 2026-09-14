@@ -3,7 +3,7 @@
     "number": 14,
     "name": "Make the Record Durable",
     "branch": "feature/20260912_Sprint_14",
-    "status": "phase_7_retrospective",
+    "status": "phase_8_delivery_cycle",
     "plan_doc": "docs/sprints/SPRINT_14_PLAN.md",
     "pr": 94,
     "plan_approved": true,
@@ -20,12 +20,12 @@
       93
     ],
     "prior_prs": [],
-    "note": "All ten tasks complete, issues #84-93 closed plus legacy #69. PR #94. Retrospective complete: 16x4, all six improvements applied. F73-F76 registered. ADR-0014 accepted (early innovation), ADR-0015 proposed."
+    "note": "Complete. PR #94 to develop, PR #95 to main. 20 review findings addressed. ADR-0014 and ADR-0015 accepted. F73 is Priority 1 for Sprint 15."
   },
   "last_completed_sprint": {
-    "number": 13,
-    "merged_pr": 82,
-    "main_merge_pr": 83,
+    "number": 14,
+    "merged_pr": 94,
+    "main_merge_pr": 95,
     "docs_triad_complete": true
   },
   "prereg": {
