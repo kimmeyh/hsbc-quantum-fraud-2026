@@ -194,6 +194,7 @@ Phase 2.
 - Design constraint that makes this non-trivial: a reference cited from a public evidence repository must resolve for a reader who does not have the other repository. Either the library is public too, or citations carry enough inline context to stand alone
 - **Overlaps F39 deliberately.** Both are "structured records with provenance and confidence, retrievable, maintained outside prose". They should share a storage decision rather than making two, and F39 runs first because it has the concrete use case
 - Acceptance: a written proposal the team lead can approve or reject, naming the storage tool and the maintenance model
+- **DONE 2026-09-14: ADR-0015 ACCEPTED.** Restructured in review: a paper is a SOURCE OF ASSERTIONS rather than a record, tiers mean adjudication depth, certainty is GRADE-derived with named reasons, and applicability points at ADR-0014 contexts. Building is a separate card
 - Depends on: F39's storage decision
 
 

@@ -2,11 +2,42 @@
 
 ## Status
 
-**Proposed.** Awaiting team-lead acceptance or rejection. **No implementation is
-authorised by this document**; F72 is investigation and design only.
+**ACCEPTED 2026-09-14** by the team lead.
 
-Depends on **ADR-0014** (Evidence Based Database) for its storage decision. If 0014 is
-rejected or its storage changed, this ADR changes with it.
+What acceptance covers, all of it decided in review rather than as first
+drafted: **a paper is a source of assertions, not a record in itself**; tiers as
+adjudication depth rather than drafting effort; `applicability` pointing at
+ADR-0014's contexts instead of its own vocabulary; `certainty` derived
+GRADE-style with named reasons rather than a percentage; `supports` and
+`contradicts` as relations between assertions; records not PDFs; and full-text
+search before embeddings.
+
+What it does NOT cover: **no implementation is authorised by this document.**
+F72 was scoped as investigation and design, and building is a separate card.
+
+**Accepted does not mean settled**, exactly as in ADR-0014. See "Maturity"
+below: the schema details are expected to move at the 20-paper checkpoint (F75),
+and revisions are recorded as dated amendments rather than edits in place.
+
+**Why this was accepted rather than left Proposed**, recorded because the
+distinction caused confusion: early-innovation status governs how much a
+document may CHANGE; ADR status governs whether a decision has been MADE. They
+are independent, and ADR-0014 is both Accepted and early-innovation. Leaving
+0015 at Proposed while building against its decisions would have produced the
+gap this project keeps finding -- a practice that is settled and a record that
+says otherwise.
+
+Depends on **ADR-0014** (Evidence Based Database) for its storage decision. If
+0014's storage changes, this ADR changes with it.
+
+### What remains genuinely open
+
+Narrow, and neither blocks anything:
+
+1. **Does the library ship beyond internal use?** Currently internal, like the
+   glossary. A Phase 2 appendix is plausible and would raise the review bar.
+2. **What the record looks like after 20 papers have tested it.** The checkpoint
+   in "Maturity" exists for exactly this, and F75 cards it.
 
 ## Date
 
