@@ -211,6 +211,47 @@ The export is generated, never hand-edited. This is the same shape as
 `b2_hardware.json` regenerating from `results.json`, which this project already
 relies on.
 
+### 2b. SQLite first; NoSQL and a graph DB when a NAMED trigger fires
+
+**Team lead, 2026-09-13: we may end up needing all three -- relational, document
+and graph -- but start with SQLite and let the need announce itself.**
+
+That is the same discipline this project has applied to every other tooling
+question, and it has been right every time: measure before adopting. ADR-0015
+does it for retrieval (search before embeddings). Sprint 13 did it for the pool
+fixture (three options measured, smallest chosen). Cyc did it the other way and
+Lenat records the cost -- they assumed ONE representation would serve, then
+spent years "vainly searching for some fast general-purpose reasoning algorithm
+over HOL, which probably doesn't exist" [LM23 p14].
+
+**The risk in "start simple" is that the trigger never gets recognised**, and
+the project limps along with the wrong store because switching feels expensive.
+So the triggers are named now, while nothing is at stake:
+
+| Store | Adopt when | NOT when |
+|---|---|---|
+| **SQLite** (now) | Default. Schema enforcement, transactions, one file, no server | -- |
+| **Document / NoSQL** | Record shapes diverge so far that the relational schema becomes mostly-NULL columns, or per-platform records need genuinely different fields rather than different values | A record merely has optional fields. That is what NULL is for |
+| **Graph** | A query needs TRANSITIVE traversal we cannot express -- "every term reachable from `qml` through prerequisites", "which contexts inherit from `qc`", "what depends on this assertion if it changes" | We merely have foreign keys. Joins are not a graph problem |
+
+**The graph trigger is the one most likely to fire, and the likeliest cause is
+context inheritance.** If `platform:dirac-3` specialises `qc` which specialises
+`world`, and prerequisites form chains (the escalation ladder's rungs), then
+"what does a reader need before this term" is a reachability query. SQLite can
+do recursive CTEs, so the trigger is not "we have a hierarchy" -- it is "the
+recursive queries have become the hard part of the code."
+
+**Record the trigger when it fires.** A dated note saying which query forced the
+change, with the query in it. Otherwise the next reader inherits a three-store
+architecture with no account of why, which is the same defect as a figure with
+no provenance.
+
+**Migration is cheap by construction, and that is deliberate.** The store of
+record is SQLite but the ARTEFACT is the committed text export. A different
+engine consumes the same export. This is the same reason the export exists at
+all -- it makes the store replaceable and the diff reviewable, and those turn
+out to be the same property.
+
 ### 3. Three record classes, one schema spine
 
 Every record, regardless of class, carries:
@@ -244,7 +285,7 @@ weak-measured**. The score-degeneracy caveat, the single-seed spot checks, and
 the adversarial control that never converged are asserted with genuinely
 different confidence, and today that lives only in prose.
 
-### 3b. Contexts, not tags, and there are three of them
+### 3b. Contexts, not tags: three at pilot, ten-plus at domain scale
 
 **Cyc's microtheories are the right mechanism**, and they are better than a
 project/world flag for a reason that is not obvious until you read why they
@@ -253,7 +294,9 @@ inside it get terser and reasoning within it gets faster. "Every assertion in
 the 2023 context doesn't need to start out 'In the year 2023...'"
 [LM23 p15].
 
-Initial contexts, settled 2026-09-13 when the first non-project record arrived:
+**Pilot contexts**, settled 2026-09-13 when the first non-project record
+arrived. The domain-scale set is larger and is listed in the scope correction
+above; these three are what the pilot needs:
 
 | Context | Holds | Example |
 |---|---|---|
@@ -375,8 +418,14 @@ Escalation is what makes the honest version reachable instead of abandoned.
 ### Plain JSON or YAML files, no database
 - **Description**: one file per class, hand-edited, validated by a script.
 - **Pros**: no dependency; trivially diffable; no export step.
-- **Cons**: no referential integrity, no query, and hand-editing a thousand records invites exactly the drift the store exists to prevent.
-- **Why rejected**: at ~1,000 records the failure mode returns in a new place. Kept as the **export format**, which is where its diffability is worth having.
+- **Cons**: no referential integrity, no query, and hand-editing at domain scale invites exactly the drift the store exists to prevent.
+- **Why rejected**: the failure mode returns in a new place. Kept as the **export format**, which is where its diffability is worth having.
+
+### Document store or graph database from the start
+- **Description**: adopt NoSQL or a graph engine immediately, on the grounds that a domain knowledge base with context inheritance is graph-shaped.
+- **Pros**: the shape argument is real. Context inheritance and prerequisite chains ARE graphs, and a graph engine would express them natively.
+- **Cons**: it prices in a need we have not met yet. SQLite handles recursive queries via CTEs, and at pilot scale the hierarchy is three contexts deep. Adopting an engine for a problem we have not yet had is how projects acquire architecture they cannot justify.
+- **Why rejected FOR NOW, with named triggers**: see section 2b. Both remain live options and the conditions for adopting them are written down rather than left to judgement.
 
 ### A real Cyc or an ontology engine
 - **Description**: adopt Cyc, or an RDF/OWL triple store.
