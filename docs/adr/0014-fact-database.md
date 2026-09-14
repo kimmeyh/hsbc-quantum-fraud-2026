@@ -1,4 +1,4 @@
-# ADR-0014: Evidence Based DB — storage, schema and repository boundary
+# ADR-0014: Evidence Based DB -- storage, schema and repository boundary
 
 ## Status
 
@@ -85,7 +85,7 @@ Every instance below is a real defect this project shipped or nearly shipped:
 
 | Defect | What happened |
 |---|---|
-| **A15** | `0.7688` quoted in four places as the frozen pool's AUPRC at k=6. It appears in **no artifact** — the mean of an exploratory five-seed run carried into a ten-seed write-up. It was carrying a claim the true value inverts |
+| **A15** | `0.7688` quoted in four places as the frozen pool's AUPRC at k=6. It appears in **no artifact** -- the mean of an exploratory five-seed run carried into a ten-seed write-up. It was carrying a claim the true value inverts |
 | **Sprint 8** | The QCi letter asserted "twelve amendments" while the enclosed preregistration had seventeen |
 | **A19** | The amendment count changed and had to be corrected in every document that named it |
 | **F52** | B1's variable count read **78** in three places and **91** in two, in the same submission |
@@ -106,8 +106,8 @@ Its own docstring states the gap, and Sprint 13 then demonstrated it exactly:
 > place.
 
 That is the `0.5739` defect. Both numbers are real, so a global value-set lookup
-accepts either anywhere. **Closing it needs per-claim provenance — this sentence
-cites THAT row — which is what an evidence base is.**
+accepts either anywhere. **Closing it needs per-claim provenance -- this sentence
+cites THAT row -- which is what an evidence base is.**
 
 ### The second and third record classes
 
@@ -270,7 +270,7 @@ usage, not before.
 Markdown per record class) regenerated from it and committed, so:
 
 - the store is queryable, transactional and enforces a schema;
-- the **diff is reviewable** — a fact changing value shows up in review, which is
+- the **diff is reviewable** -- a fact changing value shows up in review, which is
   the entire point given that the defects above were all silent;
 - a consumer needs no database to read a fact, only the export.
 
@@ -329,7 +329,7 @@ Every record, regardless of class, carries:
 | `class` | `assertion` \| `acronym` \| `term` |
 | `value` | The number, the expansion, or the definition |
 | `provenance` | Pointer to what establishes it: a `results.json` row + config hash, an artifact path, an amendment, an external citation |
-| `evidence_tag` | `HW` \| `SIM` \| `PROJ` \| `N/A` — reuses the existing vocabulary rather than inventing one |
+| `evidence_tag` | `HW` \| `SIM` \| `PROJ` \| `N/A` -- reuses the existing vocabulary rather than inventing one |
 | `confidence` | 0.0 to 99.9 percent (Cyc-derived; see below) |
 | `fidelity` | `exact` \| `scoped` \| `consequence` -- how FAITHFUL the definition is. See section 5 |
 | `reading_level` | US grade level the definition actually achieves, 8 to 20. How HARD it is. See section 5 |
@@ -389,7 +389,7 @@ library living outside this repository.
 
 ### 4. Citation and validation
 
-Documents cite by id — concrete syntax deferred to implementation, since it must
+Documents cite by id -- concrete syntax deferred to implementation, since it must
 survive pandoc to PDF and that constraint is empirical. A build step resolves
 every citation and **fails on an unresolved or stale one**. This is the
 mechanism that would have caught A15, the amendment-count drift, and the 78/91
@@ -479,7 +479,7 @@ Escalation is what makes the honest version reachable instead of abandoned.
 ### Extend the F44 registry in place
 - **Description**: grow the `REGISTERED` dict in `test_document_figures_resolve.py` into the fact store.
 - **Pros**: zero new infrastructure; already works; already in CI.
-- **Cons**: it is a Python literal in a test file. No provenance, no confidence, no vocabulary classes, and it cannot express "this sentence cites that row" — the exact gap. It would also put a growing data structure inside a frozen repository.
+- **Cons**: it is a Python literal in a test file. No provenance, no confidence, no vocabulary classes, and it cannot express "this sentence cites that row" -- the exact gap. It would also put a growing data structure inside a frozen repository.
 - **Why rejected**: it solves the half already solved and cannot reach the half that matters.
 
 ### Plain JSON or YAML files, no database

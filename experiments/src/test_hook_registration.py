@@ -53,13 +53,25 @@ def _hook_commands() -> list[tuple[str, str]]:
 
 
 def _script_path(command: str) -> Path | None:
-    """The -File argument of a hook command, resolved against the repo root."""
+    """The -File argument of a hook command, resolved against the repo root.
+
+    Separators are NORMALISED to forward slashes after substitution. The hook
+    commands are PowerShell invocations and carry Windows backslashes, which a
+    POSIX filesystem reads as literal filename characters rather than
+    separators -- so `Path(tail).exists()` is unconditionally False on Linux and
+    macOS.
+
+    Found by Copilot on PR #94. CI runs ubuntu-latest, so the first version of
+    this guard would have turned CI red for exactly the fresh-clone audience the
+    sprint was written to serve: a test asserting that hooks resolve, failing
+    because it could not resolve them itself.
+    """
     marker = "-File "
     if marker not in command:
         return None
     tail = command.split(marker, 1)[1].strip().strip('"')
     tail = tail.replace("${CLAUDE_PROJECT_DIR}", str(ROOT))
-    return Path(tail)
+    return Path(tail.replace("\\", "/"))
 
 
 @pytest.mark.skipif(not SETTINGS.exists(), reason="no .claude/settings.json")

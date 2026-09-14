@@ -102,7 +102,7 @@ correct teaches nobody why it was wrong.
 Deep-dive summaries of quantum-machine-learning, quantum-computing and classical
 machine-learning papers, analysed for applicability to:
 
-- **Dirac-3** — the continuous-variable optimizer this project has measured;
+- **Dirac-3** -- the continuous-variable optimizer this project has measured;
 - **gate-based work** via Amazon Braket and Classiq, which the proposal commits
   to unconditionally for Phase 2;
 - **non-quantum methods** (tensor decompositions and similar) that might carry
@@ -116,7 +116,7 @@ a RAG-like way for future use.
 This project has already been damaged twice by reading papers imprecisely, and
 both times the error reached a submitted document:
 
-- **F53** found the AutoXGB dataset misattributed — a benchmark figure quoted
+- **F53** found the AutoXGB dataset misattributed -- a benchmark figure quoted
   against the wrong dataset entirely.
 - **A28** corrected "we did not find this paper before freezing" about Loke et
   al., which the freeze itself names as H1a with its exact protocol. We had read
@@ -160,7 +160,7 @@ ADR-0014 specifies. A paper record is a fourth record class alongside
 
 That is not a tidiness argument. Two stores mean two schemas, two export
 formats, two retrieval paths and two places for a fact about a paper to drift
-from a fact about a number — which is the problem both cards exist to solve.
+from a fact about a number -- which is the problem both cards exist to solve.
 
 ### 2. What a paper record holds
 
@@ -174,12 +174,12 @@ are assertions (2b2), and they carry their own certainty, links and checks.
 | Field | Tier | Meaning |
 |---|---|---|
 | `id` | seen | Stable, human-readable, e.g. `loke-2026-cvqboost` |
-| `tier` | seen | `seen` \| `screened` \| `read` — how far anyone has gone in mining it (2c) |
+| `tier` | seen | `seen` \| `screened` \| `read` -- how far anyone has gone in mining it (2c) |
 | `citation` | seen | Full bibliographic record plus DOI or arXiv id. **Pulled from an API, never hand-typed** |
-| `access` | seen | Where the PDF lives. **Never the PDF itself** — see below |
+| `access` | seen | Where the PDF lives. **Never the PDF itself** -- see below |
 | `context` | seen | Context(s) from ADR-0014's list: `qml`, `platform:dirac-3`, `method`, ... |
 | `disposition` | seen | One line: why it was worth recording, or why it was rejected. **A rejected paper is still a record** |
-| `applicability` | screened | **Context ids** it bears on, plus a sentence saying why. Not a separate vocabulary — see 2d |
+| `applicability` | screened | **Context ids** it bears on, plus a sentence saying why. Not a separate vocabulary -- see 2d |
 | `yields` | screened | **The assertion ids extracted from it.** The field that makes this a source rather than a summary |
 | `evidence` | read | What the paper measured, on what data, with what controls. A property of the STUDY, so it stays here |
 | `mined_by` | read | Who or what extracted the assertions, and when |
