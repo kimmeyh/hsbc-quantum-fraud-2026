@@ -85,26 +85,35 @@ from a fact about a number — which is the problem both cards exist to solve.
 design's biggest risk; see section 2c. Fields are marked by the tier that first
 requires them.
 
+**The paper record is PROVENANCE plus screening state.** The claims themselves
+are assertions (2b2), and they carry their own certainty, links and checks.
+
 | Field | Tier | Meaning |
 |---|---|---|
-| `id` | seen | Stable, human-readable, e.g. `loke-2024-cvqboost` |
-| `tier` | seen | `seen` \| `screened` \| `read` |
+| `id` | seen | Stable, human-readable, e.g. `loke-2026-cvqboost` |
+| `tier` | seen | `seen` \| `screened` \| `read` — how far anyone has gone in mining it (2c) |
 | `citation` | seen | Full bibliographic record plus DOI or arXiv id. **Pulled from an API, never hand-typed** |
 | `access` | seen | Where the PDF lives. **Never the PDF itself** — see below |
-| `context` | seen | Which context(s) it belongs to, from ADR-0014's list: `qml`, `platform:dirac-3`, `method`, ... |
-| `disposition` | seen | One line: why this was worth recording, or why it was rejected. **A rejected paper is still a record** |
-| `claim` | screened | What the paper claims, in its own terms, with section or page |
+| `context` | seen | Context(s) from ADR-0014's list: `qml`, `platform:dirac-3`, `method`, ... |
+| `disposition` | seen | One line: why it was worth recording, or why it was rejected. **A rejected paper is still a record** |
 | `applicability` | screened | **Context ids** it bears on, plus a sentence saying why. Not a separate vocabulary — see 2d |
-| `verdict` | screened | `use` \| `cite-only` \| `contradicts-us` \| `superseded` \| `unverified` |
-| `certainty` | screened | `high` \| `moderate` \| `low` \| `very-low`. **DERIVED, not chosen** — see 2e |
-| `certainty_reasons` | screened | **REQUIRED whenever certainty is not the starting level.** The named reasons that moved it |
-| `evidence` | read | What it measured, on what data, with what controls |
-| `citation_context` | read | The SENTENCE that makes the claim, quoted. Not just a page number |
-| `supports` | read | Assertion ids this paper supports |
-| `contradicts` | read | Assertion ids this paper contradicts |
-| `fidelity` | read | `exact` \| `scoped` \| `consequence`, as ADR-0014 |
-| `reading_level` | read | As ADR-0014; the escalation rule applies to summaries too |
-| `checked_against_source` | read | **REQUIRED at this tier.** A date plus who or what checked it, or the literal `never`. See below |
+| `yields` | screened | **The assertion ids extracted from it.** The field that makes this a source rather than a summary |
+| `evidence` | read | What the paper measured, on what data, with what controls. A property of the STUDY, so it stays here |
+| `mined_by` | read | Who or what extracted the assertions, and when |
+| `checked_against_source` | read | **REQUIRED at this tier.** A date plus who or what checked it, or the literal `never` |
+
+**Everything else moved to the assertion**, which is where ADR-0014 already
+defines it: `claim` becomes the assertion's own text; `certainty` and
+`certainty_reasons` attach per assertion, so Loke's 0.8108 and Loke's protocol
+description are graded separately; `supports` and `contradicts` become relations
+BETWEEN assertions with papers as provenance; `citation_context` -- the sentence
+making the claim -- belongs to the assertion it supports; and `fidelity` and
+`reading_level` are already assertion-level fields in ADR-0014.
+
+There is no `verdict` on a paper any more. **A paper is not true or false; its
+assertions are.** F53 is the proof: one extracted claim was misattributed while
+the rest of that paper was fine, and a paper-level verdict could not have said
+so.
 
 The last field is the one that earns the build, and it is **required with an
 explicit `never` rather than left blank** (team lead, 2026-09-12). Blank is
@@ -124,6 +133,80 @@ landed.
 
 `contradicts-us` is a deliberate verdict value. A library that can only record
 supporting work is a bibliography for a conclusion already reached.
+
+### 2b2. A paper is a SOURCE OF ASSERTIONS, not a record in itself
+
+**Team lead, 2026-09-14: "Just like we used the 5 or so papers in the challenge
+submission, we will use each paper judicially to understand what is verifiable
+about ML, QML and QC, then apply it to our DB, so each paper results in several
+entries that are backed up or refuted or something in between."**
+
+This is the structural correction to this ADR, and the submission already proves
+it. I had a paper as one record with a `claim` field. **The submission never
+used papers that way.**
+
+Verified against the shipped documents. Four cited papers yielded at least eight
+distinct checkable assertions:
+
+| Assertion | From | What it is |
+|---|---|---|
+| KNN reaches 0.8108 on ULB | Loke et al. | A reproducible target |
+| CAD reaches 0.7423 | Loke et al. | A comparator |
+| target AUC-PR 0.80 | Loke et al. | The H1a replication bar, IN THE FREEZE |
+| 23 of 24 cells favour the quantum arm | Emami et al. | A prior-work result |
+| ADASYN 1:1 gives 0.8855 vs 0.8826 | Emami et al. | A specific measured pair |
+| device limit 949 variables | QCi guide | **A constraint we designed against** |
+| 23 dB dynamic-range limit | Emami et al. | The basis of the A31 resolution finding |
+| "hybrid photonic-electronic ... non-convex optimization" | Nguyen et al. | How the vendor characterises the device |
+
+**Each of those is separately checkable, separately citable, and separately
+capable of being wrong.** F53 proved the last point: the AutoXGB dataset
+misattribution was ONE assertion extracted from one paper being wrong, while
+everything else about that paper was fine. A paper-level `verdict` field could
+not have expressed that.
+
+And `949` appears NINE TIMES in the preregistration alone, plus the proposal.
+That is the duplication problem this whole system exists to solve, and it is
+paper-derived.
+
+#### What this changes in the schema
+
+**The assertion is the unit. The paper record becomes provenance for
+assertions**, plus the screening state that says whether anyone has mined it
+yet.
+
+    paper record          -- bibliographic, access, tier, disposition
+      |
+      +-- yields --> assertion (context: qc,  "Dirac-3 device limit is 949 variables")
+      +-- yields --> assertion (context: qml, "KNN reaches 0.8108 AUPRC on ULB")
+      +-- yields --> assertion (context: qc,  "effective analog resolution ~23 dB")
+
+Consequences, each of which simplifies something I had made complicated:
+
+1. **`claim` moves off the paper record.** A paper does not have *a* claim; it
+   has several, and they belong in the assertion class ADR-0014 already defines.
+2. **`supports` and `contradicts` become relations between ASSERTIONS**, with
+   papers as their provenance. That is what "backed up or refuted or something
+   in between" means: our assertion that Dirac-3 resolves ~200 levels is
+   supported by Emami's 23 dB and by our own A31 measurement, from two
+   independent sources.
+3. **`certainty` attaches to the assertion, not the paper.** This is strictly
+   better: Loke's 0.8108 and Loke's protocol description do not deserve the same
+   certainty just because they share a source.
+4. **"Something in between" gets a home.** Not every extracted assertion is
+   supported or refuted. Most are simply *recorded and unchecked* -- which is
+   what `checked_against_source: never` already says, now at the right
+   granularity.
+5. **The paper `tier` still matters** and means what 2c says: how far anyone has
+   gone in mining it. `seen` = we know it exists. `screened` = an agent pulled
+   the assertions out. `read` = the team lead adjudicated them.
+
+#### Why this is the right unit, in one line
+
+**We do not cite papers in our documents. We cite claims.** The submission's
+appendix does not say "see Loke et al."; it says the H1a replication target is
+AUC-PR 0.80 and names where that came from. The database should store what the
+documents actually reference.
 
 ### 2c. Tiers, because 2,000 papers is a screening problem
 
@@ -293,6 +376,8 @@ reusing the library gets `world` and `method` for free and adds its own context.
 
 #### The first record, as it would be written
 
+THE PAPER RECORD -- provenance and screening state only:
+
     id:                       lenat-marcus-2023-trustworthy-ai
     tier:                     read
     context:                  method
@@ -300,46 +385,73 @@ reusing the library gets `world` and `method` for free and adds its own context.
                               AI to Trustworthy AI: What LLMs might learn from
                               Cyc", arXiv:2308.04445, 31 July 2023
     access:                   arXiv:2308.04445
-    disposition:              Methodology for this library. Read in full for
+    disposition:              Methodology for this library. Mined in full for
                               ADR-0014; it corrected two beliefs we had recorded
-    claim:                    16 desiderata for trustworthy AI; Cyc addresses
-                              them via EL/HL separation, contexts,
-                              argumentation-not-proof, and 1,100 specialised
-                              reasoners
     applicability:            method
-    verdict:                  use
-    certainty:                moderate
-    certainty_reasons:        Started LOW -- position paper, no experiment.
-                              UPGRADED one level for admission against interest:
-                              footnote 9 concedes the general theorem prover
-                              timed out on a million consecutive queries and was
-                              switched off, which is costly to disclose and
-                              therefore credible. NOT upgraded further: claims
-                              about Cyc's behaviour are first-author testimony,
-                              independently unverifiable, and the paper is
-                              advocacy by Cyc's creator
-    evidence                  Position paper. No experiment, no measurement. All
+    evidence:                 Position paper. No experiment, no measurement. All
                               claims about Cyc are reported by its creator
+    yields:                   cyc-truth-values-four
+                              cyc-no-numeric-confidence
+                              cyc-general-prover-disabled
+                              cyc-hl-module-count
+                              cyc-context-count
+    mined_by:                 2026-09-13, Claude, pp. 1-16
+    checked_against_source:   2026-09-13, Claude, read pp. 1-16 directly
+
+ONE OF THE ASSERTIONS IT YIELDS -- the interesting one:
+
+    id:                       cyc-general-prover-disabled
+    class:                    assertion
+    context:                  method
+    value:                    Cyc's general resolution theorem prover was
+                              switched off about a decade before 2023, after
+                              timing out on over a million consecutive queries
+                              where it was called as a last resort
+    provenance:               lenat-marcus-2023-trustworthy-ai, p14 footnote 9
     citation_context:         "we quietly turned the general theorem prover off,
-                              so it never gets called on!" [p14, footnote 9]
+                              so it never gets called on!"
+    certainty:                moderate
+    certainty_reasons:        Started LOW -- position paper, first-author
+                              testimony about the author's own system, no
+                              independent verification possible. UPGRADED one
+                              level for admission against interest: this concedes
+                              that the system's most general component never
+                              worked, which is costly to disclose and therefore
+                              credible. NOT upgraded further: still unverifiable
     supports:                 heuristics-over-general-reasoning
     contradicts:              (none recorded)
     fidelity:                 exact
-    reading_level:            13
-    checked_against_source:   2026-09-13, Claude, read pp. 1-16 directly
-    notes:                    Footnote 9 is the load-bearing finding and the
-                              reason certainty is moderate rather than low
+    reading_level:            11
+    checked_against_source:   2026-09-13, Claude, read p14 directly
 
-**Note what `certainty_reasons` is doing there, because it is the whole
-argument for the GRADE model.** The record does not assert a number. It says
-where the level started, what moved it, and what deliberately did not move it
-further. A reader can disagree with the upgrade -- is an admission against
-interest really worth a level? -- and that disagreement is possible only because
-the reason is written down.
+A SECOND ASSERTION FROM THE SAME PAPER, graded differently:
 
-A record saying `confidence: 72%` would have been unarguable and therefore
-weaker. This is the same distinction the project has met repeatedly: a figure
-with provenance can be checked; a figure without one can only be believed.
+    id:                       cyc-hl-module-count
+    value:                    Cyc had 20 heuristic-level reasoners in 1989 and
+                              over 1,100 by 2023
+    provenance:               lenat-marcus-2023-trustworthy-ai, p13
+    certainty:                low
+    certainty_reasons:        Started LOW -- position paper. NOT upgraded: a
+                              round self-reported count with no definition of
+                              what counts as a module and no way to check it.
+                              Unlike footnote 9 this is favourable to the
+                              author, so the admission-against-interest upgrade
+                              does not apply
+
+**Two assertions, one paper, different certainty.** That is the whole argument
+for making the assertion the unit. A paper-level `certainty` field would have
+had to average an admission against interest with a self-flattering statistic,
+and the average would have been wrong about both.
+
+**Note what `certainty_reasons` is doing, because it is the whole argument for
+the GRADE model.** Neither record asserts a number. Each says where the level
+started, what moved it, and what deliberately did not move it further. A reader
+can disagree -- is an admission against interest really worth a level? -- and
+that disagreement is possible only because the reason is written down.
+
+`confidence: 72%` would have been unarguable and therefore weaker. Same
+distinction this project has met repeatedly: a figure with provenance can be
+checked; a figure without one can only be believed.
 
 ### 3. Copyright: store records, never redistribute papers
 
