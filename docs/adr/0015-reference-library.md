@@ -81,18 +81,30 @@ from a fact about a number — which is the problem both cards exist to solve.
 
 ### 2. What a paper record holds
 
-| Field | Meaning |
-|---|---|
-| `id` | Stable, human-readable, e.g. `loke-2024-cvqboost` |
-| `citation` | Full bibliographic record, plus DOI or arXiv id |
-| `access` | Where the PDF lives. **Never the PDF itself** — see below |
-| `claim` | What the paper actually claims, in its own terms, with section or page |
-| `evidence` | What it measured, on what data, with what controls |
-| `applicability` | `dirac-3` \| `gate-based` \| `classical` \| `none`, with a sentence saying why |
-| `verdict` | `use` \| `cite-only` \| `contradicts-us` \| `superseded` \| `unverified` |
-| `confidence` | 0.0–99.9%, as ADR-0014 |
-| `fidelity` | `exact` \| `scoped` \| `consequence`, as ADR-0014 |
-| `checked_against_source` | **REQUIRED.** A date plus who or what checked it, or the literal `never`. See below |
+**Records are TIERED.** At 2,000-plus papers a single record shape is the
+design's biggest risk; see section 2c. Fields are marked by the tier that first
+requires them.
+
+| Field | Tier | Meaning |
+|---|---|---|
+| `id` | seen | Stable, human-readable, e.g. `loke-2024-cvqboost` |
+| `tier` | seen | `seen` \| `screened` \| `read` |
+| `citation` | seen | Full bibliographic record plus DOI or arXiv id. **Pulled from an API, never hand-typed** |
+| `access` | seen | Where the PDF lives. **Never the PDF itself** — see below |
+| `context` | seen | Which context(s) it belongs to, from ADR-0014's list: `qml`, `platform:dirac-3`, `method`, ... |
+| `disposition` | seen | One line: why this was worth recording, or why it was rejected. **A rejected paper is still a record** |
+| `claim` | screened | What the paper claims, in its own terms, with section or page |
+| `applicability` | screened | **Context ids** it bears on, plus a sentence saying why. Not a separate vocabulary — see 2d |
+| `verdict` | screened | `use` \| `cite-only` \| `contradicts-us` \| `superseded` \| `unverified` |
+| `certainty` | screened | `high` \| `moderate` \| `low` \| `very-low`. **DERIVED, not chosen** — see 2e |
+| `certainty_reasons` | screened | **REQUIRED whenever certainty is not the starting level.** The named reasons that moved it |
+| `evidence` | read | What it measured, on what data, with what controls |
+| `citation_context` | read | The SENTENCE that makes the claim, quoted. Not just a page number |
+| `supports` | read | Assertion ids this paper supports |
+| `contradicts` | read | Assertion ids this paper contradicts |
+| `fidelity` | read | `exact` \| `scoped` \| `consequence`, as ADR-0014 |
+| `reading_level` | read | As ADR-0014; the escalation rule applies to summaries too |
+| `checked_against_source` | read | **REQUIRED at this tier.** A date plus who or what checked it, or the literal `never`. See below |
 
 The last field is the one that earns the build, and it is **required with an
 explicit `never` rather than left blank** (team lead, 2026-09-12). Blank is
@@ -112,6 +124,142 @@ landed.
 
 `contradicts-us` is a deliberate verdict value. A library that can only record
 supporting work is a bibliography for a conclusion already reached.
+
+### 2c. Tiers, because 2,000 papers is a screening problem
+
+**Team lead, 2026-09-14: the library will eventually hold more than 2,000
+papers, many of which we will reject but must look at first.**
+
+### The correction that matters: our readers are agents, not people
+
+My first draft of this section applied the prior art uncritically and got the
+economics wrong. **Team lead, 2026-09-14: "ours is different. There are not
+people looking at each paper, we are a single agent looking at each paper with
+many running in parallel and at 1% of the speed or less."**
+
+That is right, and it invalidates the argument I had built. I wrote "at 2,000
+papers a ten-minute record is 333 hours" -- a figure that silently assumes a
+HUMAN writing each record. The collector's fallacy literature is entirely about
+human cognition: "the mistaken belief that having a text at hand increases our
+knowledge" is false FOR A PERSON because a person must read it to know it. Its
+named failure modes -- processing overhead as "a part-time job",
+research-mode-as-procrastination, maintenance burden -- are all costs in human
+attention, which is scarce, serial, and resents drudgery.
+
+**An agent reading 2,000 papers has none of those properties.** It is parallel,
+it does not procrastinate, and a thorough record costs nothing it minds
+spending. So the premise "records are expensive, therefore most papers should
+not get one" is mostly WRONG here. **Most papers can get a full record.**
+
+### What still transfers, and it is not nothing
+
+Three things survive the correction, and one gets WORSE at agent speed:
+
+1. **Your review time is still scarce and serial.** An agent can read the paper;
+   only the team lead can decide a verdict is trustworthy. That cost does not
+   parallelise.
+2. **"No purpose, no feedback mechanism, produces nothing"** is agent-
+   independent. A library nobody reaches for is useless however cheaply it was
+   built -- and it gets there FASTER at agent speed.
+3. **Maintenance decay** is agent-independent. `checked_against_source` going
+   stale does not care who wrote the record.
+4. **Volume without judgement gets worse.** Two thousand confident-sounding
+   records nobody adjudicated is a MORE dangerous artifact than fifty
+   hand-written ones: it looks authoritative and it scales the error. This
+   project has met that failure at small scale already -- three published claims
+   that were false and internally consistent.
+
+### Tiers stay, but they mean adjudication depth, not drafting effort
+
+| Tier | What it asserts | Whose cost |
+|---|---|---|
+| `seen` | An agent recorded it exists and why it was or was not pursued | Agent, negligible |
+| `screened` | An agent extracted the claim and proposed a verdict | Agent, negligible |
+| `read` | **A source was genuinely opened and the record adjudicated** | Team lead, real |
+
+The tier is now a claim about **how far the record has been verified**, not a
+budget. That makes `read` meaningful in a way a drafting-effort tier never was:
+it is the tier at which `checked_against_source` must be non-`never`.
+
+**Rejecting a paper still leaves a trace.** Cheap for an agent, and it prevents
+re-screening the same paper in six months.
+
+Systematic-review screening remains relevant for ORDERING -- which papers reach
+the team lead first -- rather than for reducing how many get records. Their
+practice automates exclusion and accepts roughly 5% recall loss [30-70% workload
+reduction, and 65-85% with LLM screening, PMC12306261]. We do not need that
+trade: exclusion stays adjudicated, because an automated wrong rejection is
+invisible and we are not paying by the record.
+
+### 2d. `applicability` points at contexts; it is not its own vocabulary
+
+**Team lead, 2026-09-14: agreed, collapse it.**
+
+The earlier draft gave `applicability` its own four values -- `dirac-3`,
+`gate-based`, `classical`, `none` -- written before ADR-0014 established
+contexts. Two lists then named the same things in different words, so adding a
+platform meant remembering to add it in both places, and missing one would leave
+them disagreeing.
+
+That is precisely the defect this project keeps meeting: B1's variable count
+read 78 in three documents and 91 in two, because the value was maintained in
+five places instead of one.
+
+**`applicability` now holds context ids from ADR-0014's list.** One vocabulary,
+so it cannot drift from itself.
+
+### 2e. `certainty` is DERIVED with named reasons, following GRADE
+
+The earlier draft carried a 0.0-99.9% confidence number. **A percentage cannot
+be argued with**, which makes it a worse instrument than it looks: `62%` is
+unfalsifiable, and this project's whole posture is that claims should be
+checkable.
+
+GRADE, the standard clinical medicine uses to grade a body of evidence, is built
+the other way round:
+
+- Four levels: **high, moderate, low, very low**.
+- **Starting level depends on study type** -- randomised trials start high,
+  observational studies start low [Cochrane Handbook ch. 14].
+- **Five named downgrade reasons**: risk of bias, inconsistency, indirectness,
+  imprecision, publication bias. One level for serious concerns, two for very
+  serious.
+- **Three named upgrade reasons** for non-randomised work: large effect,
+  dose-response, opposing plausible confounding.
+- A floor: certainty cannot fall below very low however many reasons apply.
+
+**The reasons are the audit trail, and they are the part worth having.** A
+record saying *"started high, measured on hardware; downgraded one level for
+imprecision, single seed"* can be checked, disputed and corrected. A record
+saying `62%` cannot.
+
+This maps onto machinery this project already has. Evidence tags set the
+starting level -- `[HW]` starts higher than `[PROJ]` -- and our existing caveats
+are downgrade reasons under other names: the score-degeneracy caveat is
+imprecision, the single-seed spot checks are imprecision, the adversarial
+control that never converged is risk of bias.
+
+### 2f. `supports` and `contradicts` link to assertion ids
+
+**Team lead, 2026-09-14: add the contradicts field and use it whenever
+possible.** Adding a `supports` field alongside it, for a reason from the data.
+
+scite classifies 1.6 billion citing statements as supporting, contrasting or
+mentioning. The distribution:
+
+> **92.6% mentioning, 6.5% supporting, 0.8% contrasting** [scite]
+
+**Fewer than one citation in a hundred contests what it cites.** Not because
+papers rarely conflict, but because contesting is costly to write and easy to
+omit. So an explicit `contradicts` link does work that no citation count does,
+and it will be rare and disproportionately valuable.
+
+`supports` earns its place separately: "which papers back this claim" is the
+question we will actually ask when writing Phase 2 documents.
+
+Both link to assertion ids in the Evidence Based DB, which is the transitive
+query that would fire ADR-0014's **graph-store trigger** -- "what depends on
+this assertion if it changes". Noted there, not built here.
 
 ### 2b. Contexts, and the first record
 
@@ -146,36 +294,52 @@ reusing the library gets `world` and `method` for free and adds its own context.
 #### The first record, as it would be written
 
     id:                       lenat-marcus-2023-trustworthy-ai
+    tier:                     read
     context:                  method
     citation:                 Lenat, D. and Marcus, G., "Getting from Generative
                               AI to Trustworthy AI: What LLMs might learn from
                               Cyc", arXiv:2308.04445, 31 July 2023
     access:                   arXiv:2308.04445
+    disposition:              Methodology for this library. Read in full for
+                              ADR-0014; it corrected two beliefs we had recorded
     claim:                    16 desiderata for trustworthy AI; Cyc addresses
                               them via EL/HL separation, contexts,
                               argumentation-not-proof, and 1,100 specialised
                               reasoners
-    evidence:                 Position paper. No experiment. Claims about Cyc
-                              are first-author testimony, not independently
-                              measured
-    applicability:            none (to the fraud problem); method (to this library)
+    applicability:            method
     verdict:                  use
-    confidence:               high on what Cyc DOES; lower on whether the
-                              approach generalises, since the paper is advocacy
-                              by Cyc's creator
+    certainty:                moderate
+    certainty_reasons:        Started LOW -- position paper, no experiment.
+                              UPGRADED one level for admission against interest:
+                              footnote 9 concedes the general theorem prover
+                              timed out on a million consecutive queries and was
+                              switched off, which is costly to disclose and
+                              therefore credible. NOT upgraded further: claims
+                              about Cyc's behaviour are first-author testimony,
+                              independently unverifiable, and the paper is
+                              advocacy by Cyc's creator
+    evidence                  Position paper. No experiment, no measurement. All
+                              claims about Cyc are reported by its creator
+    citation_context:         "we quietly turned the general theorem prover off,
+                              so it never gets called on!" [p14, footnote 9]
+    supports:                 heuristics-over-general-reasoning
+    contradicts:              (none recorded)
     fidelity:                 exact
     reading_level:            13
     checked_against_source:   2026-09-13, Claude, read pp. 1-16 directly
-    notes:                    Footnote 9 is the load-bearing finding: the general
-                              theorem prover timed out on a million consecutive
-                              queries and was turned off a decade ago
+    notes:                    Footnote 9 is the load-bearing finding and the
+                              reason certainty is moderate rather than low
 
-**Note what `evidence` and `confidence` are doing there.** This is a position
-paper by Cyc's own creator, and the record says so. Cyc's behaviour is reported
-by the person with the strongest interest in reporting it favourably. That does
-not make it wrong -- footnote 9 is a costly admission against interest and is
-more credible for it -- but a record that said `confidence: high` flat would be
-overclaiming, which is the failure this whole design exists to prevent.
+**Note what `certainty_reasons` is doing there, because it is the whole
+argument for the GRADE model.** The record does not assert a number. It says
+where the level started, what moved it, and what deliberately did not move it
+further. A reader can disagree with the upgrade -- is an admission against
+interest really worth a level? -- and that disagreement is possible only because
+the reason is written down.
+
+A record saying `confidence: 72%` would have been unarguable and therefore
+weaker. This is the same distinction the project has met repeatedly: a figure
+with provenance can be checked; a figure without one can only be believed.
 
 ### 3. Copyright: store records, never redistribute papers
 
@@ -189,10 +353,19 @@ Verbatim quotation stays short and attributed.
 
 ### 4. Retrieval: start with search over the export, not a vector database
 
-**Phase one: full-text search over the committed export.** At the tens-to-low-
-hundreds of records this will hold for a long time, `grep` and a small index are
-genuinely sufficient, and they are inspectable — a retrieval that returns the
-wrong paper is visible in a way an embedding-similarity miss is not.
+**Phase one: full-text search over the committed export.** Inspectable in a way
+an embedding-similarity miss is not: a search that returns the wrong paper shows
+you why.
+
+**REVISED 2026-09-14.** I wrote "tens-to-low-hundreds of records ... for a long
+time" when the scope was one project's references. At 2,000-plus papers that is
+wrong, and the embeddings trigger should be expected to fire EARLY rather than
+treated as a distant possibility. The trigger itself is unchanged -- a recorded
+instance of search failing to surface a paper that was in the library -- but the
+expectation is not.
+
+The tiering in 2c helps here too: `seen` records carry a one-line disposition,
+so even the rejected majority is searchable for "did we already look at this".
 
 **Phase two, only on evidence it is needed: embeddings.** The trigger is a
 recorded instance of search failing to surface a paper that was in the library.
@@ -212,6 +385,32 @@ who wants more. **This repository never requires the library to be resolvable.**
 Phase 2 documents, written under a different confidentiality posture (T&C §7
 binds on receipt of non-public material), may depend on it more directly. That
 decision waits for acceptance.
+
+## The falsifier for this whole card
+
+**The honest null hypothesis: a private, hand-curated paper library may not beat
+simply searching Semantic Scholar when you need something.** The prior-art
+research found no source establishing that it does, and that absence is worth
+stating rather than glossing.
+
+This project requires a premise falsifier on any card justified by a measurement
+(Sprint 8 improvement 2), and the same discipline applies here.
+
+**Falsifier, to be checked at 100 records and again at 500:** if we are not
+REACHING FOR the library when writing -- if the honest answer to "where did you
+get that" is still a fresh search -- then it is not working, and it should be
+scrapped rather than maintained out of sunk cost.
+
+The measurable version: **count how many library records are cited in the next
+document we write.** Zero at 100 records is a strong signal. It would mean the
+library is a collection rather than a tool, which is the collector's fallacy
+arriving on schedule.
+
+**The second thing to watch is maintenance decay.** The research found no
+evidence on how quickly such libraries go stale once the initial burst ends, and
+that is the failure I would bet on. `checked_against_source` makes it visible:
+if the median age of that field grows monotonically, the library is being
+collected and not used.
 
 ## Alternatives considered
 
@@ -288,4 +487,8 @@ None. This is tooling outside the frozen methodology and requires no amendment.
 - ADR-0014 (Evidence Based Database), F39, F72
 - F53 (AutoXGB dataset misattribution), A28 (the Loke et al. prior-work claim)
 - Sprint 12: the review agent that correctly rejected its own reviewer's FG22/5 claim
+- `docs/research/paper-library-prior-art.md` -- prior-art research, 2026-09-14: the
+  collector's fallacy, systematic-review screening tiers, scite's citation-intent
+  distribution, and GRADE's derived-certainty model. It is the source for sections
+  2c, 2e and 2f, and for the falsifier above
 - `docs/references.md`, `docs/research-baselines-best-practices.md`
