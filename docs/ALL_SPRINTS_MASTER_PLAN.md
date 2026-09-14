@@ -27,37 +27,43 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 11 | docs/sprints/SPRINT_11_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 9-10, 2026) |
 | 12 | docs/sprints/SPRINT_12_SUMMARY.md | [OK] Complete | ~2.5 days (Sep 10-12, 2026) |
 | 13 | docs/sprints/SPRINT_13_SUMMARY.md | [OK] Complete | ~1 day (Sep 12, 2026) |
+| 14 | docs/sprints/SPRINT_14_SUMMARY.md | [OK] Complete | ~2 days (Sep 12-14, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 13: Submit** (Sep 12, 2026; PR #82 to develop). Delivered **F10** and
-**FILED THE SUBMISSION** on 2026-09-12, three days before the deadline. Portal
-returned "Your submission received": proposal 6 of 6 pages, appendix 3 of 3,
-team profile 1 of 1. Suite 320 -> 321. Zero metered seconds.
-**The finding**: a sprint scoped as routine verification found NINE defects, and
-the suite caught none of them. One in the evidence artifacts (the B2 comparator
-written as 78 variables where its rows carry 91), six in the requirements matrix
-including C5 and C6 pointing at the wrong sections after F55's renumbering, and
-six in the submission documents.
-**The defect that justifies F39**: appendix A.5 quoted the IEEE matched-feature
-control as falling "from 0.5739 to 0.0734 ... fold 0", where the artifact's
-control is fold-0 to fold-0 at 0.5424 and 0.5739 is the three-fold mean from a
-different file. Both numbers are real, so a global value-set lookup accepts it --
-`test_document_figures_resolve.py` passed it and its own docstring predicts
-exactly that blind spot. Only per-claim provenance closes it.
-**A32** corrects A31's linear-term spread, which quoted 16.0 as a maximum where
-the stored values reach 28.0.
-**F64 was selected then withdrawn** the same day on the team lead's reasoning: a
-one-factor-at-a-time probe into an interaction space could return a true but
-unimportant result, and proposal section 6 already presents the cell as
-experiment 1 of six in an ordered program. Its pre-flight is preserved on the
-card so Phase 2 starts measured.
-**Process**: six findings were presented for approval and item 5 recommended
-taking NO action; all six were approved as fixes and one was backed out. The
-workflow now states that a list presented for approval contains only items to be
-changed.
-Retro: docs/sprints/SPRINT_13_RETROSPECTIVE.md (Very Good across all fourteen
-rated categories; all six improvements applied).
+**Sprint 14: Make the Record Durable** (Sep 12-14, 2026; PR #94 to develop).
+Delivered **F68-F72** plus the four carried tooling cards **F48, F65, F66, F67**,
+and the Evidence Based DB design that followed them. Suite **321 -> 329**. Zero
+metered seconds.
+**The finding that reordered the sprint**: BOTH Edit-matcher hooks had NEVER RUN.
+`.claude/settings.json` registered them with a single backslash before `block-`,
+which JSON parses as U+0008, so the path resolved to a file that does not exist
+and Claude Code skipped it silently -- since the commit that created them. The
+Sprint 13 retrospective had recorded one of them as working. Every
+submission-document edit that sprint was unguarded; the process held because the
+team lead approved each change in conversation, not because anything enforced it.
+**Every task found something its card did not anticipate.** `requirements-lock.txt`
+was UNINSTALLABLE -- a `python==3.12.10` line made pip abort before installing
+anything, so the documented reproduction command failed at step one for every
+reader. A test crashed on a clean checkout where its twenty peers skipped. A dry
+run OVERWROTE the committed b3_hardware.json during verification, and the
+"artifact untouched" check that missed it had run before the background job
+finished: a mistimed verification reads exactly like a passing one.
+**The guard that failed its own test**: `test_changelog_currency.py` was written
+with a 14-day threshold and PASSED on the eight-day lapse it existed to catch.
+Caught only by running the injection rather than assuming it.
+**Measured effect for a stranger**: a fresh public clone went from 256 passed /
+21 skipped to 296 / 16 -- forty more assertions running for anyone who clones,
+and the A20 mechanism claim guarded for the first time.
+**The design half**: ADR-0014 (Evidence Based DB) ACCEPTED with early-innovation
+status and a 20-paper checkpoint; ADR-0015 (reference library) Proposed. Four
+team-lead corrections changed the design materially -- agent economics invalidate
+the collector's-fallacy arithmetic, `applicability` collapses into contexts,
+a paper is a SOURCE OF ASSERTIONS rather than a record, and neither ADR is
+written in stone. Primary-source research on Cyc corrected two things this
+project had recorded as fact.
+Retro: docs/sprints/SPRINT_14_RETROSPECTIVE.md (Very Good across all rated
+categories; all six improvements applied).
 
 ## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
 
@@ -191,6 +197,22 @@ Phase 2.
 - Depends on: F39's storage decision
 
 
+**F73. The submission explained at an 8th-grade level (~6-10h) Priority 1 -- NEXT SPRINT**
+- Phase: Post-submission / communication (team lead, Sprint 14 retrospective 2026-09-14)
+- Platform: a new document in the repository root or `docs/`, alongside the submitted papers
+- **What it is**: a learning document explaining the proposal and appendix submitted 2026-09-12, written for an 8th grader working alone or in a group of three. Structured like a paper -- topics, sub-topics, references to outside sources -- not like a FAQ
+- **The reading-level rule is the one ADR-0014 already defines**: start at 8th grade; where an honest explanation is not achievable, go up ONE grade and retry; record the level that landed. This is a new APPLICATION of an existing mechanism, not a new mechanism
+- **Required disclaimer**, team lead's wording: it is a good and reasonably accurate document, with no guarantee of 100% accuracy and no expectation that the reader will fully understand on first reading
+- **The hard part is identifying what a reader needs that the submission assumes.** The datasets are the named example: what they are, how they were gathered, what they represent, why we used them, how they map to a real business situation, what the key features are and why, and how machine learning predicts from them. That list is a starting point and the card expects it to grow
+- **Licensing pre-flight DONE 2026-09-14** (`docs/research/dataset-reference-licensing.md`): ULB is DbCL v1.0 and may be copied, including commercially; IEEE-CIS is Vesta competition data and must be paraphrased and cited, never copied; SPECTRA is unverified. Conclusion: write every dataset explanation in our own words regardless, since one reuse right out of three is not worth the inconsistency
+- **Falsifier**: give it to someone who has not read the submission and ask them to explain back what CVQBoost is and why the result is a null. If they cannot, the document has not worked, however good it reads
+- Acceptance: every section states the grade level it achieved; the disclaimer is present; every dataset is attributed with its licence; a reader with no quantum or ML background can follow the argument from problem to null result
+- Depends on: nothing. The outline in F74 is part of this card, not separate
+
+**F74. Outline for the explanatory document -- FOLDED INTO F73**
+- (Not a separate card. The team lead's suggested outline -- challenge as written from the three challenge documents, then each dataset, then how ML is done against each -- is F73's spine. Splitting it would let the outline drift from the draft it describes. Recorded here so the suggestion is not lost, and struck as an independent item.)
+
+
 **F64. Decompose the B2 confound: the k=17 order-2 cell (~45m) Priority 1 -- PHASE 2 EXPERIMENT 1**
 - Phase: Experiments / correctness
 - Platform: classical proxy (`qubo_proxy.py`, `mechanism_controls.py`)
@@ -228,6 +250,22 @@ Phase 2.
 - The fix is to write or append the block artifact after each fit rather than at the end, so a dead process leaves a partial artifact instead of none
 - Value: it prevents PAID evidence from being unrecoverable. At 91 metered seconds per B2-class fit, one lost fit is real money against a finite allocation
 - Depends on: nothing
+
+
+**F75. Action the 20-paper ADR checkpoint (~2h) Priority 6**
+- Phase: Evidence Based DB / process (Sprint 14 retrospective improvement 5, 2026-09-14)
+- Platform: `docs/adr/0014-fact-database.md`, `0015-reference-library.md`
+- Both ADRs promise a review at approximately 20 imported papers, with six named questions and the bad answer stated for each. **A promise in a document is exactly what this project keeps having to replace with a mechanism**, and an unactioned checkpoint is a note nobody reads
+- The question that matters most is the measured one: how long team-lead adjudication takes per paper. At five minutes, 2,000 papers is 160 hours and the design needs rethinking; at thirty seconds the ambition is safe. Everything else in the checkpoint is schema tuning
+- Revisions are recorded as dated amendments at the bottom of each ADR, never as edits in place
+- Depends on: EvidenceBasedDB existing and holding ~20 papers
+
+**F76. Guard the shared vocabulary between ADR-0014 and ADR-0015 (~1h) Priority 7**
+- Phase: Evidence Based DB / tooling (Sprint 14 retrospective improvement 6, 2026-09-14)
+- Platform: cross-repository, `EvidenceBasedDB`
+- ADR-0015's `applicability` field now points at ADR-0014's context list rather than carrying its own enumeration. That was the right call -- two lists naming the same things is how B1's variable count came to read 78 in three documents and 91 in two -- **but nothing enforces that they agree**
+- A test that fails when a record names a context the schema does not define, and when the ADRs' stated context lists diverge from the database's
+- Depends on: EvidenceBasedDB existing
 
 
 **F67. Guard the pool-mechanism claim on a fresh clone (~1h) Priority 12**

@@ -66,6 +66,7 @@ references never move**; a hook refuses force-pushes and tag moves.
 | `CHECKLIST-Phase2-pre.md` | Live work during the review window |
 | `CHECKLIST-Phase2.md` | Dormant until selection; the six committed experiments |
 | [`docs/adr/`](docs/adr/) | Architecture decision records |
+| [`docs/research/`](docs/research/) | Primary-source research behind design decisions, each recording what could NOT be established alongside what could |
 
 **Evidence tags** appear on every figure: **[HW]** measured on Dirac-3
 hardware, **[SIM]** classical or simulated, **[PROJ]** projected. The

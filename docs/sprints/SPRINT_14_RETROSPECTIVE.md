@@ -216,3 +216,46 @@ two commits it could not confidently characterise rather than inventing entries.
 - **Lead Developer**: none
 - **Claude Code Development Team**: None blocking. The open items are decisions rather than questions: whether
 ADR-0015 is ready to accept, and the scope of the explanatory document.
+## Improvement Decisions
+
+Team lead disposition, 2026-09-14: **"all as recommended"**.
+
+| # | Improvement | Source | Type | Disposition |
+|---|---|---|---|---|
+| 1 | Card the 8th-grade explanatory document, with a falsifier | PO/SM/LD cat. 13 | deliverable | **Applied** -- F73 registered, next sprint |
+| 2 | Fold the outline into F73 rather than carding it separately | PO/SM/LD cat. 14 | planning | **Applied** -- F74 recorded as folded, struck as independent |
+| 3 | Resolve dataset-reference licensing before drafting | PO/SM/LD cat. 13 question | research | **Applied now** -- `docs/research/dataset-reference-licensing.md` |
+| 4 | Add `docs/research/` to the README key-documents table | Claude cat. 13 | docs | **Applied** -- README |
+| 5 | Card the 20-paper ADR checkpoint so it is actioned | Claude cat. 14 | process | **Applied as backlog** -- F75 |
+| 6 | Guard the shared vocabulary between ADR-0014 and ADR-0015 | Claude cat. 13 | tech debt | **Applied as backlog** -- F76 |
+
+### The licensing answer, since it shapes F73
+
+The team lead's open question was whether official dataset descriptions can be
+copied or must be cited. **Answer: it varies, so write everything in our own
+words.**
+
+- **ULB creditcard** is Database Contents License v1.0, which grants a
+  royalty-free irrevocable licence including sublicensing, explicitly permits
+  commercial use, and specifies no attribution requirement. **We may copy it.**
+  We will attribute anyway -- an explanatory document that hid its sources would
+  contradict the posture of the project it explains.
+- **IEEE-CIS** is Vesta Corporation's real-world e-commerce data under Kaggle
+  competition rules, which are behind acceptance and were not retrievable
+  anonymously. **Treat as cite-never-copy.** The burden of proof runs the wrong
+  way: we would be asserting an unverified right, publicly, over another
+  company's commercial data.
+- **SPECTRA** unverified; treat as restrictive until checked.
+
+One reuse right out of three is not worth the inconsistency, so F73 paraphrases
+uniformly and records each dataset's licence beside it -- a reader learning
+about datasets should learn that datasets have licences.
+
+## Transition note
+
+Sprint 14 delivered F68 through F72 plus the four carried tooling cards, and the
+Evidence Based DB design conversation that followed them. **The summary document
+is written during Sprint 15 planning** per workflow 3.2.1.
+
+ADR-0014 is ACCEPTED with early-innovation status; **ADR-0015 remains Proposed**
+and is the team lead's call.
