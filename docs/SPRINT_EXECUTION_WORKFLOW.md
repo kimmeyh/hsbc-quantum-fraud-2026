@@ -101,7 +101,11 @@ Consult this line at the START and END of every phase; state which steps were do
   - **`requestedReviewers` cannot confirm a bot request.** The REST field returns USERS only, so a bot reviewer that attached correctly still reads back as an empty list. Verifying there produces a false negative every time, which is what made the first failure mode look like a second one.
   - **Verify on the TIMELINE instead**: the PR shows "Copilot started reviewing" / "Copilot reviewed", or `gh pr view <N> --comments` shows the review body. That is the only reliable confirmation.
   - **Consequence, recorded because it actually happened**: PR #73 never received a Copilot review. The request was issued, reported as successful, verified against a field that cannot show it, and nobody noticed until PR #75 was being set up. A review step that silently does not happen is worse than one that visibly fails.
-  - The working request path is the GraphQL `requestReviews` mutation against the bot's node id, or the Reviewers gear in the web UI. A cross-repository skill holds the full procedure; this note exists so the workflow does not depend on that skill being loaded.
+  - **The working request path, verified 2026-09-14 on PR #94**: the GraphQL `requestReviews` mutation with the bot id in `botIds`, NOT `userIds`. `userIds` fails loudly with "Could not resolve to User node", which is at least honest. **The REST call fails SILENTLY**: `POST /pulls/{n}/requested_reviewers` with the bot login returns HTTP 200 and a full PR object, and attaches nothing. That is a fourth silent-failure mode beyond the three already listed.
+    ```
+    gh api graphql -f query='mutation($pr:ID!){requestReviews(input:{pullRequestId:$pr, botIds:["BOT_kgDOCnlnWA"], union:true}){pullRequest{number}}}' -f pr="<PR node id>"
+    ```
+  - **Verify with GraphQL `reviewRequests`, never REST.** REST's `requested_reviewers` showed an EMPTY array while GraphQL showed `Bot: copilot-pull-request-reviewer` attached. The timeline also showed no `review_requested` event for the bot, so the timeline check in the line above is necessary but NOT sufficient. A cross-repository skill holds the full procedure; this note exists so the workflow does not depend on that skill being loaded.
 - Update `.claude/sprint_status.json` `current_sprint.status` at every phase transition (it is how future tooling knows which side of the auto-advance window applies).
 
 ### Phase 8: Delivery Cycle (after every merge to develop)
