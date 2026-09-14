@@ -13,7 +13,7 @@ Adapted 2026-08-30 from spamfilter-multi's SPRINT_EXECUTION_WORKFLOW.md (its har
 | **SPRINT_RETROSPECTIVE.md** | Retrospective protocol and the 16x4 template |
 | **BACKLOG_REFINEMENT.md** | Refinement passes and the authoritative presentation format |
 | **SPRINT_PROCESS.md** | One-page overlay: branch model, carry-forward, standing rules |
-| **CHECKLIST.md** (repo root) | The submission-wide task ledger (Phase 1 deliverable map) |
+| **CHECKLIST-Phase2-pre.md** (repo root) | The submission-wide task ledger (Phase 1 deliverable map) |
 | **experiments/PREREGISTRATION.md** | FROZEN protocol; amendment discipline overrides everything here |
 
 ## Phase Cheat Sheet
@@ -22,7 +22,7 @@ Consult this line at the START and END of every phase; state which steps were do
 
 | Phase | Top actions | Done when |
 |---|---|---|
-| **1. Backlog Refinement** | MANDATORY every sprint, no request needed. Read master plan + CHECKLIST.md; present candidates in BACKLOG_REFINEMENT.md format (read its format section IN THE SAME TURN first); capture selection | Team lead has picked items; no scope questions open |
+| **1. Backlog Refinement** | MANDATORY every sprint, no request needed. Read master plan + CHECKLIST-Phase2-pre.md; present candidates in BACKLOG_REFINEMENT.md format (read its format section IN THE SAME TURN first); capture selection | Team lead has picked items; no scope questions open |
 | **2. Sprint Pre-Kickoff** | Verify previous PR merged; sprint issues closed; working tree clean; develop current; venv tests green (`pytest experiments/src -q`) | All gates green |
 | **3. Kickoff & Planning** | Draft `docs/sprints/SPRINT_N_PLAN.md`; verify plan against branch state (3.2.2.1); create GitHub issue per task + DRAFT PR (3.3.1); get explicit 3.7 approval | Team lead says "plan approved" -- durable authorization for Phases 4-7 |
 | **4. Execution** | Implement tasks in plan order; run `pytest experiments/src -q` after each; commit with issue number; results only through the frozen protocol | All acceptance criteria met; tests green |
@@ -51,7 +51,7 @@ Consult this line at the START and END of every phase; state which steps were do
 ## Phase detail (adaptations from the source; consult spamfilter's doc for rationale history)
 
 ### Phase 1: Backlog Refinement (mandatory, every sprint)
-- 1.1 Read ALL_SPRINTS_MASTER_PLAN.md and repo-root CHECKLIST.md; identify stale/obsolete items; re-prioritize.
+- 1.1 Read ALL_SPRINTS_MASTER_PLAN.md and repo-root CHECKLIST-Phase2-pre.md; identify stale/obsolete items; re-prioritize.
 - 1.2 Present candidates in the BACKLOG_REFINEMENT.md "Backlog Presentation Format" -- Summary Index first, `**<ID>. <Title> (~<effort>) Priority <N>**` items, phase-group headers, HOLD one-liners, no grid tables, real registered IDs (F#/Issue #N). Read the format section in the same turn before producing it.
 - 1.3 Record selection; update master plan; commit.
 
@@ -96,11 +96,24 @@ Consult this line at the START and END of every phase; state which steps were do
 - Exit gate: 16 categories x 4 roles, no placeholders; Category 13 feeds Sprint N+1's plan; Category 14 feeds the master plan.
 - **Merge-readiness definition (team lead, 2026-09-04)**: a PR is handed to the team lead as merge-ready ONLY when EVERY review has COMPLETED and EVERY finding is addressed and its thread resolved. A review still running means the PR is not ready, no matter how clean it looks; never describe it as "yours to merge" while an agent is mid-review. State review status explicitly instead: which reviews are complete, which are running, how many findings are open.
 - End of 7.7: `gh pr ready` (the only place). 7.7.5 final gate: manual validation + retro + improvements + Copilot review all complete -> notify team lead for final approval.
-- **Requesting the Copilot review**: `gh pr edit --add-reviewer Copilot` and the REST call SILENTLY fail (success output, reviewer never attaches). Working path: team lead signs into the automation browser once, then check Copilot under the PR's Reviewers gear in the web UI. Always verify with `gh pr view <N> --json reviewRequests` or the PR timeline ("Copilot started reviewing") before reporting it requested.
+- **Requesting the Copilot review (CORRECTED 2026-09-12, F66).** This has three independent silent-failure modes, and the earlier note in this document recorded the workaround while misdiagnosing the cause.
+  - **The actor name is `copilot-pull-request-reviewer[bot]`** (node id `BOT_kgDOCnlnWA`). NOT `Copilot`, and NOT `copilot-swe-agent`, which is a different bot. `gh pr edit --add-reviewer Copilot` reports success and attaches nothing, because it resolves a user named Copilot that does not exist on the repository.
+  - **`requestedReviewers` cannot confirm a bot request.** The REST field returns USERS only, so a bot reviewer that attached correctly still reads back as an empty list. Verifying there produces a false negative every time, which is what made the first failure mode look like a second one.
+  - **Verify on the TIMELINE instead**: the PR shows "Copilot started reviewing" / "Copilot reviewed", or `gh pr view <N> --comments` shows the review body. That is the only reliable confirmation.
+  - **Consequence, recorded because it actually happened**: PR #73 never received a Copilot review. The request was issued, reported as successful, verified against a field that cannot show it, and nobody noticed until PR #75 was being set up. A review step that silently does not happen is worse than one that visibly fails.
+  - **The working request path, verified 2026-09-14 on PR #94**: the GraphQL `requestReviews` mutation with the bot id in `botIds`, NOT `userIds`. `userIds` fails loudly with "Could not resolve to User node", which is at least honest. **The REST call fails SILENTLY**: `POST /pulls/{n}/requested_reviewers` with the bot login returns HTTP 200 and a full PR object, and attaches nothing. That is a fourth silent-failure mode beyond the three already listed.
+    ```
+    gh api graphql -f query='mutation($pr:ID!){requestReviews(input:{pullRequestId:$pr, botIds:["BOT_kgDOCnlnWA"], union:true}){pullRequest{number}}}' -f pr="<PR node id>"
+    ```
+  - **Verify with GraphQL `reviewRequests`, never REST.** REST's `requested_reviewers` showed an EMPTY array while GraphQL showed `Bot: copilot-pull-request-reviewer` attached. The timeline also showed no `review_requested` event for the bot, so the timeline check in the line above is necessary but NOT sufficient. A cross-repository skill holds the full procedure; this note exists so the workflow does not depend on that skill being loaded.
 - Update `.claude/sprint_status.json` `current_sprint.status` at every phase transition (it is how future tooling knows which side of the auto-advance window applies).
 
 ### Phase 8: Delivery Cycle (after every merge to develop)
 - 8.1 Team lead merges develop -> main (do not wait on it; do not block Refinement Pass 1 on it).
+- 8.1.1 **CHANGELOG reconciliation, BEFORE refinement (F70, Sprint 14).** Walk the days since the last entry and write one per day with commits, sourced from git history, the sprint summaries, the amendment log and the merged PRs. A day that cannot be reconstructed with confidence says so rather than being invented.
+  - **Why this step exists and why it sits here.** The policy at the top of CHANGELOG.md says entries are written in the SAME commit as the change they describe. That policy held for six days and then silently stopped: the file ran from 2026-08-29 to 2026-09-04 and then nothing, while Sprints 7 through 13 delivered the entire hardware campaign, three external reviews, the public-repository flip and the submission itself. Eight days missing, and nobody noticed for eight days.
+  - A same-commit policy depends on remembering at the moment of committing, which is exactly the class of rule this workflow keeps having to replace with a step. The reconciliation is cheap when it runs every cycle and expensive once it has lapsed -- the F70 backfill cost about ninety minutes for eight days.
+  - It is placed BEFORE Refinement Pass 1 deliberately: the sweep reads the sprint's own record, and a record with a hole in it is what the sweep is meant to catch.
 - 8.2 **Refinement Pass 1, completeness sweep**: verify cards closed, docs triad exists, master plan rolled, sprint_status current, shipped items pruned. Corrections only; NEVER selects scope.
   - **Prune shipped cards BY HAND. Do not write a pruning script.** Sprint 8 improvement 4. An ad-hoc prune script destroyed the master plan's roadmap section TWICE -- at Sprint 7 close-out (c40038d) and again in the Sprint 8 sweep -- by walking from a card header to the next card header and consuming a `## ` section heading that fell inside the span. The second loss went unnoticed for a full sprint. Pruning is a handful of cards per cycle; the script has negative value at that volume. Delete the card block with an editor, then run `pytest experiments/src/test_row_schema.py -k master_plan` before committing.
 - 8.3 **Submission-artifact refresh** (replaces the Store release): if the sprint changed anything the outward artifacts depend on, refresh them now -- QCi letter numbers vs the frozen grid, requirements-matrix statuses, paper-draft numbers vs results.json. At Stage 7-8 of the master timeline this step becomes the confidentiality scan + submission itself, which requires the main merge as its precondition.

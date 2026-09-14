@@ -73,3 +73,8 @@ docs/trueloop-teardown.md
 docs/thesis-candidates.md
 .claude/.submission-edit-approved
 .claude/.amendment-verified
+
+# Dry-run artifacts are placeholders, not evidence. Same reasoning as the
+# *_smoke.json rule above: a dry-run file beside real [HW] evidence is the
+# confusion the F65 work exists to prevent.
+experiments/results/*.dryrun.json

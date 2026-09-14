@@ -1,26 +1,31 @@
 {
   "current_sprint": {
-    "number": 13,
-    "name": "Submit",
-    "branch": "feature/20260912_Sprint_13",
+    "number": 14,
+    "name": "Make the Record Durable",
+    "branch": "feature/20260912_Sprint_14",
     "status": "phase_7_retrospective",
-    "plan_doc": "docs/sprints/SPRINT_13_PLAN.md",
-    "pr": 82,
+    "plan_doc": "docs/sprints/SPRINT_14_PLAN.md",
+    "pr": 94,
     "plan_approved": true,
     "github_issues": [
-      77,
-      78,
-      79,
-      80,
-      81
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93
     ],
     "prior_prs": [],
-    "note": "F10 only. Tasks A-D complete (issues 77-80 closed). Manual Validation passed all four items 2026-09-12. Task E (#81, portal submission) remains team-lead-owned. Nine defects found and corrected across the documents, matrix and evidence artifacts; A32 registers the one that was an error in the frozen log."
+    "note": "All ten tasks complete, issues #84-93 closed plus legacy #69. PR #94. Retrospective complete: 16x4, all six improvements applied. F73-F76 registered. ADR-0014 accepted (early innovation), ADR-0015 proposed."
   },
   "last_completed_sprint": {
-    "number": 12,
-    "merged_pr": 75,
-    "main_merge_pr": 76,
+    "number": 13,
+    "merged_pr": 82,
+    "main_merge_pr": 83,
     "docs_triad_complete": true
   },
   "prereg": {
@@ -28,5 +33,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-12"
+  "updated": "2026-09-14"
 }
