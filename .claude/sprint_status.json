@@ -5,7 +5,7 @@
     "branch": "feature/20260912_Sprint_14",
     "status": "phase_5_manual_validation",
     "plan_doc": "docs/sprints/SPRINT_14_PLAN.md",
-    "pr": null,
+    "pr": 94,
     "plan_approved": true,
     "github_issues": [
       84,
@@ -20,7 +20,7 @@
       93
     ],
     "prior_prs": [],
-    "note": "All ten tasks complete, issues #84-93 closed plus legacy #69. Suite 321 -> 329 local; a clean clone of the branch runs 296 passed / 16 skipped / 0 failed. Two ADRs proposed (0014 fact database, 0015 reference library), both awaiting team-lead acceptance."
+    "note": "All ten tasks complete, issues #84-93 closed plus legacy #69. Draft PR #94 open. Suite 321 -> 329 local; a clean clone of the branch runs 296 passed / 16 skipped / 0 failed. Two ADRs proposed (0014 Evidence Based DB, 0015 reference library), both awaiting team-lead acceptance; design conversation continued past the carded scope and is recorded in the ADRs and docs/research/cyc-knowledge-representation.md."
   },
   "last_completed_sprint": {
     "number": 13,
@@ -33,5 +33,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-12"
+  "updated": "2026-09-13"
 }
