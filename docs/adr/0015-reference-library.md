@@ -1,5 +1,12 @@
 # ADR-0015: Reference-paper library with retrieval, outside this repository
 
+> **THE LIVE COPY IS NOT THIS ONE.** This ADR was MOVED to the
+> `kimmeyh/EvidenceBasedDB` repository on 2026-09-14 and lives there as
+> **ADR-0005**. That repository owns the design; this repository is a consumer
+> of it. Amend it THERE. This copy is frozen as the record of when the decision
+> was made and by whom, and it is deliberately byte-identical to the live copy
+> as of the move. If the two ever differ, the EvidenceBasedDB copy wins.
+
 ## Status
 
 **ACCEPTED 2026-09-14** by the team lead.

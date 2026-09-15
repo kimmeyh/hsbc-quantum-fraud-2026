@@ -31,45 +31,57 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 
 ## Last Completed Sprint
 
-**Sprint 14: Make the Record Durable** (Sep 12-14, 2026; PR #94 to develop).
-Delivered **F68-F72** plus the four carried tooling cards **F48, F65, F66, F67**,
-and the Evidence Based DB design that followed them. Zero metered seconds.
+**Sprint 14: Make the Record Durable** (Sep 12-14, 2026; PR #94 to develop, PR
+#95 to main). Delivered **F68-F72** plus the four carried tooling cards **F48,
+F65, F66, F67**, and the Evidence Based DB design that followed them. Zero
+metered seconds.
 
-Test counts are deliberately NOT restated here. `README.md` was rewritten in
-this same sprint to stop doing exactly that, with the reason given in its own
-words: a paragraph "written with one set of numbers and was wrong within the
-same sprint". This document then restated counts anyway and they were wrong
-within the same PR -- an adversarial review found the fresh-clone figure stale
-and the local figure matching no reproducible measurement. Run the suite; it
-reports its own counts.
-**The finding that reordered the sprint**: BOTH Edit-matcher hooks had NEVER RUN.
-`.claude/settings.json` registered them with a single backslash before `block-`,
-which JSON parses as U+0008, so the path resolved to a file that does not exist
-and Claude Code skipped it silently -- since the commit that created them. The
-Sprint 13 retrospective had recorded one of them as working. Every
-submission-document edit that sprint was unguarded; the process held because the
-team lead approved each change in conversation, not because anything enforced it.
-**Every task found something its card did not anticipate.** `requirements-lock.txt`
-was UNINSTALLABLE -- a `python==3.12.10` line made pip abort before installing
-anything, so the documented reproduction command failed at step one for every
-reader. A test crashed on a clean checkout where its twenty peers skipped. A dry
-run OVERWROTE the committed b3_hardware.json during verification, and the
-"artifact untouched" check that missed it had run before the background job
-finished: a mistimed verification reads exactly like a passing one.
-**The guard that failed its own test**: `test_changelog_currency.py` was written
+**What this document is, and is not** (team lead, 2026-09-15). The official
+record of a sprint is five files: `SPRINT_n_PLAN.md`, the review/retrospective,
+`SPRINT_n_SUMMARY.md`, `CHANGELOG.md` and `README.md`. This is a PLANNING
+document. Its history section is convenience, not the audit trail, and it
+REFERENCES those five rather than restating their numbers. Where a number does
+appear here it needs to be right once, at backlog refinement, not continuously;
+a stale PR number in a completion stub is not a defect worth a commit. Suite
+counts are never restated anywhere: run the suite.
+
+Why this is written down: a PR review asked for ten deleted completion stubs to
+be restored as "the surviving audit trail". They were not. The summaries are.
+Restoring them would have re-created ten copies of numbers owned elsewhere.
+
+**The finding that reordered the sprint**: BOTH Edit-matcher hooks had NEVER
+RUN. A single backslash before `block-` in `.claude/settings.json` is a JSON
+backspace escape, so the path resolved to a file that does not exist and Claude
+Code skipped it silently, since the commit that created them. The Sprint 13
+retrospective had recorded one of them as working. Every submission-document
+edit that sprint was unguarded.
+
+**Every task found something its card did not anticipate.**
+`requirements-lock.txt` was UNINSTALLABLE, so the documented reproduction
+command failed at step one for every reader. A test crashed on a clean checkout
+where twenty peers skipped. A dry run OVERWROTE the committed b3_hardware.json
+during verification, and the check that missed it had run before the background
+job finished: a mistimed verification reads exactly like a passing one.
+
+**The guard that failed its own test**: the CHANGELOG currency guard was written
 with a 14-day threshold and PASSED on the eight-day lapse it existed to catch.
-Caught only by running the injection rather than assuming it.
-**Measured effect for a stranger**: on a fresh public clone the pool-mechanism
-guard now RUNS rather than skipping, so the A20 claim in appendix A.4 is checked
-for anyone who clones. The skip count fell because of it. Exact figures come
-from running the suite on a fresh clone, not from this sentence.
-**The design half**: ADR-0014 (Evidence Based DB) ACCEPTED with early-innovation
-status and a 20-paper checkpoint; ADR-0015 (reference library) Proposed. Four
-team-lead corrections changed the design materially -- agent economics invalidate
-the collector's-fallacy arithmetic, `applicability` collapses into contexts,
-a paper is a SOURCE OF ASSERTIONS rather than a record, and neither ADR is
-written in stone. Primary-source research on Cyc corrected two things this
-project had recorded as fact.
+
+**Two reviews found 20 defects, all addressed.** Copilot's first was LIVE, not
+hypothetical: Windows backslashes in resolved paths meant 0 of 7 hooks resolved
+on POSIX, and CI had been red on four consecutive commits unnoticed. The
+adversarial Claude review found a merge blocker that is the sharpest comment on
+the sprint: the dry-run guard was VACUOUS and its replacement was vacuous too,
+both defeated by the same injection. **A sprint whose theme was eliminating
+guards that cannot fail shipped a flagship guard that could not fail, twice.**
+
+**The design half**: ADR-0014 and ADR-0015 both ACCEPTED with early-innovation
+status and a 20-paper checkpoint; neither authorises implementation. Four
+team-lead corrections changed the design materially -- the scope is a domain
+knowledge base rather than one project's glossary, agent economics invalidate
+the collector's-fallacy arithmetic, `applicability` collapses into contexts, and
+a paper is a SOURCE OF ASSERTIONS rather than a record. Primary-source research
+corrected two things this project had recorded as fact about Cyc.
+
 Retro: docs/sprints/SPRINT_14_RETROSPECTIVE.md (Very Good across all rated
 categories; all six improvements applied).
 
@@ -87,6 +99,7 @@ categories; all six improvements applied).
 | 11 | Sep 9-10 | [DONE] **F41** (A20, mechanism corrected), **F42** (+0.0319 decomposed: the gain is class weighting, not diversity), **F43**, **F44**, **F45**, **F35**, plus **F46** (A21, ceiling LIFTED) and **F47** added mid-sprint; 15 review findings addressed | F37 and the fresh-eyes review deferred to 12 |
 | 12 | Sep 10-12 | [DONE] **F2b B2 and B3** on Dirac-3 (23 fits, 968 metered s), **F37**, **F38**, and **F49-F63** from three external reviews. F10 NOT reached | Evidence freeze held; F10 carries to Finalize |
 | 13 | Sep 12 | [DONE] **F10**: evidence walk, requirements-matrix walk, confidentiality scan, final render, and the SUBMISSION -- filed 2026-09-12, three days early. F64 selected then withdrawn | **SUBMITTED**; 9 defects found and corrected |
+| 14 | Sep 12-14 | [DONE] **F68-F72** plus **F48, F65, F66, F67**; two ADRs accepted for the Evidence Based DB. Two dead hooks found and fixed | **20 review findings**, all addressed; 2 vacuous guards caught by review |
 
 **THE PHASE 1 ROADMAP IS COMPLETE (2026-09-12).** Every row above is [DONE] and
 the submission is filed. The table described a run to a deadline; that deadline
@@ -155,56 +168,16 @@ Phase 2.
 
 (F22 CVQBoost proxy tuning and F2 hardware blocks B1+G0b: COMPLETED in Sprint 4, merged via PR #21; history in SPRINT_4_SUMMARY.md. F21 baseline research and F7 results memo likewise complete. Removed from candidates per convention. F2's remaining blocks B2/B3/B4/B5 continue as F2b below, gated on the QCi grant.)
 
-**F68. Freeze the submitted artifacts the way the preregistration is frozen (~2h) Priority 1 -- SPRINT 14, FIRST**
-- Phase: Finalize / governance (team lead, 2026-09-12)
-- Platform: `.claude/hooks`, `.claude/settings.json`, `README.md`
-- The three submission documents were JUDGED as filed on 2026-09-12. They are now a record, not a draft, and should be protected the way `PREREGISTRATION.md` is
-- **A DEFECT FOUND WHILE PLANNING THIS CARD, and it is why the card goes first.** Both Edit-matcher hooks -- `block-unapproved-submission-edit.ps1` and `block-reactive-amendment.ps1` -- have NEVER RUN. `.claude/settings.json` registers them as `...\\hooks\block-...`, and the single backslash before `b` is a JSON backspace escape, so the path resolves to `hooks\x08lock-...` which does not exist. Claude Code skips a hook whose file is absent, silently. Broken since commit `7a57065`, the commit that created them
-- Consequence, stated plainly: the Sprint 13 retrospective recorded "the Class 4 hook worked exactly as designed". That was FALSE. Every submission-document edit in Sprint 13 was unguarded. The process held because the team lead approved each change in conversation, not because anything enforced it
-- This is F48's defect class -- a silent escape corruption -- in the file that registers the guard against it
-- Scope: (1) fix both registrations and prove they fire by injection; (2) add a test asserting every registered hook path exists on disk and contains no control characters, so the class cannot return silently; (3) extend the submission-edit hook to cover history rewrites and tag moves affecting `prereg-freeze` and the submission commit; (4) document in the README how to find, fork and clone the repository exactly as submitted
-- Acceptance: both hooks demonstrably block, verified by injection; a test fails if any registered hook path is unresolvable; README carries the as-submitted retrieval instructions
-- Depends on: nothing
+(F68 freeze the submitted artifacts: COMPLETED in Sprint 14, merged via PR #94.
+Both Edit-matcher hooks had never run; fixed, injection-proven, and guarded by
+test_hook_registration.py. Removed from candidates per convention.)
 
-**F69. README rebuilt for a public repository (~2h) Priority 2 -- SPRINT 14**
-- Phase: Finalize / documentation (team lead, 2026-09-12)
-- Platform: `README.md`
-- The repository has been public since 2026-09-11 and the README still reads as a private working note: it points at a `paper/` path that does not exist, and its "Immediate to-do" asks for the challenge PDFs that were staged weeks ago
-- Required sections: where to find the key summary documents; a HOW TO REPRODUCE section (clone, environment setup, virtual environment, how to run one quick test, how to run each major test with its caveats -- notably that the pool-dependent tests need data that is not redistributed); and the as-submitted retrieval instructions from F68
-- Style: standard open-source README conventions adapted to an evidence repository rather than a library -- what this is, what was submitted, how to verify a claim, how to reproduce, what is deliberately absent and why
-- **The reproduce section must be TESTED by following it, not written from memory.** Appendix C claims every figure regenerates from this repository; a README that does not actually work makes that claim false for the first reader who tries
-- Acceptance: a reader with no prior context can clone, set up, and run a test from the README alone
-- Depends on: F68 for the as-submitted section
+(F69 README rebuilt for a public repository: COMPLETED in Sprint 14. Executing it
+found an uninstallable lock file and a test that crashed where its peers skipped.
+Removed from candidates per convention.)
 
-**F70. CHANGELOG backfilled and wired into the close-out (~1.5h) Priority 3 -- SPRINT 14**
-- Phase: Finalize / process (team lead, 2026-09-12)
-- Platform: `CHANGELOG.md`, `docs/SPRINT_EXECUTION_WORKFLOW.md`
-- **MEASURED 2026-09-12: the CHANGELOG stops at 2026-09-04.** Eight days are missing (Sep 5 to 12), covering Sprints 7 through 13 -- the entire hardware campaign, all three external reviews, the page-limit work, the public-repository flip and the submission itself
-- Backfill from what can be recovered: git history, the sprint summaries, the amendment log and the merged PRs. Where a day cannot be reconstructed with confidence, say so rather than inventing it
-- **The process half matters more than the backfill.** Add the CHANGELOG update to the Phase 8 close-out, positioned after the PR merges and BEFORE backlog refinement, so the gap cannot silently reopen
-- Acceptance: every day with commits from 2026-09-05 onward has an entry or an explicit note that it could not be reconstructed; the workflow names the step and its position
-- Depends on: nothing
-
-**F71. CHECKLIST restructured into three phases (~1.5h) Priority 4 -- SPRINT 14**
-- Phase: Finalize / process (team lead, 2026-09-12)
-- Platform: `CHECKLIST-Phase1.md`, `CHECKLIST-Phase2-pre.md`, `CHECKLIST-Phase2.md`
-- The checklist is titled "Submission-Ready by Sep 8, 2026" and still carries 18 unchecked boxes against work that is finished or abandoned. It describes a deadline that has passed
-- Restructure into three sections in this order: (1) PRE-PHASE 2, the live list covering the wait from 2026-09-12 to finalist notification in mid-November; (2) PHASE 2, populated from the proposal's own six-experiment programme and section 3 resourcing, to be filled out properly if selected; (3) CHALLENGE SUBMISSION, the completed Phase 1 list, corrected to reflect what actually happened and marked done
-- The correction pass on section 3 is real work: items were added, dropped and re-scoped across thirteen sprints, and the checklist tracked none of it
-- Acceptance: the first section is actionable today; the third reflects actuals rather than the original plan
-- Depends on: nothing
-
-**F72. Reference-paper library with retrieval, outside this repository (~4h investigation + design) Priority 5 -- SPRINT 14 (design only)**
-- Phase: Phase 2 preparation / tooling (team lead, 2026-09-12)
-- Platform: TBD, a separate repository
-- The team lead wants deep-dive summaries of QML, quantum-computing and classical-ML papers -- analysed for applicability to Dirac-3, to gate-based work via Braket and Classiq, and to non-quantum tensor methods -- stored OUTSIDE this repository but referenceable FROM it, and searchable in a RAG-like way for future use
-- **This card is investigation and design, not a build.** Deliverable is a proposal: where the library lives, what a paper record holds (citation, claim extracted, applicability verdict, confidence, link to any local artifact), how retrieval works, and how this repository cites into it without depending on it
-- Design constraint that makes this non-trivial: a reference cited from a public evidence repository must resolve for a reader who does not have the other repository. Either the library is public too, or citations carry enough inline context to stand alone
-- **Overlaps F39 deliberately.** Both are "structured records with provenance and confidence, retrievable, maintained outside prose". They should share a storage decision rather than making two, and F39 runs first because it has the concrete use case
-- Acceptance: a written proposal the team lead can approve or reject, naming the storage tool and the maintenance model
-- **DONE 2026-09-14: ADR-0015 ACCEPTED.** Restructured in review: a paper is a SOURCE OF ASSERTIONS rather than a record, tiers mean adjudication depth, certainty is GRADE-derived with named reasons, and applicability points at ADR-0014 contexts. Building is a separate card
-- Depends on: F39's storage decision
-
+(F70 CHANGELOG backfilled and wired into the close-out: COMPLETED in Sprint 14.
+Workflow step 8.1.1 now runs before backlog refinement. Removed per convention.)
 
 **F73. The submission explained at an 8th-grade level (~6-10h) Priority 1 -- NEXT SPRINT**
 - Phase: Post-submission / communication (team lead, Sprint 14 retrospective 2026-09-14)
@@ -251,14 +224,26 @@ Phase 2.
 - **The billing rule is now validated far outside its anchors.** B2's first fit at 833 variables, degree 3 cost 91 metered seconds where the grid assumed ~40. `ceil(sum(runtime))` predicted it exactly (runtime sum 90.152 s, balance 2929 -> 2838). Per-sample cost 11.27 s against B3's ~0.6 s, an **18.8x** step. Use measured per-sample cost, not the original grid, for any B4 estimate
 
 
-**F65. Per-fit artifact write in the hardware runner (~45m) Priority 11**
-- Phase: Experiments / tooling (lifted out of the F2b card in the Sprint 12 close-out sweep, 2026-09-11, where it had no F# of its own)
-- Platform: `experiments/src/run_hardware.py`
-- `run_hardware.py` writes its block artifact only at BLOCK completion, so a process that dies after a billed call leaves no `bN_hardware.json` even though the money is spent
-- **Observed in Sprint 12**: the first B2 fit did exactly that (WSL teardown on parent-shell exit, no traceback). Nothing was lost, because the raw response, the predictions `.npz` and a full `results.json` row with `metered_seconds: 91.0` had all persisted first. That was lucky, not structural
-- The fix is to write or append the block artifact after each fit rather than at the end, so a dead process leaves a partial artifact instead of none
-- Value: it prevents PAID evidence from being unrecoverable. At 91 metered seconds per B2-class fit, one lost fit is real money against a finite allocation
-- Depends on: nothing
+(F65 per-fit artifact write: COMPLETED in Sprint 14. Also fixed a dry run that
+overwrote committed evidence. Removed from candidates per convention.)
+
+**F77. Build the Evidence Based DB: repository, schema, and the first 20 papers (~2-3 days) Priority 2**
+- Phase: Evidence Based DB / build (gap found in the Sprint 14 close-out sweep, 2026-09-14)
+- Platform: a NEW private repository, `EvidenceBasedDB`
+- **MOTIVATING CASE ADDED 2026-09-12 (Sprint 13 evidence walk).** The strongest evidence yet for this card. Appendix A.5 quoted the IEEE matched-feature control as falling "from 0.5739 to 0.0734 ... fold 0". Both numbers are real and both are in the artifacts -- but 0.5739 is the THREE-FOLD MEAN from `ieee_classical.json` while the control is fold-0 to fold-0 and its baseline is 0.5424 in `ieee_cvqboost.json`. A global value-set lookup accepts it, because the number exists somewhere. `test_document_figures_resolve.py` passed it, and its own docstring predicts exactly this: "It does NOT catch a figure that exists in the store but is quoted in the wrong place." Only per-claim provenance -- this sentence cites THAT row -- closes it, which is what this card builds. F39 designed it (ADR-0014); F77 builds it
+- **REPOSITORY CREATED 2026-09-14**: `github.com/kimmeyh/EvidenceBasedDB`, PRIVATE, with `main` and `develop`. Seeded with the sprint methodology, five hooks, three practice ADRs, and ADR-0014/0015 MOVED there as 0004/0005 since they are that repository's design. Five inherited guards pass there. No PDFs committed and none ever will be. Its Sprint 1 plan is written and mirrors this card
+- **What remains of F77 here is the TRACKING entry.** The work happens there; this card records that it was authorised and what it must measure
+- **This card existed because nothing else created the thing.** ADR-0014 and ADR-0015 are both ACCEPTED and both say explicitly that they do NOT authorise implementation. F75 actions the 20-paper checkpoint and depends on ~20 papers already being loaded. So the accepted design had no card that builds it, and F75 could never have become actionable
+- Scope: create the private repository; copy the sprint methodology in (process docs, ADRs, testing strategy, CI, the hooks); implement the SQLite store and the committed text export; implement the three record classes plus the paper class; load the seed set
+- **SEED SET STAGED 2026-09-14 by the team lead**, and it is larger and broader than the submission's reference list this card originally assumed. The team lead's local staging directory holds `Papers` (46 items), `Books` (38), `GitHubRepos` (8) and an empty `References`. That directory is a staging area on disk and is deliberately NOT a git repository; the repository itself exists and is named in the bullet above. `EvidenceBasedDB/README.md` carries the two-directory layout and is the one place either path is written down
+- **The PDFs stay where they are and are never committed.** ADR-0015 section 3: records, not papers. Most are not redistributable, and several here are clearly vendor or conference material. The `access` field points at a DOI, an arXiv id, or that local path
+- **The seed set changes the 20-paper checkpoint's meaning.** F75 reviews whether the schema survived contact with ~20 papers. With 46 staged, the first 20 should be chosen for VARIETY rather than convenience -- an arXiv preprint, a journal paper, a vendor white paper, a book chapter, a GitHub repository -- because a schema that only ever saw arXiv preprints has not been tested
+- **`Books` and `GitHubRepos` are not papers and may not fit the paper record.** A book chapter has no abstract and a repository has no claim in the same sense. Whether they need their own record class, or whether the paper class generalises, is a real question for the 20-paper checkpoint and should not be settled in advance
+- **The measurement that matters more than the code**: minutes of team-lead adjudication per accepted record. ADR-0014 names it as the number the whole design is constrained by, and it is unknown. At five minutes a record the domain ambition needs rethinking; at thirty seconds it is safe. Record it per record from the first one, not retrospectively
+- **Deliberately NOT in scope**: inference, the graph store, embeddings. ADR-0014 names the triggers for the last two and ADR-0015 for the third; none has fired. Lenat's footnote 9 is the standing argument against the first
+- Acceptance: the repository exists with the methodology copied in; the four record classes are implemented and exported; the seed set is loaded; adjudication time is recorded per record; F75's checkpoint is actionable
+- Depends on: ADR-0014 and ADR-0015 (both ACCEPTED). Gates F75 and F76
+- **F76 is cross-repository by construction** and this is worth naming now: it guards the vocabulary shared between the two ADRs, and the ADRs live in THIS repository while the test would run in EvidenceBasedDB. Either the test reads a published export of the context list, or the ADRs move. Do not discover this during F76
 
 
 **F75. Action the 20-paper ADR checkpoint (~2h) Priority 6**
@@ -267,25 +252,19 @@ Phase 2.
 - Both ADRs promise a review at approximately 20 imported papers, with six named questions and the bad answer stated for each. **A promise in a document is exactly what this project keeps having to replace with a mechanism**, and an unactioned checkpoint is a note nobody reads
 - The question that matters most is the measured one: how long team-lead adjudication takes per paper. At five minutes, 2,000 papers is 160 hours and the design needs rethinking; at thirty seconds the ambition is safe. Everything else in the checkpoint is schema tuning
 - Revisions are recorded as dated amendments at the bottom of each ADR, never as edits in place
-- Depends on: EvidenceBasedDB existing and holding ~20 papers
+- Depends on: **F77** (which builds it) and ~20 papers loaded
 
 **F76. Guard the shared vocabulary between ADR-0014 and ADR-0015 (~1h) Priority 7**
 - Phase: Evidence Based DB / tooling (Sprint 14 retrospective improvement 6, 2026-09-14)
 - Platform: cross-repository, `EvidenceBasedDB`
 - ADR-0015's `applicability` field now points at ADR-0014's context list rather than carrying its own enumeration. That was the right call -- two lists naming the same things is how B1's variable count came to read 78 in three documents and 91 in two -- **but nothing enforces that they agree**
 - A test that fails when a record names a context the schema does not define, and when the ADRs' stated context lists diverge from the database's
-- Depends on: EvidenceBasedDB existing
+- Depends on: **F77** (which builds it)
 
 
-**F67. Guard the pool-mechanism claim on a fresh clone (~1h) Priority 12**
-- Phase: Experiments / tooling (Sprint 13 retrospective improvement 5, 2026-09-12)
-- Platform: `experiments/src/test_pool_mechanism.py`, `experiments/results/pools/`
-- `test_pool_mechanism.py` is the suite's ONLY skip. It skips because the pool `.npz` files are gitignored, so on a fresh clone it silently does not run
-- What that leaves unguarded: the appendix A.4 claim that **80 to 84 of the 91 learners reproduce the training labels exactly and zero predict the negative class everywhere** (A20). The claim is TRUE -- it was recomputed from the raw pools during the Sprint 13 evidence walk, every seed landing in 80-84 -- but nothing in CI would notice if it stopped being true
-- The decision this needs, which is why it is an hour and not ten minutes: either the pools belong in the repository (they are large, and Appendix C already promises the figures REGENERATE rather than ship), or a small committed fixture stands in for them. Those are different answers with different reproducibility stories
-- Value: a skipped test reads as a passing suite. This is the one claim in the submission whose guard is present but inert
-- Depends on: a team-lead decision on pools-versus-fixture
-
+(F67 pool-mechanism guard: COMPLETED in Sprint 14. Runs on a fresh clone against a
+committed 0.83 MB int8 fixture, chosen from three measured options. Removed from
+candidates per convention.)
 
 **F36. Pandoc Lua filter: floating tables for the submission PDFs -- CLOSED 2026-09-07, FAILED**
 - **VERDICT: the filter works; the problem it was built for did not exist.** The premise (preserved in the review doc, because it is wrong in an instructive way) rested on a CHARACTER-COUNT page-fill measurement, and a table-heavy page always looks short by that measure. Measured as vertical extent, every page cited below was already full: 724 / 680 / 680 / 682pt of a 792pt page, zero free space anywhere. The appendix was over its limit because it had too much content
@@ -302,32 +281,10 @@ docs/reviews/f36-float-tables-outcome.md.
 (F38 appendix to 3 pages AND proposal to 6: COMPLETED in Sprint 12, merged via PR #75.
 proposal 6 of 6, appendix 3 of 3, team profile 1 of 1. Removed from candidates per convention.)
 
-**F39. Evidence Based Database: investigation, design and ADR (~1-2 days) Priority 6 -- SPRINT 14 (design only, NOT a build)**
-- **RENAMED 2026-09-13 (team lead): the card and the artifact are both the Evidence Based Database.** It was "fact database" from Sprint 8. The rename is not cosmetic: 0.7688 sat in four documents and was not a fact, and the unconverged solver produced figures that were not facts, so a store called a FACT database asserts the property it exists to check. Repository `EvidenceBasedDB`, private for now. Quotes below are left verbatim as they were written
-- Phase: Post-submission / Phase 2 tooling (team lead, Sprint 8 retrospective 2026-09-07: "We need to create a 'fact database' ... It states facts that we can confirm with confidence intervals between 0.0% and 99.9%. There are likely over 1,000 and this makes it difficult to keep track of ... if we need to update the baseline facts it should be here and then all other sources use this as the basis")
-- Platform: tooling
-- **The problem it solves, with this sprint's evidence**: the same fact is currently restated in many documents with no link between the copies. Sprint 8 alone found the QCi letter asserting "twelve amendments" when the enclosed preregistration had seventeen; A15 corrected a k=6 AUPRC published as 0.7688 when the true value was 0.7629, a figure that had been carried from a five-seed run into a ten-seed writeup; and A17 forced recomputation of every A11/A13 figure across four documents. Each was caught by a human reading, or by a one-off script written for that one check
-- **Scale**: the team lead estimates over 1,000 asserted facts. The current control is `score_gates.py` regenerating gate figures plus ad-hoc verification scripts; neither covers prose assertions, and nothing covers cross-document consistency
-- **Design direction (team lead: research Cycorp/cyc.com, functionally representative, NOT a LISP reimplementation)**: each fact carries an identifier, a value, a provenance pointer to the results row or source that establishes it, an evidence tag ([HW]/[SIM]/[PROJ]), and a CONFIDENCE between 0.0% and 99.9%. Documents reference facts by identifier rather than restating values, and a build step resolves references and fails on an unresolved or stale one. The confidence field is the part worth taking from Cyc: it forces "how sure are we" to be recorded next to the claim rather than carried in someone's head
-- **Why confidence intervals matter here specifically**: this project already distinguishes measured from projected via evidence tags, but not strong-measured from weak-measured. The score-degeneracy caveat, the single-seed spot checks, and the adversarial control that never converged are all facts we assert with genuinely different confidence, and today that distinction lives only in prose
-- **Explicitly held until after submission** (team lead: "We may hold this until after submission"). It is infrastructure, and eight days out the risk of touching every document exceeds the benefit
-- Acceptance: every numeric assertion in proposal, appendix and the QCi letter resolves to a fact record; the build fails on a stale reference; and a deliberate edit to one fact value propagates to every document that cites it
-- **RESCOPED 2026-09-12 (team lead). This card is now PRE-BUILD INVESTIGATION AND DESIGN, ending in an ADR, not an implementation.** Deep-dive the problem and propose: which storage tool holds the database, how records are maintained and by whom, how documents cite into it, and how the build validates references. The hold condition ("until after submission") expired when the submission was filed
-- **It may live in its OWN REPOSITORY** and be consumed by this one. This project becomes its first use case rather than its owner. That decision belongs in the ADR, and it should be made together with F72's storage decision rather than separately -- both are "structured records with provenance and confidence, retrievable, maintained outside prose"
-- **SCOPE ADDED 2026-09-12 (team lead): the database covers vocabulary, not only figures.** Two record classes beyond the numeric assertions already described:
-  - **Every acronym used in the repository** (CPU, KKT, AUPRC, MDE, BCa, QUBO, EQC, ...) with its expansion (Central Processing Unit, Karush-Kuhn-Tucker) and a description written at an **8th-grade math, science and English level**. Where a visual helps, a link to an image or short animation
-  - **Every technical word and phrase in the proposal, appendix and repository** (machine learning, intellectual property, test-fold prevalence, metered fits, Spearman correlation, BCa intervals, Hamiltonian, KKT residual, ...) with a 1-3 sentence description at the same reading level, and a visual link where one helps
-- **Cyc-derived scoring fields are carried on every record type**, including the ones not yet used, so the schema does not need widening later. The confidence field (0.0% to 99.9%) is the part worth taking from Cyc: it forces "how sure are we" to sit next to the claim
-- **Why the glossary half is not decoration**: the submission is read by judges who are not all specialists, and the Guidelines say explicitly that a non-specialist reviewer must be able to follow the technical approach. A maintained glossary at a defined reading level is the mechanism for that, and it is reusable in Phase 2 where the audience widens again
-- Acceptance for THIS card: an ADR the team lead can approve or reject, naming the storage tool, the record schema for all three classes (assertions, acronyms, terms), the maintenance model, the repository boundary, and how this project cites into it. No implementation
-- **DONE 2026-09-13: ADR-0014 ACCEPTED.** The design card is complete. Scope was corrected during the review -- the HSBC glossary is use case ONE, not the boundary; the target is a domain knowledge base over QML, ML, QC and the major QC platforms. Building is a SEPARATE card and is not authorised by the ADR
-- Depends on: nothing. Its storage decision gates F72
-
-(F40 segment non-public material: COMPLETED in Sprint 10, merged via PR #58 (main PR #62); history in SPRINT_10_SUMMARY.md. Removed from candidates per convention.)
-
-(F37 make the repository public: COMPLETED in Sprint 12, merged via PR #75. Verified
-anonymously -- HTTP 200, freeze commit 95751b9 resolves, `prereg-freeze` tag intact.
-Removed from candidates per convention.)
+(F39 Evidence Based Database investigation and design: COMPLETED in Sprint 14 as
+ADR-0014, ACCEPTED with early-innovation status and a 20-paper checkpoint.
+Building is a SEPARATE card and is not authorised by the ADR. Removed per
+convention; F75 actions the checkpoint.)
 
 ### Paper (Stages 4-6)
 
@@ -335,37 +292,17 @@ Removed from candidates per convention.)
 
 (F35 interpretation-layer tests, F41 mechanism correction (A20), F42 review findings, F43 IEEE-CIS AUC-ROC, F44 figure resolution, F45 evidence guard, F46 QCi grant and ceiling probe (A21), F47 metered-call wrapper: ALL COMPLETED in Sprint 11, merged via PR #66 (main PR #70); history in SPRINT_11_SUMMARY.md. Removed from candidates per convention.)
 
-- **MOTIVATING CASE ADDED 2026-09-12 (Sprint 13 evidence walk).** The strongest evidence yet for this card. Appendix A.5 quoted the IEEE matched-feature control as falling "from 0.5739 to 0.0734 ... fold 0". Both numbers are real and both are in the artifacts -- but 0.5739 is the THREE-FOLD MEAN from `ieee_classical.json` while the control is fold-0 to fold-0 and its baseline is 0.5424 in `ieee_cvqboost.json`. A global value-set lookup accepts it, because the number exists somewhere. `test_document_figures_resolve.py` passed it, and its own docstring predicts exactly this: "It does NOT catch a figure that exists in the store but is quoted in the wrong place." Only per-claim provenance -- this sentence cites THAT row -- closes it, which is what F39 is
-**F66. Record the Copilot reviewer-request procedure in the workflow (~15m) Priority 10**
-- Phase: Finalize / process (Sprint 12 retrospective category 13, 2026-09-11)
-- Platform: `docs/SPRINT_EXECUTION_WORKFLOW.md`
-- Requesting a Copilot review needs the actor `copilot-pull-request-reviewer[bot]` (node id `BOT_kgDOCnlnWA`). NOT `Copilot`, and NOT `copilot-swe-agent`. The wrong name fails SILENTLY
-- Compounding it: the REST `requested_reviewers` field returns only users, never bots, so a SUCCESSFUL bot request reads back as an empty list. There is no way to confirm from that field that the request landed
-- **Observed in Sprint 12**: PR #73 never received a review for this reason and nobody noticed until PR #75 was being set up
-- A cross-repository skill already documents the three silent-failure modes and the working GraphQL procedure. This card is the in-repo pointer to it, so the workflow document does not depend on the skill being loaded
-- Value: it prevents a review step from silently not happening. The failure is invisible by construction, which is what makes it worth writing down
-- Depends on: nothing
+(F66 Copilot reviewer-request procedure: COMPLETED in Sprint 14, and CORRECTED
+again during it: the working call is GraphQL requestReviews with botIds, not
+userIds, and REST returns HTTP 200 while attaching nothing. Removed per convention.)
 
+(F48 shell-metacharacter hook: COMPLETED in Sprint 14 after three iterations, each
+correction driven by a false positive against a real command. Removed from
+candidates per convention.)
 
-**F48. Extend the escape hook to shell metacharacters (~45m) Priority 9**
-- Phase: Finalize / tooling (Sprint 11 retrospective improvement 4, backlogged 2026-09-09)
-- Platform: .claude/hooks
-- `block-unraw-escape.ps1` catches Windows path escapes in non-raw PYTHON strings and has fired correctly several times. It does not catch SHELL metacharacters: a backtick or `$(...)` inside a quoted string passed to Bash is expanded by bash before Python ever sees it
-- **Observed in Sprint 11**: backticks inside a Python string in a Bash command were expanded as command substitution, executing a source file as shell and silently deleting the backticked filenames from a master-plan line. The edit "succeeded" and the damage was only visible on inspection
-- The fix is the same shape as the existing hook: detect backticks or `$(` inside a quoted span destined for Bash, and require the single-quoted heredoc form that suppresses expansion
-- Lower priority than the submission blockers, and real: the failure mode is SILENT corruption of a file that was edited successfully, which is worse than a crash
-- Depends on: nothing
-
-(F49 solver optimality certificate, F50 convexity withdrawal, F51 protocol-history
-deviations, F52 document contradictions, F53 prior-work interpretations, F54 provenance,
-F55 the two missing rubric sections, F56 framing, F57 the 200:1 resolution argument, F58-F63
-the remaining review findings: ALL COMPLETED in Sprint 12, merged via PR #75 (main PR #76);
-history in SPRINT_12_SUMMARY.md. Removed from candidates per convention.)
-
-(F10 verification, confidentiality scan, compliance walk and SUBMISSION: COMPLETED in
-Sprint 13, merged via PR #82. The submission was filed 2026-09-12, three days before
-the deadline; receipt and the four now-answered A5 unknowns in
-docs/submission/SUBMISSION_RECEIPT.md. Removed from candidates per convention.)
+(F71 CHECKLIST restructure and F72 reference-paper library: COMPLETED in Sprint 14.
+See SPRINT_14_SUMMARY.md and CHANGELOG.md. F72's design is ADR-0015, whose live copy
+moved to EvidenceBasedDB; its build is F77. Removed from candidates per convention.)
 
 ### External (team-lead-owned, parallel)
 
@@ -379,8 +316,8 @@ docs/submission/SUBMISSION_RECEIPT.md. Removed from candidates per convention.)
 item below was held for one reason -- it must not compete with the submission --
 and that reason is gone. They are NOT automatically live: "no longer blocked" is
 not "selected", and the team lead sets priority. But they should be read as
-candidates at the next refinement rather than skipped as held, and the same
-applies to F39, whose card still says "HOLD until after submission".
+candidates at the next refinement rather than skipped as held. (F39 was on this list and is
+now done: ADR-0014 was accepted in Sprint 14 and its build is F77.)
 
 Flagged rather than re-prioritised: re-scoring nine cards is a scope decision,
 not a sweep correction.
