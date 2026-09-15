@@ -144,7 +144,7 @@ ago. Everything Cyc does is done by 1,100 specialised shortcuts.
 | | |
 |---|---|
 | Tasks | 10 of 10 |
-| Commits | 34 |
+| Commits | 33 |
 | Review findings | 20 (Copilot 3, Claude 17), all addressed |
 | Metered seconds | 0; allocation unchanged at 1,961 of 3,000 |
 | ADRs | 0014 and 0015, both Accepted, early innovation |

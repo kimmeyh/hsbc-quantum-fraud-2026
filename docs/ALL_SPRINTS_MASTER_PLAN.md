@@ -36,9 +36,18 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 F65, F66, F67**, and the Evidence Based DB design that followed them. Zero
 metered seconds.
 
-Counts are deliberately not restated here. `README.md` was rewritten in this
-sprint to stop restating them, and this document did it anyway and was wrong
-within the same PR. Run the suite.
+**What this document is, and is not** (team lead, 2026-09-15). The official
+record of a sprint is five files: `SPRINT_n_PLAN.md`, the review/retrospective,
+`SPRINT_n_SUMMARY.md`, `CHANGELOG.md` and `README.md`. This is a PLANNING
+document. Its history section is convenience, not the audit trail, and it
+REFERENCES those five rather than restating their numbers. Where a number does
+appear here it needs to be right once, at backlog refinement, not continuously;
+a stale PR number in a completion stub is not a defect worth a commit. Suite
+counts are never restated anywhere: run the suite.
+
+Why this is written down: a PR review asked for ten deleted completion stubs to
+be restored as "the surviving audit trail". They were not. The summaries are.
+Restoring them would have re-created ten copies of numbers owned elsewhere.
 
 **The finding that reordered the sprint**: BOTH Edit-matcher hooks had NEVER
 RUN. A single backslash before `block-` in `.claude/settings.json` is a JSON
@@ -221,11 +230,12 @@ overwrote committed evidence. Removed from candidates per convention.)
 **F77. Build the Evidence Based DB: repository, schema, and the first 20 papers (~2-3 days) Priority 2**
 - Phase: Evidence Based DB / build (gap found in the Sprint 14 close-out sweep, 2026-09-14)
 - Platform: a NEW private repository, `EvidenceBasedDB`
-- **REPOSITORY CREATED 2026-09-14**: `github.com/kimmeyh/EvidenceBasedDB`, PRIVATE, with `main` and `develop`. Seeded with the sprint methodology, five hooks, three practice ADRs, and ADR-0014/0015 MOVED there as 0004/0005 since they are that repository's design. Five inherited guards pass (25 passed, 3 skipped). No PDFs committed and none ever will be. Its Sprint 1 plan is written and mirrors this card
+- **MOTIVATING CASE ADDED 2026-09-12 (Sprint 13 evidence walk).** The strongest evidence yet for this card. Appendix A.5 quoted the IEEE matched-feature control as falling "from 0.5739 to 0.0734 ... fold 0". Both numbers are real and both are in the artifacts -- but 0.5739 is the THREE-FOLD MEAN from `ieee_classical.json` while the control is fold-0 to fold-0 and its baseline is 0.5424 in `ieee_cvqboost.json`. A global value-set lookup accepts it, because the number exists somewhere. `test_document_figures_resolve.py` passed it, and its own docstring predicts exactly this: "It does NOT catch a figure that exists in the store but is quoted in the wrong place." Only per-claim provenance -- this sentence cites THAT row -- closes it, which is what this card builds. F39 designed it (ADR-0014); F77 builds it
+- **REPOSITORY CREATED 2026-09-14**: `github.com/kimmeyh/EvidenceBasedDB`, PRIVATE, with `main` and `develop`. Seeded with the sprint methodology, five hooks, three practice ADRs, and ADR-0014/0015 MOVED there as 0004/0005 since they are that repository's design. Five inherited guards pass there. No PDFs committed and none ever will be. Its Sprint 1 plan is written and mirrors this card
 - **What remains of F77 here is the TRACKING entry.** The work happens there; this card records that it was authorised and what it must measure
 - **This card existed because nothing else created the thing.** ADR-0014 and ADR-0015 are both ACCEPTED and both say explicitly that they do NOT authorise implementation. F75 actions the 20-paper checkpoint and depends on ~20 papers already being loaded. So the accepted design had no card that builds it, and F75 could never have become actionable
 - Scope: create the private repository; copy the sprint methodology in (process docs, ADRs, testing strategy, CI, the hooks); implement the SQLite store and the committed text export; implement the three record classes plus the paper class; load the seed set
-- **SEED SET STAGED 2026-09-14 by the team lead**, and it is larger and broader than the submission's reference list this card originally assumed. `D:\Data\Harold\EvidenceBasedDB\` holds `Papers` (46 items), `Books` (38), `GitHubRepos` (8) and an empty `References`. The repository itself is NOT yet created -- the directory is a staging area on disk, not a git repository
+- **SEED SET STAGED 2026-09-14 by the team lead**, and it is larger and broader than the submission's reference list this card originally assumed. The team lead's local staging directory holds `Papers` (46 items), `Books` (38), `GitHubRepos` (8) and an empty `References`. That directory is a staging area on disk and is deliberately NOT a git repository; the repository itself exists and is named in the bullet above. `EvidenceBasedDB/README.md` carries the two-directory layout and is the one place either path is written down
 - **The PDFs stay where they are and are never committed.** ADR-0015 section 3: records, not papers. Most are not redistributable, and several here are clearly vendor or conference material. The `access` field points at a DOI, an arXiv id, or that local path
 - **The seed set changes the 20-paper checkpoint's meaning.** F75 reviews whether the schema survived contact with ~20 papers. With 46 staged, the first 20 should be chosen for VARIETY rather than convenience -- an arXiv preprint, a journal paper, a vendor white paper, a book chapter, a GitHub repository -- because a schema that only ever saw arXiv preprints has not been tested
 - **`Books` and `GitHubRepos` are not papers and may not fit the paper record.** A book chapter has no abstract and a repository has no claim in the same sense. Whether they need their own record class, or whether the paper class generalises, is a real question for the 20-paper checkpoint and should not be settled in advance
@@ -282,7 +292,6 @@ convention; F75 actions the checkpoint.)
 
 (F35 interpretation-layer tests, F41 mechanism correction (A20), F42 review findings, F43 IEEE-CIS AUC-ROC, F44 figure resolution, F45 evidence guard, F46 QCi grant and ceiling probe (A21), F47 metered-call wrapper: ALL COMPLETED in Sprint 11, merged via PR #66 (main PR #70); history in SPRINT_11_SUMMARY.md. Removed from candidates per convention.)
 
-- **MOTIVATING CASE ADDED 2026-09-12 (Sprint 13 evidence walk).** The strongest evidence yet for this card. Appendix A.5 quoted the IEEE matched-feature control as falling "from 0.5739 to 0.0734 ... fold 0". Both numbers are real and both are in the artifacts -- but 0.5739 is the THREE-FOLD MEAN from `ieee_classical.json` while the control is fold-0 to fold-0 and its baseline is 0.5424 in `ieee_cvqboost.json`. A global value-set lookup accepts it, because the number exists somewhere. `test_document_figures_resolve.py` passed it, and its own docstring predicts exactly this: "It does NOT catch a figure that exists in the store but is quoted in the wrong place." Only per-claim provenance -- this sentence cites THAT row -- closes it, which is what F39 is
 (F66 Copilot reviewer-request procedure: COMPLETED in Sprint 14, and CORRECTED
 again during it: the working call is GraphQL requestReviews with botIds, not
 userIds, and REST returns HTTP 200 while attaching nothing. Removed per convention.)
@@ -290,6 +299,10 @@ userIds, and REST returns HTTP 200 while attaching nothing. Removed per conventi
 (F48 shell-metacharacter hook: COMPLETED in Sprint 14 after three iterations, each
 correction driven by a false positive against a real command. Removed from
 candidates per convention.)
+
+(F71 CHECKLIST restructure and F72 reference-paper library: COMPLETED in Sprint 14.
+See SPRINT_14_SUMMARY.md and CHANGELOG.md. F72's design is ADR-0015, whose live copy
+moved to EvidenceBasedDB; its build is F77. Removed from candidates per convention.)
 
 ### External (team-lead-owned, parallel)
 
@@ -303,8 +316,8 @@ candidates per convention.)
 item below was held for one reason -- it must not compete with the submission --
 and that reason is gone. They are NOT automatically live: "no longer blocked" is
 not "selected", and the team lead sets priority. But they should be read as
-candidates at the next refinement rather than skipped as held, and the same
-applies to F39, whose card still says "HOLD until after submission".
+candidates at the next refinement rather than skipped as held. (F39 was on this list and is
+now done: ADR-0014 was accepted in Sprint 14 and its build is F77.)
 
 Flagged rather than re-prioritised: re-scoring nine cards is a scope decision,
 not a sweep correction.
