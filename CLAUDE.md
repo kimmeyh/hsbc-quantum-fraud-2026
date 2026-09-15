@@ -19,6 +19,10 @@ The evidence files have their own verification path: `score_gates.py` regenerate
 - Team-lead `0*` working files at repo root: commit with a neutral message, never read.
 - `--no-verify` is banned; the pre-commit confidentiality hook stays active.
 - Every reported number originates in `results.json` with an evidence tag.
+- **This repository's sessions NEVER write to another repository.** Work in
+  `hsbc-quantum-fraud-2026` does not create, edit, commit or push files in
+  `spamfilter-multi` or `EvidenceBasedDB`. Reading them on request is fine.
+  (Team lead, 2026-09-15.)
 
 ## Things Claude Should NOT Do
 
@@ -54,6 +58,16 @@ only in memory.
   the team lead approved the fix believing he was approving the recommendation.
   He later confirmed the correct answer had been "do not change proposal.md" and
   said plainly: "I was just testing you.")
+
+- **Don't write into another repository from this one.** `spamfilter-multi` and
+  `EvidenceBasedDB` are read-only from here, and only when asked. If work in this
+  repository implies a change over there, say so and hand it to a session running
+  in that repository; do not make the edit yourself, however small or obviously
+  correct it looks. (Team lead, 2026-09-15, after a session working this
+  repository's PR review also edited EvidenceBasedDB's guard, ADR, CLAUDE.md and
+  test file, then committed and pushed them. Each change was defensible on its
+  own and the boundary was still wrong: changes arrived in that repository
+  without its own review, tests or sprint record.)
 
 - **Don't touch more than one file or surface on a request without echoing the
   requirement back first.** One sentence: "I understand you want X to happen on
