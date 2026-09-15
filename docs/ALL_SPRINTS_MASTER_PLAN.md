@@ -262,6 +262,29 @@ overwrote committed evidence. Removed from candidates per convention.)
 - Depends on: **F77** (which builds it)
 
 
+**F78. Convert every PowerShell script to Python so the repository is OS agnostic (~8-12h) Priority 8**
+- Phase: Finalize / tooling (team lead, 2026-09-15)
+- Platform: `.claude/hooks` (9 files), `scripts/` (4 files), plus 18 hardcoded interpreter paths across 12 tracked files
+- **`.venv` is generated, so it is not converted -- but it IS recreated per OS, and that is a scope item, not a footnote** (team lead, 2026-09-15, from experience). A Windows venv has `Scripts/activate.ps1` and `Scripts/python.exe`; a Linux one has `bin/activate` and `bin/python`. They are not interchangeable, so anyone moving to WSL rebuilds it. `docs/WINDOWS_POWERSHELL_GUIDE.md` already states the Windows venv is unusable from Linux, so the knowledge exists and the tooling ignores it
+- **What it is**: replace all 13 tracked `.ps1` files with Python that runs unmodified on Windows 11 AND Linux (current WSL is sufficient). Most Python is already portable; the exceptions are real and are the whole point of the card -- path separators, line endings, `%USERPROFILE%` against `$HOME`, executable discovery, and subprocess invocation
+- **Each script must DETERMINE the OS and handle it**, rather than assuming. The team lead's preferred shape: find an existing package that does this, or write one shared cross-OS helper module that every script imports. A per-script `if platform.system()` scattered thirteen times is the outcome to avoid, because it drifts
+- **Measured scope, 2026-09-15**: about 1,260 lines across the 13. Four hooks (`block-unraw-escape`, `block-shell-metachar-expansion`, `block-carry-forward-stash`, `block-branch-from-develop`) contain ZERO OS-specific constructs -- they read stdin and apply regexes -- so they are near-mechanical ports and should go first as the pattern-setters. `scripts/render-pdf.ps1` has 12 and is the hard one; it shells out to pandoc and a PDF engine, whose discovery differs per OS
+- **The registration is as important as the code.** `.claude/settings.json` invokes each hook through `powershell -NoProfile -ExecutionPolicy Bypass -File`. Every entry has to change to a `python` invocation, and that file is exactly where two hooks were silently killed by a `` JSON escape. Rewrite it STRUCTURALLY with `json.dump`, never by hand, and assert afterwards that every registered path resolves and holds no control character
+- **Acceptance is behavioural, not textual**: each converted hook keeps its own test cases and still BLOCKS what it blocked and ALLOWS what it allowed, proven by running the cases through the new hook on both operating systems. A conversion that leaves a guard inert is worse than no conversion, and this repository has shipped inert guards three times
+- **Do not convert the tests' invocation path and the hooks in the same commit.** Convert one hook, prove it fires, then the next; a batch conversion that goes quiet is unfalsifiable after the fact
+- **The hardcoded interpreter is the widest part of the card.** `git grep` finds
+  `.venv\Scripts\python.exe` in 18 places across 12 tracked files: 8 in
+  `experiments/src` docstrings ("Run: ..."), 2 in `scripts/`, 2 in `docs/`
+  including `TESTING_STRATEGY.md` and the PowerShell guide. Every one is a
+  Windows-only instruction a Linux reader cannot follow. These are cheap to fix
+  and easy to miss precisely because most are comments rather than code
+- **The venv bootstrap should be one documented command per OS**, not prose
+  scattered through a guide. Whatever replaces it states how to create the venv
+  and how to invoke the interpreter on each OS, and `README.md` and
+  `TESTING_STRATEGY.md` reference that one place rather than restating a path
+- **Why it is worth doing**: the repository currently cannot run its own guards on Linux. CI runs `ubuntu-latest`, so every hook is Windows-only protection today, and a contributor or agent on Linux gets none of it
+- Depends on: nothing. Best done when no other sprint is touching `.claude/`
+
 (F67 pool-mechanism guard: COMPLETED in Sprint 14. Runs on a fresh clone against a
 committed 0.83 MB int8 fixture, chosen from three measured options. Removed from
 candidates per convention.)

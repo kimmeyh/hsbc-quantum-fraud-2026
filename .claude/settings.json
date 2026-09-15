@@ -52,6 +52,15 @@
             "timeout": 15
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write|NotebookEdit|Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\block-cross-repo-write.ps1\""
+          }
+        ]
       }
     ],
     "Stop": [
