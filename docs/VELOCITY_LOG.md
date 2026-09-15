@@ -2,7 +2,7 @@
 
 **Purpose**: Recorded estimate-vs-actual per task, feeding SPRINT_PLANNING.md estimation (Sprint 2 retro improvement 6). Record at task completion; recompute patterns at retro Category 3.
 **Audience**: Sprint planning sessions.
-**Last Updated**: 2026-09-12
+**Last Updated**: 2026-09-14
 
 | Sprint | Task | Type | Estimate | Actual | Ratio | Note |
 |---|---|---|---|---|---|---|
@@ -33,3 +33,10 @@
 | 13 | Task C confidentiality scan + compliance walk | verify | 30m | ~30m | 1.0 | scripted; 0 HIGH |
 | 13 | Task D final render + page check | build | 20m | ~20m | 1.0 | run 3x in total as findings landed |
 | 13 | UNPLANNED: 6 approved corrections, A32, backout, 2 re-renders | code+docs | 0m | ~60m | n/a | findings-driven; the 30% allowance now exists for this |
+| 14 | F68 freeze artifacts + two dead hooks | tooling | 120m | ~150m | 1.25 | grew: new hook + test class |
+| 14 | F69 README rebuilt, executed on a fresh clone | docs | 120m | ~120m | 1.0 | found 2 defects the working tree hid |
+| 14 | F70 CHANGELOG backfill + workflow step | docs | 90m | ~90m | 1.0 | guard threshold wrong on first write |
+| 14 | F71 CHECKLIST split into three | docs | 90m | ~60m | 0.7 | |
+| 14 | F48, F65, F66, F67 tooling cards | tooling | 165m | ~180m | 1.1 | F48 took three iterations |
+| 14 | F39 + F72 ADRs (design only) | design | 420m | ~600m | 1.4 | four team-lead corrections mid-design |
+| 14 | UNPLANNED: 20 review findings | fix | 0m | ~120m | n/a | 2 vacuous guards; the 30% allowance did not cover it |

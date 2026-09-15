@@ -38,16 +38,23 @@ submitted documents.
       retrieve it as submitted, how to reproduce, what cannot be reproduced
 - [x] **C**: Reproduce steps EXECUTED against a fresh clone, not drafted
 - [x] **C**: CHANGELOG backfilled and wired into the delivery cycle (8.1.1)
-- [ ] **C**: F67 -- the pool-mechanism guard is the suite's only skip and is
-      inert on a fresh clone. Needs a decision: pools in the repository, or a
-      committed fixture?
+- [x] **C**: F67 -- the pool-mechanism guard runs on a fresh clone (Sprint 14).
+      Three storage options were measured rather than argued: full pools
+      2.38 MB, needed arrays 1.42 MB, int8 signs 0.83 MB. The fixture is
+      lossless because every H_tr holds only -1 and +1, asserted at build time
 
 ## Phase 2 preparation (no metered spend, no commitment)
 
-- [ ] **C**: F39 -- fact-database investigation and ADR. Design only, starts
-      off-repository
-- [ ] **C**: F72 -- reference-paper library proposal. Design only, gated on
-      F39's storage decision
+- [x] **C**: F39 -- ADR-0014 written and ACCEPTED (Sprint 14), early-innovation
+      status with a 20-paper checkpoint. Scope corrected during review: the
+      glossary is use case ONE, not the boundary
+- [x] **C**: F72 -- ADR-0015 written and ACCEPTED (Sprint 14). Restructured in
+      review: a paper is a SOURCE OF ASSERTIONS rather than a record
+- [ ] **C**: F77 -- BUILD the Evidence Based DB. Repository created 2026-09-14
+      at `github.com/kimmeyh/EvidenceBasedDB` (private) and seeded; Sprint 1 is
+      planned there. The work happens in that repository, not this one
+- [ ] **C**: F73 -- the submission explained at an 8th-grade level. Sequenced
+      AFTER F77 so its contents can be validated against the store
 - [ ] **H+C**: F64 -- the k=17 order-2 cell is Phase 2 experiment 1. Pre-flight
       is done and recorded; the run itself waits for acceptance
 - [ ] **H**: Optional -- gate-based groundwork on a free platform (PennyLane or
