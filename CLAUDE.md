@@ -55,6 +55,34 @@ only in memory.
   He later confirmed the correct answer had been "do not change proposal.md" and
   said plainly: "I was just testing you.")
 
+- **Don't touch more than one file or surface on a request without echoing the
+  requirement back first.** One sentence: "I understand you want X to happen on
+  Y, with Z behaviour. Correct?" Wait, then proceed without re-asking for the
+  same task. Skip it for trivial one-line fixes and doc-only edits with no scope
+  ambiguity.
+
+- **Don't use grid or ASCII tables for terminal task summaries and validation
+  checklists.** Use bullet lists. Markdown tables inside committed docs are fine;
+  this is about terminal readability only.
+
+- **Don't report a mid-sprint batch of completed tasks as though it were a
+  stopping point.** Before ending any turn: is every approved task DONE, or does
+  a specifically named criterion in `docs/SPRINT_STOPPING_CRITERIA.md` apply to
+  EACH remaining one? If not, continue with the next task.
+
+- **Don't invent "context window running low" as a stopping reason.** The only
+  valid stopping reasons are the named criteria in
+  `docs/SPRINT_STOPPING_CRITERIA.md`. If genuinely uncertain whether an upcoming
+  task fits, do the task; a failure for that reason is itself the signal, not a
+  guess made in advance.
+
+- **Don't act on a recalled memory without checking it against current repo state
+  first.** Compare its date and its claims against git log, sprint status and the
+  docs it names before trusting its "next steps". A memory that was true when
+  written can be stale when recalled. (The Dirac-3 queue-timing memory here is
+  dated and describes hardware behaviour that must be re-checked against the
+  current allocation and ledger before it drives a run.)
+
 - **Don't claim a guard works because the suite is green. Prove it FAILS.** A
   test that cannot fail is worse than no test, because it buys false confidence.
   Break the thing it guards, watch it go red, then restore. (Three vacuous
