@@ -16,7 +16,7 @@ papered over.
 | What distinguishes CVQBoost from QBoost? | QBoost uses BINARY weights (each weak learner in or out); CVQBoost uses CONTINUOUS positive weights summing to 1 | **VERIFIED**, quoted below |
 | What does CV stand for? | Almost certainly "continuous variable" | **NOT VERIFIED.** THREE primary sources decline to expand it |
 | Is it open source? | Yes, Apache-2.0, two locations | **VERIFIED** |
-| Who wrote QBoost? | Neven et al., cited as 2009 in one QCi source and 2012 in another | **PARTLY VERIFIED.** Author yes, year disputed |
+| Who wrote QBoost? | Neven (Google), Denchev (Purdue), Rose and Macready (D-Wave), ACML 2012 | **VERIFIED** from the paper itself, now in the library |
 
 ## The difference, verified
 
@@ -77,13 +77,19 @@ the letters stand for. Three independent primary sources now decline to expand
 it, which moves this from "not found yet" to "apparently not written down
 anywhere public".
 
-**That white paper also contradicts the arXiv paper on QBoost's date.** Its
-introduction says CVQBoost "is our extension of the QBoost algorithm introduced
-by Neven et al. (2009)", while arXiv:2503.11273 cites "QBoost (Neven et al.,
-2012)". The white paper has NO reference section, so its citation cannot be
-resolved. The Neven group published across several years, so both are
-defensible. The explainer gives the range 2009 to 2012 and says why, rather than
-asserting one.
+**The date dispute is RESOLVED, 2026-09-16.** QCi's white paper says "Neven et
+al. (2009)" while arXiv:2503.11273 says "(Neven et al., 2012)". The arXiv
+paper's own bibliography settles it: it cites "Qboost: Large scale classifier
+training with adiabatic quantum optimization ... Proceedings of the Asian
+Conference on Machine Learning, volume 25 ... pages 333-348". That paper is
+ACML 2012. The white paper's 2009 has no reference section behind it and appears
+to be a slip, or a reference to the group's earlier arXiv work.
+
+The paper is now in the library as
+`Papers/QBoost - Large Scale Classifier Training with Adiabatic Quantum
+Optimization - Neven Denchev Rose Macready - ACML PMLR v25 2012.pdf`
+(796,050 bytes, 16 pages, open access from proceedings.mlr.press). Its first
+page confirms the venue, page range and every affiliation.
 
 **What would settle it**: the peer-reviewed Springer version
 (10.1007/978-981-95-7829-0_18, behind an auth redirect), the OpenReview
@@ -115,11 +121,10 @@ running code, not only from prose.
 4. ~~QCi's "Profiling of CVQBoost Algorithm: Fraud Detection" page body~~ RESOLVED
    2026-09-16: the PDF was in the team lead's paper library and was read
    directly. It does not expand the acronym either.
-5. The exact year of the original QBoost paper, since QCi's two write-ups
-   disagree (2009 vs 2012) and the white paper has no reference section.
-6. Whether the original Neven paper itself used a sum constraint. The
-   binary-weight claim was verified from QCi's restatement, not from the Neven
-   paper directly.
+5. ~~The exact year of the original QBoost paper~~ RESOLVED 2026-09-16 from
+   CVQBoost's own bibliography and the paper's first page: ACML 2012.
+6. Whether the original QBoost used a sum constraint. Not stated in what was
+   read, and QBoost's regularizer is an L0 count rather than a simplex.
 
 ## Note on authorship
 
@@ -135,3 +140,31 @@ the CV expansion is an inference rather than a sourced fact. The document also
 points out that continuous weights are the one thing CVQBoost adds over its
 predecessor, and that this project measured that addition contributing +0.0047,
 below what the design could resolve.
+
+## QBoost read directly, 2026-09-16
+
+The paper is in the library and was read rather than summarized. What it
+actually says about weights, quoted from section 3:
+
+> "The D-Wave quantum optimization processor that we aim to deploy for training
+> requires problems to be discrete and formulated as QUBO. Further, the current
+> hardware generation - Vesuvius - can handle a maximum of 512 binary variables,
+> which imposes the additional requirement of being frugal with the bit-depth of
+> weight variables."
+
+And section 3.1: "We discretize the elements of w to some low bit-depth dw < 64."
+
+**A precision worth keeping.** QBoost is not strictly binary by definition; it
+uses LOW-BIT-DEPTH DISCRETE weights, and the paper argues that one bit is often
+enough. The accurate one-liner is: QBoost encodes weak-learner weights as
+low-bit-depth binary expansions and solves the resulting QUBO. Saying flatly
+"QBoost uses binary weights" is the common shorthand and is very nearly right,
+but the explainer now says "a very small number of on-or-off switches, often just
+one", which is both accurate and readable.
+
+**Same constraint, opposite direction, in both algorithms.** QBoost's weights are
+coarse because D-Wave needed QUBO with at most 512 binary variables. CVQBoost's
+weights are continuous on a simplex because Dirac-3 offers only that mode.
+Neither encoding was chosen for statistical reasons; both were dictated by the
+machine. That is the sentence a reader should take away, and it is why the
+explainer says the method was shaped by what the hardware could do.

@@ -361,12 +361,10 @@ tool is a sign to look for in technical writing.
 The method is called **CVQBoost**, and the name has a history worth knowing
 because it tells you exactly what the method is.
 
-**QBoost** came first: Quantum Boosting, published by Neven and colleagues
-around 2009 to 2012. (QCi's own two write-ups cite different years for it, one
-saying 2009 and the other 2012, and neither gives a resolvable reference. The
-work was spread over several papers, so both are defensible; this document gives
-the range rather than pick one.) "Boosting" is an old and ordinary idea in
-machine learning,
+**QBoost** came first: "QBoost: Large Scale Classifier Training with Adiabatic
+Quantum Optimization", by Hartmut Neven of Google, Vasil Denchev of Purdue, and
+Geordie Rose and William Macready of D-Wave Systems, published in 2012.
+"Boosting" is an old and ordinary idea in machine learning,
 which you already understand from section 2's ranked list: take many weak rules
 and combine them into one strong one. QBoost's contribution was to hand the
 combining step to a quantum machine.
@@ -377,8 +375,11 @@ research groups had already tried it on fraud data before this project did.
 
 **The difference between the two is the whole point**, and it is one word.
 
-In the original QBoost, each voter is either **in or out**. The machine picks a
-subset: this voter counts, that one does not. On or off, nothing between.
+In the original QBoost, each voter's weight is squeezed into a **very small
+number of on-or-off switches**, often just one. With a single switch a voter is
+simply in or out: this one counts, that one does not, nothing between. The
+paper's own reason is the hardware it targeted, which "can handle a maximum of
+512 binary variables".
 
 In CVQBoost, each voter gets a **smoothly varying** amount of say. Not in or out,
 but 0.03 of a vote, or 0.11, with all the weights adding up to 1.
