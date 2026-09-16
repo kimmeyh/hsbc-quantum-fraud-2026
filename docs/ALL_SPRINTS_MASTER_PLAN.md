@@ -179,21 +179,11 @@ Removed from candidates per convention.)
 (F70 CHANGELOG backfilled and wired into the close-out: COMPLETED in Sprint 14.
 Workflow step 8.1.1 now runs before backlog refinement. Removed per convention.)
 
-**F73. The submission explained at an 8th-grade level (~6-10h) Priority 1 -- NEXT SPRINT**
-- Phase: Post-submission / communication (team lead, Sprint 14 retrospective 2026-09-14)
-- Platform: a new document in the repository root or `docs/`, alongside the submitted papers
-- **What it is**: a learning document explaining the proposal and appendix submitted 2026-09-12, written for an 8th grader working alone or in a group of three. Structured like a paper -- topics, sub-topics, references to outside sources -- not like a FAQ
-- **The reading-level rule is the one ADR-0014 already defines**: start at 8th grade; where an honest explanation is not achievable, go up ONE grade and retry; record the level that landed. This is a new APPLICATION of an existing mechanism, not a new mechanism
-- **Required disclaimer**, team lead's wording: it is a good and reasonably accurate document, with no guarantee of 100% accuracy and no expectation that the reader will fully understand on first reading
-- **The hard part is identifying what a reader needs that the submission assumes.** The datasets are the named example: what they are, how they were gathered, what they represent, why we used them, how they map to a real business situation, what the key features are and why, and how machine learning predicts from them. That list is a starting point and the card expects it to grow
-- **Licensing pre-flight DONE 2026-09-14** (`docs/research/dataset-reference-licensing.md`): ULB is DbCL v1.0 and may be copied, including commercially; IEEE-CIS is Vesta competition data and must be paraphrased and cited, never copied; SPECTRA is unverified. Conclusion: write every dataset explanation in our own words regardless, since one reuse right out of three is not worth the inconsistency
-- **Falsifier**: give it to someone who has not read the submission and ask them to explain back what CVQBoost is and why the result is a null. If they cannot, the document has not worked, however good it reads
-- Acceptance: every section states the grade level it achieved; the disclaimer is present; every dataset is attributed with its licence; a reader with no quantum or ML background can follow the argument from problem to null result
-- Depends on: nothing. The outline in F74 is part of this card, not separate
-
-**F74. Outline for the explanatory document -- FOLDED INTO F73**
-- (Not a separate card. The team lead's suggested outline -- challenge as written from the three challenge documents, then each dataset, then how ML is done against each -- is F73's spine. Splitting it would let the outline drift from the draft it describes. Recorded here so the suggestion is not lost, and struck as an independent item.)
-
+(F73 the submission explained at an 8th-grade level, and F74 its outline:
+COMPLETED in Sprint 15. `docs/explainer/THE_SUBMISSION_EXPLAINED.md`, seven
+sections, with the falsifier result recorded alongside it in
+FALSIFIER_RESULT.md. See SPRINT_15_SUMMARY.md and CHANGELOG.md. Removed from
+candidates per convention.)
 
 **F64. Decompose the B2 confound: the k=17 order-2 cell (~45m) Priority 1 -- PHASE 2 EXPERIMENT 1**
 - Phase: Experiments / correctness
