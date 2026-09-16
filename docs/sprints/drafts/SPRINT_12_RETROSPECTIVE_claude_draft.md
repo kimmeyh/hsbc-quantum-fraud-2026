@@ -113,7 +113,7 @@ contain the requirement.
 
 Otherwise ambiguity was low and the team lead's direction was decisive at the
 points where it mattered (the 2,000 s ceiling, the deferral of F38, the
-instruction to analyse before amending).
+instruction to analyze before amending).
 
 ### 8. Documentation
 
@@ -133,7 +133,7 @@ kind of error that reads as diligence and is not.
 The process issue of the sprint is that **amending under time pressure
 reproduced the defect class the amendments exist to record**. The convexity
 claim was written in response to a review, published within hours, and was
-false. The team lead's intervention — stop, analyse both reviews fully, address
+false. The team lead's intervention — stop, analyze both reviews fully, address
 findings through planned cards — is what broke the loop, and it should become a
 standing rule rather than a one-time correction.
 
@@ -203,7 +203,7 @@ First-pass correctness was high and spec adherence was complete: every agent
 stayed inside its "gather and verify, do not edit" boundary, and none required
 rework. The four-way review produced two findings neither external review found.
 The F53 agent flagged one of its own reviewer's claims as wrong (FG22/5 para
-5.12 does say what we claimed), which is the behaviour I want — agents that
+5.12 does say what we claimed), which is the behavior I want — agents that
 adjudicate rather than relay.
 
 The constraint that made this work was instructing them to gather and verify but

@@ -103,7 +103,7 @@ categories; all six improvements applied).
 
 **THE PHASE 1 ROADMAP IS COMPLETE (2026-09-12).** Every row above is [DONE] and
 the submission is filed. The table described a run to a deadline; that deadline
-has passed in our favour and the roadmap no longer describes any pending work.
+has passed in our favor and the roadmap no longer describes any pending work.
 
 What replaces it, recorded so the next refinement does not invent a schedule:
 the judging window is **16 Sep to 14 Nov 2026**, with finalists announced
@@ -179,21 +179,11 @@ Removed from candidates per convention.)
 (F70 CHANGELOG backfilled and wired into the close-out: COMPLETED in Sprint 14.
 Workflow step 8.1.1 now runs before backlog refinement. Removed per convention.)
 
-**F73. The submission explained at an 8th-grade level (~6-10h) Priority 1 -- NEXT SPRINT**
-- Phase: Post-submission / communication (team lead, Sprint 14 retrospective 2026-09-14)
-- Platform: a new document in the repository root or `docs/`, alongside the submitted papers
-- **What it is**: a learning document explaining the proposal and appendix submitted 2026-09-12, written for an 8th grader working alone or in a group of three. Structured like a paper -- topics, sub-topics, references to outside sources -- not like a FAQ
-- **The reading-level rule is the one ADR-0014 already defines**: start at 8th grade; where an honest explanation is not achievable, go up ONE grade and retry; record the level that landed. This is a new APPLICATION of an existing mechanism, not a new mechanism
-- **Required disclaimer**, team lead's wording: it is a good and reasonably accurate document, with no guarantee of 100% accuracy and no expectation that the reader will fully understand on first reading
-- **The hard part is identifying what a reader needs that the submission assumes.** The datasets are the named example: what they are, how they were gathered, what they represent, why we used them, how they map to a real business situation, what the key features are and why, and how machine learning predicts from them. That list is a starting point and the card expects it to grow
-- **Licensing pre-flight DONE 2026-09-14** (`docs/research/dataset-reference-licensing.md`): ULB is DbCL v1.0 and may be copied, including commercially; IEEE-CIS is Vesta competition data and must be paraphrased and cited, never copied; SPECTRA is unverified. Conclusion: write every dataset explanation in our own words regardless, since one reuse right out of three is not worth the inconsistency
-- **Falsifier**: give it to someone who has not read the submission and ask them to explain back what CVQBoost is and why the result is a null. If they cannot, the document has not worked, however good it reads
-- Acceptance: every section states the grade level it achieved; the disclaimer is present; every dataset is attributed with its licence; a reader with no quantum or ML background can follow the argument from problem to null result
-- Depends on: nothing. The outline in F74 is part of this card, not separate
-
-**F74. Outline for the explanatory document -- FOLDED INTO F73**
-- (Not a separate card. The team lead's suggested outline -- challenge as written from the three challenge documents, then each dataset, then how ML is done against each -- is F73's spine. Splitting it would let the outline drift from the draft it describes. Recorded here so the suggestion is not lost, and struck as an independent item.)
-
+(F73 the submission explained at an 8th-grade level, and F74 its outline:
+COMPLETED in Sprint 15. `docs/explainer/THE_SUBMISSION_EXPLAINED.md`, seven
+sections, with the falsifier result recorded alongside it in
+FALSIFIER_RESULT.md. See SPRINT_15_SUMMARY.md and CHANGELOG.md. Removed from
+candidates per convention.)
 
 **F64. Decompose the B2 confound: the k=17 order-2 cell (~45m) Priority 1 -- PHASE 2 EXPERIMENT 1**
 - Phase: Experiments / correctness
@@ -206,7 +196,7 @@ Workflow step 8.1.1 now runs before backlog refinement. Removed per convention.)
 - **THE PHYSICS PREDICTS AN ANSWER, which is what makes it a test rather than a data point.** A31 established the device cannot spread weight over more than about 200 learners. At 153 variables it CAN; at 833 it cannot. If the gain is attributable to k, it should appear at 153 under a faithful solve. If it needs three-feature learners, it will not. Either outcome is informative, and one of them would materially change what B.3 claims
 - **ZERO METERED SECONDS.** Classical proxy only, ten pool builds at 153 variables
 - **Why it was NOT run in Sprint 12** (team lead decision, 2026-09-12): the submission documents were final and within limits, PR #75 was merge-ready, and the deadline was 2026-09-15. A new result means new figures in a 6-of-6-page proposal and possibly another amendment. The submission is stronger finished than with one more experiment squeezed into its last days. Deferred deliberately, not overlooked
-- Acceptance: the cell runs on the same seeds and protocol as its two neighbours; B.3 states the decomposition instead of declining it; if the result changes what the +0.0256 is attributable to, that is an amendment
+- Acceptance: the cell runs on the same seeds and protocol as its two neighbors; B.3 states the decomposition instead of declining it; if the result changes what the +0.0256 is attributable to, that is an amendment
 - Depends on: nothing. It is the first thing Phase 2 should run
 - **SELECTED for Sprint 13 then WITHDRAWN the same day (team lead, 2026-09-12).** The reason is methodological and supersedes the Sprint 12 scheduling deferral above. F64 varies ONE axis with everything else frozen at values chosen for a different configuration (pool family, lambda, weak-learner type, the cardinality question). The gain that matters is likely a COMBINATION of these, so a one-factor-at-a-time probe measures the axis it varies and is silent about the interaction, which is where the leverage is expected to sit
 - The result could not become FALSE, but it could become UNIMPORTANT: a true fact about a formulation Phase 2 abandons. A31 already established that the device cannot spread weight over more than ~200 learners, so F64 decomposes a result inside a formulation we already have evidence is the wrong ask of the hardware
@@ -235,7 +225,7 @@ overwrote committed evidence. Removed from candidates per convention.)
 - **What remains of F77 here is the TRACKING entry.** The work happens there; this card records that it was authorised and what it must measure
 - **This card existed because nothing else created the thing.** ADR-0014 and ADR-0015 are both ACCEPTED and both say explicitly that they do NOT authorise implementation. F75 actions the 20-paper checkpoint and depends on ~20 papers already being loaded. So the accepted design had no card that builds it, and F75 could never have become actionable
 - Scope: create the private repository; copy the sprint methodology in (process docs, ADRs, testing strategy, CI, the hooks); implement the SQLite store and the committed text export; implement the three record classes plus the paper class; load the seed set
-- **SEED SET STAGED 2026-09-14 by the team lead**, and it is larger and broader than the submission's reference list this card originally assumed. The team lead's local staging directory holds `Papers` (46 items), `Books` (38), `GitHubRepos` (8) and an empty `References`. That directory is a staging area on disk and is deliberately NOT a git repository; the repository itself exists and is named in the bullet above. `EvidenceBasedDB/README.md` carries the two-directory layout and is the one place either path is written down
+- **SEED SET STAGED 2026-09-14 by the team lead**, and it is larger and broader than the submission's reference list this card originally assumed. The team lead's local staging directory holds `Papers` (47 items as of 2026-09-16; QBoost added in Sprint 15), `Books` (38), `GitHubRepos` (8) and an empty `References`. That directory is a staging area on disk and is deliberately NOT a git repository; the repository itself exists and is named in the bullet above. `EvidenceBasedDB/README.md` carries the two-directory layout and is the one place either path is written down
 - **The PDFs stay where they are and are never committed.** ADR-0015 section 3: records, not papers. Most are not redistributable, and several here are clearly vendor or conference material. The `access` field points at a DOI, an arXiv id, or that local path
 - **The seed set changes the 20-paper checkpoint's meaning.** F75 reviews whether the schema survived contact with ~20 papers. With 46 staged, the first 20 should be chosen for VARIETY rather than convenience -- an arXiv preprint, a journal paper, a vendor white paper, a book chapter, a GitHub repository -- because a schema that only ever saw arXiv preprints has not been tested
 - **`Books` and `GitHubRepos` are not papers and may not fit the paper record.** A book chapter has no abstract and a repository has no claim in the same sense. Whether they need their own record class, or whether the paper class generalises, is a real question for the 20-paper checkpoint and should not be settled in advance
@@ -261,6 +251,29 @@ overwrote committed evidence. Removed from candidates per convention.)
 - A test that fails when a record names a context the schema does not define, and when the ADRs' stated context lists diverge from the database's
 - Depends on: **F77** (which builds it)
 
+
+**F78. Convert every PowerShell script to Python so the repository is OS agnostic (~8-12h) Priority 8**
+- Phase: Finalize / tooling (team lead, 2026-09-15)
+- Platform: `.claude/hooks` (9 files), `scripts/` (4 files), plus 18 hardcoded interpreter paths across 12 tracked files
+- **`.venv` is generated, so it is not converted -- but it IS recreated per OS, and that is a scope item, not a footnote** (team lead, 2026-09-15, from experience). A Windows venv has `Scripts/activate.ps1` and `Scripts/python.exe`; a Linux one has `bin/activate` and `bin/python`. They are not interchangeable, so anyone moving to WSL rebuilds it. `docs/WINDOWS_POWERSHELL_GUIDE.md` already states the Windows venv is unusable from Linux, so the knowledge exists and the tooling ignores it
+- **What it is**: replace all 13 tracked `.ps1` files with Python that runs unmodified on Windows 11 AND Linux (current WSL is sufficient). Most Python is already portable; the exceptions are real and are the whole point of the card -- path separators, line endings, `%USERPROFILE%` against `$HOME`, executable discovery, and subprocess invocation
+- **Each script must DETERMINE the OS and handle it**, rather than assuming. The team lead's preferred shape: find an existing package that does this, or write one shared cross-OS helper module that every script imports. A per-script `if platform.system()` scattered thirteen times is the outcome to avoid, because it drifts
+- **Measured scope, 2026-09-15**: about 1,260 lines across the 13. Four hooks (`block-unraw-escape`, `block-shell-metachar-expansion`, `block-carry-forward-stash`, `block-branch-from-develop`) contain ZERO OS-specific constructs -- they read stdin and apply regexes -- so they are near-mechanical ports and should go first as the pattern-setters. `scripts/render-pdf.ps1` has 12 and is the hard one; it shells out to pandoc and a PDF engine, whose discovery differs per OS
+- **The registration is as important as the code.** `.claude/settings.json` invokes each hook through `powershell -NoProfile -ExecutionPolicy Bypass -File`. Every entry has to change to a `python` invocation, and that file is exactly where two hooks were silently killed by a lone backslash-b JSON escape. Rewrite it STRUCTURALLY with `json.dump`, never by hand, and assert afterwards that every registered path resolves and holds no control character
+- **Acceptance is behavioural, not textual**: each converted hook keeps its own test cases and still BLOCKS what it blocked and ALLOWS what it allowed, proven by running the cases through the new hook on both operating systems. A conversion that leaves a guard inert is worse than no conversion, and this repository has shipped inert guards three times
+- **Do not convert the tests' invocation path and the hooks in the same commit.** Convert one hook, prove it fires, then the next; a batch conversion that goes quiet is unfalsifiable after the fact
+- **The hardcoded interpreter is the widest part of the card.** `git grep` finds
+  `.venv\Scripts\python.exe` in 18 places across 12 tracked files: 8 in
+  `experiments/src` docstrings ("Run: ..."), 2 in `scripts/`, 2 in `docs/`
+  including `TESTING_STRATEGY.md` and the PowerShell guide. Every one is a
+  Windows-only instruction a Linux reader cannot follow. These are cheap to fix
+  and easy to miss precisely because most are comments rather than code
+- **The venv bootstrap should be one documented command per OS**, not prose
+  scattered through a guide. Whatever replaces it states how to create the venv
+  and how to invoke the interpreter on each OS, and `README.md` and
+  `TESTING_STRATEGY.md` reference that one place rather than restating a path
+- **Why it is worth doing**: the repository currently cannot run its own guards on Linux. CI runs `ubuntu-latest`, so every hook is Windows-only protection today, and a contributor or agent on Linux gets none of it
+- Depends on: nothing. Best done when no other sprint is touching `.claude/`
 
 (F67 pool-mechanism guard: COMPLETED in Sprint 14. Runs on a fresh clone against a
 committed 0.83 MB int8 fixture, chosen from three measured options. Removed from
@@ -319,7 +332,7 @@ not "selected", and the team lead sets priority. But they should be read as
 candidates at the next refinement rather than skipped as held. (F39 was on this list and is
 now done: ADR-0014 was accepted in Sprint 14 and its build is F77.)
 
-Flagged rather than re-prioritised: re-scoring nine cards is a scope decision,
+Flagged rather than re-prioritized: re-scoring nine cards is a scope decision,
 not a sweep correction.
 
 
@@ -372,7 +385,7 @@ not a sweep correction.
 - Preserves every existing guard: spend caps computed against projected spend INCLUDING in-flight requests, frozen identical-config retry rule, B1 hash verification, unparseable-billing charge
 - Fully tested offline first (fake client simulating queue latency, out-of-order completion, crash-restart, failed job, unreadable billing); only then 2-3 real calls at window size 2, on explicit approval
 - Full card drafted at docs/sprints/drafts/F30_CARD_DRAFT.md
-- **Measured queue behaviour, 2026-09-09**: the F46 probe submitted at 14:33 local was still queued 52 minutes later, having spent ~97 CPU-seconds on its local pool build. Flat CPU against growing wall clock is the signature of queue wait, not computation. The team lead reports the queue is ALMOST ALWAYS EMPTY AFTER 5PM LOCAL, so wall-clock cost is a function of WHEN a block runs, not what it computes
+- **Measured queue behavior, 2026-09-09**: the F46 probe submitted at 14:33 local was still queued 52 minutes later, having spent ~97 CPU-seconds on its local pool build. Flat CPU against growing wall clock is the signature of queue wait, not computation. The team lead reports the queue is ALMOST ALWAYS EMPTY AFTER 5PM LOCAL, so wall-clock cost is a function of WHEN a block runs, not what it computes
 - **The team lead's intent for this card**: enqueue 4 or more jobs at once so they run CONSECUTIVELY, raising the odds they execute back to back rather than each paying a fresh queue wait. That is a different and stronger value case than the throughput argument below
 - Value was judged to arrive with Phase 2 volume (81+ fit grids), and that judgment was made against a free tier with 163 spent seconds. With 3,000 granted seconds (F46) and queue wait as the binding cost rather than device seconds, the case is stronger: whenever a session needs more than one or two fits, serial submission wastes most of the wall clock. Still not recommended BEFORE submission, on calendar grounds alone
 - Depends on: nothing to build; live vetting needs team-lead approval (Criterion H)

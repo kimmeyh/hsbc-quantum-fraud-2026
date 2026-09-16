@@ -221,7 +221,7 @@ Both open questions were put to the team lead with pros, cons and a
 recommendation. Both were decided as recommended.
 
 **1. Raw column under phase encoding: REPLACE, not augment.** The raw column is
-dropped in favour of its phase pair. Two reasons carried it. It preserves
+dropped in favor of its phase pair. Two reasons carried it. It preserves
 comparability with the FourierWall2 recipe this implements, whose own convention
 is replace. And it is the only variant that tests what H6 claims to test:
 augment confounds the representation against sheer feature count, so a win could
@@ -236,7 +236,7 @@ caveat.** The twin's job is to be an order-matched classical bar, not to
 reproduce a specific library's published figure, and no EBM benchmark is quoted
 anywhere in the submission, so nothing hinges on the implementation identity.
 Installing pygam and interpret would add two unvalidated dependencies with their
-own solver behaviour ten days before the deadline. The caveat stays disclosed
+own solver behavior ten days before the deadline. The caveat stays disclosed
 here and in any H6 reporting: our GAM and GA2M are contract-equivalent
 substitutes, so our numbers are not directly comparable to published EBM
 figures.

@@ -35,7 +35,7 @@ shape for.
 ### 5. Model Assignments
 Three subagents, all read-and-report, all stayed inside their boundary. The
 changelog-material agent and the acronym-inventory agent both returned
-corrections to my assumptions rather than confirmations, which is the behaviour
+corrections to my assumptions rather than confirmations, which is the behavior
 worth having. The inventory agent's finding that seven acronyms I "knew" were in
 scope are absent from the submission was a direct correction I would not have
 caught alone.

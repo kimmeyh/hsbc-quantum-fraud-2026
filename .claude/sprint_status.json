@@ -1,26 +1,26 @@
 {
   "current_sprint": {
-    "number": 14,
-    "name": "Make the Record Durable",
-    "branch": "feature/20260912_Sprint_14",
-    "status": "phase_8_delivery_cycle",
-    "plan_doc": "docs/sprints/SPRINT_14_PLAN.md",
-    "pr": 94,
+    "number": 15,
+    "name": "The Submission, Explained",
+    "branch": "feature/20260916_Sprint_15",
+    "status": "phase_4_execution",
+    "plan_doc": "docs/sprints/SPRINT_15_PLAN.md",
+    "pr": 100,
     "plan_approved": true,
     "github_issues": [
-      84,
-      85,
-      86,
-      87,
-      88,
-      89,
-      90,
-      91,
-      92,
-      93
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108
     ],
-    "prior_prs": [],
-    "note": "Complete. PR #94 to develop, PR #95 to main. 20 review findings addressed. ADR-0014 and ADR-0015 accepted. F73 is Priority 1 for Sprint 15."
+    "prior_prs": [
+      99
+    ],
+    "note": "F73 only. Zero metered Dirac-3 seconds. Plan approved 2026-09-16. PR #99 (CLAUDE.md NOT-do section, em-dash coverage, cross-repo boundary, F78) is still OPEN and unmerged; this branch was cut from it per rule 6.6, so its commits are carried rather than stranded."
   },
   "last_completed_sprint": {
     "number": 14,

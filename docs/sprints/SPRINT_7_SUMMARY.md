@@ -71,7 +71,7 @@ should have been, since the same overrun happened in Sprint 6.
 
 - Sprint 8's IEEE-CIS arms run BOTH pool configurations: the frozen arm as the
   preregistered comparator for continuity, the tuned arm as the configuration
-  the evidence now favours.
+  the evidence now favors.
 - The question of whether F33 changes the Phase 2 priority is HELD until after
   the submission is approved, with the argument on both sides recorded so it is
   not re-derived: a small optimizer contribution on a CONVEX problem does not

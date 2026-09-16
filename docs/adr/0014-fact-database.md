@@ -55,7 +55,7 @@ happened and record the answers:
 | Which fields were filled with the same value every time? | Not carrying information; probably belongs in the context |
 | What did we want to record and have nowhere to put? | The additions this checkpoint exists to find |
 | How long did team-lead adjudication take per paper? | The number the whole design is constrained by (ADR-0015 section 2c) |
-| Did the tiers land where predicted? | If everything is `read`, tiering is theatre |
+| Did the tiers land where predicted? | If everything is `read`, tiering is theater |
 | Did any `supports` or `contradicts` link get used? | scite's 0.8% says these are rare; zero at 20 papers is uninformative, zero at 200 is a finding |
 
 **Revising after that review is the expected outcome, not an admission.** A
@@ -173,7 +173,7 @@ That is a different order of magnitude, and it changes four things I had
 settled. Recording them here rather than quietly revising, because the earlier
 sizing is what several decisions rested on.
 
-**1. The sizing argument weakens, and the "we are not Cyc" defence with it.**
+**1. The sizing argument weakens, and the "we are not Cyc" defense with it.**
 "151 records is why this is tractable" no longer holds. A domain base over
 QML/ML/QC is thousands of terms with real structure between them. Still far
 short of Cyc's tens of millions, and still bounded by being a DOMAIN rather than
@@ -298,7 +298,7 @@ Lenat records the cost -- they assumed ONE representation would serve, then
 spent years "vainly searching for some fast general-purpose reasoning algorithm
 over HOL, which probably doesn't exist" [LM23 p14].
 
-**The risk in "start simple" is that the trigger never gets recognised**, and
+**The risk in "start simple" is that the trigger never gets recognized**, and
 the project limps along with the wrong store because switching feels expensive.
 So the triggers are named now, while nothing is at stake:
 
@@ -321,7 +321,7 @@ architecture with no account of why, which is the same defect as a figure with
 no provenance.
 
 **Migration is cheap by construction, and that is deliberate.** The store of
-record is SQLite but the ARTEFACT is the committed text export. A different
+record is SQLite but the ARTIFACT is the committed text export. A different
 engine consumes the same export. This is the same reason the export exists at
 all -- it makes the store replaceable and the diff reviewable, and those turn
 out to be the same property.
@@ -364,7 +364,7 @@ and today that lives only in prose.
 change is worth recording rather than quietly making. Two things were wrong with
 the percentage. It is unfalsifiable -- `62%` cannot be argued with, which makes
 it a weaker instrument than it looks in a project whose whole posture is that
-claims should be checkable. And it was labelled "Cyc-derived" when the research
+claims should be checkable. And it was labeled "Cyc-derived" when the research
 in `../research/cyc-knowledge-representation.md` establishes that **Cyc carries
 no numeric confidence on assertions at all**; the library's own first record
 holds that fact as `cyc-no-numeric-confidence`.
@@ -513,7 +513,7 @@ Escalation is what makes the honest version reachable instead of abandoned.
 - **Description**: adopt NoSQL or a graph engine immediately, on the grounds that a domain knowledge base with context inheritance is graph-shaped.
 - **Pros**: the shape argument is real. Context inheritance and prerequisite chains ARE graphs, and a graph engine would express them natively.
 - **Cons**: it prices in a need we have not met yet. SQLite handles recursive queries via CTEs, and at pilot scale the hierarchy is three contexts deep. Adopting an engine for a problem we have not yet had is how projects acquire architecture they cannot justify.
-- **Why rejected FOR NOW, with named triggers**: see section 2b. Both remain live options and the conditions for adopting them are written down rather than left to judgement.
+- **Why rejected FOR NOW, with named triggers**: see section 2b. Both remain live options and the conditions for adopting them are written down rather than left to judgment.
 
 ### A real Cyc or an ontology engine
 - **Description**: adopt Cyc, or an RDF/OWL triple store.
@@ -628,7 +628,7 @@ precisely the state the stale sentence described.
 `certainty_reasons` on every record class.** The schema spine mandated a 0.0 to
 99.9 percent `confidence` field while ADR-0015 section 2e abolished it as
 unfalsifiable, so the assertion class required both a field and its own
-replacement. The percentage was also labelled "Cyc-derived" against research
+replacement. The percentage was also labeled "Cyc-derived" against research
 establishing that Cyc carries no numeric confidence at all. Found by the same
 review.
 

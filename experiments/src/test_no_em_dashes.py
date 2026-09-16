@@ -43,6 +43,11 @@ COVERED_FILES = (
     ROOT / "docs" / "SPRINT_EXECUTION_WORKFLOW.md",
     ROOT / "docs" / "SPRINT_PROCESS.md",
     ROOT / "docs" / "SPRINT_PLANNING.md",
+    # CLAUDE.md STATES the no-em-dash rule and was not itself checked for it
+    # until 2026-09-15. A rule document exempt from its own rule is the same
+    # shape as a guard that cannot fail.
+    ROOT / "CLAUDE.md",
+    ROOT / "README.md",
 )
 
 

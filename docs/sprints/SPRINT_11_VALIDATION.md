@@ -32,7 +32,7 @@ changed at once to produce it, and we had never separated them. Now we have:
 |---|---|---|
 | Using four kinds of classifier instead of one | **-0.0047** | No -- below our detection threshold |
 | Handling class imbalance while training | **+0.0328** | **Yes** -- this is the whole gain |
-| Tweaking the nearest-neighbour settings | +0.0038 | No |
+| Tweaking the nearest-neighbor settings | +0.0038 | No |
 
 So the benefit came from imbalance handling, not from classifier variety. That
 is a **better** finding than the one we had: it is a simpler, cheaper

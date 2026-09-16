@@ -78,7 +78,7 @@ distribution (15 jobs at 4.0s, 12 at 5.0s) across all 27 retained jobs, where
 four other candidate rules fail. The team lead supplied the rule that works
 after mine failed its own validation.
 
-**Queue behaviour measured**: across all 27 historical jobs, queue wait median
+**Queue behavior measured**: across all 27 historical jobs, queue wait median
 0.7s against processing median 5.3s -- every one submitted 19:00-20:00 local.
 The F46 probe went in at 14:33 and waited 5,452 seconds of wall clock for 10
 seconds of device time.
