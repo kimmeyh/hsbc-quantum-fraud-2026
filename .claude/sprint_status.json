@@ -3,7 +3,7 @@
     "number": 15,
     "name": "The Submission, Explained",
     "branch": "feature/20260916_Sprint_15",
-    "status": "phase_4_execution",
+    "status": "phase_8_delivery_cycle",
     "plan_doc": "docs/sprints/SPRINT_15_PLAN.md",
     "pr": 100,
     "plan_approved": true,
@@ -20,13 +20,14 @@
     "prior_prs": [
       99
     ],
-    "note": "F73 only. Zero metered Dirac-3 seconds. Plan approved 2026-09-16. PR #99 (CLAUDE.md NOT-do section, em-dash coverage, cross-repo boundary, F78) is still OPEN and unmerged; this branch was cut from it per rule 6.6, so its commits are carried rather than stranded."
+    "note": "F73 delivered. PR #100 to develop, PR #109 to main, both merged 2026-09-16. PR #99 merged the same day; its commits were already carried by #100. RETROSPECTIVE OUTSTANDING: Phase 7 was skipped and the sprint merged without SPRINT_15_RETROSPECTIVE.md. Claude's role is drafted in docs/sprints/drafts/; the team lead's three roles are still needed."
   },
   "last_completed_sprint": {
-    "number": 14,
-    "merged_pr": 94,
-    "main_merge_pr": 95,
-    "docs_triad_complete": true
+    "number": 15,
+    "merged_pr": 100,
+    "main_merge_pr": 109,
+    "docs_triad_complete": false,
+    "note": "PLAN and SUMMARY present; RETROSPECTIVE outstanding."
   },
   "prereg": {
     "status": "FROZEN",

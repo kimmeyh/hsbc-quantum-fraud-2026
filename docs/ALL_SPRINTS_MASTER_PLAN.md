@@ -279,6 +279,33 @@ overwrote committed evidence. Removed from candidates per convention.)
 committed 0.83 MB int8 fixture, chosen from three measured options. Removed from
 candidates per convention.)
 
+**F79. Gate the retrospective so a sprint cannot merge without one (~1h) Priority 3**
+- Phase: Finalize / process (Sprint 15 retrospective category 13, 2026-09-16)
+- Platform: `.claude/hooks`, `experiments/src`
+- **Sprint 15 merged to develop AND to main with no `SPRINT_15_RETROSPECTIVE.md`.** Phase 7 is an exit gate in the workflow and the three-doc rule is unconditional, and neither stopped it. I marked the PR ready while naming the retrospective as outstanding, which was not enough
+- `test_sprint_documents.py` already enforces the three-doc rule, so the gap is not the test: it is that nothing checks it at the moment a PR is marked ready. The check has to run where the decision is made
+- Options: extend `verify-closeout-complete` to refuse when the current sprint's retrospective is absent, or add a pre-`gh pr ready` check. The first is preferred because the hook already exists and already runs at close-out
+- **Acceptance is behavioural**: with the retrospective deleted, the gate must FIRE. Proven by injection, not by a green run
+- Value: this is the second consecutive sprint where a Phase 7 deliverable was missed (Sprint 14 left `CHECKLIST-Phase2-pre.md` unreconciled). A phase that depends on remembering is the class this workflow keeps replacing with a step
+- Depends on: nothing
+
+**F80. Re-run the explainer falsifier with OPEN questions (~1h) Priority 9**
+- Phase: Finalize / verification (Sprint 15 retrospective category 13, 2026-09-16)
+- Platform: `docs/explainer/`
+- Run 2 of the Sprint 15 falsifier asked questions aimed at exactly where run 1 tripped. That confirms the four fixes landed; it CANNOT find gaps elsewhere, and the record says so explicitly
+- This card runs a third reader with the original open prompt against the revised document, so the revision is tested the way the original was
+- **The honest limit that no re-run fixes**: every reader so far has been a language model. That is a fresh-context check, not an audience test. Where a real 13-year-old stumbles is unknown, and that belongs to F81 rather than here
+- Depends on: nothing
+
+**F81. Put the explainer in front of a real 8th-grade reader (~unknown) Priority 11**
+- Phase: Finalize / verification (Sprint 15 retrospective category 14, 2026-09-16)
+- Platform: external, team-lead owned
+- Both falsifier runs used language models with no repository context. They found six real gaps, so the mechanism works, but a model reading at grade 8 is not a person reading at grade 8
+- The card's own falsifier names the test: someone who has not read the submission explains back what CVQBoost is and why the result is a null
+- **Effort is unknown because it depends on finding a reader**, which is the team lead's to arrange, not mine. Sized as unknown rather than guessed
+- Value: the document's entire purpose is an audience it has never actually met
+- Depends on: nothing, but best after F80
+
 **F36. Pandoc Lua filter: floating tables for the submission PDFs -- CLOSED 2026-09-07, FAILED**
 - **VERDICT: the filter works; the problem it was built for did not exist.** The premise (preserved in the review doc, because it is wrong in an instructive way) rested on a CHARACTER-COUNT page-fill measurement, and a table-heavy page always looks short by that measure. Measured as vertical extent, every page cited below was already full: 724 / 680 / 680 / 682pt of a 792pt page, zero free space anywhere. The appendix was over its limit because it had too much content
 - **Failed criterion 1** (appendix 3 pages with the filter, 4 without): 4 and 4. **Failed criterion 6** (other documents unchanged), which is worse: floating tables in a table-dense document COSTS a page, taking gate_report.pdf from 3 to 4. Criteria 2, 3, 4, 5 and 7 pass
