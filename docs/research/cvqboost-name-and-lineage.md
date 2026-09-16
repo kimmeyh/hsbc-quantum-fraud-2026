@@ -14,9 +14,9 @@ papered over.
 | Question | Answer | Status |
 |---|---|---|
 | What distinguishes CVQBoost from QBoost? | QBoost uses BINARY weights (each weak learner in or out); CVQBoost uses CONTINUOUS positive weights summing to 1 | **VERIFIED**, quoted below |
-| What does CV stand for? | Almost certainly "continuous variable" | **NOT VERIFIED.** No primary source expands it |
+| What does CV stand for? | Almost certainly "continuous variable" | **NOT VERIFIED.** THREE primary sources decline to expand it |
 | Is it open source? | Yes, Apache-2.0, two locations | **VERIFIED** |
-| Who wrote QBoost? | Neven et al., 2012 | **VERIFIED** via citation |
+| Who wrote QBoost? | Neven et al., cited as 2009 in one QCi source and 2012 in another | **PARTLY VERIFIED.** Author yes, year disputed |
 
 ## The difference, verified
 
@@ -67,6 +67,24 @@ Variable QBoost)" confidently, and that assertion could not be traced to any
 source document. This is the plausible-wrong-result class. A confident secondary
 source is not a primary source.
 
+**A THIRD primary source checked 2026-09-16, and it also does not expand it.**
+QCi's own white paper `Profiling of CVQBoost Algorithm: Fraud Detection`
+(December 2024) is already in the team lead's paper library at
+`Papers/QCi - Profiling of CVQBoost.pdf`. The web research could not read it
+because the hosted page is JavaScript-rendered; the PDF was read directly. It
+uses the name more than forty times across eleven pages and never once says what
+the letters stand for. Three independent primary sources now decline to expand
+it, which moves this from "not found yet" to "apparently not written down
+anywhere public".
+
+**That white paper also contradicts the arXiv paper on QBoost's date.** Its
+introduction says CVQBoost "is our extension of the QBoost algorithm introduced
+by Neven et al. (2009)", while arXiv:2503.11273 cites "QBoost (Neven et al.,
+2012)". The white paper has NO reference section, so its citation cannot be
+resolved. The Neven group published across several years, so both are
+defensible. The explainer gives the range 2009 to 2012 and says why, rather than
+asserting one.
+
 **What would settle it**: the peer-reviewed Springer version
 (10.1007/978-981-95-7829-0_18, behind an auth redirect), the OpenReview
 discussion (browser-verification wall), or a QCi webinar or press release.
@@ -94,10 +112,14 @@ running code, not only from prose.
 1. **The literal expansion of "CV"**, as above.
 2. The Springer version's abstract and keywords: auth redirect.
 3. The OpenReview reviewer discussion: browser-verification wall.
-4. QCi's "Profiling of CVQBoost Algorithm: Fraud Detection" page body: JavaScript
-   rendered, returned only a title.
-5. Whether Neven et al. 2012 itself used a sum constraint. The binary-weight
-   claim was verified from QCi's restatement, not from the Neven paper directly.
+4. ~~QCi's "Profiling of CVQBoost Algorithm: Fraud Detection" page body~~ RESOLVED
+   2026-09-16: the PDF was in the team lead's paper library and was read
+   directly. It does not expand the acronym either.
+5. The exact year of the original QBoost paper, since QCi's two write-ups
+   disagree (2009 vs 2012) and the white paper has no reference section.
+6. Whether the original Neven paper itself used a sum constraint. The
+   binary-weight claim was verified from QCi's restatement, not from the Neven
+   paper directly.
 
 ## Note on authorship
 

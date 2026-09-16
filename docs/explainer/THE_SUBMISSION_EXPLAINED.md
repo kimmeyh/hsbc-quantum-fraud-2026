@@ -361,8 +361,12 @@ tool is a sign to look for in technical writing.
 The method is called **CVQBoost**, and the name has a history worth knowing
 because it tells you exactly what the method is.
 
-**QBoost** came first: Quantum Boosting, published in 2012 by Neven and
-colleagues. "Boosting" is an old and ordinary idea in machine learning,
+**QBoost** came first: Quantum Boosting, published by Neven and colleagues
+around 2009 to 2012. (QCi's own two write-ups cite different years for it, one
+saying 2009 and the other 2012, and neither gives a resolvable reference. The
+work was spread over several papers, so both are defensible; this document gives
+the range rather than pick one.) "Boosting" is an old and ordinary idea in
+machine learning,
 which you already understand from section 2's ranked list: take many weak rules
 and combine them into one strong one. QBoost's contribution was to hand the
 combining step to a quantum machine.
