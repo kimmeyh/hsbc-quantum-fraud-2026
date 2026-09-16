@@ -122,3 +122,86 @@ measure has to be about the top of the ranked list, not the whole pile.
 The proposal uses a measure built for exactly that: one number for how well a
 detector does at the top of the list. It has a name, and section 6 gives it when
 the results need it.
+
+---
+
+## 3. Where the data comes from, and what it can and cannot tell you
+
+*Reading level achieved: grade 8.*
+
+To test a fraud detector you need real transactions that somebody has already
+labelled as fraud or not. That data is hard to get, for an obvious reason: it is
+a record of what real people bought.
+
+Two collections were used here. They are not interchangeable, and the difference
+between them does real work later.
+
+### The European set (called ULB)
+
+284,807 card transactions from European cardholders, collected over **two days**.
+492 of them are fraud. That is the 0.17 percent from section 2 (0.172 percent,
+to be exact).
+
+Before anything else happened, 1,081 transactions were removed because they were
+exact duplicates of another row. A duplicate is not extra evidence; it is the
+same evidence counted twice, and leaving them in lets a model look better than
+it is.
+
+**The strange part: most of the columns are unreadable on purpose.** The
+publishers could not release what people actually bought, so the original
+details were put through a mathematical transformation that scrambles them into
+anonymous numbered columns. The information is still in there, in the sense that
+patterns survive. But nobody outside the original bank can say what any one of
+those columns means.
+
+This matters for honesty: nobody can claim their detector works because it
+cleverly noticed something about, say, petrol stations at 3am. Nobody can see
+petrol stations in this data.
+
+**Licence**: published under the Database Contents License, which permits reuse.
+Even so, everything in this section is written in our own words.
+
+### The competition set (called IEEE-CIS)
+
+590,540 transactions from Vesta Corporation, a payments company, released for a
+public competition. 3 exact duplicates removed.
+
+Two differences from the first set matter:
+
+- **Fraud is twenty times more common here**: 3.5 percent rather than 0.17.
+- **It spans months, not two days.**
+
+**Licence**: competition data. The rules are behind a sign-in wall and could not
+be read anonymously, so it is treated as *do not copy*. Everything here is
+paraphrased and cited, never quoted.
+
+### Why two, and why the second one exists
+
+The European set has a flaw that no amount of clever modelling fixes: two days
+is not enough time to see anything change.
+
+Fraud is not a fixed target. Thieves change tactics; a trick that worked last
+month gets blocked this month. A detector trained on Monday and tested on
+Tuesday never has to cope with that. It can look excellent and still fail in
+production three weeks later.
+
+The competition set spans months, so it can be split by time and asked the harder
+question: *does this still work on transactions from a month you have never
+seen?*
+
+Section 4 is about why that question is the one that matters, and why the
+obvious way of testing gets it wrong.
+
+### One dataset you will not find here
+
+An earlier draft of this document described a third collection, called SPECTRA.
+That was an error, caught while writing this section and recorded rather than
+quietly deleted.
+
+SPECTRA is real and does appear in this project's reading, but it is four
+datasets about steel plants, gas turbines, equipment maintenance and telephone
+customers. It has nothing to do with card fraud, and it appears nowhere in the
+submitted proposal. It was read as evidence for a different argument entirely.
+
+It is mentioned here because "there were three datasets" is the kind of small
+false fact that a reader would carry away and repeat.

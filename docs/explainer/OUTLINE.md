@@ -52,6 +52,8 @@ puzzle with a right answer.
 
 ## 3. Where the data comes from, and what each set can and cannot tell you
 
+*(Two datasets, not three. See the SPECTRA correction below.)*
+
 **Learns**: that a dataset is a set of choices someone made, not a neutral window
 onto the world.
 
@@ -61,7 +63,16 @@ onto the world.
 - **IEEE-CIS**: 590,540 transactions from Vesta Corporation, a payments company,
   released for a competition. Fraud rate 3.5%, twenty times ULB's. Licence:
   competition data, paraphrase and cite, never copy.
-- **SPECTRA**: licensing unverified, treated as the strictest case.
+- **SPECTRA is NOT in this section.** Corrected 2026-09-16 while writing Task C:
+  `grep` finds SPECTRA zero times in the submitted proposal and appendix. It is
+  four datasets about steel plants, gas turbines, maintenance and telecom churn
+  (`docs/references.md`), used as prior art for the complete-classical-bar
+  argument, not as fraud data. This document explains the submission, and the
+  submission used TWO datasets. Listing three would have taught a reader
+  something false.
+  - Separately, the licensing pre-flight lists SPECTRA as "unverified" while
+    `docs/references.md` records CC BY 4.0. The pre-flight is stale on this
+    point. It changes nothing here, since the dataset is out of scope.
 - **The two-day problem**: ULB spans two days. You cannot learn how fraud changes
   over months from two days, which is why the second dataset exists.
 - **What this section must not do**: present the datasets as interchangeable
