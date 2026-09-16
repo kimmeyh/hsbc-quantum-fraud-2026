@@ -74,7 +74,7 @@ happened and record the answers:
 | Which fields were filled with the same value every time? | Not carrying information; probably belongs in the context |
 | What did we want to record and have nowhere to put? | The additions this checkpoint exists to find |
 | How long did team-lead adjudication take per paper? | The number the whole design is constrained by (2c) |
-| Did the tiers land where predicted? | If everything is `read`, tiering is theatre |
+| Did the tiers land where predicted? | If everything is `read`, tiering is theater |
 | Did any `supports` or `contradicts` link get used? | scite's 0.8% says these are rare; zero at 20 papers is uninformative, zero at 200 is a finding |
 
 **Revising after that review is the expected outcome, not an admission.** A
@@ -107,7 +107,7 @@ correct teaches nobody why it was wrong.
 ### What the team lead asked for
 
 Deep-dive summaries of quantum-machine-learning, quantum-computing and classical
-machine-learning papers, analysed for applicability to:
+machine-learning papers, analyzed for applicability to:
 
 - **Dirac-3** -- the continuous-variable optimizer this project has measured;
 - **gate-based work** via Amazon Braket and Classiq, which the proposal commits
@@ -243,7 +243,7 @@ distinct checkable assertions:
 | KNN reaches 0.8108 on ULB | Loke et al. | A reproducible target |
 | CAD reaches 0.7423 | Loke et al. | A comparator |
 | target AUC-PR 0.80 | Loke et al. | The H1a replication bar, IN THE FREEZE |
-| 23 of 24 cells favour the quantum arm | Emami et al. | A prior-work result |
+| 23 of 24 cells favor the quantum arm | Emami et al. | A prior-work result |
 | ADASYN 1:1 gives 0.8855 vs 0.8826 | Emami et al. | A specific measured pair |
 | device limit 949 variables | QCi guide | **A constraint we designed against** |
 | 23 dB dynamic-range limit | Emami et al. | The basis of the A31 resolution finding |
@@ -336,7 +336,7 @@ Three things survive the correction, and one gets WORSE at agent speed:
    built -- and it gets there FASTER at agent speed.
 3. **Maintenance decay** is agent-independent. `checked_against_source` going
    stale does not care who wrote the record.
-4. **Volume without judgement gets worse.** Two thousand confident-sounding
+4. **Volume without judgment gets worse.** Two thousand confident-sounding
    records nobody adjudicated is a MORE dangerous artifact than fifty
    hand-written ones: it looks authoritative and it scales the error. This
    project has met that failure at small scale already -- three published claims
@@ -524,7 +524,7 @@ A SECOND ASSERTION FROM THE SAME PAPER, graded differently:
     certainty_reasons:        Started LOW -- position paper. NOT upgraded: a
                               round self-reported count with no definition of
                               what counts as a module and no way to check it.
-                              Unlike footnote 9 this is favourable to the
+                              Unlike footnote 9 this is favorable to the
                               author, so the admission-against-interest upgrade
                               does not apply
 
@@ -688,7 +688,7 @@ None. This is tooling outside the frozen methodology and requires no amendment.
    **Adopted with the expectation that it might chafe**, and the failure mode to
    watch for is a specific one: if the gate makes people record a perfunctory
    check just to clear it, it has made things worse rather than better -- a
-   date in a field that nobody honoured is weaker evidence than an honest
+   date in a field that nobody honored is weaker evidence than an honest
    `never`. If that starts happening, the right response is to relax the gate,
    not to tighten the wording. Revisit after the seed set is loaded.
 

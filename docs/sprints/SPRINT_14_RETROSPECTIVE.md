@@ -60,7 +60,7 @@ shape for.
 - **Lead Developer**: Very Good
 - **Claude Code Development Team**: Three subagents, all read-and-report, all stayed inside their boundary. The
 changelog-material agent and the acronym-inventory agent both returned
-corrections to my assumptions rather than confirmations, which is the behaviour
+corrections to my assumptions rather than confirmations, which is the behavior
 worth having. The inventory agent's finding that seven acronyms I "knew" were in
 scope are absent from the submission was a direct correction I would not have
 caught alone.
@@ -236,7 +236,7 @@ copied or must be cited. **Answer: it varies, so write everything in our own
 words.**
 
 - **ULB creditcard** is Database Contents License v1.0, which grants a
-  royalty-free irrevocable licence including sublicensing, explicitly permits
+  royalty-free irrevocable license including sublicensing, explicitly permits
   commercial use, and specifies no attribution requirement. **We may copy it.**
   We will attribute anyway -- an explanatory document that hid its sources would
   contradict the posture of the project it explains.
@@ -248,8 +248,8 @@ words.**
 - **SPECTRA** unverified; treat as restrictive until checked.
 
 One reuse right out of three is not worth the inconsistency, so F73 paraphrases
-uniformly and records each dataset's licence beside it -- a reader learning
-about datasets should learn that datasets have licences.
+uniformly and records each dataset's license beside it -- a reader learning
+about datasets should learn that datasets have licenses.
 
 ## Transition note
 

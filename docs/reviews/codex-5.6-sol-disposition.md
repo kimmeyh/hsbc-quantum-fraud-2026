@@ -128,7 +128,7 @@ regularization) is correct and the reviewer agrees.
 
 ### 5, 22. Overlapping-resplit inference (ACCEPTED, already partly stated)
 
-We already labelled these "split dispersion, not sampling error". The reviewer
+We already labeled these "split dispersion, not sampling error". The reviewer
 is right that we then used a sign test across the same overlapping seeds and
 called p=0.021 support. Both documents now say the seed-level sign test and the
 interval are descriptive.

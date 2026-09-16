@@ -39,12 +39,12 @@ From the license text at opendatacommons.org:
 - **The DbCL itself specifies no attribution requirement.**
 
 **So we may copy the description.** We will attribute anyway, for two reasons:
-the dataset page asks for acknowledgement by convention, and an explanatory
+the dataset page asks for acknowledgment by convention, and an explanatory
 document that does not say where its facts came from would contradict the entire
 posture of the project it explains.
 
-**The acknowledgement to use**, as the dataset states it: the data was collected
-and analysed during a research collaboration of **Worldline** and the **Machine
+**The acknowledgment to use**, as the dataset states it: the data was collected
+and analyzed during a research collaboration of **Worldline** and the **Machine
 Learning Group of Université Libre de Bruxelles (MLG-ULB)** on big data mining
 and fraud detection.
 
@@ -57,7 +57,7 @@ Computational Intelligence Society, July to October 2019.
 pages are JavaScript-rendered and the rules sit behind acceptance. What I can
 establish from secondary sources is that the data is Vesta's **real-world
 e-commerce transactions**, which is commercial data contributed for a
-competition rather than published under an open licence.
+competition rather than published under an open license.
 
 **Treat as: cite, do not copy.** Competition data typically carries
 non-commercial and no-redistribution terms, and the burden of proof runs the
@@ -71,16 +71,16 @@ it costs us nothing, because we are paraphrasing anyway.
 ## What this means for F73
 
 1. **Write dataset explanations in our own words.** Uniform, maintainable, and
-   correct under every licence above.
+   correct under every license above.
 2. **Attribute every dataset** with its source and collaboration, whether or not
-   the licence compels it.
+   the license compels it.
 3. **Quote sparingly and only from ULB**, if a phrase is genuinely better than a
    paraphrase.
 4. **Do not reproduce IEEE-CIS field descriptions verbatim**, including the
    column dictionaries circulating in competition write-ups. Those are
    derivative of the competition data.
-5. **Record the licence beside each dataset** in the document, because a reader
-   learning about datasets should learn that datasets have licences.
+5. **Record the license beside each dataset** in the document, because a reader
+   learning about datasets should learn that datasets have licenses.
 
 ## What I could not establish
 
@@ -89,6 +89,6 @@ it costs us nothing, because we are paraphrasing anyway.
 - **SPECTRA licensing.** Not checked in this pre-flight. `docs/references.md`
   names the source; the terms were not verified.
 - Whether Kaggle's own Terms of Service add constraints on top of a dataset's
-  stated licence. Probably yes for scraping and redistribution of the files
+  stated license. Probably yes for scraping and redistribution of the files
   themselves, which we do not do -- `experiments/data/` is gitignored and only
   `MANIFEST.json` is committed.

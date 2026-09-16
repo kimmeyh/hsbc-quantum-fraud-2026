@@ -95,7 +95,7 @@ pipeline end to end in one environment.
 
 **Suggested fix.** Either select a spawn-compatible start method on platforms
 without `fork`, or document the Windows limitation prominently. The current
-behaviour reads as a bug in the user's setup rather than a platform constraint.
+behavior reads as a bug in the user's setup rather than a platform constraint.
 
 ## 4. Measured cost and dispersion, which you may find useful
 
@@ -114,7 +114,7 @@ Two things worth saying plainly. **The per-call rate is remarkably stable** --
 a 1-second spread across 37 calls made budget forecasting straightforward, and
 our block caps never came close to firing for the wrong reason. **The solver
 never returned a solution better than the certified classical optimum**, which
-is the correct behaviour and is worth having measured by an outside party.
+is the correct behavior and is worth having measured by an outside party.
 
 The stochasticity is real but small at this problem size: no fit returned
 identical energies across its eight samples, yet the within-fit spread has a
@@ -156,5 +156,5 @@ Both are single-fit experiments.
 We are not reporting a defect in the device. Solver fidelity was excellent
 throughout, and where our results are weak the cause was our own pool
 construction, which we describe in the accompanying proposal. These are
-integration findings: the places where the library's behaviour and its
+integration findings: the places where the library's behavior and its
 documentation diverge, and where a careful user can lose a day.

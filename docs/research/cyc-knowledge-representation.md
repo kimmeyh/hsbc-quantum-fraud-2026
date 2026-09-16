@@ -91,7 +91,7 @@ Lenat, in his own voice:
 **The fully general reasoner was never once useful in a million consecutive
 queries.** Everything Cyc actually does is done by specialised shortcuts. That
 is the strongest possible evidence for designing heuristics in from the start
-rather than treating them as an optimisation over a "proper" general method.
+rather than treating them as an optimization over a "proper" general method.
 
 ### How a heuristic gets created
 
@@ -160,7 +160,7 @@ The desiderata list gives the heuristics people use for the same job:
 
 ## Provenance and explanation
 
-Desideratum 1 is *Explanation*, and it sets a bar this project should recognise:
+Desideratum 1 is *Explanation*, and it sets a bar this project should recognize:
 
 > "A trustworthy AI should be able to recount its line of reasoning behind any
 > answer it gives. Asking a series of repeated *Why is that?* follow-up
@@ -258,5 +258,5 @@ Seven things worth carrying, and two worth deliberately NOT carrying.
 8. **The general theorem prover.** Turned off for a decade after a million
    consecutive timeouts. Do not build the general case first.
 9. **Hand-authoring at Cyc's scale.** 2,000 person-years is the cost of
-   world-modelling. Our scope is 151 records and a bounded set of assertions,
+   world-modeling. Our scope is 151 records and a bounded set of assertions,
    which is why this is tractable at all.

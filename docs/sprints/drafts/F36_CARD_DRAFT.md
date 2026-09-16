@@ -93,5 +93,5 @@ they are not, and the card is re-scoped rather than built.
 
 The Lua filter runs on every submission render, eight days before the deadline.
 Mitigation: the filter is opt-in via a `--lua-filter` flag in `render-pdf.ps1`,
-so removing one line reverts to today's behaviour, and criterion 6 checks every
+so removing one line reverts to today's behavior, and criterion 6 checks every
 other document explicitly.

@@ -126,7 +126,7 @@ PDFs render.
 
 **Premise falsifier for the sprint**: the premise is that B2 and B3 are runnable
 within the calendar. Falsifier: one complete B2 fit taking more than ~20 minutes
-of wall clock. If that fires, B2 is reduced or dropped in favour of B3, and the
+of wall clock. If that fires, B2 is reduced or dropped in favor of B3, and the
 proposal keeps its `[PROJ]` framing for the unrun block -- which the frozen grid
 already anticipates.
 

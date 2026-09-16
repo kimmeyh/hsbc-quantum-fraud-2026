@@ -177,7 +177,7 @@ feedback written after, and it does not soften a rating the team lead gave.
 - **Claude Code Development Team**:
 
   `docs/reviews/f36-float-tables-outcome.md` documents a failure in full, with
-  the false premise preserved as written and labelled, so nobody rebuilds it.
+  the false premise preserved as written and labeled, so nobody rebuilds it.
   The F36 card in the master plan carries its verdict at the top for the same
   reason. Recording a failed card properly is worth more than the card was.
 
@@ -286,7 +286,7 @@ feedback written after, and it does not soften a rating the team lead gave.
   A17 (every A11/A13 figure recomputed across four documents). Each was caught by
   a human reading or a one-off script.
 
-  The confidence field is the part I would emphasise. This project already
+  The confidence field is the part I would emphasize. This project already
   separates measured from projected via evidence tags, but not strong-measured
   from weak-measured. The score-degeneracy caveat, the single-seed spot checks
   and the adversarial control that never converged are asserted with genuinely
