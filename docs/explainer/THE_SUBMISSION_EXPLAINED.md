@@ -329,3 +329,102 @@ asked about March while having already studied May". That sentence needs the
 reader to hold two time periods and a sorting operation at once, and every
 shorter version tested either lost the time element or implied simple
 memorisation, which is the *different* cheat described above.
+
+---
+
+## 5. What the quantum machine does, and what it was compared against
+
+*Reading level achieved: grade 9.*
+
+Four sections in, and no quantum computer. That was deliberate. The finding is
+about careful measurement, and the machine is the thing that got measured.
+
+### First, what it is not
+
+Dirac-3, made by a company called QCi, is **not** the kind of quantum computer
+that appears in headlines about breaking codes. Those are gate-based machines
+built from qubits.
+
+Dirac-3 works with light. QCi's own research paper calls it "a hybrid
+photonic-electronic computer that uses optical measurement and feedback to solve
+non-convex optimization problems". It is a specialised machine that hunts for the
+lowest point in a mathematical landscape.
+
+The submission is careful here in a way worth copying: it treats the device as a
+photonic analog optimizer and **claims no quantum resource at all**. It also
+cites a published criticism arguing that the machine's demonstrated results do
+not beat good classical algorithms. Citing the strongest objection to your own
+tool is a sign to look for in technical writing.
+
+### The method: many small voters
+
+CVQBoost works like this.
+
+Build a large collection of very simple classifiers. Each one looks at just one
+or two or three features, and each votes on every transaction: guilty or
+innocent. Nothing subtle. One voter might only ever consider the amount.
+
+The main configuration used **91 voters looking at 13 features**.
+
+Now, no single voter is any good. The trick is combining them. Some voters
+deserve more say than others, so each gets a weight, and the final score is the
+weighted sum of all the votes.
+
+**Choosing those weights is the entire maths problem**, and it is the only place
+the quantum device is involved.
+
+### What the landscape means
+
+Picture a landscape where your position is one particular set of weights, and
+the altitude is how badly that combination performs. You want the lowest point.
+
+With 91 weights, the landscape has 91 dimensions, which nobody can picture. But
+the search is the same idea: find the bottom.
+
+Dirac-3 does this with light rather than arithmetic. It sets up a physical
+system whose lowest-energy state corresponds to the best set of weights, then
+lets physics settle and reads the answer.
+
+### The control that turns this into an experiment
+
+Here is the part that makes the whole project worth reading.
+
+Alongside every quantum run, an ordinary computer solved **the identical maths
+problem** using a standard method. Not a similar problem. Not an approximation.
+The same one.
+
+That matters because of a mathematical property of this particular landscape: it
+is what mathematicians call convex. It has exactly one lowest point, with no
+misleading dips elsewhere, and there are classical methods that find it and then
+**prove** they have found it. The proof here is a check whose error came out
+below 0.000000001.
+
+So the comparison is not "quantum versus some other guess". It is "quantum
+versus an answer already proven to be the best one available".
+
+### Which makes the question answerable
+
+This is the sharpest thing about the design. Because the classical solver can
+prove it found the true best answer, the quantum device **cannot beat it**. Not
+"probably will not". Cannot, in the way you cannot score higher than full marks.
+
+The submission says so outright and rules out the corresponding claim in advance:
+"the device found a better answer" is not available on this formulation and they
+will not make it.
+
+So the questions become measurable:
+
+- Does the device find the *same* answer the proven method found?
+- Does it get there faster or cheaper?
+- And underneath both: was this problem ever worth solving with special hardware?
+
+### What it cost
+
+61 runs on the real machine. 1,141 seconds of billed time. Zero failures, zero
+retries.
+
+A single fit bills 4 to 5 seconds on the device. The exact classical solve of the
+same problem takes milliseconds.
+
+Hold on to that comparison. Section 6 explains why it turned out to be the whole
+story.
