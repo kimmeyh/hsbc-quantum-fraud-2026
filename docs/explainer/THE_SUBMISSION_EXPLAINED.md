@@ -358,7 +358,17 @@ tool is a sign to look for in technical writing.
 
 ### The method: many small voters
 
-CVQBoost works like this.
+The method is called **CVQBoost**. It is not this project's invention: it is an
+existing published method that QCi's hardware is built to run, and two other
+research groups had already tried it on fraud data before this project did.
+
+(The submission never spells out what the letters stand for, so neither does
+this document. The device works with quantities that vary smoothly rather than
+switching on and off, which the submission calls "quasi-continuous", and that is
+probably where the CV comes from. "Probably" is doing real work in that
+sentence, so treat it as a guess rather than a fact.)
+
+It works like this.
 
 Build a large collection of very simple classifiers. Each one looks at just one
 or two or three features, and each votes on every transaction: guilty or
@@ -402,6 +412,20 @@ below 0.000000001.
 So the comparison is not "quantum versus some other guess". It is "quantum
 versus an answer already proven to be the best one available".
 
+**Two different classical comparisons are now in play, and it is worth
+keeping them apart.**
+
+- **The exact solver**, described here. It solves the same weight-choosing
+  problem the device solves, and proves its answer optimal. This is the
+  control that tests the *device*.
+- **An ordinary fraud model**, which does not use this method at all. It is a
+  conventional detector of the kind banks already run. This is what tests the
+  *approach*, and it is the 0.8070 in section 6.
+
+The first asks "did the device solve the problem correctly?" The second asks
+"was this whole approach worth taking?" The answers came out yes and no, in
+that order.
+
 ### Which makes the question answerable
 
 This is the sharpest thing about the design. Because the classical solver can
@@ -423,8 +447,17 @@ So the questions become measurable:
 61 runs on the real machine. 1,141 seconds of billed time. Zero failures, zero
 retries.
 
-A single fit bills 4 to 5 seconds on the device. The exact classical solve of the
+A small fit bills 4 to 5 seconds on the device. The exact classical solve of the
 same problem takes milliseconds.
+
+**Those two numbers do not divide into each other, and that is not a mistake.**
+61 runs at 5 seconds would be about 305 seconds, not 1,141. The difference is
+that bigger problems cost more time: the 4-to-5-second figure is what the small
+runs cost, while the large ones (the 833-voter setup in section 6) bill far more.
+Across the whole campaign the average is about 19 seconds a run.
+
+It is flagged here because two true numbers sitting next to each other can
+suggest a third thing that is false.
 
 Hold on to that comparison. Section 6 explains why it turned out to be the whole
 story.
@@ -445,6 +478,12 @@ The quantum arm lost by 0.0399. It lost on **nine of the ten** attempts.
 That number, 0.7671, is the measure section 2 described without naming: how well
 the detector does at the top of the ranked list. Its name is AUPRC. One means
 perfect, and the number you would get by guessing here is about 0.0017.
+
+**One qualifier the reader should carry forward**: 0.7671 is the same number
+section 4 used. It is a random-split score. Tested honestly by time it falls
+to 0.7095. So the headline comparison is between two random-split numbers,
+which is the fair way to compare them against each other, but neither is what
+either method would score in production.
 
 This was the main question the project committed to in advance. The answer is no.
 
@@ -509,6 +548,11 @@ That gained **+0.0319**, on ten attempts out of ten.
 
 Broken down, nearly all of it came from the rare-fraud correction (+0.0328). The
 optimizer's own contribution was **+0.0047**, with a spread of 0.0028.
+
+(That 0.0028 is a coincidence of value, not the same quantity as the 0.0028
+earlier in this section. The earlier one is a gap between two scores on the
+original voters. This one measures how much the +0.0047 wobbled between
+attempts on the rebuilt voters. Same digits, unrelated things.)
 
 Now, the design was only sensitive enough to detect differences of about 0.0268.
 So +0.0047 is well below what this experiment can even distinguish from nothing.
@@ -597,8 +641,10 @@ is recorded too, which is more telling than the other thirty-one.
 
 A report with no failures in it has usually had the failures removed.
 
-This one has a gate that failed. The project committed in advance that a
-particular model should reach 0.85 by their measure. It reached **0.8296**. They
+This one has a gate that failed. The project committed in advance that one of
+its ordinary models, a tuned XGBoost, should reach 0.85 AUPRC. It reached
+**0.8296**. (That is a third model, separate from the 0.8070 CatBoost in
+section 6 and from the quantum arm; several ordinary models were tried.) They
 recorded it as failed and said they were continuing anyway, along with the reason
 they later found the threshold itself was poorly founded.
 
