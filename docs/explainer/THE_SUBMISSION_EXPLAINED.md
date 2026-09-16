@@ -16,7 +16,7 @@ idea did not work.
 
 ## 1. Why banks cannot simply catch fraud
 
-*Reading level achieved: grade 8.*
+*Reading level: aimed at grade 8; measures 5.8 on Flesch-Kincaid.*
 
 Somebody steals a credit card number. They try to buy something with it. The
 bank has about one second to decide: let it through, or stop it?
@@ -66,7 +66,7 @@ of measuring whether a fraud detector is any good.
 
 ## 2. Why counting right answers makes a useless fraud detector
 
-*Reading level achieved: grade 8.*
+*Reading level: aimed at grade 8; measures 5.1.*
 
 Here is the obvious way to score a fraud detector: count how often it is right.
 Call that its accuracy.
@@ -127,7 +127,7 @@ the results need it.
 
 ## 3. Where the data comes from, and what it can and cannot tell you
 
-*Reading level achieved: grade 8.*
+*Reading level: aimed at grade 8; measures 7.9.*
 
 To test a fraud detector you need real transactions that somebody has already
 labelled as fraud or not. That data is hard to get, for an obvious reason: it is
@@ -210,7 +210,7 @@ false fact that a reader would carry away and repeat.
 
 ## 4. How a machine learns to rank, and the one mistake that fakes success
 
-*Reading level achieved: grade 9. See the note at the end of this section.*
+*Reading level: aimed at grade 9; measures 6.2. See the note at the end of this section.*
 
 This is the most important section in the document. If you only understand one
 thing here, understand this one, because it is what makes the result in section 6
@@ -334,7 +334,7 @@ memorisation, which is the *different* cheat described above.
 
 ## 5. What the quantum machine does, and what it was compared against
 
-*Reading level achieved: grade 9.*
+*Reading level: aimed at grade 9; measures 7.4.*
 
 Four sections in, and no quantum computer. That was deliberate. The finding is
 about careful measurement, and the machine is the thing that got measured.
@@ -433,7 +433,7 @@ story.
 
 ## 6. What we found, and why "it did not help" is a real result
 
-*Reading level achieved: grade 9.*
+*Reading level: aimed at grade 9; measures 6.6.*
 
 ### The headline
 
@@ -553,3 +553,121 @@ invisible, and their absence is itself a distortion.
 
 A result you did not want is still information. Withholding it is the only way
 to make the months genuinely wasted.
+
+---
+
+## 7. How to know whether to believe any of this
+
+*Reading level: aimed at grade 8; measures 7.4.*
+
+You should not take the last six sections on trust. This one is about how to
+check, and the habits it describes work on any technical claim, not just this
+one.
+
+### Decide what counts as success before you look
+
+The single most important thing this project did happened before any experiment
+ran.
+
+They wrote down what they would test, what result would count as success, how
+many attempts they would make, and how they would measure. Then they froze it,
+with a timestamp and a code that identifies the exact version.
+
+**Why this matters more than it sounds.** If you run the experiment first and
+decide afterwards what counted, you will find something. There are always
+several ways to slice a result, and the human brain is excellent at noticing the
+flattering one and calling it the plan all along. Nobody is lying. It simply is
+not a test any more.
+
+Deciding first makes it a test again, because the result can come back *no*.
+
+### Changing the plan is fine. Hiding the change is not
+
+Plans do need to change. Thirty-two changes were made and dated here, each with
+its reason.
+
+What makes that honest rather than convenient is that the original stays
+readable. Anyone can see what was planned, what changed, when, and why.
+
+Three of those corrections were made *after* figures had already been published.
+And one of the corrections was itself wrong and had to be corrected again. That
+is recorded too, which is more telling than the other thirty-one.
+
+### Look for the failures
+
+A report with no failures in it has usually had the failures removed.
+
+This one has a gate that failed. The project committed in advance that a
+particular model should reach 0.85 by their measure. It reached **0.8296**. They
+recorded it as failed and said they were continuing anyway, along with the reason
+they later found the threshold itself was poorly founded.
+
+They also describe an earlier hardware run that appeared to *triple* the method's
+score. It was traced the same day to a setup mistake, withdrawn and re-run, and
+the wrong figures appear nowhere in the submission.
+
+**When you read any technical claim, look for the part where something went
+wrong.** If it is missing entirely, that is information about the report, not
+about the work.
+
+### Say where every number came from
+
+Every number in the submission carries a tag saying whether it was measured on
+the real quantum hardware, produced by ordinary computers, or projected as an
+estimate.
+
+That sounds bureaucratic. It prevents a specific and common trick: quoting a
+projected number beside a measured one so the reader assumes both were measured.
+
+### Make it possible to be proved wrong
+
+The whole repository is public, including the frozen plan, all thirty-two
+changes, the per-attempt values and the scripts that regenerate every figure.
+
+That is the strongest available signal. Someone who publishes the means to
+contradict themselves is more likely to have checked their own work.
+
+### What you can actually do with this
+
+You do not need a quantum computer or a statistics course to use any of this.
+Next time you meet a confident technical claim, ask:
+
+- Was the success criterion set before or after the result came in?
+- Where are the failures?
+- Which numbers were measured, and which were estimated?
+- Can anyone else check it?
+
+Those four questions do most of the work, and this project would rather you
+asked them about its own submission than took it on faith.
+
+---
+
+## About the reading levels in this document
+
+Each section shows two numbers. They mean different things and it is worth
+knowing why they disagree.
+
+**"Aimed at grade N"** is the target. The rule this project uses: start at grade
+8, and go up by one grade only where an honest explanation cannot be given at the
+lower level. Sections 4, 5 and 6 aim at 9 because the ideas in them genuinely
+need more of the reader, not because the writing got lazier.
+
+**"Measures N"** is Flesch-Kincaid, a formula that counts syllables per word and
+words per sentence. Every section measures between 5.1 and 7.9, which is lower
+than every target.
+
+**The gap is the interesting part, and it is not a mistake in either number.**
+
+Flesch-Kincaid cannot see difficulty. It counts "the machine is being asked about
+March while having already studied May" as easy, because the words are short. A
+reader holding two time periods, a sorted list and a comparison in their head at
+once is doing grade-9 work with grade-6 vocabulary.
+
+So the formula is a floor, not a verdict. It catches writing that is needlessly
+dense. It cannot catch an idea that is simply hard, and it would score a short
+meaningless sentence as excellent.
+
+This is why the real test of this document is not either number. It is whether
+someone who has not read the submission can explain back what CVQBoost is and why
+the result is a null. That test is being run separately, and its result is
+recorded whether it passes or fails.
