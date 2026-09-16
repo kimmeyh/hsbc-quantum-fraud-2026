@@ -103,7 +103,7 @@ categories; all six improvements applied).
 
 **THE PHASE 1 ROADMAP IS COMPLETE (2026-09-12).** Every row above is [DONE] and
 the submission is filed. The table described a run to a deadline; that deadline
-has passed in our favour and the roadmap no longer describes any pending work.
+has passed in our favor and the roadmap no longer describes any pending work.
 
 What replaces it, recorded so the next refinement does not invent a schedule:
 the judging window is **16 Sep to 14 Nov 2026**, with finalists announced
@@ -196,7 +196,7 @@ candidates per convention.)
 - **THE PHYSICS PREDICTS AN ANSWER, which is what makes it a test rather than a data point.** A31 established the device cannot spread weight over more than about 200 learners. At 153 variables it CAN; at 833 it cannot. If the gain is attributable to k, it should appear at 153 under a faithful solve. If it needs three-feature learners, it will not. Either outcome is informative, and one of them would materially change what B.3 claims
 - **ZERO METERED SECONDS.** Classical proxy only, ten pool builds at 153 variables
 - **Why it was NOT run in Sprint 12** (team lead decision, 2026-09-12): the submission documents were final and within limits, PR #75 was merge-ready, and the deadline was 2026-09-15. A new result means new figures in a 6-of-6-page proposal and possibly another amendment. The submission is stronger finished than with one more experiment squeezed into its last days. Deferred deliberately, not overlooked
-- Acceptance: the cell runs on the same seeds and protocol as its two neighbours; B.3 states the decomposition instead of declining it; if the result changes what the +0.0256 is attributable to, that is an amendment
+- Acceptance: the cell runs on the same seeds and protocol as its two neighbors; B.3 states the decomposition instead of declining it; if the result changes what the +0.0256 is attributable to, that is an amendment
 - Depends on: nothing. It is the first thing Phase 2 should run
 - **SELECTED for Sprint 13 then WITHDRAWN the same day (team lead, 2026-09-12).** The reason is methodological and supersedes the Sprint 12 scheduling deferral above. F64 varies ONE axis with everything else frozen at values chosen for a different configuration (pool family, lambda, weak-learner type, the cardinality question). The gain that matters is likely a COMBINATION of these, so a one-factor-at-a-time probe measures the axis it varies and is silent about the interaction, which is where the leverage is expected to sit
 - The result could not become FALSE, but it could become UNIMPORTANT: a true fact about a formulation Phase 2 abandons. A31 already established that the device cannot spread weight over more than ~200 learners, so F64 decomposes a result inside a formulation we already have evidence is the wrong ask of the hardware
@@ -332,7 +332,7 @@ not "selected", and the team lead sets priority. But they should be read as
 candidates at the next refinement rather than skipped as held. (F39 was on this list and is
 now done: ADR-0014 was accepted in Sprint 14 and its build is F77.)
 
-Flagged rather than re-prioritised: re-scoring nine cards is a scope decision,
+Flagged rather than re-prioritized: re-scoring nine cards is a scope decision,
 not a sweep correction.
 
 
@@ -385,7 +385,7 @@ not a sweep correction.
 - Preserves every existing guard: spend caps computed against projected spend INCLUDING in-flight requests, frozen identical-config retry rule, B1 hash verification, unparseable-billing charge
 - Fully tested offline first (fake client simulating queue latency, out-of-order completion, crash-restart, failed job, unreadable billing); only then 2-3 real calls at window size 2, on explicit approval
 - Full card drafted at docs/sprints/drafts/F30_CARD_DRAFT.md
-- **Measured queue behaviour, 2026-09-09**: the F46 probe submitted at 14:33 local was still queued 52 minutes later, having spent ~97 CPU-seconds on its local pool build. Flat CPU against growing wall clock is the signature of queue wait, not computation. The team lead reports the queue is ALMOST ALWAYS EMPTY AFTER 5PM LOCAL, so wall-clock cost is a function of WHEN a block runs, not what it computes
+- **Measured queue behavior, 2026-09-09**: the F46 probe submitted at 14:33 local was still queued 52 minutes later, having spent ~97 CPU-seconds on its local pool build. Flat CPU against growing wall clock is the signature of queue wait, not computation. The team lead reports the queue is ALMOST ALWAYS EMPTY AFTER 5PM LOCAL, so wall-clock cost is a function of WHEN a block runs, not what it computes
 - **The team lead's intent for this card**: enqueue 4 or more jobs at once so they run CONSECUTIVELY, raising the odds they execute back to back rather than each paying a fresh queue wait. That is a different and stronger value case than the throughput argument below
 - Value was judged to arrive with Phase 2 volume (81+ fit grids), and that judgment was made against a free tier with 163 spent seconds. With 3,000 granted seconds (F46) and queue wait as the binding cost rather than device seconds, the case is stronger: whenever a session needs more than one or two fits, serial submission wastes most of the wall clock. Still not recommended BEFORE submission, on calendar grounds alone
 - Depends on: nothing to build; live vetting needs team-lead approval (Criterion H)

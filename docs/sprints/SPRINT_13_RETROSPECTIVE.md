@@ -171,7 +171,7 @@ reliance.
 - **Scrum Master**: Very Good
 - **Lead Developer**: Very Good
 - **Claude Code Development Team**: High. Both agents stayed inside their read-and-report boundary and neither
-required rework. The evidence walk's most valuable behaviour was distinguishing
+required rework. The evidence walk's most valuable behavior was distinguishing
 verified from inferred without being asked twice, and explicitly confirming
 correct figures rather than reporting only problems -- which is what let me trust
 the six findings enough to bring them forward.

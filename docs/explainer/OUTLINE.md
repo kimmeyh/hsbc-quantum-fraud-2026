@@ -59,9 +59,9 @@ onto the world.
 
 - **ULB**: 284,807 real European card transactions over two days. Most columns
   are outputs of a transformation that hides what they originally meant, for
-  privacy. Licence: DbCL v1.0, may be copied.
+  privacy. License: DbCL v1.0, may be copied.
 - **IEEE-CIS**: 590,540 transactions from Vesta Corporation, a payments company,
-  released for a competition. Fraud rate 3.5%, twenty times ULB's. Licence:
+  released for a competition. Fraud rate 3.5%, twenty times ULB's. License:
   competition data, paraphrase and cite, never copy.
 - **SPECTRA is NOT in this section.** Corrected 2026-09-16 while writing Task C:
   `grep` finds SPECTRA zero times in the submitted proposal and appendix. It is
@@ -89,7 +89,7 @@ cheating. This is the most load-bearing section in the document.
   It looks for patterns that separate the two groups.
 - Testing: hide the answers on transactions it has never seen and score it.
 - **The cheat**: test on the same rows you trained on and the score is
-  meaningless. The machine memorised rather than learned.
+  meaningless. The machine memorized rather than learned.
 - **The subtler cheat, and the one that matters here**: split your data at
   random when it is ordered in time, and the machine gets to see Thursday while
   predicting Wednesday. Fraud patterns change week to week, so this flatters the
@@ -106,7 +106,7 @@ cheating. This is the most load-bearing section in the document.
   landscape. We claim no quantum resource, and the proposal says so.
 - CVQBoost: build many simple voters, each looking at one or a few features.
   Each votes guilty or innocent. Then choose how much each vote counts.
-- Choosing the weights is the maths problem. Dirac-3 solves it with light.
+- Choosing the weights is the math problem. Dirac-3 solves it with light.
 - **The control that makes it an experiment**: an ordinary computer solves the
   identical problem exactly, and can prove its answer is the best possible one.
 - **So the question is answerable**: not "is quantum good?" but "does this

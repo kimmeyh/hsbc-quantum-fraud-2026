@@ -19,6 +19,17 @@ The evidence files have their own verification path: `score_gates.py` regenerate
 - Team-lead `0*` working files at repo root: commit with a neutral message, never read.
 - `--no-verify` is banned; the pre-commit confidentiality hook stays active.
 - Every reported number originates in `results.json` with an evidence tag.
+- **US English, always.** The team lead writes and expects US English, even though
+  HSBC is based in England. Prefer `-ize` over `-ise`, `-or` over `-our`, `-er`
+  over `-re`, `-se` over `-ce` in nouns like `license` and `defense`, and single
+  `-l-` before a suffix as in `labeled` and `modeling`. The full list lives in
+  `experiments/src/test_us_english.py`, which enforces it, and
+  `scripts/us_english_fix.py` applies the conversion. (This bullet deliberately
+  spells out no counter-example: the guard scans every tracked markdown file,
+  including this one, so a document cannot carry the spellings it bans.) The
+  submitted documents (`docs/paper/`, `docs/submission/`) and the FROZEN
+  `experiments/PREREGISTRATION.md` are EXEMPT and must never be swept: they are
+  documents of record for a filing made 2026-09-12. (Team lead, 2026-09-16.)
 - **This repository's sessions NEVER write to another repository.** Work in
   `hsbc-quantum-fraud-2026` does not create, edit, commit or push files in
   `spamfilter-multi` or `EvidenceBasedDB`. Reading them on request is fine.
@@ -71,7 +82,7 @@ only in memory.
 
 - **Don't touch more than one file or surface on a request without echoing the
   requirement back first.** One sentence: "I understand you want X to happen on
-  Y, with Z behaviour. Correct?" Wait, then proceed without re-asking for the
+  Y, with Z behavior. Correct?" Wait, then proceed without re-asking for the
   same task. Skip it for trivial one-line fixes and doc-only edits with no scope
   ambiguity.
 
@@ -94,7 +105,7 @@ only in memory.
   first.** Compare its date and its claims against git log, sprint status and the
   docs it names before trusting its "next steps". A memory that was true when
   written can be stale when recalled. (The Dirac-3 queue-timing memory here is
-  dated and describes hardware behaviour that must be re-checked against the
+  dated and describes hardware behavior that must be re-checked against the
   current allocation and ledger before it drives a run.)
 
 - **Don't claim a guard works because the suite is green. Prove it FAILS.** A

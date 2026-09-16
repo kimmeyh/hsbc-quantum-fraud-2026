@@ -43,7 +43,7 @@ was wrong for exactly that reason.
 - a library nobody reaches for is useless however cheaply it was built, and
   reaches uselessness FASTER at agent speed;
 - maintenance decay does not care who wrote the record;
-- **volume without judgement gets WORSE**: 2,000 confident-sounding
+- **volume without judgment gets WORSE**: 2,000 confident-sounding
   unadjudicated records look authoritative and scale the error.
 
 The surviving scarce resource is **team-lead adjudication**, not drafting. Read

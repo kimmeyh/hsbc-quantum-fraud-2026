@@ -272,7 +272,7 @@ it will end as a human checklist rather than an assertion.
    Recorded on the F3 card: the frozen arm is the preregistered comparator and
    must be carried for continuity, while the tuned arm is where F33 measured the
    accuracy to live. Running only one would either break comparability with
-   every prior result or omit the configuration the evidence now favours.
+   every prior result or omit the configuration the evidence now favors.
 2. **Should anything in the F33 account be framed differently for QCi?** "good
    as is." The letter stands; team-lead feedback on the wider package is still
    expected before the Monday send, and card #40 stays open for it.

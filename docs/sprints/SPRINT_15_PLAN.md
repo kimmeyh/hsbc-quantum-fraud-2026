@@ -87,7 +87,7 @@ never copied. SPECTRA is unverified. Per the pre-flight's own conclusion, every
 dataset explanation is written in our own words regardless, because one reuse
 right out of three is not worth the inconsistency.
 
-Acceptance: each dataset attributed with its licence; no copied text from any of
+Acceptance: each dataset attributed with its license; no copied text from any of
 the three; a reader can say what each dataset contains.
 
 ### Task D: How machine learning predicts from a table (~90m)
@@ -166,7 +166,7 @@ reason.
 
 - Every section states the grade level it achieved
 - The disclaimer is present in the team lead's wording
-- Every dataset is attributed with its licence, none copied
+- Every dataset is attributed with its license, none copied
 - The falsifier has been RUN, with its result recorded including a failure
 - A reader with no quantum or ML background can follow the argument from problem
   to null result

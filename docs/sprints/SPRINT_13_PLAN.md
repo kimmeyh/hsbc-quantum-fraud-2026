@@ -111,7 +111,7 @@ found three disagreements during the pre-flight alone.
 | **A late edit breaks a page limit** | Task D re-renders and re-runs `page-fill-report.py` AFTER all edits. Appendix p3 has only 6.1 lines of slack |
 | **Class 4 edits without approval** | Any submission-document change is presented text-before / text-after / pros / cons / recommendation FIRST. Enforced by hook, not by memory |
 | **Deadline 2026-09-15** | F10 is the only submission blocker and the only scope. No competing work |
-| **Portal behaviour on upload** | Residual unknowns recorded in matrix row A5 (size cap display, whether upload marks "submitted"). Team lead walks it; nothing is uploaded until the package is final |
+| **Portal behavior on upload** | Residual unknowns recorded in matrix row A5 (size cap display, whether upload marks "submitted"). Team lead walks it; nothing is uploaded until the package is final |
 
 
 ## Already-found F10 work (from the pre-flight)

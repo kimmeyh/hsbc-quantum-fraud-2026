@@ -126,7 +126,7 @@ of numbers and was wrong within the same sprint, which is precisely the failure
 one-source-of-truth avoids.
 
 **The skips are correct and expected.** They are the tests that need raw
-datasets, which are not redistributed here because their licences do not permit
+datasets, which are not redistributed here because their licenses do not permit
 it. A fresh clone cannot run them, and they skip rather than fail so that a red
 suite always means a real defect. Each skip states its own reason; run with
 `-rs` to see them.
@@ -203,7 +203,7 @@ scripts/          rendering, manifest, confidentiality scan
 Methodology was **frozen before any result was observed** and changes only by
 dated amendment. Gates are scored as committed even when they fail: G0 missed
 its 0.85 AUPRC floor at 0.8296, and that is reported as a failure along with the
-fact that the stopping rule attached to it was not honoured.
+fact that the stopping rule attached to it was not honored.
 
 Three published claims were found false during external review and withdrawn
 (A26, A27) rather than quietly corrected. The amendment log carries them,
@@ -218,7 +218,7 @@ Phase 1 submitted 2026-09-12. Review runs 16 Sep to 14 Nov 2026, with finalist
 notification mid-November. Work continues on tooling and Phase 2 preparation;
 the submitted documents are a record and are not edited.
 
-## Licence and contact
+## License and contact
 
 Team lead: Harold Kimmey, independent researcher. Contact details are in the
 team profile. All IP remains with the author per the Challenge Terms &

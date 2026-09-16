@@ -178,7 +178,7 @@ implied; the figures trace to `ieee_classical.json`.
 ### Task D -- F37: make the repository public (45m, TEAM-LEAD ACTION)
 
 Full-history scan (history was deliberately not rewritten), confirm no
-credential material, confirm licences permit redistributing derived checksums,
+credential material, confirm licenses permit redistributing derived checksums,
 **team lead flips visibility**, verify anonymously logged out.
 
 **Acceptance**: anonymous fetch returns 200 and requirements.txt,
@@ -214,7 +214,7 @@ wrong ones into assertions.
 
 ### Task G -- F35: interpretation-layer tests (120m)
 
-Three consecutive sprints where the defect that travelled furthest was a claim
+Three consecutive sprints where the defect that traveled furthest was a claim
 about what a number MEANS, not an arithmetic error. Tests that assert the
 interpretation: an evidence tag matches the arm that produced it, a "measured"
 claim has a results row, a gate marked PASS has its criterion recorded.
@@ -291,7 +291,7 @@ since balance-before minus balance-after is the authoritative cost.
 
 **No metered call is needed to verify this.** The 27 historical ids exercise
 retrieval and reconstruction; a fake client exercises capture and crash
-behaviour. Verification uses zero QPU seconds by construction.
+behavior. Verification uses zero QPU seconds by construction.
 
 ## Risks
 

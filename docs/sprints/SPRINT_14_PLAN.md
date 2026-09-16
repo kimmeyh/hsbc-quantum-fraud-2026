@@ -74,7 +74,7 @@ regeneration claim false for the first reader who tries it.**
 | A | **F68** | Fix both hook registrations; injection-prove them; add a test that every registered hook path resolves and carries no control characters; extend to history rewrites and tag moves; README as-submitted section | 120m | Opus |
 | B | **F69** | README rebuilt: key documents, HOW TO REPRODUCE (clone, venv, one quick test, each major test with caveats), as-submitted retrieval. **Reproduce section executed, not drafted** | 120m | Opus |
 | C | **F70** | CHANGELOG backfilled Sep 5-12 from git, sprint summaries, amendment log, PRs; unreconstructable days said so explicitly; workflow Phase 8 names the step before refinement | 90m | Opus |
-| D | **F71** | CHECKLIST into three ordered sections: PRE-PHASE 2 (live), PHASE 2 (from the proposal's six-experiment programme), CHALLENGE SUBMISSION (completed, corrected to actuals) | 90m | Opus |
+| D | **F71** | CHECKLIST into three ordered sections: PRE-PHASE 2 (live), PHASE 2 (from the proposal's six-experiment program), CHALLENGE SUBMISSION (completed, corrected to actuals) | 90m | Opus |
 | E | **F48** | Escape hook extended to shell metacharacters | 45m | Opus |
 | F | **F66** | Copilot reviewer-request procedure into the workflow | 15m | Opus |
 | G | **F65** | Per-fit artifact write in the hardware runner | 45m | Opus |
@@ -103,7 +103,7 @@ The procedure, run in this order:
 6. Write the caveats from that record, not from memory
 
 **The expected and correct outcome is a partial pass.** The ULB, IEEE-CIS and
-SPECTRA datasets are not redistributed -- their licences do not permit it -- so
+SPECTRA datasets are not redistributed -- their licenses do not permit it -- so
 data-dependent tests must skip on a fresh clone. The README's job is to say so
 plainly and tell the reader how to stage the data, not to imply a clean full run
 that nobody can reproduce.

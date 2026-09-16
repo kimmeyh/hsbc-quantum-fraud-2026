@@ -130,7 +130,7 @@ the results need it.
 *Reading level: aimed at grade 8; measures 7.9.*
 
 To test a fraud detector you need real transactions that somebody has already
-labelled as fraud or not. That data is hard to get, for an obvious reason: it is
+labeled as fraud or not. That data is hard to get, for an obvious reason: it is
 a record of what real people bought.
 
 Two collections were used here. They are not interchangeable, and the difference
@@ -158,7 +158,7 @@ This matters for honesty: nobody can claim their detector works because it
 cleverly noticed something about, say, petrol stations at 3am. Nobody can see
 petrol stations in this data.
 
-**Licence**: published under the Database Contents License, which permits reuse.
+**License**: published under the Database Contents License, which permits reuse.
 Even so, everything in this section is written in our own words.
 
 ### The competition set (called IEEE-CIS)
@@ -171,13 +171,13 @@ Two differences from the first set matter:
 - **Fraud is twenty times more common here**: 3.5 percent rather than 0.17.
 - **It spans months, not two days.**
 
-**Licence**: competition data. The rules are behind a sign-in wall and could not
+**License**: competition data. The rules are behind a sign-in wall and could not
 be read anonymously, so it is treated as *do not copy*. Everything here is
 paraphrased and cited, never quoted.
 
 ### Why two, and why the second one exists
 
-The European set has a flaw that no amount of clever modelling fixes: two days
+The European set has a flaw that no amount of clever modeling fixes: two days
 is not enough time to see anything change.
 
 Fraud is not a fixed target. Thieves change tactics; a trick that worked last
@@ -334,7 +334,7 @@ memorisation, which is the *different* cheat described above.
 
 ## 5. What the quantum machine does, and what it was compared against
 
-*Reading level: aimed at grade 9; measures 7.4.*
+*Reading level: aimed at grade 9; measures 6.9.*
 
 Four sections in, and no quantum computer. That was deliberate. The finding is
 about careful measurement, and the machine is the thing that got measured.
@@ -358,15 +358,42 @@ tool is a sign to look for in technical writing.
 
 ### The method: many small voters
 
-The method is called **CVQBoost**. It is not this project's invention: it is an
-existing published method that QCi's hardware is built to run, and two other
+The method is called **CVQBoost**, and the name has a history worth knowing
+because it tells you exactly what the method is.
+
+**QBoost** came first: Quantum Boosting, published in 2012 by Neven and
+colleagues. "Boosting" is an old and ordinary idea in machine learning,
+which you already understand from section 2's ranked list: take many weak rules
+and combine them into one strong one. QBoost's contribution was to hand the
+combining step to a quantum machine.
+
+**CVQBoost** is QCi's version, built for the Dirac-3 machine and published in
+2025. It is not this project's invention, it is open source, and two other
 research groups had already tried it on fraud data before this project did.
 
-(The submission never spells out what the letters stand for, so neither does
-this document. The device works with quantities that vary smoothly rather than
-switching on and off, which the submission calls "quasi-continuous", and that is
-probably where the CV comes from. "Probably" is doing real work in that
-sentence, so treat it as a guess rather than a fact.)
+**The difference between the two is the whole point**, and it is one word.
+
+In the original QBoost, each voter is either **in or out**. The machine picks a
+subset: this voter counts, that one does not. On or off, nothing between.
+
+In CVQBoost, each voter gets a **smoothly varying** amount of say. Not in or out,
+but 0.03 of a vote, or 0.11, with all the weights adding up to 1.
+
+The paper states the reason plainly: they did not need to force the weights into
+on-or-off form, because the Dirac-3 machine natively works with smoothly varying
+quantities. **The method was shaped by what the hardware could do.**
+
+That matters for section 6. When you read that the weights came out nearly equal
+and that nudging them barely changed anything, remember that smoothly adjustable
+weights are the entire reason this version of the method exists. The one thing
+it added over its predecessor is the thing that turned out not to matter here.
+
+(A note on the name: "CV" is the only part nobody will tell you. The paper uses
+the name 84 times and never once says what the letters stand for. It introduces
+the name in a sentence about hardware that "encodes into continuous variables",
+and QCi's own source code calls the file `cvqboost_hamiltonian`, so "continuous
+variable" is the near-certain reading. It is still an inference. Search engines
+will state it as fact; they cannot show you where it was written down either.)
 
 It works like this.
 
@@ -515,14 +542,14 @@ answer does not depend much on the solving.
 
 Here is the check that makes this airtight rather than a story.
 
-Compare two things: the carefully optimised weights, and simply giving every
+Compare two things: the carefully optimized weights, and simply giving every
 voter an equal say. The difference was **0.0028**.
 
 Then ask how much the score moves for a reason that is definitely meaningless:
 just reshuffling voters that were exactly tied with each other. That produced
 swings of **0.0120**.
 
-**The "improvement" from optimising is four times smaller than the noise from
+**The "improvement" from optimizing is four times smaller than the noise from
 meaningless reshuffling.** So it is not an improvement. It is tie-breaking.
 
 ### Did the machine at least work?
@@ -557,7 +584,7 @@ attempts on the rebuilt voters. Same digits, unrelated things.)
 Now, the design was only sensitive enough to detect differences of about 0.0268.
 So +0.0047 is well below what this experiment can even distinguish from nothing.
 
-**The gain came from building better voters, not from better optimisation.**
+**The gain came from building better voters, not from better optimization.**
 
 ### The one positive result, reported with its caveat
 
@@ -587,7 +614,7 @@ answer, a machine that finds best answers adds nothing.* That points at problems
 where finding the answer is genuinely hard, which is the project's next step.
 
 **The diagnosis is reusable even where the conclusion is not.** "Check whether
-your voters are all saying the same thing before optimising how to combine them"
+your voters are all saying the same thing before optimizing how to combine them"
 applies far beyond this project.
 
 **Publishing only what works poisons the record.** If every team that tried this

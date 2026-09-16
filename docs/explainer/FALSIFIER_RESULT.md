@@ -34,7 +34,7 @@ Correct without help, including the parts that were hardest to write:
 - CVQBoost as a crowd of weak voters whose weighting is the only quantum step
 - The null's cause located at the voters, not the optimizer: 80 to 84 of 91
   reproduce the training answers exactly, so they are one opinion repeated
-- **The clinching measurement, unprompted**: optimising beat equal weighting by
+- **The clinching measurement, unprompted**: optimizing beat equal weighting by
   0.0028 while meaningless reshuffling of tied voters swung 0.0120, so it is
   tie-breaking rather than improvement
 - Why the device could not beat the exact solver, and why ruling that out in

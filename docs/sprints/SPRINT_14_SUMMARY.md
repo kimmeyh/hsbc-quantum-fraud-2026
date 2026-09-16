@@ -118,7 +118,7 @@ before much had been built on the wrong assumption:
 
 - **The scope is not one project's glossary.** 151 records is use case ONE; the
   target is a domain knowledge base over QML, ML, QC and the major platforms.
-  That weakened the "we are not Cyc" defence and moved authorship economics from
+  That weakened the "we are not Cyc" defense and moved authorship economics from
   a footnote to the central question.
 - **Agent economics invalidate the collector's-fallacy arithmetic.** That
   literature measures human attention. The surviving scarce resource is

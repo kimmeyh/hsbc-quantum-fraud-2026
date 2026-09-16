@@ -18,7 +18,7 @@ result, on every fold:
 Twenty features dropped per fold and early/late rows remain almost perfectly
 separable. The drift is not concentrated in a few columns; it is spread across
 the feature set, which is consistent with IEEE-CIS spanning roughly six months
-of genuinely changing behaviour.
+of genuinely changing behavior.
 
 WHAT THIS MEANS FOR THE NUMBERS. A classical baseline measured under a protocol
 whose own drift control did not converge is weaker evidence than the AUPRC
@@ -54,7 +54,7 @@ Every IEEE-CIS AUPRC in the paper carries its prevalence beside it.
 | Our Sprint 5 scale check | 0.861 | stratified random | raw joined |
 | Our F3 protocol run | 0.574 | temporal rolling origin | full recipe |
 
-The scale check was labelled "NOT a preregistered cell" with four caveats,
+The scale check was labeled "NOT a preregistered cell" with four caveats,
 including "single stratified split, not the preregistered temporal protocol".
 That label is now doing real work: the 0.287 gap between it and the protocol run
 is the same effect Sprint 5 measured on ULB, where a random split contributed
