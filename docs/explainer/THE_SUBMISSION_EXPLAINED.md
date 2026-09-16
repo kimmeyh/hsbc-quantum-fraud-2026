@@ -428,3 +428,128 @@ same problem takes milliseconds.
 
 Hold on to that comparison. Section 6 explains why it turned out to be the whole
 story.
+
+---
+
+## 6. What we found, and why "it did not help" is a real result
+
+*Reading level achieved: grade 9.*
+
+### The headline
+
+The quantum-inspired method scored **0.7671**. A well-tuned ordinary model,
+looking at the same 13 features, scored **0.8070**.
+
+The quantum arm lost by 0.0399. It lost on **nine of the ten** attempts.
+
+That number, 0.7671, is the measure section 2 described without naming: how well
+the detector does at the top of the ranked list. Its name is AUPRC. One means
+perfect, and the number you would get by guessing here is about 0.0017.
+
+This was the main question the project committed to in advance. The answer is no.
+
+### Why, and this is the part that matters
+
+A disappointing result is only useful if you can say *why*. Otherwise the next
+person repeats it.
+
+The cause was measured, not guessed, and it is at the voters.
+
+Remember the 91 simple voters from section 5. It turns out that **80 to 84 of
+them reproduce the training answers exactly**. Each one, alone, already "gets
+every training transaction right".
+
+They are not 91 different opinions. They are nearly the same opinion, 91 times.
+
+When every voter says the same thing, **how you weight them cannot matter.**
+Give one a bigger say, give another a smaller say: the weighted total barely
+moves, because they are all voting the same way.
+
+Mathematically the submission puts it precisely: the relationships between voters
+form a pattern that is "rank-one to numerical precision", which is the technical
+way of saying there is really only one opinion in the room.
+
+So the optimizer, quantum or classical, was being asked to solve a problem whose
+answer does not depend much on the solving.
+
+### The measurement that clinches it
+
+Here is the check that makes this airtight rather than a story.
+
+Compare two things: the carefully optimised weights, and simply giving every
+voter an equal say. The difference was **0.0028**.
+
+Then ask how much the score moves for a reason that is definitely meaningless:
+just reshuffling voters that were exactly tied with each other. That produced
+swings of **0.0120**.
+
+**The "improvement" from optimising is four times smaller than the noise from
+meaningless reshuffling.** So it is not an improvement. It is tie-breaking.
+
+### Did the machine at least work?
+
+Yes, and this distinction matters.
+
+The device's answers agreed with the proven-optimal classical answers to within
+0.0010. It solved the problem faithfully.
+
+**The problem just was not worth solving.** That is a different finding from "the
+machine is broken", and confusing the two would be the easiest mistake to make
+here.
+
+There is also no speed argument at this size. A device fit bills 4 to 5 seconds;
+the exact classical solve takes milliseconds.
+
+### Where the real gain was
+
+The project then rebuilt the voters properly: different kinds of voter, and a
+correction for how rare fraud is.
+
+That gained **+0.0319**, on ten attempts out of ten.
+
+Broken down, nearly all of it came from the rare-fraud correction (+0.0328). The
+optimizer's own contribution was **+0.0047**, with a spread of 0.0028.
+
+Now, the design was only sensitive enough to detect differences of about 0.0268.
+So +0.0047 is well below what this experiment can even distinguish from nothing.
+
+**The gain came from building better voters, not from better optimisation.**
+
+### The one positive result, reported with its caveat
+
+One configuration did gain: a larger setup using three-feature voters scored
+**+0.0256** on ten of ten attempts.
+
+That is honestly reported, and so is the problem with it: **two things changed at
+once.** The number of features went up *and* the voters got more complex. With
+both moving together you cannot say which caused the gain.
+
+The submission names the specific experiment that would separate them, states
+that it has not been run, and says the gain cannot be attributed until it is.
+
+That is what an honest positive result looks like. A less careful write-up would
+have led with +0.0256 and left the confound out.
+
+### So why publish a null at all?
+
+Four reasons, and they are not consolation prizes.
+
+**Somebody else would have spent the months.** Another team would have tried
+this, because it sounds promising. A measured, traceable null saves them.
+
+**It says where to look next.** The finding is not "quantum is useless for
+fraud". It is much more specific: *on a problem with exactly one findable best
+answer, a machine that finds best answers adds nothing.* That points at problems
+where finding the answer is genuinely hard, which is the project's next step.
+
+**The diagnosis is reusable even where the conclusion is not.** "Check whether
+your voters are all saying the same thing before optimising how to combine them"
+applies far beyond this project.
+
+**Publishing only what works poisons the record.** If every team that tried this
+and failed stayed quiet, the published literature would show only the successes,
+and it would look like the method works. The nulls that never get written are
+invisible, and their absence is itself a distortion.
+
+A result you did not want is still information. Withholding it is the only way
+to make the months genuinely wasted.
