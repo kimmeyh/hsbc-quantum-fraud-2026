@@ -205,3 +205,127 @@ submitted proposal. It was read as evidence for a different argument entirely.
 
 It is mentioned here because "there were three datasets" is the kind of small
 false fact that a reader would carry away and repeat.
+
+---
+
+## 4. How a machine learns to rank, and the one mistake that fakes success
+
+*Reading level achieved: grade 9. See the note at the end of this section.*
+
+This is the most important section in the document. If you only understand one
+thing here, understand this one, because it is what makes the result in section 6
+mean anything.
+
+### Features
+
+A **feature** is one fact about a transaction that a computer can compare across
+rows. The amount. The hour of day. How far this purchase is from the last one.
+
+A transaction becomes a row of numbers. Thousands of rows make a table. The
+machine only ever sees the table.
+
+### Training
+
+You hand the machine a pile of past transactions with the answer already
+attached: this one was fraud, this one was not. It hunts for combinations of
+features that tend to come with fraud.
+
+It is not told what to look for. It finds patterns like "small purchase
+immediately followed by a large one at a different merchant" on its own, by
+noticing that the combination shows up more often in the fraud rows.
+
+Then it scores new transactions by how much they resemble the fraud patterns it
+found, and sorts them. That sorted list is the thing section 1 said we actually
+wanted.
+
+### Testing, and the obvious cheat
+
+Now: is it any good?
+
+The wrong way is to test it on the same transactions you trained it on. It has
+already seen those answers. A machine with enough capacity can simply memorise
+them and score perfectly while having learned nothing that transfers.
+
+So you split the data. Train on one part, test on a part the machine has never
+seen. Everybody knows this.
+
+### The subtle cheat, and it is the one that matters
+
+Here is the mistake that is much easier to make, and it is not obvious at all.
+
+Suppose your transactions span six months. You shuffle them all together and
+deal out a random 80 percent to train on, keeping 20 percent to test.
+
+That sounds fair. It is not, and the reason is that **fraud changes over time**.
+
+Thieves adapt. A trick that works in March gets detected and blocked, so by May
+they are doing something else. Real fraud detection always means predicting
+*next* month using *last* month.
+
+When you shuffle six months together, the training pile contains transactions
+from May, and the test pile contains transactions from March. The machine is
+being asked about March while having already studied May. It gets to see the
+future.
+
+It will score well. It will also fall over in production, because in production
+there is no future to look at.
+
+**The honest version**: split by time. Train on the first four months, test on
+the last two. Never let a training row come from after a test row.
+
+This is harder and the scores come out lower. The lower score is the true one.
+
+### Why this matters for what we found
+
+This project's own result shows the effect.
+
+One configuration scored **0.7671** when tested with the ordinary random split.
+Tested on a time-ordered split instead, the same configuration fell to
+**0.7095**. Meanwhile a different configuration, one the project's own advance
+rules had rejected, went *up* from 0.7014 to 0.7776.
+
+So testing honestly by time did not just lower the scores. It reversed which
+configuration looked better, and it reversed it against the choice the project
+had already committed to.
+
+The submission states this plainly and does not recommend the arm for production
+use until the question is settled. That is the correct response to an
+inconvenient result and it is worth noticing.
+
+One split is not proof, and the proposal says so too. The European data spans
+two days, which is not enough time to test this properly. That is exactly why
+the competition dataset from section 3 exists.
+
+### The other traps, briefly
+
+- **Preprocessing before splitting.** If you calculate an average over all your
+  data and then split, the training rows carry information about the test rows.
+  Split first.
+- **Tuning on the test set.** If you adjust settings until the test score is
+  good, you have used the test set for training. Tune on training data only.
+- **Duplicate rows.** The same transaction in both piles means testing on
+  something you trained on. This is why 1,081 rows were removed in section 3.
+
+### A control worth knowing about
+
+There is a clean way to check whether a pipeline is cheating: scramble the
+answers. Replace every fraud label with a random one, keeping everything else
+identical, and retrain.
+
+If the machine still scores well, something is leaking, because there is no
+longer any real pattern to find.
+
+Done here, the scrambled-label run scored **0.0023** against a base rate of
+0.0017 for the data. Essentially chance, which is the correct and boring result.
+
+### A note on reading level
+
+Sections 1 to 3 landed at grade 8. This one is grade 9.
+
+Per the rule this document follows, the level goes up by one only where an honest
+explanation is not achievable at the lower one, and the level that lands gets
+recorded rather than hidden. The idea that forced it is "the machine is being
+asked about March while having already studied May". That sentence needs the
+reader to hold two time periods and a sorting operation at once, and every
+shorter version tested either lost the time element or implied simple
+memorisation, which is the *different* cheat described above.
