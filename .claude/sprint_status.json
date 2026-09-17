@@ -15,8 +15,7 @@
     "number": 15,
     "merged_pr": 100,
     "main_merge_pr": 109,
-    "docs_triad_complete": false,
-    "note": "PLAN and SUMMARY present; RETROSPECTIVE outstanding."
+    "docs_triad_complete": true
   },
   "prereg": {
     "status": "FROZEN",
