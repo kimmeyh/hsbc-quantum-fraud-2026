@@ -198,3 +198,100 @@ would be the obstacle. Both readers handled those and tripped on bookkeeping.
 
 **The lesson for the next document of this kind**: budget the care for
 disambiguating similar numbers, not for simplifying hard ideas.
+
+
+---
+
+# Run 3: OPEN questions, 2026-09-17
+
+F80, Sprint 16. IMP-5 from the Sprint 15 retrospective: **aimed runs verify,
+open runs discover.** Run 2 asked questions pointed at where run 1 tripped,
+which confirms fixes and cannot find anything new. This run used the original
+open prompt.
+
+It was also a FIRST reading, not a re-confirmation. The document changed in
+three commits after run 2 (the US English sweep and two rounds of CVQBoost
+rewrites, including a rewritten QBoost description), so no falsifier had read
+the current text.
+
+## Verdict: PASSED at HIGH confidence, the first time
+
+Runs 1 and 2 both landed at medium-high. Run 3 is the first to say high.
+
+The reader answered all seven unaided, and volunteered several things the
+document works hardest at: that the machine was not broken and the problem was
+not worth solving; that the convex proof makes the device unable to win by
+construction; that honest time-splitting reversed the ranking against the
+project's own committed choice; and the full QBoost-to-CVQBoost lineage with the
+binary-versus-continuous difference and the hardware reason behind it.
+
+It also reported the CV expansion correctly as an inference rather than a fact,
+which is the third reader to survive that hedge.
+
+## Four new gaps, three fixed
+
+**1. The 833-voter setup was a dangling forward reference. FIXED.**
+
+> "Section 5 mentions it as 'the large ones (the 833-voter setup in section 6)'.
+> Section 6 never mentions 833... If someone asked me 'what was the 833-voter
+> run?' I would have to say I am guessing."
+
+Verified: `833` appears in section 5 and NOT in section 6. Section 5 pointed
+forward to a number the destination never states. Section 6 now names it and
+says what it was: 833 voters looking at three features each, against 91 looking
+at one or two.
+
+**2. The three appearances of 0.0017 were never connected. FIXED.**
+
+> "I believe the AUPRC chance baseline equals the base rate, and that is why the
+> same digits appear, but the document never says so... The document is
+> scrupulous about flagging coincidental digits elsewhere (it does it for the two
+> 0.0028s) and does not flag this one, which made me LESS sure rather than more."
+
+That last clause is the sharp observation. Having flagged one digit coincidence,
+silence on another reads as significance. And the reader's reasoning was right:
+0.17 percent IS 0.0017, and for this measure the guessing floor equals the base
+rate. Section 6 now says so, and says explicitly that unlike the two 0.0028s
+these really are the same quantity.
+
+**3. The rejected configuration was never described. FIXED.**
+
+Run 1 raised this too and it was recorded as NOT FIXED, on the grounds that
+explaining the preregistered selection rule would cost more than the gap. Two
+independent readers naming it moves it. The fix turned out to be one clause
+rather than a paragraph: it used **nine features instead of thirteen**, and was
+rejected because it scored lower on the random split. Verified against the
+submission, which says "the rejected 9-feature configuration rose from 0.7014 to
+0.7776".
+
+**4. The two classical comparisons resolve retroactively. NOT FIXED.**
+
+> "The bullet pair beginning 'Two different classical comparisons are now in
+> play' resolves it, but it arrives after several paragraphs that discuss only
+> one of them, so the resolution is retroactive rather than pre-emptive."
+
+Correct, and deliberate. Announcing both comparisons before either is explained
+costs more than the re-read: the second comparison only makes sense once the
+first has established what "solving the identical problem" means. The reader
+resolved it unaided and still reached high confidence. Recorded as a known
+shape rather than patched.
+
+## What three runs establish
+
+Run 1 open: six gaps. Run 2 aimed: confirmed four fixes, found two more. Run 3
+open: four gaps, three new.
+
+**Every gap across all three runs was about IDENTITY, never difficulty.** Which
+model owns this number; are these two numbers the same; does this figure
+describe the thing beside it. Not one reader in three said an idea was too hard,
+and all three handled the QUBO and detection-threshold material the sprint plan
+predicted would be the obstacle.
+
+IMP-5 is confirmed by the evidence: the aimed run found two gaps, both in
+territory it was pointed at. The open runs found ten between them, in territory
+nobody knew to look at.
+
+## Limits, restated
+
+Three readers, all language models, none a 13-year-old. This is a fresh-context
+check and not an audience test. F81 remains the real one and is team-lead owned.

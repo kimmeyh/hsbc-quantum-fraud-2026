@@ -3,7 +3,7 @@
     "number": 16,
     "name": "Make the Guards Portable, and Close the Gate",
     "branch": "feature/20260916_Sprint_16",
-    "status": "phase_4_execution",
+    "status": "phase_5_3_manual_validation",
     "plan_doc": "docs/sprints/SPRINT_16_PLAN.md",
     "pr": 120,
     "plan_approved": true,
@@ -20,7 +20,7 @@
       119
     ],
     "prior_prs": [],
-    "note": "F79, F78, F80. Zero metered seconds. Plan approved 2026-09-17. Sprint 15 retrospective COMPLETE."
+    "note": "F79, F78, F80 all complete. Issues 110-119 closed. Zero metered seconds. AWAITING MANUAL VALIDATION."
   },
   "last_completed_sprint": {
     "number": 15,

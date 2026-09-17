@@ -281,8 +281,10 @@ This project's own result shows the effect.
 
 One configuration scored **0.7671** when tested with the ordinary random split.
 Tested on a time-ordered split instead, the same configuration fell to
-**0.7095**. Meanwhile a different configuration, one the project's own advance
-rules had rejected, went *up* from 0.7014 to 0.7776.
+**0.7095**. Meanwhile a different configuration went *up* from 0.7014 to
+0.7776. That second one used **nine features instead of thirteen**, and the
+project's own advance rules had rejected it precisely because it scored lower
+on the random split.
 
 So testing honestly by time did not just lower the scores. It reversed which
 configuration looked better, and it reversed it against the choice the project
@@ -511,6 +513,12 @@ That number, 0.7671, is the measure section 2 described without naming: how well
 the detector does at the top of the ranked list. Its name is AUPRC. One means
 perfect, and the number you would get by guessing here is about 0.0017.
 
+(That 0.0017 is not a new number. It is the fraud rate from section 2, 0.17
+percent, written as a fraction. For this measure the score you get by guessing
+equals the fraction of transactions that are fraud, so the same quantity shows
+up as a rate and as a floor. Unlike the two 0.0028s later in this section,
+these really are the same thing.)
+
 **One qualifier the reader should carry forward**: 0.7671 is the same number
 section 4 used. It is a random-split score. Tested honestly by time it falls
 to 0.7095. So the headline comparison is between two random-split numbers,
@@ -593,8 +601,10 @@ So +0.0047 is well below what this experiment can even distinguish from nothing.
 
 ### The one positive result, reported with its caveat
 
-One configuration did gain: a larger setup using three-feature voters scored
-**+0.0256** on ten of ten attempts.
+One configuration did gain. This is the **833-voter setup** section 5
+mentioned: instead of 91 voters each looking at one or two features, it used
+833 voters each looking at three. It scored **+0.0256** on ten of ten
+attempts.
 
 That is honestly reported, and so is the problem with it: **two things changed at
 once.** The number of features went up *and* the voters got more complex. With

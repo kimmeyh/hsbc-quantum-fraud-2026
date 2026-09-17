@@ -19,8 +19,8 @@ outright would be wrong:
   - `docs/WINDOWS_POWERSHELL_GUIDE.md`, which is explicitly the Windows document
     and correctly gives Windows paths; it cross-references ENVIRONMENT.md for
     the Linux ones
-  - prose DESCRIBING the problem (the master plan card, the sprint plan, the
-    CHANGELOG entry, a converted script's docstring explaining what it removed)
+  - prose DESCRIBING the problem (the sprint plan, the CHANGELOG entry, a
+    converted script's docstring explaining what it removed)
   - the retired .ps1 files, which are not the live implementation
 
 What it forbids is a new INSTRUCTION telling a reader to run that path, in a
@@ -42,7 +42,10 @@ INTERPRETER = re.compile(r"\.venv[\\/]{1,2}Scripts[\\/]{1,2}python")
 ALLOWED = {
     "docs/ENVIRONMENT.md": "the single source of truth; it must state the paths",
     "docs/WINDOWS_POWERSHELL_GUIDE.md": "the Windows-specific guide",
-    "docs/ALL_SPRINTS_MASTER_PLAN.md": "the F78 card describes the problem",
+    # ALL_SPRINTS_MASTER_PLAN.md had an allowance until the F78 card was
+    # pruned at close-out. The test below caught the dead permission, which
+    # is what it is for: an allowance for a file that no longer needs one
+    # makes the list read as larger than it is.
     "docs/sprints/SPRINT_16_PLAN.md": "the plan describes the problem",
     "CHANGELOG.md": "the entry describes the problem",
     "scripts/render_pdf.py": "docstring explains the path it removed",
