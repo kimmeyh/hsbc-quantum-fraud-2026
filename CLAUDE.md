@@ -90,6 +90,15 @@ only in memory.
   checklists.** Use bullet lists. Markdown tables inside committed docs are fine;
   this is about terminal readability only.
 
+- **Don't end a turn announcing work you have not started.** "Continuing with
+  Task C" as a closing sentence, followed by no Task C, is worse than saying
+  nothing: it reports progress that did not happen. The tell is the future tense
+  in the last line of a turn. Either do the thing in that turn, or say plainly
+  what is not done and why. (Sprint 15: I wrote exactly that and stopped, and
+  the team lead had to point out there was no activity. Distinct from the entry
+  below, which covers reporting a finished batch as a stopping point; this one
+  covers announcing the NEXT action and not taking it.)
+
 - **Don't report a mid-sprint batch of completed tasks as though it were a
   stopping point.** Before ending any turn: is every approved task DONE, or does
   a specifically named criterion in `docs/SPRINT_STOPPING_CRITERIA.md` apply to

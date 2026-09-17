@@ -3,13 +3,13 @@
     "number": 16,
     "name": "Make the Guards Portable, and Close the Gate",
     "branch": "feature/20260916_Sprint_16",
-    "status": "phase_3_planning",
+    "status": "phase_4_execution",
     "plan_doc": "docs/sprints/SPRINT_16_PLAN.md",
     "pr": null,
-    "plan_approved": false,
+    "plan_approved": true,
     "github_issues": [],
     "prior_prs": [],
-    "note": "F79, F78, F80. Zero metered seconds. AWAITING PLAN APPROVAL. Sprint 15's RETROSPECTIVE is still outstanding and needs the team lead's three roles; Claude's role is drafted in docs/sprints/drafts/."
+    "note": "F79, F78, F80. Zero metered seconds. Plan approved 2026-09-17. Sprint 15 retrospective COMPLETE."
   },
   "last_completed_sprint": {
     "number": 15,
