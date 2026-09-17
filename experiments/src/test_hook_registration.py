@@ -122,8 +122,18 @@ def test_the_submission_and_amendment_guards_are_registered():
     absence is what the repository would least notice.
     """
     commands = " ".join(c for _, c in _hook_commands())
-    for required in ("block-unapproved-submission-edit.ps1",
-                     "block-reactive-amendment.ps1"):
-        assert required in commands, (
-            f"{required} is not registered in .claude/settings.json. It guards "
-            "an artifact that has already been submitted or frozen.")
+    # Stems rather than extensions: F78 (Sprint 16) converted every hook from
+    # .ps1 to .py, and an assertion naming the extension would have to be
+    # edited by the very change it is meant to survive. This test FAILED on the
+    # conversion, which is correct -- it noticed. Matching the stem means it
+    # keeps guarding through a future rename too.
+    for guard, variants in {
+        "the submitted-document guard": ("unapproved-submission-edit",
+                                         "unapproved_submission_edit"),
+        "the frozen-preregistration guard": ("reactive-amendment",
+                                             "reactive_amendment"),
+    }.items():
+        assert any(v in commands for v in variants), (
+            f"{guard} is not registered in .claude/settings.json (looked for "
+            f"{variants}). It guards an artifact that has already been "
+            "submitted or frozen.")
