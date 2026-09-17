@@ -1,6 +1,6 @@
 """Known-answer tests for the QFE Fourier Wall phase transformer (Sprint 6
 Task C / F23, card #33; PREREGISTRATION H6). Run:
-.venv\\Scripts\\python.exe -m pytest experiments/src/test_qfe.py -q
+your venv interpreter (docs/ENVIRONMENT.md) -m pytest experiments/src/test_qfe.py -q
 
 These are the heart of the task: phase range, rank invariance, and -- most
 importantly -- proof that fit-on-train/transform-on-test never touches test

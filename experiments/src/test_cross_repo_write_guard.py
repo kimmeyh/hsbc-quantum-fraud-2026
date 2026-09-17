@@ -27,12 +27,15 @@ from __future__ import annotations
 import json
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
-HOOK = ROOT / ".claude" / "hooks" / "block-cross-repo-write.ps1"
+# F78 (Sprint 16) converted this hook to Python. The cases below are
+# unchanged; only the implementation under test moved.
+HOOK = ROOT / ".claude" / "hooks" / "block_cross_repo_write.py"
 
 # Assembled at runtime so this file's own text is not a literal match for the
 # guard it tests. Writing the names out would make the file unwritable through
@@ -112,9 +115,8 @@ def test_guard_decides_correctly(name, expected, payload, tmp_path):
     f = tmp_path / "payload.json"
     f.write_text(json.dumps(payload), encoding="utf-8")
     with f.open("rb") as stdin:
-        r = subprocess.run(
-            ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(HOOK)],
-            stdin=stdin, capture_output=True)
+        r = subprocess.run([sys.executable, str(HOOK)],
+                           stdin=stdin, capture_output=True)
     verb = "BLOCK" if expected == BLOCK else "ALLOW"
     assert r.returncode == expected, (
         f"expected the guard to {verb} ({expected}) for {name!r}, got "
@@ -133,12 +135,18 @@ def test_the_guard_is_registered_and_its_path_resolves():
                 for matchers in settings.get("hooks", {}).values()
                 for m in matchers for h in m.get("hooks", [])]
 
-    mine = [c for c in commands if "cross-repo-write" in c]
-    assert mine, "block-cross-repo-write.ps1 is not registered in .claude/settings.json"
+    # Match the STEM, not the extension: asserting on ".ps1" is what made this
+    # test fail on the very conversion it should have survived.
+    mine = [c for c in commands
+            if "cross-repo-write" in c or "cross_repo_write" in c]
+    assert mine, ("the cross-repository guard is not registered in "
+                  ".claude/settings.json")
 
     for c in mine:
         ctrl = [hex(ord(ch)) for ch in c if ord(ch) < 32]
         assert not ctrl, f"control characters {ctrl} in the registered command: {c!r}"
-        name = c.rstrip('"').split("\\")[-1]
+        # Commands now use forward slashes (F78: they work on both OSes and
+        # cannot be eaten as an escape), so split on either separator.
+        name = c.rstrip('"').replace("\\", "/").split("/")[-1]
         assert (ROOT / ".claude" / "hooks" / name).exists(), \
             f"registered hook {name!r} does not resolve to a file"

@@ -11,7 +11,7 @@ manufactured). This module proves each family's core primitive works in this
 environment, on synthetic data, with NO ULB access and NO model actually
 built for H6 -- that is F4 in Sprint 7. Run:
 
-  .venv\\Scripts\\python.exe experiments/src/h6_twin_preflight.py
+  your venv interpreter (docs/ENVIRONMENT.md) experiments/src/h6_twin_preflight.py
 
 Findings (2026-09-05, this environment):
   - pygam / interpret: NOT INSTALLED. Reported, not installed (task
