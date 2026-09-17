@@ -35,6 +35,8 @@ ALLOW, BLOCK = 0, 2
 
 # Assembled at runtime so this file's own text does not trip the hooks it tests.
 STASH = "git" + " stash"
+PREREG = "experiments/PREREGISTRATION.md"
+PROPOSAL = "docs/paper/proposal.md"
 
 CASES: dict[str, list[tuple[str, int, dict]]] = {
     "block_carry_forward_stash": [
@@ -126,6 +128,111 @@ CASES: dict[str, list[tuple[str, int, dict]]] = {
          {"tool_input": {"command":
                          'python -c "print($(date))" # allow_shell_metachar'}}),
         ("plain python", ALLOW, {"tool_input": {"command": 'python -c "print(1)"'}}),
+    ],
+
+    # ---- Task E: the filesystem and git hooks -------------------------
+    # PREREG and PROPOSAL are spelled out rather than imported so this
+    # file stands alone.
+
+    "block_frozen_history_rewrite": [
+        ("force push", BLOCK,
+         {"tool_input": {"command": "git push --force origin main"}}),
+        ("force-with-lease", BLOCK,
+         {"tool_input": {"command": "git push --force-with-lease"}}),
+        ("short -f push", BLOCK,
+         {"tool_input": {"command": "git push -f origin develop"}}),
+        ("filter-branch", BLOCK,
+         {"tool_input": {"command": "git filter-branch --tree-filter x HEAD"}}),
+        ("filter-repo", BLOCK,
+         {"tool_input": {"command": "git filter-repo --path x"}}),
+        ("hard reset to a remote ref", BLOCK,
+         {"tool_input": {"command": "git reset --hard origin/main"}}),
+        ("delete the freeze tag", BLOCK,
+         {"tool_input": {"command": "git tag -d prereg-freeze"}}),
+        ("delete the freeze tag remotely", BLOCK,
+         {"tool_input": {"command": "git push origin :refs/tags/prereg-freeze"}}),
+        # Growing the repository forward is what a live project looks like.
+        ("ordinary push", ALLOW,
+         {"tool_input": {"command": "git push origin feature/x"}}),
+        ("ordinary commit", ALLOW,
+         {"tool_input": {"command": "git commit -m msg"}}),
+        ("a NEW tag is fine", ALLOW,
+         {"tool_input": {"command": "git tag v1.0"}}),
+        ("local hard reset is fine", ALLOW,
+         {"tool_input": {"command": "git reset --hard HEAD~1"}}),
+        ("branch delete is fine", ALLOW,
+         {"tool_input": {"command": "git branch -d old-feature"}}),
+        ("no command", ALLOW, {"tool_input": {}}),
+    ],
+
+    "block_reactive_amendment": [
+        ("editing the FROZEN preregistration", BLOCK,
+         {"tool_name": "Edit", "tool_input": {"file_path": PREREG}}),
+        ("writing the FROZEN preregistration", BLOCK,
+         {"tool_name": "Write", "tool_input": {"file_path": PREREG}}),
+        ("windows separators still match", BLOCK,
+         {"tool_name": "Edit",
+          "tool_input": {"file_path": "experiments\\PREREGISTRATION.md"}}),
+        ("a different file is fine", ALLOW,
+         {"tool_name": "Edit", "tool_input": {"file_path": "docs/x.md"}}),
+        ("Bash is not an edit tool", ALLOW,
+         {"tool_name": "Bash", "tool_input": {"command": "cat " + PREREG}}),
+        ("no path", ALLOW, {"tool_name": "Edit", "tool_input": {}}),
+    ],
+
+    "block_unapproved_submission_edit": [
+        ("editing the submitted proposal", BLOCK,
+         {"tool_name": "Edit", "tool_input": {"file_path": PROPOSAL}}),
+        ("editing the submitted appendix", BLOCK,
+         {"tool_name": "Write",
+          "tool_input": {"file_path": "docs/paper/appendix.md"}}),
+        ("editing team_profile", BLOCK,
+         {"tool_name": "Edit",
+          "tool_input": {"file_path": "docs/paper/team_profile.md"}}),
+        # Rendered PDFs are outputs, not the frozen source.
+        ("a rendered PDF is an output", ALLOW,
+         {"tool_name": "Write",
+          "tool_input": {"file_path": "docs/paper/out/proposal.pdf"}}),
+        ("an unrelated doc is fine", ALLOW,
+         {"tool_name": "Edit", "tool_input": {"file_path": "docs/x.md"}}),
+        ("Bash is not an edit tool", ALLOW,
+         {"tool_name": "Bash", "tool_input": {"command": "cat " + PROPOSAL}}),
+    ],
+
+    # EVERY case here carries tool_name. The hook dispatches on it, so a
+    # payload without one exercises no branch at all. My first draft omitted it
+    # on the command cases and they all returned 0, which looked exactly like a
+    # broken guard -- I nearly filed a bug against a hook that works.
+    "block_cross_repo_write": [
+        ("Write into a sibling repo", BLOCK,
+         {"tool_name": "Write",
+          "tool_input": {"file_path": "D:/Data/Harold/github/Evidence" + "BasedDB/x.md"}}),
+        ("git push after cd into a sibling", BLOCK,
+         {"tool_name": "Bash",
+          "tool_input": {"command":
+                         "cd D:/Data/Harold/github/Evidence" + "BasedDB && git " + "push"}}),
+        ("git -C pointed at a sibling", BLOCK,
+         {"tool_name": "Bash",
+          "tool_input": {"command":
+                         "git -C D:/Data/Harold/github/Evidence" + "BasedDB push"}}),
+        ("reading a sibling is allowed", ALLOW,
+         {"tool_name": "Bash",
+          "tool_input": {"command":
+                         "cat /d/Data/Harold/github/Evidence" + "BasedDB/CLAUDE.md"}}),
+        ("grep whose PATTERN names cmdlets", ALLOW,
+         {"tool_name": "Bash",
+          "tool_input": {"command":
+                         "grep -c 'New-Item|Remove-Item' /d/Data/Harold/github/Evidence"
+                         + "BasedDB/x.ps1"}}),
+        ("writing in THIS repo is fine", ALLOW,
+         {"tool_name": "Write",
+          "tool_input": {"file_path":
+                         "D:/Data/Harold/github/hsbc-quantum-fraud-2026/docs/x.md"}}),
+        # Fail-open is the deliberate default, and worth asserting so a future
+        # change to strict-by-default is a visible decision rather than a drift.
+        ("no tool_name exercises no branch", ALLOW,
+         {"tool_input": {"command":
+                         "cd D:/Data/Harold/github/Evidence" + "BasedDB && git " + "push"}}),
     ],
 }
 
