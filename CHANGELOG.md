@@ -4,6 +4,15 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-09-17
+
+- **feat**: **F79: a sprint can no longer merge without its retrospective.** Sprint 15 merged to develop AND to main with none, past an exit gate. The three-doc test deliberately exempts the sprint in flight, and nothing revoked that exemption; the exemption also followed a mutable status field, so it protected the wrong sprint. Completion is now judged on evidence (a later sprint has a plan), and the close-out hook demands the retrospective independently. Its old check asked for the summary only, and only when the retrospective already existed, so a missing retrospective triggered nothing at all (Issues #110, #111)
+- **feat**: **F78: all nine hooks and four scripts converted from PowerShell to Python.** CI runs `ubuntu-latest`, so every guard in this repository had been Windows-only protection and none had ever executed where CI runs. 143 parity cases run against BOTH implementations and require agreement; CI now proves a guard FIRES on Linux rather than merely loading (Issues #112-#118)
+- **fix**: **The confidentiality scan reported clean on single-line files.** `Get-Content` returns a String rather than an array for a one-line file, so `$lines[0]` yielded the first CHARACTER and every rule matched nothing. A file containing an employer name or an API token scanned as "0 HIGH, 0 REVIEW". The submission was not affected (its documents are 104, 102 and 216 lines), and the PowerShell is not being fixed because it is retired; the Python cannot reproduce it and carries regression cases (Issue #116)
+- **feat**: `sprint_auto_advance.py` ported from spamfilter-multi, where it had been requested and never transferred. Its four commitment patterns matched NONE of this repository's three real turn-ending failures, so a participle-opening pattern was added for the shape this repository actually produces (PR #120)
+- **docs**: `docs/ENVIRONMENT.md` is the single place the venv interpreter is recorded, for Windows and Linux. It was spelled out in 21 places across 16 files and is not discoverable from the environment; a bare `python` is usually the wrong one and fails like a broken checkout (Issue #117)
+- **test**: `test_interpreter_paths.py`, `test_hook_parity.py`, `test_hooklib.py`, `test_confidentiality_scan.py`, `test_render_scripts.py`, `test_premature_turn_end.py`. Every one verified by injection rather than by a green run
+
 ### 2026-09-16
 
 - **docs**: **US English enforced across tracked markdown**, 90 replacements in 35 files, with `scripts/us_english_fix.py` committed and `test_us_english.py` guarding it. The submitted documents and the FROZEN preregistration are EXEMPT and the guard asserts that exclusion holds, so a later sweep cannot reach them (team lead, 2026-09-16)
