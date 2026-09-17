@@ -243,7 +243,7 @@ wanted.
 Now: is it any good?
 
 The wrong way is to test it on the same transactions you trained it on. It has
-already seen those answers. A machine with enough capacity can simply memorise
+already seen those answers. A machine with enough capacity can simply memorize
 them and score perfectly while having learned nothing that transfers.
 
 So you split the data. Train on one part, test on a part the machine has never
@@ -349,7 +349,7 @@ built from qubits.
 
 Dirac-3 works with light. QCi's own research paper calls it "a hybrid
 photonic-electronic computer that uses optical measurement and feedback to solve
-non-convex optimization problems". It is a specialised machine that hunts for the
+non-convex optimization problems". It is a specialized machine that hunts for the
 lowest point in a mathematical landscape.
 
 The submission is careful here in a way worth copying: it treats the device as a

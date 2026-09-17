@@ -42,7 +42,9 @@ QCI_PACKAGE = [
      "docs/paper/out/qci_package/DRAFT_proposal.pdf", "1in", False),
     ("docs/paper/appendix.md",
      "docs/paper/out/qci_package/DRAFT_appendix.pdf", "0.9in", False),
-    ("docs/paper/qci_cover.md",
+    # Source lives beside its outputs in the ignored qci_package directory:
+    # it is private correspondence, not a submission document.
+    ("docs/paper/out/qci_package/qci_cover.md",
      "docs/paper/out/qci_package/DRAFT_qci_cover.pdf", "1in", False),
     ("experiments/PREREGISTRATION.md",
      "docs/paper/out/qci_package/DRAFT_preregistration.pdf", "1in", False),

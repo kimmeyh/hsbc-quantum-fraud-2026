@@ -33,7 +33,7 @@ if ($QciPackage) {
     $docs += @(
         @{ Source = 'docs\paper\proposal.md';            Out = 'docs\paper\out\qci_package\DRAFT_proposal.pdf';        Margin = '1in'   }
         @{ Source = 'docs\paper\appendix.md';            Out = 'docs\paper\out\qci_package\DRAFT_appendix.pdf';        Margin = '0.9in' }
-        @{ Source = 'docs\paper\qci_cover.md';           Out = 'docs\paper\out\qci_package\DRAFT_qci_cover.pdf';       Margin = '1in'   }
+        @{ Source = 'docs\paper\out\qci_package\qci_cover.md';           Out = 'docs\paper\out\qci_package\DRAFT_qci_cover.pdf';       Margin = '1in'   }
         @{ Source = 'experiments\PREREGISTRATION.md';    Out = 'docs\paper\out\qci_package\DRAFT_preregistration.pdf'; Margin = '1in'   }
         # LANDSCAPE: not a submission document, and its widest table has a
         # 37-character Cell column beside six numeric columns. At portrait

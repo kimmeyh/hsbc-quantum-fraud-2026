@@ -24,7 +24,22 @@ catboost_info/
 kaggle.json
 credentials.json
 experiments/results/*.db
+# Rendered PDFs. Regenerable from tracked sources with scripts/render_all.py,
+# which Sprint 16 proved reproduces them byte-identically.
 docs/paper/out/
+
+# PRIVATE COMMERCIAL CORRESPONDENCE, and the reason is not "it is generated".
+# docs/paper/out/qci_package/ is the team lead's direct negotiation with QCi: a
+# request for 30,000 QPU seconds, the commercial case for it, and drafts shared
+# with them under that discussion. It is not part of the HSBC submission and no
+# claim in the submitted documents depends on it.
+#
+# qci_cover.md was moved here from docs/paper/ on 2026-09-17 for exactly that
+# reason: it was TRACKED in a public repository while being a private letter.
+# The parent rule above already covers this directory; this entry exists so the
+# reason survives, because a future reader looking at one ignore line cannot
+# tell "generated output" from "must not be published".
+docs/paper/out/qci_package/
 # Predictions: ignore the CONTENTS (not the directory itself, or the negation
 # below cannot re-include anything -- the Sprint 2 MANIFEST.json defect class).
 experiments/results/predictions/*

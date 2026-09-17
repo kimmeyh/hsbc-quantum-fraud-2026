@@ -126,10 +126,16 @@ def test_the_documents_do_not_reassert_the_retracted_mechanism():
     root = Path(__file__).resolve().parents[2]
     retracted = "predicts the negative class almost everywhere"
     offenders = []
-    for name in ("proposal.md", "appendix.md", "qci_cover.md", "team_profile.md"):
-        p = root / "docs" / "paper" / name
+    papers = root / "docs" / "paper"
+    # qci_cover.md moved to docs/paper/out/qci_package/ on 2026-09-17 (private
+    # correspondence, now gitignored). It is still CHECKED here: the retraction
+    # must not reappear in a letter just because the letter is unpublished.
+    # The exists() guard below would have skipped it silently otherwise.
+    for p in (papers / "proposal.md", papers / "appendix.md",
+              papers / "team_profile.md",
+              papers / "out" / "qci_package" / "qci_cover.md"):
         if p.exists() and retracted in p.read_text(encoding="utf-8"):
-            offenders.append(name)
+            offenders.append(p.name)
     assert not offenders, (
         f"{offenders} still assert the mechanism A20 retracts. The saved pools "
         f"show zero learners predicting the negative class everywhere.")
