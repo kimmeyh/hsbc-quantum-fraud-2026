@@ -48,6 +48,43 @@ jobs:
       - name: Tests
         run: pytest -m "not slow" -q
 
+      # F78, Sprint 16. Until this step existed, every guard in this
+      # repository was WINDOWS-ONLY protection: the hooks were PowerShell and
+      # this runner is ubuntu-latest, so none of them had ever executed here.
+      #
+      # The suite above proves the hooks pass their tests. This proves one
+      # actually FIRES on Linux, which is a different claim: a hook that loads
+      # and returns 0 passes every test that only checks it does not crash.
+      - name: A guard must FIRE on Linux, not merely load
+        run: |
+          set -e
+          payload='{"tool_name":"Bash","tool_input":{"command":"git stash push -m x"}}'
+          set +e
+          echo "$payload" | python .claude/hooks/block_carry_forward_stash.py
+          rc=$?
+          set -e
+          if [ "$rc" -ne 2 ]; then
+            echo "::error::The carry-forward guard did not block on Linux."
+            echo "::error::Expected exit 2, got $rc. A guard that does not fire"
+            echo "::error::is indistinguishable from no guard at all."
+            exit 1
+          fi
+          echo "Guard fired correctly on Linux (exit 2)."
+
+          # And the other direction: a read must still be allowed, or the
+          # guard blocks correct work and gets switched off.
+          allowed='{"tool_name":"Bash","tool_input":{"command":"git stash list"}}'
+          set +e
+          echo "$allowed" | python .claude/hooks/block_carry_forward_stash.py
+          rc2=$?
+          set -e
+          if [ "$rc2" -ne 0 ]; then
+            echo "::error::The guard blocked a READ (git stash list) on Linux."
+            echo "::error::Expected exit 0, got $rc2."
+            exit 1
+          fi
+          echo "Read correctly allowed on Linux (exit 0)."
+
       # THE POINT OF THIS WORKFLOW. If the suite modified any tracked file, the
       # build fails and names the files. Sprint 8's evidence-overwrite bug
       # would have failed here on the PR that introduced it.
