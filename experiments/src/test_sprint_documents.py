@@ -113,3 +113,88 @@ def test_sprint_status_points_at_a_real_sprint():
     plan = st.get("plan_doc")
     if plan:
         assert (ROOT / plan).exists(), f"plan_doc {plan} does not exist"
+
+
+# ---------------------------------------------------------------------------
+# Close-out gate (F79, Sprint 16). The exemption above is correct at PLAN time
+# and wrong at MERGE time, and nothing revoked it.
+# ---------------------------------------------------------------------------
+
+CLOSEOUT_STATUSES = {
+    "phase_7_retrospective",
+    "phase_8_delivery_cycle",
+    "complete",
+    "closed",
+}
+
+
+def _sprint_is_evidently_complete(n: int) -> tuple[bool, str]:
+    """Is sprint n finished, judged on EVIDENCE rather than on a status field?
+
+    IMP-1, Sprint 15 retrospective. The exemption above follows
+    `sprint_status.json`, which is mutable and is rolled by hand. Writing the
+    Sprint 16 plan BEFORE rolling that field made Sprint 16 look completed: the
+    guard demanded documents that cannot exist yet, while the real gap --
+    Sprint 15's missing retrospective -- stayed hidden behind the stale
+    exemption. The field was wrong in both directions at once.
+
+    A sprint is complete when a LATER sprint has a plan. That is the one signal
+    nobody can forget to update, because the next sprint cannot start without
+    it. A sprint whose successor is planned is over, whatever any field says.
+    """
+    later = [m for m in _sprint_numbers() if m > n]
+    if later:
+        return True, f"sprint {min(later)} already has a plan"
+    return False, "no later sprint is planned"
+
+
+@pytest.mark.skipif(not SPRINTS.exists(), reason="no sprint docs directory")
+def test_a_superseded_sprint_has_its_retrospective():
+    """A sprint whose successor is planned owes its retrospective NOW.
+
+    THE FAILURE THIS EXISTS FOR. Sprint 15 merged to develop and then to main
+    with no retrospective. Phase 7 is an exit gate in the workflow and the
+    three-doc rule is stated "no exceptions", and neither stopped it, because
+    the guard above exempts the live sprint and nothing revoked that exemption
+    at merge.
+
+    This assertion is deliberately SEPARATE from the one above rather than a
+    change to it. The exemption is correct while a sprint is live: an earlier
+    version of that guard fired against Sprint 13's own plan the moment it was
+    written, which is exactly the false positive that trains people to delete a
+    test.
+
+    So: silent at plan time, loud once the next sprint is planned.
+    """
+    missing = []
+    for n in _sprint_numbers():
+        complete, why = _sprint_is_evidently_complete(n)
+        if not complete:
+            continue
+        f = SPRINTS / f"SPRINT_{n}_RETROSPECTIVE.md"
+        if not f.exists():
+            missing.append(f"{f.name} ({why})")
+
+    assert not missing, (
+        "a sprint that has been superseded still owes its retrospective: "
+        f"{missing}. Phase 7 is an exit gate; a sprint does not close without "
+        "it. Write the retrospective rather than deleting this test -- Sprint "
+        "15 merged to develop AND to main without one, which is what this "
+        "guard exists to prevent.")
+
+
+@pytest.mark.skipif(not STATUS.exists(), reason="no sprint_status.json")
+def test_the_live_sprint_is_not_asked_for_documents_it_cannot_have():
+    """The other half of the acceptance, and it has to be asserted.
+
+    A gate that fires at plan time is worse than no gate, because it blocks
+    correct work and trains bypass. The live sprint owes a plan and nothing
+    else, and this test fails if that ever stops being true.
+    """
+    st = json.loads(STATUS.read_text(encoding="utf-8"))["current_sprint"]
+    n = int(st["number"])
+    complete, _ = _sprint_is_evidently_complete(n)
+    assert not complete, (
+        f"sprint {n} is named as current but a later sprint already has a "
+        "plan. Roll sprint_status.json: the live sprint must be the newest "
+        "one, or the exemption protects the wrong sprint.")
