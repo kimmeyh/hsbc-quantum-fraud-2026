@@ -107,13 +107,32 @@ try {
     }
 } catch { }
 
-# Previous sprint SUMMARY (three-doc rule, workflow 3.2.1).
+# Previous sprint's THREE documents (three-doc rule, workflow 3.2.1).
+#
+# F79, Sprint 16. The original check demanded the SUMMARY only, and only when
+# the RETROSPECTIVE already existed. So a missing retrospective triggered
+# nothing at all: the condition that should have caught it was itself gated on
+# it being present.
+#
+# Sprint 15 merged to develop AND to main with no retrospective, past this hook,
+# for exactly that reason. Phase 7 is an exit gate and this is the hook that
+# runs at close-out, so this is where it has to fail.
 $prevSprint = $sprintNum - 1
 if ($prevSprint -gt 0) {
-    $prevSummary = Join-Path $cwd ("docs/sprints/SPRINT_{0}_SUMMARY.md" -f $prevSprint)
-    $prevRetro = Join-Path $cwd ("docs/sprints/SPRINT_{0}_RETROSPECTIVE.md" -f $prevSprint)
-    if ((Test-Path -LiteralPath $prevRetro) -and -not (Test-Path -LiteralPath $prevSummary)) {
-        $violations += "docs/sprints/SPRINT_${prevSprint}_SUMMARY.md is missing (three-doc rule, workflow 3.2.1)."
+    $prevPlan = Join-Path $cwd ("docs/sprints/SPRINT_{0}_PLAN.md" -f $prevSprint)
+
+    # Only bind a sprint that actually ran. A repository whose history starts
+    # at sprint N should not be asked for N-1's paperwork.
+    if (Test-Path -LiteralPath $prevPlan) {
+        $prevSummary = Join-Path $cwd ("docs/sprints/SPRINT_{0}_SUMMARY.md" -f $prevSprint)
+        $prevRetro = Join-Path $cwd ("docs/sprints/SPRINT_{0}_RETROSPECTIVE.md" -f $prevSprint)
+
+        if (-not (Test-Path -LiteralPath $prevRetro)) {
+            $violations += "docs/sprints/SPRINT_${prevSprint}_RETROSPECTIVE.md is missing (three-doc rule, workflow 3.2.1). Phase 7 is an exit gate: a sprint does not close without its retrospective."
+        }
+        if (-not (Test-Path -LiteralPath $prevSummary)) {
+            $violations += "docs/sprints/SPRINT_${prevSprint}_SUMMARY.md is missing (three-doc rule, workflow 3.2.1)."
+        }
     }
 }
 
