@@ -217,40 +217,13 @@ candidates per convention.)
 (F65 per-fit artifact write: COMPLETED in Sprint 14. Also fixed a dry run that
 overwrote committed evidence. Removed from candidates per convention.)
 
-**F77. Build the Evidence Based DB: repository, schema, and the first 20 papers (~2-3 days) Priority 2**
-- Phase: Evidence Based DB / build (gap found in the Sprint 14 close-out sweep, 2026-09-14)
-- Platform: a NEW private repository, `EvidenceBasedDB`
-- **MOTIVATING CASE ADDED 2026-09-12 (Sprint 13 evidence walk).** The strongest evidence yet for this card. Appendix A.5 quoted the IEEE matched-feature control as falling "from 0.5739 to 0.0734 ... fold 0". Both numbers are real and both are in the artifacts -- but 0.5739 is the THREE-FOLD MEAN from `ieee_classical.json` while the control is fold-0 to fold-0 and its baseline is 0.5424 in `ieee_cvqboost.json`. A global value-set lookup accepts it, because the number exists somewhere. `test_document_figures_resolve.py` passed it, and its own docstring predicts exactly this: "It does NOT catch a figure that exists in the store but is quoted in the wrong place." Only per-claim provenance -- this sentence cites THAT row -- closes it, which is what this card builds. F39 designed it (ADR-0014); F77 builds it
-- **REPOSITORY CREATED 2026-09-14**: `github.com/kimmeyh/EvidenceBasedDB`, PRIVATE, with `main` and `develop`. Seeded with the sprint methodology, five hooks, three practice ADRs, and ADR-0014/0015 MOVED there as 0004/0005 since they are that repository's design. Five inherited guards pass there. No PDFs committed and none ever will be. Its Sprint 1 plan is written and mirrors this card
-- **What remains of F77 here is the TRACKING entry.** The work happens there; this card records that it was authorised and what it must measure
-- **This card existed because nothing else created the thing.** ADR-0014 and ADR-0015 are both ACCEPTED and both say explicitly that they do NOT authorise implementation. F75 actions the 20-paper checkpoint and depends on ~20 papers already being loaded. So the accepted design had no card that builds it, and F75 could never have become actionable
-- Scope: create the private repository; copy the sprint methodology in (process docs, ADRs, testing strategy, CI, the hooks); implement the SQLite store and the committed text export; implement the three record classes plus the paper class; load the seed set
-- **SEED SET STAGED 2026-09-14 by the team lead**, and it is larger and broader than the submission's reference list this card originally assumed. The team lead's local staging directory holds `Papers` (47 items as of 2026-09-16; QBoost added in Sprint 15), `Books` (38), `GitHubRepos` (8) and an empty `References`. That directory is a staging area on disk and is deliberately NOT a git repository; the repository itself exists and is named in the bullet above. `EvidenceBasedDB/README.md` carries the two-directory layout and is the one place either path is written down
-- **The PDFs stay where they are and are never committed.** ADR-0015 section 3: records, not papers. Most are not redistributable, and several here are clearly vendor or conference material. The `access` field points at a DOI, an arXiv id, or that local path
-- **The seed set changes the 20-paper checkpoint's meaning.** F75 reviews whether the schema survived contact with ~20 papers. With 46 staged, the first 20 should be chosen for VARIETY rather than convenience -- an arXiv preprint, a journal paper, a vendor white paper, a book chapter, a GitHub repository -- because a schema that only ever saw arXiv preprints has not been tested
-- **`Books` and `GitHubRepos` are not papers and may not fit the paper record.** A book chapter has no abstract and a repository has no claim in the same sense. Whether they need their own record class, or whether the paper class generalises, is a real question for the 20-paper checkpoint and should not be settled in advance
-- **The measurement that matters more than the code**: minutes of team-lead adjudication per accepted record. ADR-0014 names it as the number the whole design is constrained by, and it is unknown. At five minutes a record the domain ambition needs rethinking; at thirty seconds it is safe. Record it per record from the first one, not retrospectively
-- **Deliberately NOT in scope**: inference, the graph store, embeddings. ADR-0014 names the triggers for the last two and ADR-0015 for the third; none has fired. Lenat's footnote 9 is the standing argument against the first
-- Acceptance: the repository exists with the methodology copied in; the four record classes are implemented and exported; the seed set is loaded; adjudication time is recorded per record; F75's checkpoint is actionable
-- Depends on: ADR-0014 and ADR-0015 (both ACCEPTED). Gates F75 and F76
-- **F76 is cross-repository by construction** and this is worth naming now: it guards the vocabulary shared between the two ADRs, and the ADRs live in THIS repository while the test would run in EvidenceBasedDB. Either the test reads a published export of the context list, or the ADRs move. Do not discover this during F76
-
-
-**F75. Action the 20-paper ADR checkpoint (~2h) Priority 6**
-- Phase: Evidence Based DB / process (Sprint 14 retrospective improvement 5, 2026-09-14)
-- Platform: `docs/adr/0014-fact-database.md`, `0015-reference-library.md`
-- Both ADRs promise a review at approximately 20 imported papers, with six named questions and the bad answer stated for each. **A promise in a document is exactly what this project keeps having to replace with a mechanism**, and an unactioned checkpoint is a note nobody reads
-- The question that matters most is the measured one: how long team-lead adjudication takes per paper. At five minutes, 2,000 papers is 160 hours and the design needs rethinking; at thirty seconds the ambition is safe. Everything else in the checkpoint is schema tuning
-- Revisions are recorded as dated amendments at the bottom of each ADR, never as edits in place
-- Depends on: **F77** (which builds it) and ~20 papers loaded
-
-**F76. Guard the shared vocabulary between ADR-0014 and ADR-0015 (~1h) Priority 7**
-- Phase: Evidence Based DB / tooling (Sprint 14 retrospective improvement 6, 2026-09-14)
-- Platform: cross-repository, `EvidenceBasedDB`
-- ADR-0015's `applicability` field now points at ADR-0014's context list rather than carrying its own enumeration. That was the right call -- two lists naming the same things is how B1's variable count came to read 78 in three documents and 91 in two -- **but nothing enforces that they agree**
-- A test that fails when a record names a context the schema does not define, and when the ADRs' stated context lists diverge from the database's
-- Depends on: **F77** (which builds it)
-
+(F77 build the Evidence Based DB, F75 the 20-paper ADR checkpoint, and F76 the
+shared-vocabulary guard: MOVED to the `kimmeyh/EvidenceBasedDB` repository
+2026-09-16 by the team lead. All three are that repository's work, not this
+one's. F77 builds its store; F75 reviews its schema against its own papers; F76
+guards ITS ADR-0004 and ADR-0005, whose live copies live there. The copies here
+are frozen and carry a banner saying so. Tracked in that repository's own
+backlog. Removed from candidates per convention.)
 
 **F78. Convert every PowerShell script to Python so the repository is OS agnostic (~8-12h) Priority 8**
 - Phase: Finalize / tooling (team lead, 2026-09-15)
