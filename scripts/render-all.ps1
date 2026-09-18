@@ -31,18 +31,18 @@ $docs = @(
 
 if ($QciPackage) {
     $docs += @(
-        @{ Source = 'docs\paper\proposal.md';            Out = 'docs\paper\out\qci_package\DRAFT_proposal.pdf';        Margin = '1in'   }
-        @{ Source = 'docs\paper\appendix.md';            Out = 'docs\paper\out\qci_package\DRAFT_appendix.pdf';        Margin = '0.9in' }
-        @{ Source = 'docs\paper\out\qci_package\qci_cover.md';           Out = 'docs\paper\out\qci_package\DRAFT_qci_cover.pdf';       Margin = '1in'   }
-        @{ Source = 'experiments\PREREGISTRATION.md';    Out = 'docs\paper\out\qci_package\DRAFT_preregistration.pdf'; Margin = '1in'   }
+        @{ Source = 'docs\paper\proposal.md';            Out = 'docs\qci_package\DRAFT_proposal.pdf';        Margin = '1in'   }
+        @{ Source = 'docs\paper\appendix.md';            Out = 'docs\qci_package\DRAFT_appendix.pdf';        Margin = '0.9in' }
+        @{ Source = 'docs\qci_package\qci_cover.md';           Out = 'docs\qci_package\DRAFT_qci_cover.pdf';       Margin = '1in'   }
+        @{ Source = 'experiments\PREREGISTRATION.md';    Out = 'docs\qci_package\DRAFT_preregistration.pdf'; Margin = '1in'   }
         # LANDSCAPE: not a submission document, and its widest table has a
         # 37-character Cell column beside six numeric columns. At portrait
         # width that row wraps and the Cell text runs flush into its Seeds
         # value; at landscape width it fits on one line with the space
         # intact. Verified from glyph positions in both renders.
-        @{ Source = 'experiments\results\gate_report.md';Out = 'docs\paper\out\qci_package\DRAFT_gate_report.pdf';     Margin = '0.75in'; Landscape = $true }
-        @{ Source = 'docs\HARDWARE_REQUEST_B1_G0b.md';   Out = 'docs\paper\out\qci_package\DRAFT_hardware_plan.pdf';   Margin = '1in'   }
-        @{ Source = 'docs\QCI_EQC_MODELS_FEEDBACK.md'; Out = 'docs\paper\out\qci_package\DRAFT_eqc_models_feedback.pdf'; Margin = '1in' }
+        @{ Source = 'experiments\results\gate_report.md';Out = 'docs\qci_package\DRAFT_gate_report.pdf';     Margin = '0.75in'; Landscape = $true }
+        @{ Source = 'docs\HARDWARE_REQUEST_B1_G0b.md';   Out = 'docs\qci_package\DRAFT_hardware_plan.pdf';   Margin = '1in'   }
+        @{ Source = 'docs\QCI_EQC_MODELS_FEEDBACK.md'; Out = 'docs\qci_package\DRAFT_eqc_models_feedback.pdf'; Margin = '1in' }
     )
 }
 

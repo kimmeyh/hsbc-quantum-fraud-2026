@@ -154,12 +154,12 @@ def test_the_decomposition_and_the_headline_agree():
 ])
 def test_retracted_wording_does_not_reappear(phrase, amendment):
     """A correction that can be undone by an edit is not a correction."""
-    # qci_cover.md moved to docs/paper/out/qci_package/ on 2026-09-17 (private
+    # qci_cover.md moved to docs/qci_package/ on 2026-09-17 (private
     # correspondence, now gitignored). It is still CHECKED here: the retraction
     # must not reappear in a letter just because the letter is unpublished.
     # The exists() guard below would have skipped it silently otherwise.
     candidates = [PAPERS / "proposal.md", PAPERS / "appendix.md",
-                  PAPERS / "out" / "qci_package" / "qci_cover.md"]
+                  PAPERS.parent / "qci_package" / "qci_cover.md"]
     for p in candidates:
         name = p.name
         if p.exists():

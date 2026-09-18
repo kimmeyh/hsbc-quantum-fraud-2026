@@ -39,21 +39,23 @@ CORE = [
 
 QCI_PACKAGE = [
     ("docs/paper/proposal.md",
-     "docs/paper/out/qci_package/DRAFT_proposal.pdf", "1in", False),
+     "docs/qci_package/DRAFT_proposal.pdf", "1in", False),
     ("docs/paper/appendix.md",
-     "docs/paper/out/qci_package/DRAFT_appendix.pdf", "0.9in", False),
-    # Source lives beside its outputs in the ignored qci_package directory:
-    # it is private correspondence, not a submission document.
-    ("docs/paper/out/qci_package/qci_cover.md",
-     "docs/paper/out/qci_package/DRAFT_qci_cover.pdf", "1in", False),
+     "docs/qci_package/DRAFT_appendix.pdf", "0.9in", False),
+    # Source lives beside its outputs in docs/qci_package/, which is ignored:
+    # private correspondence, not a submission document. Moved out of
+    # docs/paper/out/ on 2026-09-18 so that directory holds only the three
+    # PUBLISHED submission PDFs.
+    ("docs/qci_package/qci_cover.md",
+     "docs/qci_package/DRAFT_qci_cover.pdf", "1in", False),
     ("experiments/PREREGISTRATION.md",
-     "docs/paper/out/qci_package/DRAFT_preregistration.pdf", "1in", False),
+     "docs/qci_package/DRAFT_preregistration.pdf", "1in", False),
     ("experiments/results/gate_report.md",
-     "docs/paper/out/qci_package/DRAFT_gate_report.pdf", "0.75in", True),
+     "docs/qci_package/DRAFT_gate_report.pdf", "0.75in", True),
     ("docs/HARDWARE_REQUEST_B1_G0b.md",
-     "docs/paper/out/qci_package/DRAFT_hardware_plan.pdf", "1in", False),
+     "docs/qci_package/DRAFT_hardware_plan.pdf", "1in", False),
     ("docs/QCI_EQC_MODELS_FEEDBACK.md",
-     "docs/paper/out/qci_package/DRAFT_eqc_models_feedback.pdf", "1in", False),
+     "docs/qci_package/DRAFT_eqc_models_feedback.pdf", "1in", False),
 ]
 
 

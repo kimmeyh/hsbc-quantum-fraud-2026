@@ -24,21 +24,42 @@ catboost_info/
 kaggle.json
 credentials.json
 experiments/results/*.db
-# Rendered PDFs. Regenerable from tracked sources with scripts/render_all.py,
-# which Sprint 16 proved reproduces them byte-identically.
-docs/paper/out/
+# Rendered PDFs. Ignore the CONTENTS, not the directory itself, or the
+# negation below cannot re-include anything -- the Sprint 2 MANIFEST.json
+# defect class, which this file warns about again further down.
+docs/paper/out/*
+
+# THE THREE SUBMITTED DOCUMENTS ARE PUBLISHED, deliberately (team lead,
+# 2026-09-18). Everything else under out/ is a build output or private.
+#
+# Why these are the exception: Appendix C stakes the submission's
+# reproducibility claim on this being a PUBLIC repository, and until now a
+# reader could regenerate the PDFs but could not see the artifacts actually
+# filed on 2026-09-12. The portal holds the judges' copies and nobody outside
+# HSBC can read them, so the repository was the only possible public record and
+# did not carry it.
+#
+# Their SHA-256 values are recorded in docs/submission/PACKAGE.md and
+# SUBMISSION_RECEIPT.md, so a reader can verify these are the filed bytes.
+!docs/paper/out/proposal.pdf
+!docs/paper/out/appendix.pdf
+!docs/paper/out/team_profile.pdf
 
 # PRIVATE COMMERCIAL CORRESPONDENCE, and the reason is not "it is generated".
-# docs/paper/out/qci_package/ is the team lead's direct negotiation with QCi: a
-# request for 30,000 QPU seconds, the commercial case for it, and drafts shared
-# with them under that discussion. It is not part of the HSBC submission and no
-# claim in the submitted documents depends on it.
+# The team lead's direct negotiation with QCi: a request for 30,000 QPU
+# seconds, the commercial case for it, and the drafts shared under that
+# discussion. Not part of the HSBC submission, and no claim in the submitted
+# documents depends on any of it.
 #
-# qci_cover.md was moved here from docs/paper/ on 2026-09-17 for exactly that
-# reason: it was TRACKED in a public repository while being a private letter.
-# The parent rule above already covers this directory; this entry exists so the
-# reason survives, because a future reader looking at one ignore line cannot
-# tell "generated output" from "must not be published".
+# TWO PATHS, DELIBERATELY. The folder moved to docs/qci_package/ on 2026-09-18
+# because it is correspondence, not build output, and nothing about it belongs
+# under a rendered-PDF directory. The old path stays listed so a restore from
+# backup, or a stale working copy, cannot quietly re-expose it.
+#
+# THIS RULE IS LOAD-BEARING AT THE NEW PATH. Under docs/paper/out/ the folder
+# was protected by the parent rule whatever this said. Under docs/ nothing else
+# covers it: without these two lines a `git add -A` publishes the negotiation.
+docs/qci_package/
 docs/paper/out/qci_package/
 # Predictions: ignore the CONTENTS (not the directory itself, or the negation
 # below cannot re-include anything -- the Sprint 2 MANIFEST.json defect class).
