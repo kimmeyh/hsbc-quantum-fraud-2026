@@ -1,5 +1,5 @@
 """Known-answer tests for metrics.py v1.1 (Sprint 1 acceptance criterion 2).
-Run: .venv\\Scripts\\python.exe -m pytest experiments/src/test_metrics.py -q
+Run: your venv interpreter (docs/ENVIRONMENT.md) -m pytest experiments/src/test_metrics.py -q
 """
 import numpy as np
 import pytest

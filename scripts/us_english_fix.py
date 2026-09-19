@@ -82,12 +82,54 @@ PAIRS = [
     ("manoeuvre", "maneuver"),
     ("artefact", "artifact"), ("artefacts", "artifacts"),
     ("towards", "toward"),
+    # ADDED 2026-09-17, synced with test_us_english.py after the team lead found
+    # `memorise` and `specialised` in the explainer while the guard passed. The
+    # original list covered the words the FIRST sweep happened to hit, which is
+    # how a word list decays: it records the past rather than the class.
+    ("optimise", "optimize"), ("optimised", "optimized"),
+    ("optimising", "optimizing"), ("optimisation", "optimization"),
+    ("optimiser", "optimizer"),
+    ("generalise", "generalize"), ("generalised", "generalized"),
+    ("generalising", "generalizing"),
+    ("specialise", "specialize"), ("specialised", "specialized"),
+    ("specialising", "specializing"),
+    ("normalise", "normalize"), ("normalised", "normalized"),
+    ("normalising", "normalizing"),
+    ("utilise", "utilize"), ("utilised", "utilized"), ("utilising", "utilizing"),
+    ("penalise", "penalize"), ("penalised", "penalized"),
+    ("penalising", "penalizing"),
+    ("characterise", "characterize"), ("characterised", "characterized"),
+    ("characterising", "characterizing"),
+    ("criticise", "criticize"), ("criticised", "criticized"),
+    ("criticising", "criticizing"),
+    ("memorise", "memorize"), ("memorised", "memorized"),
+    ("memorising", "memorizing"),
+    ("randomise", "randomize"), ("randomised", "randomized"),
+    ("randomising", "randomizing"),
+    ("standardise", "standardize"), ("standardised", "standardized"),
+    ("standardising", "standardizing"),
+    ("visualise", "visualize"), ("visualised", "visualized"),
+    ("visualising", "visualizing"),
+    ("practise", "practice"), ("practised", "practiced"),
+    ("practising", "practicing"),
+    ("flavour", "flavor"), ("flavours", "flavors"),
+    ("rigour", "rigor"), ("vigour", "vigor"),
+    ("endeavour", "endeavor"), ("saviour", "savior"),
+    ("signalled", "signaled"), ("totalled", "totaled"),
+    ("levelled", "leveled"), ("fuelled", "fueled"), ("marvelled", "marveled"),
+    ("sizeable", "sizable"), ("moustache", "mustache"),
+    ("mould", "mold"), ("smoulder", "smolder"),
 ]
 
 # Spans that must never be rewritten, checked case-sensitively.
 PROTECTED = (
     "Database Contents License",
     "Open Data Commons",
+    # Direct quotation from the DbCL licence text. Never rewritten: changing a
+    # spelling inside a quotation is a misquotation. Built by concatenation
+    # because a literal newline in a source string is how this file was broken
+    # when the span was first added.
+    "do not exclude any field of" + chr(10) + "  endeavour.",
 )
 
 

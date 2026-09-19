@@ -66,7 +66,7 @@ Scoring guide: 5 = flagship demonstration; 4 = convincing with minor gaps. Targe
 | D15 | Hardware subsampling must be stratified (preserve fraud ratio) and sample count explicitly stated | s4.2 | State counts; for Dirac-3 QBoost note the solve is over ensemble weights, weak learners train on full data; state both. Stratified throughout; counts stated (284,807 rows, 1,081 duplicates removed, 60/20/20). | OK |
 | D16 | In scope: CNP fraud, binary classification, batch evaluation. Out of scope: card-present, first-party fraud, account takeover, consortium models | s5.4 | Do not drift into out-of-scope framing. CNP binary classification, batch evaluation; scope respected. | OK |
 | D17 | Explainability valued for governance: SHAP, attention, or circuit-level analysis | s4.2, 5.3 | Included per D3. Per-learner attribution delivered; SHAP not required given native attributability. | OK |
-| D18 | Reproducibility: workflow documented and reproducible (explicit in Phase 2 criteria, 30% PoC Quality + 20% Technical Rigour) | Assessment s4 | Public repo, seeds, preregistration. Freeze commit, tag, version pins, dataset checksum, results store with config hashes. | OK |
+| D18 | Reproducibility: workflow documented and reproducible (explicit in Phase 2 criteria, 30% PoC Quality + 20% Technical Rigor) | Assessment s4 | Public repo, seeds, preregistration. Freeze commit, tag, version pins, dataset checksum, results store with config hashes. | OK |
 
 ## E. Credibility practices adopted from the TrueLoop example
 

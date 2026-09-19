@@ -15,11 +15,32 @@ geometry read back from the rendered PDFs, not assumed from the sources.
 All US Letter, 10.0pt dominant with nothing smaller, English. Total 139 KB
 against a 20 MB per-file cap. Three files into five upload slots.
 
-The PDFs are build outputs and are deliberately NOT tracked in git. They
-regenerate byte-for-byte from the tracked markdown by running
-`scripts/render-all.ps1`, which is what Appendix C's reproducibility claim
-requires. Re-render before uploading if any source has changed since the commit
-above.
+**These three PDFs ARE tracked in git, as of 2026-09-18.** They were not
+before, and the change is deliberate.
+
+Appendix C stakes the submission's reproducibility claim on this being a PUBLIC
+repository. A reader could regenerate the PDFs from the tracked markdown, but
+could not see the artifacts actually filed on 2026-09-12: the portal holds the
+judges' copies and nobody outside HSBC can read them. The repository was
+therefore the only possible public record of what was submitted, and it did not
+carry it. Publishing the three files closes that gap.
+
+**The tracked bytes are the FILED bytes**, not a rebuild. The SHA-256 values in
+the table above are asserted by `experiments/src/test_published_artifacts.py`,
+so a re-render that silently replaces a published PDF fails the suite rather
+than letting the repository disagree with its own submission record.
+
+That assertion exists because the failure happened. Sprint 16 re-rendered all
+three while proving the converted renderer reproduced them, which it did:
+identical text, identical page counts, identical sizes. But a PDF carries a
+per-build `/ID` trailer, so the bytes differed and the rebuilt files were no
+longer the filed artifacts. They were recovered from a 2026-09-16 backup and
+verified against these hashes before being committed.
+
+They still regenerate from the tracked markdown: `python scripts/render_all.py`
+(converted from PowerShell in Sprint 16; `render-all.ps1` is retired). Content
+reproduces exactly; the `/ID` trailer will not, which is why the filed copies
+are kept rather than rebuilt.
 
 ## Page fill at build time
 

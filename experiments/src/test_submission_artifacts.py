@@ -212,7 +212,12 @@ def test_documents_state_the_true_amendment_count():
              20: "twenty"}
     stale = {w for k, w in words.items() if k != n}
 
-    for rel in ("docs/paper/appendix.md", "docs/paper/qci_cover.md",
+    # qci_cover.md moved to docs/qci_package/ on 2026-09-17 (private
+    # correspondence, now gitignored). It is still CHECKED here: the retraction
+    # must not reappear in a letter just because the letter is unpublished.
+    # The exists() guard below would have skipped it silently otherwise.
+    for rel in ("docs/paper/appendix.md",
+                "docs/qci_package/qci_cover.md",
                 "docs/QCI_EQC_MODELS_FEEDBACK.md"):
         path = ROOT / rel
         if not path.exists():

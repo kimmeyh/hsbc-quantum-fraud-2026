@@ -31,7 +31,7 @@ The adversarial control DID remove both before the model saw them -- which is
 the control working. But it stopped at its 20-round cap, so that removal was
 luck rather than guarantee: on a fold where twenty other features ranked higher,
 the raw clock would have gone in. `TransactionDT` is the timestamp; a model
-given it can memorise WHEN fraud occurred in the training months, which is
+given it can memorize WHEN fraud occurred in the training months, which is
 precisely the leak rolling-origin evaluation exists to prevent.
 
 FIX: drop identifier columns in the pipeline's `_finalize`, so compliance does

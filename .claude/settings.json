@@ -13,27 +13,27 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\block-carry-forward-stash.ps1\"",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/.claude/hooks/block_carry_forward_stash.py\"",
             "timeout": 15
           },
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\block-branch-from-develop.ps1\"",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/.claude/hooks/block_branch_from_develop.py\"",
             "timeout": 15
           },
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\block-unraw-escape.ps1\"",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/.claude/hooks/block_unraw_escape.py\"",
             "timeout": 15
           },
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\block-frozen-history-rewrite.ps1\"",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/.claude/hooks/block_frozen_history_rewrite.py\"",
             "timeout": 15
           },
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\block-shell-metachar-expansion.ps1\"",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/.claude/hooks/block_shell_metachar_expansion.py\"",
             "timeout": 15
           }
         ]
@@ -43,12 +43,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\block-unapproved-submission-edit.ps1\"",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/.claude/hooks/block_unapproved_submission_edit.py\"",
             "timeout": 15
           },
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\block-reactive-amendment.ps1\"",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/.claude/hooks/block_reactive_amendment.py\"",
             "timeout": 15
           }
         ]
@@ -58,7 +58,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\block-cross-repo-write.ps1\""
+            "command": "python \"${CLAUDE_PROJECT_DIR}/.claude/hooks/block_cross_repo_write.py\""
           }
         ]
       }
@@ -68,8 +68,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}\\.claude\\hooks\\verify-closeout-complete.ps1\"",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/.claude/hooks/verify_closeout_complete.py\"",
             "timeout": 20
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/.claude/hooks/sprint_auto_advance.py\""
           }
         ]
       }

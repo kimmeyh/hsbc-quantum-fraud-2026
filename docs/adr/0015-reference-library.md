@@ -392,12 +392,12 @@ GRADE, the standard clinical medicine uses to grade a body of evidence, is built
 the other way round:
 
 - Four levels: **high, moderate, low, very low**.
-- **Starting level depends on study type** -- randomised trials start high,
+- **Starting level depends on study type** -- randomized trials start high,
   observational studies start low [Cochrane Handbook ch. 14].
 - **Five named downgrade reasons**: risk of bias, inconsistency, indirectness,
   imprecision, publication bias. One level for serious concerns, two for very
   serious.
-- **Three named upgrade reasons** for non-randomised work: large effect,
+- **Three named upgrade reasons** for non-randomized work: large effect,
   dose-response, opposing plausible confounding.
 - A floor: certainty cannot fall below very low however many reasons apply.
 

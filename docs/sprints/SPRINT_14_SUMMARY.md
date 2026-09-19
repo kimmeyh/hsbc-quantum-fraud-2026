@@ -137,7 +137,7 @@ derived certainty plus named reasons.
 
 Lenat's footnote 9 is the finding worth keeping: Cyc's general theorem prover
 timed out on over a million consecutive queries and was switched off a decade
-ago. Everything Cyc does is done by 1,100 specialised shortcuts.
+ago. Everything Cyc does is done by 1,100 specialized shortcuts.
 
 ## Numbers
 

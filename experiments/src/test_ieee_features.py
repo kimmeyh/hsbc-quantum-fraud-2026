@@ -3,7 +3,7 @@ issue #32). PREPARATION ONLY per PREREGISTRATION.md v1.1 section 5.3 --
 these tests exercise the feature pass on a small synthetic fixture; they
 fit no model arm and write no results.json row.
 
-Run: .venv\\Scripts\\python.exe -m pytest experiments/src/test_ieee_features.py -q
+Run: your venv interpreter (docs/ENVIRONMENT.md) -m pytest experiments/src/test_ieee_features.py -q
 
 Memory note: the real train_transaction.csv is 600MB+/590,540 rows. The
 automated suite below uses a small synthetic fixture (a few hundred rows)

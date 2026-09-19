@@ -5,7 +5,7 @@ minimum-detectable-effect statement required before any hardware approval.
 This is a VARIANCE PILOT with fixed, documented XGBoost settings; it is NOT
 the G0 gate run (G0 uses the full 100-trial tuned model in Sprint 2).
 
-Run: .venv\\Scripts\\python.exe experiments\\src\\pilot_variance.py
+Run: your venv interpreter (docs/ENVIRONMENT.md) experiments/src/pilot_variance.py
 Writes: experiments/results/pilot_variance.json, experiments/PILOT_VARIANCE.md
 """
 from __future__ import annotations

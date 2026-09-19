@@ -2,7 +2,13 @@
 
 **Purpose**: PowerShell and Windows-environment practices for this repository: shell selection, error patterns observed in this project's own sprints, and conventions adapted from spamfilter-multi's WINDOWS_DEVELOPMENT_GUIDE.md and TROUBLESHOOTING.md (Sprint 2 retro improvement 1).
 **Audience**: Claude Code sessions executing commands on this Windows 11 host.
-**Last Updated**: 2026-08-30
+**Last Updated**: 2026-09-17
+
+> **The interpreter paths below are WINDOWS paths, and that is correct for
+> this document.** For the Linux and WSL equivalents, and for how the venv
+> is created on each OS, see **docs/ENVIRONMENT.md**, which is the single
+> place either is written down. The two venvs are not interchangeable: a
+> Windows one has `Scripts/`, a Linux one has `bin/`.
 
 ## Shell selection
 
