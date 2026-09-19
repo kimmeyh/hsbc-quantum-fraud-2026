@@ -232,51 +232,27 @@ recorded there: F79's defect was an exemption never revoked rather than a
 missing check, and the confidentiality scan reported clean on any single-line
 file. Removed from candidates per convention.)
 
-**F83. Settle the venv parity question before any OS switch (~3h) Priority 5**
-- Phase: Finalize / tooling (team lead question, 2026-09-17)
-- Platform: `experiments/`, both operating systems
-- **The question that comes first, and it may be a submission-accuracy issue rather than a tooling one**: Appendix C states the environment as "eqc-models 0.21.0, qci-client 5.0.2, Python 3.12, **Linux**". The campaign ran on Windows, with WSL used only for specific arms. Either the claim is accurate for the arms that mattered, or it is an overstatement that should be known about. Settle this BEFORE deciding anything about switching
-- **MEASURE, do not argue.** Run the suite and a subset of the classical arms on both operating systems and compare row by row. A few hours buys a number instead of a debate
-- **Why it cannot be assumed**: A29(h) pinned all 18 dependencies because drift in the comparator stack is material to the null. But pinned VERSIONS do not pin numerical BEHAVIOR across platforms -- BLAS backends and thread counts differ -- and the null is a -0.0399 difference, which is not obviously immune
-- **The gap that makes this unanswerable today**: rows carry a `config_hash`, which is configuration, not environment. Nothing records which OS, BLAS or interpreter produced a row, so if a figure moves by 0.0003 after a switch, we cannot tell whether that is the platform or a real change. 168 rows already committed have no such field
-- Acceptance: a measured divergence figure for the classical arms on both platforms, and a stated finding on whether Appendix C's Linux claim is accurate
-- Depends on: nothing. Blocks any decision to move work to Linux
+(F82 the escape-eaten class, F83 the venv parity question, F84 the environment
+in the row schema, F85 the gate-report rename and F86 the QCi post-submission
+package: COMPLETED in Sprint 17. F81 CLOSED by the team lead. See
+SPRINT_17_SUMMARY.md and CHANGELOG.md. Removed from candidates per convention.
 
-**F84. Record the environment in every results row (~2h) Priority 6**
-- Phase: Finalize / evidence schema (team lead question, 2026-09-17)
-- Platform: `experiments/src/store.py`, section 11 schema
-- Add OS, Python version, BLAS backend and thread count to each row, so a future figure is self-describing and a platform question is answerable from the data rather than by re-running
-- **Needs an AMENDMENT**: section 11 defines the row schema, and the preregistration is FROZEN. This is the correct route, not an edit
-- Does NOT retrofit the 168 existing rows. Those stay unannotated and that limitation is stated rather than hidden
-- Acceptance: new rows carry the fields; the amendment is written and dated; `test_row_schema.py` enforces them
-- Depends on: **F83**, which decides whether the question is live enough to be worth a schema change
+Four findings outlived their cards and are recorded there rather than here:
 
-**F85. Rename the gate report for its QCi audience (~30m) Priority 12**
-- Phase: Finalize / communication (team lead question, 2026-09-18)
-- Platform: `scripts/render_all.py`, `docs/qci_package/qci_cover.md`
-- "Gate report" is internal jargon naming the MECHANISM (preregistered gates with pass/fail criteria) rather than what a QCi reader opens, which is the full measured results of the campaign on their hardware
-- Recommendation from the 2026-09-18 discussion: **`Results Against Preregistered Criteria`**. The document's distinguishing feature is not that it has results but that the criteria were frozen first, one gate failed at 0.8296 against a 0.85 floor and is reported as failed, and ten rows are quarantined in plain sight. To a vendor weighing 30,000 seconds, that discipline IS the argument
-- **Rename the PDF OUTPUT only.** The source `experiments/results/gate_report.md` is referenced by `score_gates.py` and several tests; renaming it would touch the evidence pipeline for a presentational reason
-- Depends on: nothing
-
-**F82. Catch the escape-eaten class at WRITE time, not after the fact (~1h) Priority 4**
-- Phase: Finalize / tooling (Sprint 16 retrospective IMP-3, 2026-09-19)
-- Platform: `.claude/hooks`
-- **SEVEN OCCURRENCES IN ONE SPRINT**, which makes this the most frequently recurring defect in the repository's history. A backslash sequence is consumed by a shell or a parser and lands as a control character or a broken string, and the result is a plausible wrong value rather than an error
-- Where it hit in Sprint 16 alone: a JSON hook registration, a CHANGELOG entry, a master-plan card, two injection scripts, a test fixture, and two protected-span strings in the US-English guard and its converter (which broke both files identically)
-- **THE EXISTING HOOKS DO NOT COVER IT, and that is the point.** `block_unraw_escape` catches Windows paths in non-raw Python strings; `block_shell_metachar_expansion` catches shell expansion. Neither sees a backslash sequence written INSIDE a heredoc that then lands in a file, which is where every one of the seven happened
-- `test_no_control_characters` catches the result AFTER it is committed -- it found a sixth instance already in the master plan on its first run. What is missing is a check at write time
-- **Acceptance is behavioural**: a heredoc writing a file whose content contains an unescaped backslash sequence must BLOCK, and a heredoc writing legitimate prose about backslashes must NOT. Both directions proven by injection, because a guard that blocks correct work gets bypassed
-- Depends on: nothing
-
-**F81. Put the explainer in front of a real 8th-grade reader (~unknown) Priority 11**
-- Phase: Finalize / verification (Sprint 15 retrospective category 14, 2026-09-16)
-- Platform: external, team-lead owned
-- Both falsifier runs used language models with no repository context. They found six real gaps, so the mechanism works, but a model reading at grade 8 is not a person reading at grade 8
-- The card's own falsifier names the test: someone who has not read the submission explains back what CVQBoost is and why the result is a null
-- **Effort is unknown because it depends on finding a reader**, which is the team lead's to arrange, not mine. Sized as unknown rather than guessed
-- Value: the document's entire purpose is an audience it has never actually met
-- Depends on: nothing, but best after F80
+- **F83's Appendix C question resolved in the document's favor.** "Python
+  3.12, Linux" is accurate AND enforced in code -- run_hardware.py and
+  tune_proxy.py hard-exit on any non-POSIX platform, because the full-pair pool
+  build needs fork. No submitted document needed correcting. The suite is now
+  identical on both platforms, 1,043 passed / 71 skipped.
+- **The cross-repository guard had never run in CI.** 15 of its 17 cases
+  skipped on non-Windows for a PowerShell reason that stopped applying when
+  F78 converted the hooks. CI is ubuntu-latest, so the boundary rule was
+  enforced on one workstation and nowhere else.
+- **render_all.py rebuilt the three SUBMITTED PDFs on any invocation**, and the
+  first fix's override flag was used within minutes to get an unrelated test
+  running. No override exists now.
+- **The QPU arithmetic does not subtract**, and the reconciliation is at
+  docs/QPU_RECONCILIATION.md so it is not re-derived a fourth time.)
 
 **F36. Pandoc Lua filter: floating tables for the submission PDFs -- CLOSED 2026-09-07, FAILED**
 - **VERDICT: the filter works; the problem it was built for did not exist.** The premise (preserved in the review doc, because it is wrong in an instructive way) rested on a CHARACTER-COUNT page-fill measurement, and a table-heavy page always looks short by that measure. Measured as vertical extent, every page cited below was already full: 724 / 680 / 680 / 682pt of a 792pt page, zero free space anywhere. The appendix was over its limit because it had too much content
