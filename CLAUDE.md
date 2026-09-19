@@ -117,6 +117,37 @@ only in memory.
   dated and describes hardware behavior that must be re-checked against the
   current allocation and ledger before it drives a run.)
 
+- **Don't re-render, re-run or regenerate a SUBMITTED artifact to prove a tool
+  works. A submitted artifact is evidence, not a test fixture.** Render to a
+  scratch path and compare; that costs one extra argument. (Sprint 16 IMP-1: to
+  prove the converted renderer reproduced the three filed PDFs, I re-rendered
+  them IN PLACE. It did reproduce them -- identical text, page counts and sizes
+  -- but a PDF carries a per-build `/ID` trailer, so the bytes changed and the
+  files were no longer the ones submitted on 2026-09-12. Recoverable only
+  because a backup existed and the hashes were recorded in two documents.
+  `test_published_artifacts.py` now fails on any rebuild of a tracked PDF.)
+
+- **Don't move an ignored file without writing its rule at the DESTINATION
+  first.** A file's protection usually comes from where it sits, so relocating
+  it silently revokes that protection. Run `git check-ignore` on the
+  destination path BEFORE the move; if it returns nothing, write the rule
+  first. (Sprint 16 IMP-2: moving the QCi correspondence from
+  `docs/paper/out/qci_package/` to `docs/qci_package/` would have published a
+  private commercial negotiation, because the parent rule was doing all the
+  work and nothing under `docs/` replaced it.)
+  - **And remember `git mv` keeps a file TRACKED.** An ignore rule does nothing
+    for a file already in the index; `git rm --cached` is what untracks it. The
+    same move hit this first: `git mv` relocated the letter and left it staged
+    for commit.
+
+- **Don't trust an injection that reports success without asserting the
+  mutation landed.** Break the thing, CHECK THE BYTES, then run the guard.
+  (Sprint 16 IMP-4: two injections printed "77 passed" while injecting nothing
+  -- the replace target never matched -- and a green suite reads exactly like a
+  successful injection test. Three of that sprint's four errors were defects in
+  the VERIFICATION rather than in the thing verified, and each looked
+  identical to a real defect.)
+
 - **Don't claim a guard works because the suite is green. Prove it FAILS.** A
   test that cannot fail is worse than no test, because it buys false confidence.
   Break the thing it guards, watch it go red, then restore. (Three vacuous

@@ -27,9 +27,13 @@ that goes stale.
 | Appendices | 3 | [`docs/paper/appendix.md`](docs/paper/appendix.md) |
 | Team profile | 1 | [`docs/paper/team_profile.md`](docs/paper/team_profile.md) |
 
-The rendered PDFs are build outputs and are not committed. Rebuild them with
-`scripts/render-all.ps1`; per-file SHA-256 of the submitted versions is recorded
-in [`docs/submission/PACKAGE.md`](docs/submission/PACKAGE.md).
+**The three submitted PDFs are committed** at `docs/paper/out/`, and the
+committed bytes are the ones filed on 2026-09-12. Their SHA-256 values are
+recorded in [`docs/submission/PACKAGE.md`](docs/submission/PACKAGE.md) and
+asserted by the suite, so a rebuild cannot silently replace them.
+
+Every other rendered PDF is a build output and is not committed. Rebuild with
+`python scripts/render_all.py`.
 
 ### Retrieving the repository exactly as submitted
 

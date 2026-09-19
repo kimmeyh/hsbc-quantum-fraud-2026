@@ -232,6 +232,16 @@ recorded there: F79's defect was an exemption never revoked rather than a
 missing check, and the confidentiality scan reported clean on any single-line
 file. Removed from candidates per convention.)
 
+**F82. Catch the escape-eaten class at WRITE time, not after the fact (~1h) Priority 4**
+- Phase: Finalize / tooling (Sprint 16 retrospective IMP-3, 2026-09-19)
+- Platform: `.claude/hooks`
+- **SEVEN OCCURRENCES IN ONE SPRINT**, which makes this the most frequently recurring defect in the repository's history. A backslash sequence is consumed by a shell or a parser and lands as a control character or a broken string, and the result is a plausible wrong value rather than an error
+- Where it hit in Sprint 16 alone: a JSON hook registration, a CHANGELOG entry, a master-plan card, two injection scripts, a test fixture, and two protected-span strings in the US-English guard and its converter (which broke both files identically)
+- **THE EXISTING HOOKS DO NOT COVER IT, and that is the point.** `block_unraw_escape` catches Windows paths in non-raw Python strings; `block_shell_metachar_expansion` catches shell expansion. Neither sees a backslash sequence written INSIDE a heredoc that then lands in a file, which is where every one of the seven happened
+- `test_no_control_characters` catches the result AFTER it is committed -- it found a sixth instance already in the master plan on its first run. What is missing is a check at write time
+- **Acceptance is behavioural**: a heredoc writing a file whose content contains an unescaped backslash sequence must BLOCK, and a heredoc writing legitimate prose about backslashes must NOT. Both directions proven by injection, because a guard that blocks correct work gets bypassed
+- Depends on: nothing
+
 **F81. Put the explainer in front of a real 8th-grade reader (~unknown) Priority 11**
 - Phase: Finalize / verification (Sprint 15 retrospective category 14, 2026-09-16)
 - Platform: external, team-lead owned

@@ -4,6 +4,16 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-09-19
+
+- **docs**: **The three submitted PDFs are now PUBLISHED** at `docs/paper/out/`, and the committed bytes are the ones filed on 2026-09-12. Appendix C stakes the submission's reproducibility claim on a PUBLIC repository, and a reader could regenerate the PDFs but never see the artifacts actually filed -- the portal copies are invisible outside HSBC, so the repository was the only possible public record and did not carry it
+- **fix**: The filed bytes had been lost. Sprint 16 Task G re-rendered all three in place to prove the converted renderer reproduced them, which it did (identical text, page counts and sizes), but a PDF carries a per-build `/ID` trailer so the bytes changed. Recovered from a 2026-09-16 Acronis backup and verified against the hashes in PACKAGE.md before commit. `test_published_artifacts.py` now fails on any rebuild of a tracked PDF
+- **fix**: Three documents claimed the PDFs were "not tracked in git" and named the retired `render-all.ps1`: `PACKAGE.md`, `SUBMISSION_RECEIPT.md` and `README.md`. All corrected together, since one search found all three
+- **chore**: **The QCi correspondence moved to `docs/qci_package/` and is gitignored.** Private commercial negotiation, not part of the HSBC submission. The move would have PUBLISHED it: under `docs/paper/out/` the parent rule was doing all the work, and nothing under `docs/` replaced it. The rule was written and verified before the files moved
+- **chore**: All 13 PowerShell scripts moved out of the repository to `OldPowerShellScripts` (Sprint 16 IMP-5), with a README mapping each to its Python successor and warning that `confidentiality-scan.ps1` holds an unfixed single-line-file bug. The parity tests now skip their PowerShell half rather than failing
+- **docs**: CLAUDE.md gained three NOT-do entries from the Sprint 16 retrospective: never re-render a submitted artifact to prove a tool works; write an ignore rule at the DESTINATION before moving a protected file; never trust an injection that has not asserted its mutation landed
+- **feat**: F82 carded at Priority 4 -- catch the escape-eaten class at write time. Seven occurrences in one sprint makes it the repository's most frequent recurring defect, and the two existing hooks demonstrably do not cover the shape that keeps biting
+
 ### 2026-09-17
 
 - **feat**: **F79: a sprint can no longer merge without its retrospective.** Sprint 15 merged to develop AND to main with none, past an exit gate. The three-doc test deliberately exempts the sprint in flight, and nothing revoked that exemption; the exemption also followed a mutable status field, so it protected the wrong sprint. Completion is now judged on evidence (a later sprint has a plan), and the close-out hook demands the retrospective independently. Its old check asked for the summary only, and only when the retrospective already existed, so a missing retrospective triggered nothing at all (Issues #110, #111)
