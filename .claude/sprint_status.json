@@ -1,32 +1,19 @@
 {
   "current_sprint": {
-    "number": 16,
-    "name": "Make the Guards Portable, and Close the Gate",
-    "branch": "feature/20260916_Sprint_16",
-    "status": "phase_8_delivery_cycle",
-    "plan_doc": "docs/sprints/SPRINT_16_PLAN.md",
-    "pr": 120,
-    "plan_approved": true,
-    "github_issues": [
-      110,
-      111,
-      112,
-      113,
-      114,
-      115,
-      116,
-      117,
-      118,
-      119
-    ],
-    "prior_prs": [],
-    "note": "Sprint 16 COMPLETE. F79, F78, F80 delivered. PR #120 to develop, PR #121 to main, both merged 2026-09-19. Four reviews addressed, all threads resolved. Default branch changed to main during close-out."
+    "number": 17,
+    "name": "Clear the Deck for Phase 2",
+    "branch": "feature/20260919_Sprint_17",
+    "status": "phase_1_backlog_refinement",
+    "plan_doc": "docs/sprints/SPRINT_17_PLAN.md",
+    "pr": null,
+    "plan_approved": false,
+    "github_issues": []
   },
   "last_completed_sprint": {
     "number": 16,
     "merged_pr": 120,
-    "main_merge_pr": 121,
-    "docs_triad_complete": true
+    "main_merge_pr": null,
+    "docs_triad_complete": false
   },
   "prereg": {
     "status": "FROZEN",
