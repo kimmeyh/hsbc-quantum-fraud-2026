@@ -3,7 +3,7 @@
     "number": 16,
     "name": "Make the Guards Portable, and Close the Gate",
     "branch": "feature/20260916_Sprint_16",
-    "status": "phase_5_3_manual_validation",
+    "status": "phase_8_delivery_cycle",
     "plan_doc": "docs/sprints/SPRINT_16_PLAN.md",
     "pr": 120,
     "plan_approved": true,
@@ -20,12 +20,12 @@
       119
     ],
     "prior_prs": [],
-    "note": "F79, F78, F80 all complete. Issues 110-119 closed. Zero metered seconds. AWAITING MANUAL VALIDATION."
+    "note": "Sprint 16 COMPLETE. F79, F78, F80 delivered. PR #120 to develop, PR #121 to main, both merged 2026-09-19. Four reviews addressed, all threads resolved. Default branch changed to main during close-out."
   },
   "last_completed_sprint": {
-    "number": 15,
-    "merged_pr": 100,
-    "main_merge_pr": 109,
+    "number": 16,
+    "merged_pr": 120,
+    "main_merge_pr": 121,
     "docs_triad_complete": true
   },
   "prereg": {
@@ -33,5 +33,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-14"
+  "updated": "2026-09-19"
 }

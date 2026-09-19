@@ -232,6 +232,33 @@ recorded there: F79's defect was an exemption never revoked rather than a
 missing check, and the confidentiality scan reported clean on any single-line
 file. Removed from candidates per convention.)
 
+**F83. Settle the venv parity question before any OS switch (~3h) Priority 5**
+- Phase: Finalize / tooling (team lead question, 2026-09-17)
+- Platform: `experiments/`, both operating systems
+- **The question that comes first, and it may be a submission-accuracy issue rather than a tooling one**: Appendix C states the environment as "eqc-models 0.21.0, qci-client 5.0.2, Python 3.12, **Linux**". The campaign ran on Windows, with WSL used only for specific arms. Either the claim is accurate for the arms that mattered, or it is an overstatement that should be known about. Settle this BEFORE deciding anything about switching
+- **MEASURE, do not argue.** Run the suite and a subset of the classical arms on both operating systems and compare row by row. A few hours buys a number instead of a debate
+- **Why it cannot be assumed**: A29(h) pinned all 18 dependencies because drift in the comparator stack is material to the null. But pinned VERSIONS do not pin numerical BEHAVIOR across platforms -- BLAS backends and thread counts differ -- and the null is a -0.0399 difference, which is not obviously immune
+- **The gap that makes this unanswerable today**: rows carry a `config_hash`, which is configuration, not environment. Nothing records which OS, BLAS or interpreter produced a row, so if a figure moves by 0.0003 after a switch, we cannot tell whether that is the platform or a real change. 168 rows already committed have no such field
+- Acceptance: a measured divergence figure for the classical arms on both platforms, and a stated finding on whether Appendix C's Linux claim is accurate
+- Depends on: nothing. Blocks any decision to move work to Linux
+
+**F84. Record the environment in every results row (~2h) Priority 6**
+- Phase: Finalize / evidence schema (team lead question, 2026-09-17)
+- Platform: `experiments/src/store.py`, section 11 schema
+- Add OS, Python version, BLAS backend and thread count to each row, so a future figure is self-describing and a platform question is answerable from the data rather than by re-running
+- **Needs an AMENDMENT**: section 11 defines the row schema, and the preregistration is FROZEN. This is the correct route, not an edit
+- Does NOT retrofit the 168 existing rows. Those stay unannotated and that limitation is stated rather than hidden
+- Acceptance: new rows carry the fields; the amendment is written and dated; `test_row_schema.py` enforces them
+- Depends on: **F83**, which decides whether the question is live enough to be worth a schema change
+
+**F85. Rename the gate report for its QCi audience (~30m) Priority 12**
+- Phase: Finalize / communication (team lead question, 2026-09-18)
+- Platform: `scripts/render_all.py`, `docs/qci_package/qci_cover.md`
+- "Gate report" is internal jargon naming the MECHANISM (preregistered gates with pass/fail criteria) rather than what a QCi reader opens, which is the full measured results of the campaign on their hardware
+- Recommendation from the 2026-09-18 discussion: **`Results Against Preregistered Criteria`**. The document's distinguishing feature is not that it has results but that the criteria were frozen first, one gate failed at 0.8296 against a 0.85 floor and is reported as failed, and ten rows are quarantined in plain sight. To a vendor weighing 30,000 seconds, that discipline IS the argument
+- **Rename the PDF OUTPUT only.** The source `experiments/results/gate_report.md` is referenced by `score_gates.py` and several tests; renaming it would touch the evidence pipeline for a presentational reason
+- Depends on: nothing
+
 **F82. Catch the escape-eaten class at WRITE time, not after the fact (~1h) Priority 4**
 - Phase: Finalize / tooling (Sprint 16 retrospective IMP-3, 2026-09-19)
 - Platform: `.claude/hooks`
