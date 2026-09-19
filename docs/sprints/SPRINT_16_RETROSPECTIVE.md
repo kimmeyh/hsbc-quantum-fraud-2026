@@ -344,6 +344,6 @@ happened, and warning that `confidentiality-scan.ps1` holds an unfixed
 single-line-file bug and must not be restored into service.
 
 The parity tests now skip their PowerShell half rather than failing, which was
-the designed behaviour. That does end the strongest evidence the conversion is
+the designed behavior. That does end the strongest evidence the conversion is
 faithful -- 143 cases requiring agreement between two implementations -- so the
 archive exists to reconstruct that comparison if it is ever disputed.

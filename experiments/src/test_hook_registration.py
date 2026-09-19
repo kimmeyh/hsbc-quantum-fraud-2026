@@ -29,6 +29,7 @@ Restoring the doubled backslash passes both.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -38,22 +39,27 @@ SETTINGS = ROOT / ".claude" / "settings.json"
 
 
 def _hook_commands() -> list[tuple[str, str]]:
-    """(matcher, command) for every registered PreToolUse hook."""
+    """(event:matcher, command) for every registered hook, ALL events."""
     if not SETTINGS.exists():
         return []
     cfg = json.loads(SETTINGS.read_text(encoding="utf-8"))
     out: list[tuple[str, str]] = []
-    for group in cfg.get("hooks", {}).get("PreToolUse", []):
-        matcher = group.get("matcher", "<none>")
-        for hook in group.get("hooks", []):
-            cmd = hook.get("command")
-            if cmd:
-                out.append((matcher, cmd))
+    # EVERY event, not just PreToolUse. The Stop hooks
+    # (verify_closeout_complete, sprint_auto_advance) had never been
+    # path-checked by anything until this was widened, so a backspace escape in
+    # a Stop hook path would not have been caught either.
+    for event, groups in cfg.get("hooks", {}).items():
+        for group in groups:
+            matcher = f"{event}:{group.get('matcher', '<none>')}"
+            for hook in group.get("hooks", []):
+                cmd = hook.get("command")
+                if cmd:
+                    out.append((matcher, cmd))
     return out
 
 
 def _script_path(command: str) -> Path | None:
-    """The -File argument of a hook command, resolved against the repo root.
+    """The script path in a hook command, resolved against the repo root.
 
     Separators are NORMALISED to forward slashes after substitution. The hook
     commands are PowerShell invocations and carry Windows backslashes, which a
@@ -66,11 +72,22 @@ def _script_path(command: str) -> Path | None:
     sprint was written to serve: a test asserting that hooks resolve, failing
     because it could not resolve them itself.
     """
-    marker = "-File "
-    if marker not in command:
+    # Match the SCRIPT ARGUMENT, not the invocation syntax around it.
+    #
+    # This keyed on "-File " until 2026-09-19, which is PowerShell syntax. F78
+    # rewrote every command to `python "path.py"`, the marker vanished, this
+    # returned None for all eight hooks, and the loop below skipped every one:
+    # 0 of 8 checked, suite green. Proven by pointing a hook at a nonexistent
+    # file and watching the test pass.
+    #
+    # That is the fourth instance of the repository's named vacuous-guard
+    # class, and it shipped in the PR whose CI step is titled "A guard must
+    # FIRE on Linux, not merely load". Found independently by two PR #120
+    # reviewers.
+    m = re.search(r'"([^"]*\.(?:py|ps1))"|(\S+\.(?:py|ps1))', command)
+    if not m:
         return None
-    tail = command.split(marker, 1)[1].strip().strip('"')
-    tail = tail.replace("${CLAUDE_PROJECT_DIR}", str(ROOT))
+    tail = (m.group(1) or m.group(2)).replace("${CLAUDE_PROJECT_DIR}", str(ROOT))
     return Path(tail.replace("\\", "/"))
 
 
@@ -81,7 +98,7 @@ def test_every_registered_hook_path_resolves():
     for matcher, cmd in _hook_commands():
         path = _script_path(cmd)
         if path is None:
-            continue                      # not a -File invocation; nothing to check
+            continue        # unparseable; the test below fails on this case
         if not path.exists():
             missing.append(f"{matcher}: {path}")
     assert not missing, (
@@ -137,3 +154,29 @@ def test_the_submission_and_amendment_guards_are_registered():
             f"{guard} is not registered in .claude/settings.json (looked for "
             f"{variants}). It guards an artifact that has already been "
             "submitted or frozen.")
+
+
+@pytest.mark.skipif(not SETTINGS.exists(), reason="no .claude/settings.json")
+def test_every_registered_command_is_actually_parsed():
+    """The guard above skips what it cannot parse, so measure what it parsed.
+
+    THIS IS THE TEST THAT WOULD HAVE CAUGHT THE F78 CONVERSION. `_script_path`
+    keyed on the PowerShell `-File ` marker; the conversion rewrote every
+    command to `python "path.py"`, the marker vanished, and the resolver
+    returned None for all eight hooks. The loop continued on every one and
+    asserted against an empty list: 0 of 8 checked, suite green, and a hook
+    pointed at a nonexistent file still passed.
+
+    A guard that silently skips its whole population is worse than no guard,
+    because it reads as protection. Counting is the cheap defence.
+    """
+    commands = _hook_commands()
+    assert commands, "no hooks registered at all; the guards below are vacuous"
+
+    unparsed = [f"{matcher}: {cmd[:70]}"
+                for matcher, cmd in commands if _script_path(cmd) is None]
+    assert not unparsed, (
+        f"{len(unparsed)} of {len(commands)} registered hook commands could not "
+        f"be parsed, so their paths were NEVER CHECKED: {unparsed}. Either the "
+        "invocation syntax changed and _script_path needs widening, or a "
+        "command is malformed. Both are defects.")

@@ -25,6 +25,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import date
 from pathlib import Path
 
 STATUS = Path(__file__).resolve().parents[1] / ".claude" / "sprint_status.json"
@@ -62,7 +63,20 @@ def apply_set(doc: dict, assignment: str) -> str:
     if not isinstance(section, dict):
         raise SystemExit(f"Section {section_name!r} is not an object")
 
-    before = section.get(key, "<absent>")
+    # An UNKNOWN KEY IS A HARD ERROR, never a silent add. Carried from the
+    # PowerShell original, whose header stated it explicitly, and dropped by
+    # mistake in the Sprint 16 conversion. Found by Copilot on PR #120.
+    #
+    # Why this matters more than catching a typo: `--set stauts=phase_6_push`
+    # returned 0, created a bogus `stauts` field, and left the REAL status
+    # stale. That is precisely the went-stale-twice failure this tool exists to
+    # prevent, so a silent add makes the tool an instance of its own problem.
+    if key not in section:
+        raise SystemExit(
+            f"Unknown key {key!r} in section {section_name!r} ({assignment!r}). "
+            f"Known keys: {', '.join(sorted(section))}")
+
+    before = section[key]
     section[key] = typed(raw)
     return f"  {section_name}.{key}: {before!r} -> {section[key]!r}"
 
@@ -118,6 +132,13 @@ def main(argv: list[str] | None = None) -> int:
     if not changes:
         print("nothing to do; pass --set or --new-sprint")
         return 0
+
+    # The original stamped this on every write, and the conversion dropped it.
+    # Found while verifying Copilot's finding against the retired script, so it
+    # is a SECOND regression from the same conversion. A status file nobody can
+    # date is one nobody can tell is stale, which is the failure that put
+    # `phase_4_execution` against a sprint with two merged PRs.
+    doc["updated"] = date.today().isoformat()
 
     path.write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
 

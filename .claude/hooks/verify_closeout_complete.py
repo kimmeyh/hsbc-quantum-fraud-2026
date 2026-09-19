@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -147,6 +148,46 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
                 violations.append(
                     f"docs/sprints/SPRINT_{prev}_SUMMARY.md is missing "
                     "(three-doc rule, workflow 3.2.1).")
+
+    # Open sprint issues -- POST-MERGE precondition only.
+    #
+    # RESTORED 2026-09-19. The PowerShell had this fifth check and the Sprint 16
+    # conversion dropped it silently, which the PR #120 review caught. Without
+    # it, a close-out could be certified complete with every task issue still
+    # open, and nothing would object.
+    #
+    # It is post-merge ONLY because `Closes #N` does not fire on a
+    # feature->develop merge (workflow 2.3), so the issues must be closed by
+    # hand and the only moment that is checkable is after the merge lands.
+    rc, out = hooklib.git("rev-parse", "--abbrev-ref", "HEAD", cwd=root)
+    branch_now = out.strip() if rc == 0 else ""
+    if branch_now:
+        try:
+            pr = subprocess.run(
+                ["gh", "pr", "list", "--head", branch_now, "--state", "all",
+                 "--json", "state,mergedAt"],
+                cwd=str(root), capture_output=True, text=True, timeout=20)
+            merged = pr.returncode == 0 and any(
+                p.get("state") == "MERGED" or p.get("mergedAt")
+                for p in json.loads(pr.stdout or "[]"))
+            if merged:
+                iss = subprocess.run(
+                    ["gh", "issue", "list", "--label", "sprint", "--state",
+                     "open", "--json", "number"],
+                    cwd=str(root), capture_output=True, text=True, timeout=20)
+                if iss.returncode == 0 and iss.stdout:
+                    nums = [f"#{i['number']}" for i in json.loads(iss.stdout)]
+                    if nums:
+                        violations.append(
+                            "Sprint PR MERGED but sprint-labeled issues still "
+                            f"OPEN: {', '.join(nums)} ('Closes #N' does not fire "
+                            "on feature->develop merges; close manually, "
+                            "workflow 2.3).")
+        except Exception:                                # noqa: BLE001
+            # gh missing, offline, or rate-limited. Fail open on THIS check
+            # only: the other four still ran, and a hook that blocks every
+            # close-out because GitHub is unreachable would be bypassed.
+            pass
 
     return violations
 

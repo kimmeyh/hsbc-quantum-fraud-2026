@@ -54,10 +54,37 @@ REVIEW = [
 ]
 
 
+def read_scannable(path: Path) -> str:
+    """Decode a file, or REFUSE to certify it.
+
+    `errors="replace"` silently mangled any non-UTF-8 file into replacement
+    characters that match no rule, so the gate reported "0 HIGH, 0 REVIEW" on a
+    UTF-16 file containing both an employer name and an API token. UTF-16 is
+    what PowerShell's `>` redirection and Notepad's older "Unicode" option both
+    produce, so it is a plausible way a cover note reaches this repository.
+
+    That is the PowerShell single-line-file bug wearing different clothes: a
+    file the scanner cannot read is reported as a file with nothing in it.
+    Found by the PR #120 review.
+    """
+    for encoding in ("utf-8-sig", "utf-16", "latin-1"):
+        try:
+            return path.read_text(encoding=encoding)
+        except (UnicodeDecodeError, UnicodeError):
+            continue
+        except OSError as exc:
+            raise SystemExit(
+                f"UNREADABLE: {path}: {exc}\nRESULT: BLOCKED. The gate cannot "
+                "certify a file it could not read.")
+    raise SystemExit(
+        f"UNDECODABLE: {path}\nRESULT: BLOCKED. The gate cannot certify a file "
+        "it could not decode.")
+
+
 def scan_file(path: Path) -> tuple[list[str], list[str]]:
     high: list[str] = []
     review: list[str] = []
-    text = path.read_text(encoding="utf-8", errors="replace")
+    text = read_scannable(path)
     for lineno, line in enumerate(text.splitlines(), 1):
         for name, pattern in HIGH:
             if re.search(pattern, line):
@@ -77,6 +104,7 @@ def main(argv: list[str] | None = None) -> int:
 
     all_high: list[str] = []
     all_review: list[str] = []
+    unscannable: list[str] = []
     scanned = 0
 
     for raw in args.paths:
@@ -87,8 +115,17 @@ def main(argv: list[str] | None = None) -> int:
             if not part:
                 continue
             p = Path(part)
+            # A path that cannot be scanned is a BLOCKING condition, not a
+            # note. The PowerShell counted a missing file as a HIGH finding;
+            # this conversion printed MISSING and continued, so a typo, a
+            # renamed document or an unexpanded glob produced "Scanned 0
+            # file(s)" and exit 0. A gate that skips its input has certified
+            # nothing. Found by the PR #120 review.
             if not p.exists():
-                print(f"MISSING: {p}")
+                unscannable.append(f"MISSING: {p}")
+                continue
+            if not p.is_file():
+                unscannable.append(f"NOT A FILE: {p}")
                 continue
             scanned += 1
             h, r = scan_file(p)
@@ -97,13 +134,29 @@ def main(argv: list[str] | None = None) -> int:
 
     for line in all_high + all_review:
         print(line)
+    for line in unscannable:
+        print(f"  {line}")
 
     print(f"\nScanned {scanned} file(s): {len(all_high)} HIGH, "
-          f"{len(all_review)} REVIEW")
+          f"{len(all_review)} REVIEW, {len(unscannable)} UNSCANNABLE")
 
     if all_high:
         print("RESULT: BLOCKED. Resolve every HIGH finding before this package "
               "leaves the repository.")
+        return 1
+
+    # "I could not check this" is a DISTINCT outcome from "I checked and it was
+    # clean", and both of the next two blocks exist to keep them distinct. That
+    # conflation is the class this repository keeps paying for.
+    if unscannable:
+        print(f"RESULT: BLOCKED. {len(unscannable)} path(s) could not be "
+              "scanned. A gate that skips a file it was asked to check has "
+              "certified nothing.")
+        return 1
+
+    if scanned == 0:
+        print("RESULT: BLOCKED. No files were scanned, so nothing was "
+              "certified.")
         return 1
 
     print("RESULT: no HIGH findings. The team lead still walks each REVIEW "

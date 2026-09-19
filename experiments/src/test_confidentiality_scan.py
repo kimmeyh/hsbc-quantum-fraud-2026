@@ -101,10 +101,50 @@ def test_the_real_submission_documents_still_scan_clean(tmp_path):
     assert "0 HIGH" in r.stdout
 
 
-def test_a_missing_file_is_reported_not_ignored(tmp_path):
-    """Silently skipping an unreadable file would make the gate vacuous."""
+def test_a_missing_file_BLOCKS(tmp_path):
+    """A gate that cannot read its input must not pass it.
+
+    THIS TEST PASSED WHILE THE GATE WAS OPEN. It asserted the word "MISSING"
+    appeared in stdout and never checked the exit code, so a missing file
+    printed MISSING, scanned nothing, and returned 0 -- and the test was green.
+    Its own docstring said "silently skipping an unreadable file would make the
+    gate vacuous", which is exactly what happened. Found by the PR #120 review.
+    """
     r = subprocess.run([sys.executable, str(SCRIPT),
                         str(tmp_path / "does-not-exist.md")],
                        capture_output=True, text=True)
+    assert r.returncode == 1, (
+        "a missing file must BLOCK. A pre-publication gate that scans zero "
+        "files and reports success has certified nothing. stdout: " + r.stdout)
     assert "MISSING" in r.stdout
-    assert "Scanned 0 file(s)" in r.stdout
+    assert "UNSCANNABLE" in r.stdout
+
+
+def test_an_undecodable_file_BLOCKS(tmp_path):
+    """A file the scanner cannot read is not a file with nothing in it.
+
+    UTF-16 is what PowerShell's `>` redirection and Notepad's older "Unicode"
+    option produce. Read with errors="replace" it became replacement characters
+    matching no rule, so a file holding an employer name AND an API token
+    scanned as "0 HIGH, 0 REVIEW" -- the PowerShell single-line bug in new
+    clothes.
+    """
+    f = tmp_path / "utf16.md"
+    f.write_text("Our team at Progressive built this.", encoding="utf-16")
+    r = subprocess.run([sys.executable, str(SCRIPT), str(f)],
+                       capture_output=True, text=True)
+    assert r.returncode == 1, (
+        "a UTF-16 file with a HIGH finding must BLOCK. stdout: " + r.stdout)
+
+
+def test_a_directory_BLOCKS(tmp_path):
+    """Passing a directory used to raise an unhandled PermissionError.
+
+    Exit 1 by traceback is not a verdict: a caller testing `rc != 0` cannot
+    distinguish "HIGH finding" from "you passed a directory".
+    """
+    r = subprocess.run([sys.executable, str(SCRIPT), str(tmp_path)],
+                       capture_output=True, text=True)
+    assert r.returncode == 1
+    assert "NOT A FILE" in r.stdout, (
+        "expected a verdict naming the problem, got: " + r.stdout + r.stderr)

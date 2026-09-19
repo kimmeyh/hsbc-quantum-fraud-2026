@@ -49,8 +49,6 @@ ALLOWED = {
     "docs/sprints/SPRINT_16_PLAN.md": "the plan describes the problem",
     "CHANGELOG.md": "the entry describes the problem",
     "scripts/render_pdf.py": "docstring explains the path it removed",
-    "scripts/render-pdf.ps1": "retired, not the live implementation",
-    "scripts/render-all.ps1": "retired, not the live implementation",
 }
 
 
@@ -109,8 +107,14 @@ def test_every_allowance_is_still_used(rel, reason):
     person reads the list as larger than it is.
     """
     p = ROOT / rel
-    if not p.exists():
-        pytest.skip(f"{rel} no longer exists")
+    # A DELETED file must FAIL, not skip. Skipping is what let two dead .ps1
+    # allowances survive the very PR that deleted the files -- the test written
+    # to catch dead permission could not catch these two, because deletion
+    # routed to skip rather than assert. Found by the PR #120 review.
+    assert p.exists(), (
+        f"{rel} is in ALLOWED ({reason}) but no longer exists. Remove its "
+        "entry: an allowance for a file that is gone makes the list read as "
+        "larger than it is.")
     text = p.read_text(encoding="utf-8")
     assert INTERPRETER.search(text), (
         f"{rel} is allowed to contain the interpreter path ({reason}) but no "
