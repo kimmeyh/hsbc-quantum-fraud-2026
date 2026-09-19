@@ -3,7 +3,7 @@ rolling-origin splitter (PREREGISTRATION.md v1.1 section 8.2). Sprint 6
 Task B (F3 prep, issue #32): PREPARATION ONLY -- proves no temporal
 leakage across folds; fits no model arm, writes no results.json row.
 
-Run: .venv\\Scripts\\python.exe -m pytest experiments/src/test_ieee_splits.py -q
+Run: your venv interpreter (docs/ENVIRONMENT.md) -m pytest experiments/src/test_ieee_splits.py -q
 """
 from __future__ import annotations
 

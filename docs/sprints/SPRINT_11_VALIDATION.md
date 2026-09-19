@@ -17,7 +17,7 @@ The submission explained a key finding by saying our weak classifiers were
 all looked alike. An outside reviewer checked the saved data. The trees are not
 depth-limited at all -- they grow without limit -- and **not one** of them
 predicts "not fraud" everywhere. What actually happens is that 80 to 84 of the 91
-classifiers **memorise the training data exactly**, which makes them literally
+classifiers **memorize the training data exactly**, which makes them literally
 the same thing as each other. Same observation, wrong explanation.
 
 The measurement was right the whole time; the story attached to it was wrong.

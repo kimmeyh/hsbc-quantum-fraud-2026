@@ -1,5 +1,5 @@
 """Plumbing smoke test on SYNTHETIC data only (produces no preregistered results).
-Run: .venv\\Scripts\\python.exe experiments\\src\\smoke_test.py
+Run: your venv interpreter (docs/ENVIRONMENT.md) experiments/src/smoke_test.py
 """
 import sys
 from pathlib import Path

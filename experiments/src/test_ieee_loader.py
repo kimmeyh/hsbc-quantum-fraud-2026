@@ -9,7 +9,7 @@ instruction; this automated suite checks the checksum/manifest plumbing
 against the real files on disk (I/O-bound, no join, no dtype parsing) plus
 pure-Python manifest-lookup logic, so it stays fast under pytest.
 
-Run: .venv\\Scripts\\python.exe -m pytest experiments/src/test_ieee_loader.py -q
+Run: your venv interpreter (docs/ENVIRONMENT.md) -m pytest experiments/src/test_ieee_loader.py -q
 """
 from __future__ import annotations
 

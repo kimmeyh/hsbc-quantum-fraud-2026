@@ -217,67 +217,39 @@ candidates per convention.)
 (F65 per-fit artifact write: COMPLETED in Sprint 14. Also fixed a dry run that
 overwrote committed evidence. Removed from candidates per convention.)
 
-**F77. Build the Evidence Based DB: repository, schema, and the first 20 papers (~2-3 days) Priority 2**
-- Phase: Evidence Based DB / build (gap found in the Sprint 14 close-out sweep, 2026-09-14)
-- Platform: a NEW private repository, `EvidenceBasedDB`
-- **MOTIVATING CASE ADDED 2026-09-12 (Sprint 13 evidence walk).** The strongest evidence yet for this card. Appendix A.5 quoted the IEEE matched-feature control as falling "from 0.5739 to 0.0734 ... fold 0". Both numbers are real and both are in the artifacts -- but 0.5739 is the THREE-FOLD MEAN from `ieee_classical.json` while the control is fold-0 to fold-0 and its baseline is 0.5424 in `ieee_cvqboost.json`. A global value-set lookup accepts it, because the number exists somewhere. `test_document_figures_resolve.py` passed it, and its own docstring predicts exactly this: "It does NOT catch a figure that exists in the store but is quoted in the wrong place." Only per-claim provenance -- this sentence cites THAT row -- closes it, which is what this card builds. F39 designed it (ADR-0014); F77 builds it
-- **REPOSITORY CREATED 2026-09-14**: `github.com/kimmeyh/EvidenceBasedDB`, PRIVATE, with `main` and `develop`. Seeded with the sprint methodology, five hooks, three practice ADRs, and ADR-0014/0015 MOVED there as 0004/0005 since they are that repository's design. Five inherited guards pass there. No PDFs committed and none ever will be. Its Sprint 1 plan is written and mirrors this card
-- **What remains of F77 here is the TRACKING entry.** The work happens there; this card records that it was authorised and what it must measure
-- **This card existed because nothing else created the thing.** ADR-0014 and ADR-0015 are both ACCEPTED and both say explicitly that they do NOT authorise implementation. F75 actions the 20-paper checkpoint and depends on ~20 papers already being loaded. So the accepted design had no card that builds it, and F75 could never have become actionable
-- Scope: create the private repository; copy the sprint methodology in (process docs, ADRs, testing strategy, CI, the hooks); implement the SQLite store and the committed text export; implement the three record classes plus the paper class; load the seed set
-- **SEED SET STAGED 2026-09-14 by the team lead**, and it is larger and broader than the submission's reference list this card originally assumed. The team lead's local staging directory holds `Papers` (47 items as of 2026-09-16; QBoost added in Sprint 15), `Books` (38), `GitHubRepos` (8) and an empty `References`. That directory is a staging area on disk and is deliberately NOT a git repository; the repository itself exists and is named in the bullet above. `EvidenceBasedDB/README.md` carries the two-directory layout and is the one place either path is written down
-- **The PDFs stay where they are and are never committed.** ADR-0015 section 3: records, not papers. Most are not redistributable, and several here are clearly vendor or conference material. The `access` field points at a DOI, an arXiv id, or that local path
-- **The seed set changes the 20-paper checkpoint's meaning.** F75 reviews whether the schema survived contact with ~20 papers. With 46 staged, the first 20 should be chosen for VARIETY rather than convenience -- an arXiv preprint, a journal paper, a vendor white paper, a book chapter, a GitHub repository -- because a schema that only ever saw arXiv preprints has not been tested
-- **`Books` and `GitHubRepos` are not papers and may not fit the paper record.** A book chapter has no abstract and a repository has no claim in the same sense. Whether they need their own record class, or whether the paper class generalises, is a real question for the 20-paper checkpoint and should not be settled in advance
-- **The measurement that matters more than the code**: minutes of team-lead adjudication per accepted record. ADR-0014 names it as the number the whole design is constrained by, and it is unknown. At five minutes a record the domain ambition needs rethinking; at thirty seconds it is safe. Record it per record from the first one, not retrospectively
-- **Deliberately NOT in scope**: inference, the graph store, embeddings. ADR-0014 names the triggers for the last two and ADR-0015 for the third; none has fired. Lenat's footnote 9 is the standing argument against the first
-- Acceptance: the repository exists with the methodology copied in; the four record classes are implemented and exported; the seed set is loaded; adjudication time is recorded per record; F75's checkpoint is actionable
-- Depends on: ADR-0014 and ADR-0015 (both ACCEPTED). Gates F75 and F76
-- **F76 is cross-repository by construction** and this is worth naming now: it guards the vocabulary shared between the two ADRs, and the ADRs live in THIS repository while the test would run in EvidenceBasedDB. Either the test reads a published export of the context list, or the ADRs move. Do not discover this during F76
+(F77 build the Evidence Based DB, F75 the 20-paper ADR checkpoint, and F76 the
+shared-vocabulary guard: MOVED to the `kimmeyh/EvidenceBasedDB` repository
+2026-09-16 by the team lead. All three are that repository's work, not this
+one's. F77 builds its store; F75 reviews its schema against its own papers; F76
+guards ITS ADR-0004 and ADR-0005, whose live copies live there. The copies here
+are frozen and carry a banner saying so. Tracked in that repository's own
+backlog. Removed from candidates per convention.)
 
+(F78 the PowerShell-to-Python conversion, F79 the retrospective gate, and F80
+the open-question falsifier re-run: COMPLETED in Sprint 16. See
+SPRINT_16_SUMMARY.md and CHANGELOG.md. Two findings outlived their cards and are
+recorded there: F79's defect was an exemption never revoked rather than a
+missing check, and the confidentiality scan reported clean on any single-line
+file. Removed from candidates per convention.)
 
-**F75. Action the 20-paper ADR checkpoint (~2h) Priority 6**
-- Phase: Evidence Based DB / process (Sprint 14 retrospective improvement 5, 2026-09-14)
-- Platform: `docs/adr/0014-fact-database.md`, `0015-reference-library.md`
-- Both ADRs promise a review at approximately 20 imported papers, with six named questions and the bad answer stated for each. **A promise in a document is exactly what this project keeps having to replace with a mechanism**, and an unactioned checkpoint is a note nobody reads
-- The question that matters most is the measured one: how long team-lead adjudication takes per paper. At five minutes, 2,000 papers is 160 hours and the design needs rethinking; at thirty seconds the ambition is safe. Everything else in the checkpoint is schema tuning
-- Revisions are recorded as dated amendments at the bottom of each ADR, never as edits in place
-- Depends on: **F77** (which builds it) and ~20 papers loaded
+**F82. Catch the escape-eaten class at WRITE time, not after the fact (~1h) Priority 4**
+- Phase: Finalize / tooling (Sprint 16 retrospective IMP-3, 2026-09-19)
+- Platform: `.claude/hooks`
+- **SEVEN OCCURRENCES IN ONE SPRINT**, which makes this the most frequently recurring defect in the repository's history. A backslash sequence is consumed by a shell or a parser and lands as a control character or a broken string, and the result is a plausible wrong value rather than an error
+- Where it hit in Sprint 16 alone: a JSON hook registration, a CHANGELOG entry, a master-plan card, two injection scripts, a test fixture, and two protected-span strings in the US-English guard and its converter (which broke both files identically)
+- **THE EXISTING HOOKS DO NOT COVER IT, and that is the point.** `block_unraw_escape` catches Windows paths in non-raw Python strings; `block_shell_metachar_expansion` catches shell expansion. Neither sees a backslash sequence written INSIDE a heredoc that then lands in a file, which is where every one of the seven happened
+- `test_no_control_characters` catches the result AFTER it is committed -- it found a sixth instance already in the master plan on its first run. What is missing is a check at write time
+- **Acceptance is behavioural**: a heredoc writing a file whose content contains an unescaped backslash sequence must BLOCK, and a heredoc writing legitimate prose about backslashes must NOT. Both directions proven by injection, because a guard that blocks correct work gets bypassed
+- Depends on: nothing
 
-**F76. Guard the shared vocabulary between ADR-0014 and ADR-0015 (~1h) Priority 7**
-- Phase: Evidence Based DB / tooling (Sprint 14 retrospective improvement 6, 2026-09-14)
-- Platform: cross-repository, `EvidenceBasedDB`
-- ADR-0015's `applicability` field now points at ADR-0014's context list rather than carrying its own enumeration. That was the right call -- two lists naming the same things is how B1's variable count came to read 78 in three documents and 91 in two -- **but nothing enforces that they agree**
-- A test that fails when a record names a context the schema does not define, and when the ADRs' stated context lists diverge from the database's
-- Depends on: **F77** (which builds it)
-
-
-**F78. Convert every PowerShell script to Python so the repository is OS agnostic (~8-12h) Priority 8**
-- Phase: Finalize / tooling (team lead, 2026-09-15)
-- Platform: `.claude/hooks` (9 files), `scripts/` (4 files), plus 18 hardcoded interpreter paths across 12 tracked files
-- **`.venv` is generated, so it is not converted -- but it IS recreated per OS, and that is a scope item, not a footnote** (team lead, 2026-09-15, from experience). A Windows venv has `Scripts/activate.ps1` and `Scripts/python.exe`; a Linux one has `bin/activate` and `bin/python`. They are not interchangeable, so anyone moving to WSL rebuilds it. `docs/WINDOWS_POWERSHELL_GUIDE.md` already states the Windows venv is unusable from Linux, so the knowledge exists and the tooling ignores it
-- **What it is**: replace all 13 tracked `.ps1` files with Python that runs unmodified on Windows 11 AND Linux (current WSL is sufficient). Most Python is already portable; the exceptions are real and are the whole point of the card -- path separators, line endings, `%USERPROFILE%` against `$HOME`, executable discovery, and subprocess invocation
-- **Each script must DETERMINE the OS and handle it**, rather than assuming. The team lead's preferred shape: find an existing package that does this, or write one shared cross-OS helper module that every script imports. A per-script `if platform.system()` scattered thirteen times is the outcome to avoid, because it drifts
-- **Measured scope, 2026-09-15**: about 1,260 lines across the 13. Four hooks (`block-unraw-escape`, `block-shell-metachar-expansion`, `block-carry-forward-stash`, `block-branch-from-develop`) contain ZERO OS-specific constructs -- they read stdin and apply regexes -- so they are near-mechanical ports and should go first as the pattern-setters. `scripts/render-pdf.ps1` has 12 and is the hard one; it shells out to pandoc and a PDF engine, whose discovery differs per OS
-- **The registration is as important as the code.** `.claude/settings.json` invokes each hook through `powershell -NoProfile -ExecutionPolicy Bypass -File`. Every entry has to change to a `python` invocation, and that file is exactly where two hooks were silently killed by a lone backslash-b JSON escape. Rewrite it STRUCTURALLY with `json.dump`, never by hand, and assert afterwards that every registered path resolves and holds no control character
-- **Acceptance is behavioural, not textual**: each converted hook keeps its own test cases and still BLOCKS what it blocked and ALLOWS what it allowed, proven by running the cases through the new hook on both operating systems. A conversion that leaves a guard inert is worse than no conversion, and this repository has shipped inert guards three times
-- **Do not convert the tests' invocation path and the hooks in the same commit.** Convert one hook, prove it fires, then the next; a batch conversion that goes quiet is unfalsifiable after the fact
-- **The hardcoded interpreter is the widest part of the card.** `git grep` finds
-  `.venv\Scripts\python.exe` in 18 places across 12 tracked files: 8 in
-  `experiments/src` docstrings ("Run: ..."), 2 in `scripts/`, 2 in `docs/`
-  including `TESTING_STRATEGY.md` and the PowerShell guide. Every one is a
-  Windows-only instruction a Linux reader cannot follow. These are cheap to fix
-  and easy to miss precisely because most are comments rather than code
-- **The venv bootstrap should be one documented command per OS**, not prose
-  scattered through a guide. Whatever replaces it states how to create the venv
-  and how to invoke the interpreter on each OS, and `README.md` and
-  `TESTING_STRATEGY.md` reference that one place rather than restating a path
-- **Why it is worth doing**: the repository currently cannot run its own guards on Linux. CI runs `ubuntu-latest`, so every hook is Windows-only protection today, and a contributor or agent on Linux gets none of it
-- Depends on: nothing. Best done when no other sprint is touching `.claude/`
-
-(F67 pool-mechanism guard: COMPLETED in Sprint 14. Runs on a fresh clone against a
-committed 0.83 MB int8 fixture, chosen from three measured options. Removed from
-candidates per convention.)
+**F81. Put the explainer in front of a real 8th-grade reader (~unknown) Priority 11**
+- Phase: Finalize / verification (Sprint 15 retrospective category 14, 2026-09-16)
+- Platform: external, team-lead owned
+- Both falsifier runs used language models with no repository context. They found six real gaps, so the mechanism works, but a model reading at grade 8 is not a person reading at grade 8
+- The card's own falsifier names the test: someone who has not read the submission explains back what CVQBoost is and why the result is a null
+- **Effort is unknown because it depends on finding a reader**, which is the team lead's to arrange, not mine. Sized as unknown rather than guessed
+- Value: the document's entire purpose is an audience it has never actually met
+- Depends on: nothing, but best after F80
 
 **F36. Pandoc Lua filter: floating tables for the submission PDFs -- CLOSED 2026-09-07, FAILED**
 - **VERDICT: the filter works; the problem it was built for did not exist.** The premise (preserved in the review doc, because it is wrong in an instructive way) rested on a CHARACTER-COUNT page-fill measurement, and a table-heavy page always looks short by that measure. Measured as vertical extent, every page cited below was already full: 724 / 680 / 680 / 682pt of a 792pt page, zero free space anywhere. The appendix was over its limit because it had too much content

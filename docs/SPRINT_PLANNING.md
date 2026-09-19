@@ -123,6 +123,25 @@ Rule: any sprint whose scope is dominated by verification carries a stated
 than absorbed silently. If the checks all pass, the allowance is returned and the
 sprint finishes early, which is the good outcome and should be recorded as such.
 
+### A WRITING sprint carries a sourcing allowance (Sprint 15 improvement 3)
+
+The rule above covers sprints dominated by verification. Sprint 15 was dominated
+by WRITING and generated the same shape of uncarded work, for a different
+reason: prose makes claims, and every claim has to be traced to a source or
+removed.
+
+Sprint 15 measured it. Five claims were caught and corrected during writing --
+two dataset details and a nationality written from background knowledge rather
+than from the repository, an acronym expansion asserted as fact, and a
+publication year taken from one vendor source while another disagreed. None had
+a card. Each cost a research step, a rewrite, or both.
+
+Rule: any sprint whose scope is dominated by producing prose that makes factual
+claims carries a stated **30% sourcing allowance** on the writing estimate, named
+in the plan rather than absorbed silently. Same discipline as the findings
+allowance: if every claim sources cleanly, the allowance is returned and the
+sprint finishes early.
+
 ## Risk assessment per sprint plan
 
 Each plan lists its top risks with mitigation: for this project always consider hardware budget (Criterion H), leakage, deadline (submission-ready Sep 8), grant timing, and context/session continuity.

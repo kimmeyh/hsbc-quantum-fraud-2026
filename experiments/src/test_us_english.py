@@ -36,6 +36,11 @@ EXCLUDE_FILES = ("experiments/PREREGISTRATION.md",)
 PROTECTED = (
     "Database Contents License",
     "Open Data Commons",
+    # DIRECT QUOTATION from the DbCL licence text (dataset-reference-licensing.md).
+    # Changing a spelling inside a quotation is a MISQUOTATION, which is a worse
+    # defect than an inconsistent spelling. Found 2026-09-17 when widening the
+    # word list surfaced it.
+    "do not exclude any field of" + chr(10) + "  endeavour.",
 )
 
 BRITISH = (
@@ -57,6 +62,27 @@ BRITISH = (
     "acknowledgements", "ageing", "cheque", "storey", "tyre", "kerb",
     "plough", "draught", "sceptical", "sceptic", "sceptics", "scepticism",
     "manoeuvre", "artefact", "artefacts",
+    # ADDED 2026-09-17 after the team lead found `memorise` and `specialised`
+    # in the explainer while this guard passed. The list was built from the
+    # words the FIRST sweep happened to hit, which is how a word list decays:
+    # it covers the past rather than the class. These are the common -ise verbs
+    # and -our nouns that were missing.
+    "optimise", "optimised", "optimising", "optimisation", "optimiser",
+    "generalise", "generalised", "generalising",
+    "specialise", "specialised", "specialising",
+    "normalise", "normalised", "normalising",
+    "utilise", "utilised", "utilising",
+    "penalise", "penalised", "penalising",
+    "characterise", "characterised", "characterising",
+    "criticise", "criticised", "criticising",
+    "memorise", "memorised", "memorising",
+    "randomise", "randomised", "randomising",
+    "standardise", "standardised", "standardising",
+    "visualise", "visualised", "visualising",
+    "practise", "practised", "practising",
+    "flavour", "flavours", "rigour", "vigour", "endeavour", "saviour",
+    "signalled", "totalled", "levelled", "fuelled", "marvelled",
+    "sizeable", "moustache", "mould", "smoulder",
 )
 
 PATTERN = re.compile(r"\b(" + "|".join(BRITISH) + r")\b", re.IGNORECASE)

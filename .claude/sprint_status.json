@@ -1,31 +1,31 @@
 {
   "current_sprint": {
-    "number": 15,
-    "name": "The Submission, Explained",
-    "branch": "feature/20260916_Sprint_15",
-    "status": "phase_4_execution",
-    "plan_doc": "docs/sprints/SPRINT_15_PLAN.md",
-    "pr": 100,
+    "number": 16,
+    "name": "Make the Guards Portable, and Close the Gate",
+    "branch": "feature/20260916_Sprint_16",
+    "status": "phase_5_3_manual_validation",
+    "plan_doc": "docs/sprints/SPRINT_16_PLAN.md",
+    "pr": 120,
     "plan_approved": true,
     "github_issues": [
-      101,
-      102,
-      103,
-      104,
-      105,
-      106,
-      107,
-      108
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119
     ],
-    "prior_prs": [
-      99
-    ],
-    "note": "F73 only. Zero metered Dirac-3 seconds. Plan approved 2026-09-16. PR #99 (CLAUDE.md NOT-do section, em-dash coverage, cross-repo boundary, F78) is still OPEN and unmerged; this branch was cut from it per rule 6.6, so its commits are carried rather than stranded."
+    "prior_prs": [],
+    "note": "F79, F78, F80 all complete. Issues 110-119 closed. Zero metered seconds. AWAITING MANUAL VALIDATION."
   },
   "last_completed_sprint": {
-    "number": 14,
-    "merged_pr": 94,
-    "main_merge_pr": 95,
+    "number": 15,
+    "merged_pr": 100,
+    "main_merge_pr": 109,
     "docs_triad_complete": true
   },
   "prereg": {

@@ -71,7 +71,12 @@ STATISTICAL_REVIEW_CHECKLIST walk at gate review, not by a test double.
 
 ## Running
 
-```powershell
-.\.venv\Scripts\python.exe -m pytest experiments/src -q     # full suite (~15 tests)
-.\.venv\Scripts\python.exe experiments\src\run_classical.py --smoke
+The interpreter differs per OS and is NOT discoverable from the
+environment; **docs/ENVIRONMENT.md** is the one place it is written down.
+A bare `python` is usually the wrong one, and the failure looks like a
+broken checkout rather than a wrong interpreter.
+
+```
+<venv interpreter> -m pytest experiments/src -q          # full suite
+<venv interpreter> experiments/src/run_classical.py --smoke
 ```

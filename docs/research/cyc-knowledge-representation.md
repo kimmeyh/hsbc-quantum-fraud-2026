@@ -89,7 +89,7 @@ Lenat, in his own voice:
 > [LM23 p14, footnote 9]
 
 **The fully general reasoner was never once useful in a million consecutive
-queries.** Everything Cyc actually does is done by specialised shortcuts. That
+queries.** Everything Cyc actually does is done by specialized shortcuts. That
 is the strongest possible evidence for designing heuristics in from the start
 rather than treating them as an optimization over a "proper" general method.
 
@@ -248,7 +248,7 @@ Seven things worth carrying, and two worth deliberately NOT carrying.
    expert over novice) rather than a single score.
 5. **Provenance on every step**, which this project already half-does via
    evidence tags.
-6. **Generalise before entering**, and treat a contradiction on entry as a
+6. **Generalize before entering**, and treat a contradiction on entry as a
    context question rather than an error.
 7. **Look facts up rather than storing them** where a lookup is reliable. Our
    amendment count should be COMPUTED from the preregistration, never stored.

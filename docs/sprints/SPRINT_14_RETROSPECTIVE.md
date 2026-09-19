@@ -207,7 +207,7 @@ corrected in Sprint 13 and holds.
 without being asked twice, and two returned corrections rather than
 confirmations. The changelog agent flagged a timezone discrepancy between PR
 merge times and sprint documents rather than silently picking one, and flagged
-two commits it could not confidently characterise rather than inventing entries.
+two commits it could not confidently characterize rather than inventing entries.
 
 ### 16. Questions to be discussed before ending the sprint
 

@@ -15,9 +15,15 @@ Portal confirmation: **"Your submission received."** Counter moved from
 | `appendix-6` | `docs/paper/out/appendix.pdf` | 3 | `d1125998a7e8` |
 | `team_profile` | `docs/paper/out/team_profile.pdf` | 1 | `b77eb3f26b60` |
 
-Built from tracked sources at commit `004bb2a`. The PDFs are gitignored build
-outputs and regenerate byte-for-byte via `scripts/render-all.ps1`, which is the
-form Appendix C's reproducibility claim requires.
+Built from tracked sources at commit `004bb2a`. **As of 2026-09-18 the three
+filed PDFs are COMMITTED**, so a reader can see the artifacts themselves rather
+than only regenerate them -- the portal copies are invisible outside HSBC, which
+left the repository as the only possible public record. The committed bytes are
+the filed bytes, asserted against the hashes above by
+`experiments/src/test_published_artifacts.py`. They also still regenerate from
+the tracked markdown via `python scripts/render_all.py` (converted from
+PowerShell in Sprint 16), which is the form Appendix C's reproducibility claim
+requires.
 
 **The portal renamed the files on ingest** -- `proposal.pdf` became `proposal-1`
 and `appendix.pdf` became `appendix-6`, with the extension dropped from the
