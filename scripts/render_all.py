@@ -63,7 +63,12 @@ QCI_PACKAGE = [
      "docs/qci_package/DRAFT_preregistration.pdf", "1in", False),
     ("experiments/results/gate_report.md",
      "docs/qci_package/Phase 1 - Results Against Preregistered Criteria.pdf", "0.75in", True),
-    ("docs/HARDWARE_REQUEST_B1_G0b.md",
+    # HARDWARE_REQUEST_B1_G0b.md is NOT the source here. That document is the
+    # Phase 1 request for blocks B1 and G0b, executed 2026-09-03, and it is a
+    # dated record of what was approved. QCi needs the PHASE 2 plan, which is
+    # a different document. The Phase 1 request stays in the repository
+    # unchanged as the historical record.
+    ("docs/HARDWARE_PLAN_PHASE_2.md",
      "docs/qci_package/Phase 1 - Hardware Plan for Phase 2.pdf", "1in", False),
     ("docs/QCI_EQC_MODELS_FEEDBACK.md",
      "docs/qci_package/Phase 1 - eqc_models Feedback.pdf", "1in", False),

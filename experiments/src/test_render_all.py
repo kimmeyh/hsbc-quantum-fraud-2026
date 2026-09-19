@@ -52,8 +52,23 @@ def test_sources_are_not_renamed():
     Renaming it for a presentational reason would touch the evidence pipeline."""
     src = _source()
     assert "experiments/results/gate_report.md" in src
-    assert "docs/HARDWARE_REQUEST_B1_G0b.md" in src
     assert "docs/QCI_EQC_MODELS_FEEDBACK.md" in src
+
+
+def test_hardware_plan_source_is_the_phase_2_plan():
+    """The Phase 1 request (HARDWARE_REQUEST_B1_G0b.md) is a dated record of
+    blocks executed 2026-09-03. QCi needs the Phase 2 plan, which is a
+    different document. Sending the executed request would describe work
+    already finished as though it were the forward plan."""
+    src = _source()
+    assert "docs/HARDWARE_PLAN_PHASE_2.md" in src
+    assert (ROOT / "docs" / "HARDWARE_PLAN_PHASE_2.md").exists()
+    hardware_plan_line = [
+        line for line in src.splitlines()
+        if "Phase 1 - Hardware Plan for Phase 2.pdf" in line
+    ]
+    assert hardware_plan_line, "the hardware plan output is not rendered"
+    assert "HARDWARE_REQUEST_B1_G0b" not in "\n".join(hardware_plan_line)
 
 
 def test_missing_source_is_a_failure_not_a_skip():

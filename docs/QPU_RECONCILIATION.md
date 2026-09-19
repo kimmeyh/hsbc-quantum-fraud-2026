@@ -82,3 +82,36 @@ balance derived by subtracting the campaign total from the grant.
 **Currency**: the 1,961 figure was endpoint-confirmed during Sprint 12 and no
 metered run has occurred since. It remains correct unless a run has happened
 outside this repository's record.
+
+---
+
+# Finding: the linear-term span disagrees between two submitted documents
+
+Found 2026-09-19 during Sprint 17 Task D, while sourcing figures for the QCi
+feedback document.
+
+- `PREREGISTRATION.md` A31 says linear terms span at most **16.0**.
+- `docs/paper/appendix.md` A.4 says linear terms differ by at most **28.0**.
+- `device_resolution.json`, the artifact both should derive from, records
+  `off_diagonal_spread_max` 20.0 and `resolvable_difference_min` 2553.525, and
+  **carries no linear-term field at all**. The 510,705 diagonal quoted in both
+  documents is likewise not in the artifact.
+
+Neither figure is reproducible from the stored artifact, and they contradict
+each other.
+
+**This changes nothing about the finding.** The argument is that every
+coefficient difference falls below the resolvable difference, and 16, 20 and 28
+are all far below 2,553.5. The conclusion holds on any of them.
+
+**Actions taken.** The QCi feedback document now quotes only the two figures
+the artifact establishes (20.0 and 2,553.5) with the artifact named. No
+submitted document was edited: `docs/paper/` and `PREREGISTRATION.md` are
+frozen records of a filing made 2026-09-12, and correcting them after the fact
+would be worse than the inconsistency.
+
+**Recommended follow-up (backlog, not this sprint).** Extend
+`device_resolution.py` to record the diagonal magnitude and the linear-term
+span, so both numbers have a source. Then decide whether A31 or the appendix
+was right. This is the same class as the F84 environment-in-the-schema work:
+a figure that appears in a document but in no artifact cannot be checked.
