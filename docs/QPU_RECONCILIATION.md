@@ -85,33 +85,59 @@ outside this repository's record.
 
 ---
 
-# Finding: the linear-term span disagrees between two submitted documents
+# WITHDRAWN: "the linear-term span disagrees between two documents"
 
-Found 2026-09-19 during Sprint 17 Task D, while sourcing figures for the QCi
-feedback document.
+Raised 2026-09-19 during Sprint 17 Task D. **Withdrawn the same day, in Task I,
+before it reached any outward document.** It was not a finding. It was my own
+incomplete reading of an artifact, and the repository had already fixed the
+real version of it a week earlier.
 
-- `PREREGISTRATION.md` A31 says linear terms span at most **16.0**.
-- `docs/paper/appendix.md` A.4 says linear terms differ by at most **28.0**.
-- `device_resolution.json`, the artifact both should derive from, records
-  `off_diagonal_spread_max` 20.0 and `resolvable_difference_min` 2553.525, and
-  **carries no linear-term field at all**. The 510,705 diagonal quoted in both
-  documents is likewise not in the artifact.
+## What I claimed
 
-Neither figure is reproducible from the stored artifact, and they contradict
-each other.
+That `PREREGISTRATION.md` A31 (16.0) and `docs/paper/appendix.md` A.4 (28.0)
+disagreed on the linear-term span, and that `device_resolution.json` recorded
+neither figure nor the 510,705 diagonal both documents quote.
 
-**This changes nothing about the finding.** The argument is that every
-coefficient difference falls below the resolvable difference, and 16, 20 and 28
-are all far below 2,553.5. The conclusion holds on any of them.
+## What is actually true
 
-**Actions taken.** The QCi feedback document now quotes only the two figures
-the artifact establishes (20.0 and 2,553.5) with the artifact named. No
-submitted document was edited: `docs/paper/` and `PREREGISTRATION.md` are
-frozen records of a filing made 2026-09-12, and correcting them after the fact
-would be worse than the inconsistency.
+`device_resolution.json` has a `per_pool` array carrying every figure per pool:
+`diagonal`, `linear_spread`, `off_diagonal_spread`, `resolvable_difference`.
+I read only the `frozen_pool` summary block, saw the fields were not there, and
+concluded they existed nowhere. They were one level down in the same file.
 
-**Recommended follow-up (backlog, not this sprint).** Extend
-`device_resolution.py` to record the diagonal magnitude and the linear-term
-span, so both numbers have a source. Then decide whether A31 or the appendix
-was right. This is the same class as the F84 environment-in-the-schema work:
-a figure that appears in a document but in no artifact cannot be checked.
+Checked against the artifact:
+
+- `linear_spread` over the ten pools: 12.0 x6, 16.0 x2, **28.0 x2**. The
+  maximum is 28.0, which is exactly what the appendix says.
+- `diagonal`: 510,705.0 on every pool, exactly as both documents quote.
+
+**And the discrepancy was already found and corrected**, by amendment A32 on
+2026-09-12, before submission: A31's 16.0 was the seed-42 value quoted as
+though it were the maximum across ten pools; the appendix was corrected to
+28.0 in the same commit so the log and the shipped document agree. A32 states
+this in terms, including that it was found by walking the shipped appendix
+against `device_resolution.json` -- the exact check I thought I was doing
+first.
+
+## Consequence, and why this is recorded rather than deleted
+
+**No outward document carried the error.** The QCi feedback document quotes
+only 20.0 and 2,553.5 with the artifact named, which is correct and remains
+correct. Nothing needs changing there. No submitted document was edited at any
+point.
+
+The cost was a recommended backlog item that would have asked someone to add
+fields that already exist.
+
+Two things worth keeping from it:
+
+1. **"Not in the artifact" requires reading the whole artifact.** I checked the
+   summary block and a keyword grep, and both missed a nested array in the same
+   file. That is the same shape as the CLAUDE.md rule about not stating what an
+   external system contains without opening it -- I opened it and still did not
+   read it.
+
+2. **Check the amendment log before reporting a contradiction between
+   documents.** Thirty-two dated amendments exist precisely because these get
+   found and fixed. A contradiction that looks new is often one that was
+   already resolved, and A32 is dated the day of submission.

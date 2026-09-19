@@ -11,6 +11,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import platform
+import sys
 import time
 from pathlib import Path
 
@@ -63,8 +65,57 @@ class _Lock:
             pass
 
 
+def environment() -> dict:
+    """The execution environment of the row about to be written (A33, F84).
+
+    WHY THIS EXISTS. Sprint 17 Task H measured the suite on Windows and Linux
+    and found ZERO behavioral divergence, so this is not a fix for a known
+    difference. It is provenance: of the 168 rows written before this change,
+    not one records which operating system, interpreter or BLAS produced it.
+    The submission's reproducibility claim rests on a lock file that pins 18
+    package versions and, deliberately, no platform -- so a future reader
+    comparing a regenerated figure against a stored one has no way to tell
+    whether a difference is a real regression or a platform artifact.
+
+    "We measured no divergence today" and "a row can prove where it ran" are
+    different claims, and only the second survives contact with a machine that
+    is not this one.
+
+    Kept CHEAP and DEPENDENCY-FREE: this runs on every row write. BLAS is read
+    through numpy when numpy is already imported and is skipped otherwise,
+    because importing numpy inside the store to describe the environment would
+    be a real cost on rows that never touch it.
+    """
+    env = {
+        "os": platform.system(),
+        "os_release": platform.release(),
+        "python": platform.python_version(),
+        "threads": os.cpu_count(),
+    }
+    # BLAS only if numpy is ALREADY loaded. No import side effect.
+    np = sys.modules.get("numpy")
+    if np is not None:
+        try:
+            cfg = np.__config__.get_info("blas_opt")
+            libs = cfg.get("libraries") if isinstance(cfg, dict) else None
+            env["blas"] = ",".join(libs) if libs else "unknown"
+        except Exception:                                # noqa: BLE001
+            # numpy 2.x dropped get_info. Fall back to the version, which at
+            # least pins the build, rather than dropping the field.
+            env["blas"] = f"numpy-{getattr(np, '__version__', 'unknown')}"
+    return env
+
+
 def append_row(row: dict) -> None:
-    """Locked read-modify-append so parallel writers cannot lose rows (ADR-0008)."""
+    """Locked read-modify-append so parallel writers cannot lose rows (ADR-0008).
+
+    Stamps `environment` on every NEW row (A33). Does not retrofit the 168
+    rows written before the amendment, and must not: back-filling a field that
+    was never observed would be inventing provenance, which is worse than
+    recording its absence.
+    """
+    row = dict(row)
+    row.setdefault("environment", environment())
     with _Lock(RESULTS):
         store = (json.loads(RESULTS.read_text())
                  if RESULTS.exists() else {"meta": {}, "rows": []})
