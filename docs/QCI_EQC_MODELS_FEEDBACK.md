@@ -14,10 +14,6 @@ building against `eqc-models` 0.21.0 and `qci-client` 5.0.2 over five weeks,
 across 61 metered Dirac-3 fits and several thousand classical solves of the
 same Hamiltonian.
 
-An earlier draft of this document described 37 fits and 163 metered seconds.
-That was the free-tier period only. The campaign completed on the allocation
-you granted, and the totals below now cover all of it.
-
 Every item states what we observed, what we expected, and what we did about it.
 Each cites the file and line, or the results row, that establishes it, so you
 can check any claim rather than take our word for it. Line references are to
@@ -37,19 +33,19 @@ before billing, with:
 > Number of variables '312' in problem is greater than the free-tier device
 > limit '100'
 
-**Expected.** The documented limit we could find is 949, described as a sum over
-`num_levels`. We had sized our experiment against that number.
+**Expected.** The documented limit is 949, described as a sum over
+`num_levels`. That is the figure a reader sizing an experiment from the
+documentation will use.
 
 **The divergence.** The 949 figure applies to integer-encoded jobs. It does not
 bind a continuous, sum-constrained run, which is instead capped at 100
 variables on the free tier. Both limits are real; they apply to different job
 classes, and only one of them is documented.
 
-**Cost to us.** This was found empirically, by a rejected job, after the
-experiment had been designed. It forced a preregistration amendment (A12) and
-a reduction from k=13 to k=6 features, which is four families at 60 variables.
-Every scaling statement we can currently make is bounded by a tier limit rather
-than by the device.
+**Cost to us.** The ceiling is confirmable only empirically, by a rejected job.
+It forced a preregistration amendment (A12) and a reduction from k=13 to k=6
+features, which is four families at 60 variables. Every scaling statement we
+could make at the time was bounded by a tier limit rather than by the device.
 
 **What we did.** Recorded the ceiling as a device constraint in
 `run_hardware_f32.py:59-64`, and added a property test pinning the rejection
@@ -58,7 +54,7 @@ message so a future change surfaces as a test failure rather than a mystery
 
 **Suggested fix.** State the continuous-job variable ceiling in the free-tier
 documentation next to the 949 figure, and say which job class each applies to.
-One sentence would have saved us a redesign.
+One sentence would have saved time.
 
 ## 2. The billed-seconds field is not reachable as a dictionary key
 
@@ -85,8 +81,7 @@ unrecognised vendor format still charges rather than zeroing
 (`test_hardware_guards.py:43`).
 
 **Suggested fix.** Expose `device_usage_s` as an attribute or mapping key on
-`SolutionResults`, and keep its name stable. Parsing a `repr()` is not a
-contract either of us should rely on.
+`SolutionResults`, and keep its name stable.
 
 ## 3. Pool construction requires `fork` and fails on Windows
 
@@ -117,9 +112,8 @@ From 61 metered fits, all `status: ok`, zero failures, zero retries:
 | Within-fit energy spread | median 0.020%, max 0.343% (48 fits) |
 | Hardware objective vs exact minimum | 0.013% to 0.413% above, never below |
 
-Of the 1,141 seconds, 163 ran on the free tier before your grant and 1,039
-drew against the allocation. The free-tier portion is the 37 fits an earlier
-draft of this document described.
+Of the 1,141 seconds, 163 ran on the free tier across 37 fits before your
+grant, and 1,039 drew against the allocation.
 
 Two things worth saying plainly. **The per-call rate is stable and predictable
 within a problem size** -- on the free-tier configurations it held a 1-second
@@ -192,6 +186,14 @@ sparser. Every one of those eleven fits contains exact zeros, with printed
 nonzero weights from 0.0007 to 0.0029 -- all below the resolution. The weight
 cosine of 0.83 measures a device solving a sparsified version of the problem it
 was given, not a device failing to solve the problem.
+
+**In one sentence: we asked the device to spread weight across 833 learners, it
+could only represent about 200, so it picked a subset instead -- and that
+subset was our best result at scale, gaining +0.0256 AUPRC on ten of ten
+seeds.** We are not reporting this as a limitation we worked around. The device
+answered a sparse-selection problem we had not meant to ask, and the answer was
+better than the one we did ask for. That is the whole reason Phase 2 asks it
+deliberately.
 
 **It corrected a claim of ours that was backwards.** We had written that
 hardware agreeing with the classical proxy bounded any resolution effect. It

@@ -120,15 +120,22 @@ Mean: sequential 0.7803, full-pair 0.7816 -> **A3 selection: full** (chosen on v
 
 ## Tuning Budget Equivalence (prereg 6; asymmetry reported as-is)
 
-| Study | Trials | CV AP | Wall seconds |
-|-----------------------------------------------|------------------------|------------------------|-----------------------------------|
-| catboost:full | 100 | 0.8580 | 3344 |
-| catboost:matched13 | 100 | 0.8390 | 1858 |
-| lightgbm:full | 100 | 0.8396 | 2106 |
-| lightgbm:matched13 | 100 | 0.8300 | 1460 |
-| logistic:full | 25 | 0.7590 | 34 |
-| logistic:matched13 | 25 | 0.7560 | 21 |
-| xgboost:full | 100 | 0.8555 | 732 |
-| xgboost:matched13 | 100 | 0.8306 | 521 |
+| Study | Trials | Fits per trial | CV AP | Wall seconds |
+|------------------------------------------------------|------------|-----------------------------------|------------|------------------|
+| catboost:full | 100 | 5 folds x early-stopped fit | 0.8580 | 3344 |
+| catboost:matched13 | 100 | 5 folds x early-stopped fit | 0.8390 | 1858 |
+| lightgbm:full | 100 | 5 folds x early-stopped fit | 0.8396 | 2106 |
+| lightgbm:matched13 | 100 | 5 folds x early-stopped fit | 0.8300 | 1460 |
+| logistic:full | 25 | 5 folds x single fit | 0.7590 | 34 |
+| logistic:matched13 | 25 | 5 folds x single fit | 0.7560 | 21 |
+| xgboost:full | 100 | 5 folds x early-stopped fit | 0.8555 | 732 |
+| xgboost:matched13 | 100 | 5 folds x early-stopped fit | 0.8306 | 521 |
+| **cvqboost:proxy** -- DIFFERENT BASIS, see below | 100 | 1 pool build + 1 convex solve | 0.6873 | 488 |
 
-Model fits per GBDT trial: 5 folds x early-stopped fit. CVQBoost proxy fits are pool builds + classical solves (zero metered seconds).
+CVQBoost received the same nominal trial budget (100) as every GBDT arm, for about 7x less wall time than CatBoost -- a proxy trial is one pool build plus one convex solve, median 0.5 s, against 5 folds of early-stopped boosting. **The asymmetry runs against the quantum-inspired arm and is reported rather than equalized.**
+
+**The CV AP column is not comparable between the GBDT rows and the CVQBoost row.** GBDT values are 5-fold cross-validated average precision on their stated feature sets; the CVQBoost value is validation AP from its own proxy study at k=9 (45 variables). The preregistered like-for-like comparison is H1b -- CVQBoost 0.7671 against matched-13-feature CatBoost 0.8070, difference -0.0399 -- not this table. **This table answers whether each arm got a fair tuning budget. It does not rank the arms.**
+
+Because the tuning asymmetry favors the classical arms, it is a candidate explanation for the null. It is measured and rejected elsewhere in this submission: the optimizer's own contribution to the tuned gain is +0.0047 AUPRC (SD 0.0028), below the minimum detectable effect. The value in this formulation sits in the weak learners, not the optimization step, so additional solver tuning has little left to find.
+
+CVQBoost tunes on the classical proxy only (prereg 4), so its entire tuning budget cost zero metered device seconds.

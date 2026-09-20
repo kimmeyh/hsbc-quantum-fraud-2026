@@ -112,14 +112,14 @@ you discover it in our Phase 2 report.
 
 ## Protocol, unchanged from Phase 1
 
-- Explicit per-block approval before any metered run, quoting call count and
-  expected seconds with their provenance stated as measured, extrapolated or
-  unknown.
-- An errored solve retries at most twice with identical config and seed; a
-  third failure reports the cell as failed. No config-mutating backoff.
+- All usage of Dirac-3 is after testing all code outside of the Dirac-3 calls
+  to ensure they run without error, estimated call counts and expected seconds,
+  calls are tracked so that if a call is made and a computer goes down we can
+  recover everything needed after connection is re-established (no need for
+  repeat runs), most runs happen in the evenings and runs are approved by me
+  after reviewing the plan.
 - Every fit is exactly one metered call, landing as an `[HW]` row with
   `metered_seconds` from your response and the same configuration hash as its
   matching classical proxy row.
 
-That last point is what makes the fidelity comparison meaningful, and it is the
-part we would keep even if nothing else survived.
+That last point is what makes the fidelity comparison meaningful.

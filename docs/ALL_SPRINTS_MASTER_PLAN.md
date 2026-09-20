@@ -185,6 +185,17 @@ sections, with the falsifier result recorded alongside it in
 FALSIFIER_RESULT.md. See SPRINT_15_SUMMARY.md and CHANGELOG.md. Removed from
 candidates per convention.)
 
+**F87. Size the integer-solver block so the QCi memo can quote a number (~3h + one metered probe) Priority 2 -- DO FIRST NEXT SPRINT**
+- Phase: Phase 2 preparation / outward commitment (team lead, Sprint 17 Manual Validation)
+- Platform: `experiments/src/` integer path, Dirac-3 integer solver, one probe block
+- **THE PROBLEM IS A DOCUMENT THAT SAYS "UNKNOWN".** `Phase 1 - Hardware Plan for Phase 2` currently tells QCi: "We are not quoting a cost for that block. We have never run your integer solver on this problem and have no comparable anchor." That is honest and it is the correct thing to write with no measurement behind it. It is also the weakest sentence in a package whose whole argument is that our estimates come from measured usage rather than projection. The team lead's instruction: run enough to estimate, do not ship "we don't know"
+- **THE RUN IS A SIZING PROBE, NOT THE EXPERIMENT.** F25 is the full cardinality-constrained investigation and stays on HOLD behind a Phase 2 preregistration. This card buys ONE number: seconds per fit on the integer path at a stated problem size, plus how that scales across two or three sizes. Scope creep into "does it beat the classical control" is F25's job and would need its own approval
+- **EVERYTHING CLASSICAL RUNS FIRST, AND THE PROBE IS LAST.** Per the team lead's revised protocol: the full path runs end to end against the simulator or a local stand-in until it completes without error; only then does a metered call happen. A probe that fails on the device because of a bug in our own submission code costs seconds and buys nothing
+- **Acceptance**: a measured seconds-per-fit figure at a named `num_levels` and variable count, traced to a results row with an evidence tag; a stated scaling basis for extrapolating a Phase 2 block; and the estimate classified as `measured` or `extrapolated` per Criterion H, never `unknown`
+- **OUTPUT IS TWO DOCUMENT UPDATES, and this card is not done until they are made**: `Phase 1 - QCi memo.txt` (the "how the remaining seconds get used" section currently lists the probe as item 1) and `Phase 1 - Hardware Plan for Phase 2.pdf` (replace the no-quote paragraph with the measured figure). Both are in the unsent QCi package, so this lands before the package goes out
+- **Metered cost of the card itself**: small and bounded by call count, not by a quoted second figure, because that figure is what the card exists to establish. Stops for per-block approval like every other metered run
+- Depends on: nothing. Blocks sending the QCi package with a defensible Phase 2 cost
+
 **F64. Decompose the B2 confound: the k=17 order-2 cell (~45m) Priority 1 -- PHASE 2 EXPERIMENT 1**
 - Phase: Experiments / correctness
 - Platform: classical proxy (`qubo_proxy.py`, `mechanism_controls.py`)
