@@ -34,34 +34,6 @@ CAVEAT on dct proxy cells: scores take ~120 distinct values with ~96% of transac
 | xgboost/full | 10 | 0.8296 | 0.0286 | [0.8092, 0.8501] | 0.9791 | 0.00167 |
 | xgboost/matched13 | 10 | 0.8019 | 0.0239 | [0.7847, 0.8190] | 0.9730 | 0.00167 |
 
-## Score health (amendment A6; WARN = degenerate score distribution)
-
-| Cell | Rows | WARN rows | Median mode share | Median n_distinct |
-|------------------------------------------------------|----------|----------------------|----------------------|----------------------|
-| catboost/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| catboost/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| cvqboost_hw/hw_b1_dct/stratified/full | 10 | 10 | 0.951 | 814 |
-| cvqboost_hw/hw_b1_dct/temporal/full | 1 | 1 | 0.940 | 842 |
-| cvqboost_hw/hw_b1_lg/stratified/full | 10 | 0 | 0.518 | 4041 |
-| cvqboost_hw/hw_b1_lg/temporal/full | 1 | 0 | 0.490 | 2369 |
-| cvqboost_hw/hw_b2_full/stratified/full | 10 | 0 | 0.857 | 4412 |
-| cvqboost_hw/hw_b2_full/temporal/full | 1 | 0 | 0.835 | 4945 |
-| cvqboost_hw/hw_g0b_1/stratified/full | 1 | 1 | 0.945 | 821 |
-| cvqboost_hw/hw_g0b_2/stratified/full | 1 | 0 | 0.514 | 4016 |
-| cvqboost_hw/hw_g0b_3/stratified/full | 1 | 0 | 0.514 | 1080 |
-| cvqboost_hw/hw_g0b_4/stratified/full | 1 | 1 | 0.998 | 54 |
-| cvqboost_hw/hw_g0b_5/stratified/full | 1 | 1 | 1.000 | 1 |
-| cvqboost_hw_mixed/mixed_free_sched2/stratified/seq | 10 | 10 | 0.989 | 180 |
-| cvqboost_proxy/free/dct/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| cvqboost_proxy/free/dct/sequential | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| cvqboost_proxy/tuned_free/lg/full | 10 | 0 | 0.531 | 3846 |
-| lightgbm/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| lightgbm/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| logistic/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| logistic/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| xgboost/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| xgboost/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
-
 ## G0 (tuned-XGB full features, mean test AP >= 0.85)
 
 Mean AP = 0.8296 over 10 seeds -> **FAIL**
@@ -117,6 +89,38 @@ hw_b1_dct minus exact proxy free/dct: mean -0.0010 CI [-0.0032, +0.0012] (H4 sol
 | 51 | 0.8309 | 0.8368 |
 
 Mean: sequential 0.7803, full-pair 0.7816 -> **A3 selection: full** (chosen on validation only, before any test-set comparison; applied uniformly to every CVQBoost cell).
+
+## Score health (amendment A6; WARN = degenerate score distribution)
+
+| Cell | Rows | WARN rows | Median mode share | Median n_distinct |
+|------------------------------------------------------|----------|----------------------|----------------------|----------------------|
+| catboost/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| catboost/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| cvqboost_hw/hw_b1_dct/stratified/full | 10 | 10 | 0.951 | 814 |
+| cvqboost_hw/hw_b1_dct/temporal/full | 1 | 1 | 0.940 | 842 |
+| cvqboost_hw/hw_b1_lg/stratified/full | 10 | 0 | 0.518 | 4041 |
+| cvqboost_hw/hw_b1_lg/temporal/full | 1 | 0 | 0.490 | 2369 |
+| cvqboost_hw/hw_b2_full/stratified/full | 10 | 0 | 0.857 | 4412 |
+| cvqboost_hw/hw_b2_full/temporal/full | 1 | 0 | 0.835 | 4945 |
+| cvqboost_hw/hw_g0b_1/stratified/full | 1 | 1 | 0.945 | 821 |
+| cvqboost_hw/hw_g0b_2/stratified/full | 1 | 0 | 0.514 | 4016 |
+| cvqboost_hw/hw_g0b_3/stratified/full | 1 | 0 | 0.514 | 1080 |
+| cvqboost_hw/hw_g0b_4/stratified/full | 1 | 1 | 0.998 | 54 |
+| cvqboost_hw/hw_g0b_5/stratified/full | 1 | 1 | 1.000 | 1 |
+| cvqboost_hw_mixed/mixed_free_sched2/stratified/seq | 10 | 10 | 0.989 | 180 |
+| cvqboost_proxy/free/dct/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| cvqboost_proxy/free/dct/sequential | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| cvqboost_proxy/tuned_free/lg/full | 10 | 0 | 0.531 | 3846 |
+| lightgbm/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| lightgbm/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| logistic/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| logistic/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| xgboost/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| xgboost/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
+
+```{=latex}
+\newpage
+```
 
 ## Tuning Budget Equivalence (prereg 6; asymmetry reported as-is)
 

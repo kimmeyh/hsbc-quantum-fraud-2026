@@ -203,18 +203,26 @@ def main() -> int:
     lines.append("")
 
     # ---- score health (A6) ----
-    lines += ["## Score health (amendment A6; WARN = degenerate score distribution)", "",
-              "| Cell | Rows | WARN rows | Median mode share | Median n_distinct |", "|---|---|---|---|---|"]
+    #
+    # BUILT HERE, EMITTED LATER, directly above the Tuning Budget Equivalence
+    # table (team lead, Sprint 17 Manual Validation). The two belong together:
+    # score health reports WHERE the score distribution is degenerate, and the
+    # budget table reports whether each arm was tuned fairly. A reader judging
+    # the CVQBoost row wants both on one spread, not three pages apart.
+    health_lines = [
+        "## Score health (amendment A6; WARN = degenerate score distribution)", "",
+        "| Cell | Rows | WARN rows | Median mode share | Median n_distinct |",
+        "|---|---|---|---|---|"]
     for key in sorted(by_cell, key=str):
         cell = by_cell[key]
         hs = [r["metrics"].get("score_health") for r in cell]
         hs = [h for h in hs if h]
         if not hs:
-            lines.append(f"| {'/'.join(str(k) for k in key)} | {len(cell)} | n/a (pre-A6 rows) | n/a | n/a |")
+            health_lines.append(f"| {'/'.join(str(k) for k in key)} | {len(cell)} | n/a (pre-A6 rows) | n/a | n/a |")
             continue
-        lines.append(f"| {'/'.join(str(k) for k in key)} | {len(cell)} | {sum(h['warn'] for h in hs)} "
-                     f"| {np.median([h['mode_share'] for h in hs]):.3f} | {int(np.median([h['n_distinct'] for h in hs]))} |")
-    lines.append("")
+        health_lines.append(f"| {'/'.join(str(k) for k in key)} | {len(cell)} | {sum(h['warn'] for h in hs)} "
+                            f"| {np.median([h['mode_share'] for h in hs]):.3f} | {int(np.median([h['n_distinct'] for h in hs]))} |")
+    health_lines.append("")
 
     # ---- G0 ----
     xgb_full = cell_aps.get(("xgboost", "full"), {})
@@ -389,6 +397,24 @@ def main() -> int:
         lines.append(f"UNSCOREABLE YET: {len(common)}/{N_SEEDS} paired seeds present "
                      f"(sequential {len(seq)}, full {len(ful)}).")
     lines.append("")
+
+    # Score health immediately precedes the budget table; see where it is built.
+    #
+    # THE PAGE BREAK GOES BETWEEN THEM, not before both. Three layouts were
+    # rendered and measured rather than reasoned about:
+    #   - no break:    the budget HEADING orphans at the foot of one page with
+    #                  all nine of its rows on the next
+    #   - break first: both tables fit, but the three paragraphs that explain
+    #                  the table -- including "the AP column is not
+    #                  comparable" -- push onto a page of their own, which is
+    #                  the same defect one step later and on the sentence that
+    #                  most needs to be beside the numbers
+    #   - break here:  score health ends one page, and the budget table plus
+    #                  every word explaining it occupy the next, whole
+    # The raw-LaTeX block is inert in markdown viewers and honored by
+    # pandoc -> xelatex (verified against this pipeline before it was used).
+    lines += health_lines
+    lines += ["```{=latex}", "\\newpage", "```", ""]
 
     # ---- budget equivalence ----
     #

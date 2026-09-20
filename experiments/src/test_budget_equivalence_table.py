@@ -109,3 +109,37 @@ def test_no_literal_separator_row_inside_the_table_body():
         cells = [c.strip() for c in ln.strip("|").split("|")]
         assert not all(set(c) <= {"-"} and c for c in cells), (
             f"literal separator row inside the table body: {ln!r}")
+
+
+def test_the_page_break_is_a_fenced_raw_latex_block():
+    """The break between score health and the budget table must stay a fenced
+    raw-LaTeX block: pandoc honors it, markdown viewers show an inert code
+    block, and a BARE backslash-newpage would print as literal text in both.
+
+    Three layouts were measured before this one was chosen. With no break the
+    budget heading orphans at the foot of a page with all nine rows on the
+    next; with the break before score health, the paragraphs explaining the
+    table -- including "the AP column is not comparable" -- push onto a page of
+    their own, away from the numbers they qualify.
+    """
+    if not REPORT.exists():
+        pytest.skip("gate_report.md not present")
+    text = REPORT.read_text(encoding="utf-8")
+    health = text.index("## Score health")
+    budget = text.index("## Tuning Budget Equivalence")
+    between = text[health:budget]
+    assert "```{=latex}" in between, (
+        "the page break between score health and the budget table is gone or "
+        "is no longer a fenced raw-LaTeX block")
+    # Built by concatenation, not typed as a literal: writing this file through
+    # a heredoc turned "\\newpage" into a form feed, and the test then failed
+    # against a report that was perfectly correct. That is the escape-eaten
+    # class (F82) biting inside the test that documents it.
+    newpage = chr(92) + "newpage"
+    assert newpage in between
+    # A bare newpage outside a fence prints literally. Every occurrence in the
+    # report must sit inside a fence.
+    for chunk in text.split(newpage)[:-1]:
+        assert chunk.rstrip().endswith("```{=latex}"), (
+            f"a bare {newpage} appears outside a raw-LaTeX fence; it would "
+            "render as literal text")
