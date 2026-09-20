@@ -51,7 +51,20 @@ def _declared() -> set[str]:
 
 
 def _local_modules() -> set[str]:
-    return {p.stem for p in SRC.glob("*.py")}
+    """First-party module names, from BOTH source directories.
+
+    `scripts/` was missing until 2026-09-20, so a test importing a module from
+    there (test_status_footer.py -> scripts/status_footer.py, via a sys.path
+    insert) was reported as an undeclared THIRD-PARTY package. The advice that
+    came with the failure was to add it to requirements.txt, which would have
+    been wrong: there is no such distribution on PyPI, and pip install would
+    fail on the next fresh clone.
+
+    Both directories hold first-party code and both are imported by tests, so
+    both belong here.
+    """
+    return ({p.stem for p in SRC.glob("*.py")} |
+            {p.stem for p in (ROOT / "scripts").glob("*.py")})
 
 
 def _imports() -> dict[str, set[str]]:

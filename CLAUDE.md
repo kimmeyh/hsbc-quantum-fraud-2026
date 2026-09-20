@@ -12,6 +12,43 @@ Guidance for Claude Code sessions in this repository. The authoritative process 
 
 The evidence files have their own verification path: `score_gates.py` regenerates every reported figure, `docs/STATISTICAL_REVIEW_CHECKLIST.md` is walked before any figure becomes gate evidence, and the section-11 row schema is enforced by `test_row_schema.py` in CI. (Corrected 2026-09-12: this line previously said `store.py` enforces the schema AT WRITE TIME. It does not -- `store.py` does config hashing, atomic writes and a lock, and validates no fields, so a malformed row is written successfully and caught afterwards by the suite. An overstated guarantee is worse than a documented gap, because it invites reliance that is not there.) Reviewing the data files consumes large review budget for no signal and has caused review runs to stall (Sprint 3 and Sprint 4).
 
+## Status footer: generate it, never type it
+
+End decision-point and milestone replies with the footer line. **Generate it
+with the script every time. Never assemble it by hand, and never carry a
+timestamp forward from an earlier message.**
+
+```
+<venv python> scripts/status_footer.py
+```
+
+The interpreter is per-OS; `docs/ENVIRONMENT.md` is the single place it is
+recorded. Output:
+
+```
+09/20/2026 12:30pm | Sprint 17 Phase 5.0 Review & Validation
+```
+
+- Reads the live clock on every call, and reads the sprint number and phase
+  from `.claude/sprint_status.json` -- the same file the auto-advance hook
+  reads, so the footer and the hook cannot disagree about the phase.
+- A missing, malformed or phase-less status file still prints a usable line
+  with an honest marker naming the path to check. It never raises, never exits
+  nonzero and never prints nothing.
+- `--sprint` and `--phase` override the file when needed.
+- **Do not use the global PowerShell script** (`~/.claude/scripts/status-footer.ps1`)
+  in this repository. It expects spamfilter-multi's prose status convention
+  ("Sprint 70 Phase 5.3 MANUAL VALIDATION"); this repo writes snake_case slugs
+  ("phase_5_validation"), so its regex silently fails and it prints
+  "Sprint 17" with NO PHASE. A footer that quietly drops a field is the same
+  defect class as the stale timestamp the script exists to prevent. F78 also
+  removed PowerShell from this repository because CI runs ubuntu-latest.
+
+(Added 2026-09-20 after a hand-assembled footer reported a time an hour stale,
+copied forward from an earlier message. The sprint number and phase in that
+same line were correct, because they came from a file that was actually read.
+The one field filled from memory was the one that was wrong.)
+
 ## Standing rules (see docs/SPRINT_PROCESS.md for the full set)
 
 - All PR merges are the team lead's action, at every level. Claude never merges.
