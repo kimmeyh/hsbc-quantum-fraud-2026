@@ -3,8 +3,9 @@
 **Sprint**: 18
 **Branch**: `feature/20260922_Sprint_18`
 **Dates**: 2026-09-22 onward
-**Scope**: F87, F64, F2b (B5 then B4), F88, F89
-**Metered Dirac-3 seconds**: NON-ZERO. Three separate approval stops.
+**Scope**: F87, F64, F88, F89
+**Metered Dirac-3 seconds**: NON-ZERO. ONE approval stop.
+**F2b DEFERRED** to its own sprint (F90); see the scope note.
 
 ## Objective
 
@@ -16,11 +17,45 @@ a cost". Appendix B.3 cannot stop declining its own headline confound while the
 k=17 order-2 cell is unrun. Both are single experiments. Everything else in this
 sprint exists to make those two defensible.
 
+## Scope note: F2b is deferred, and the reason is evidence, not cost
+
+The team lead selected F2b for this sprint. **It is deferred to F90 after the
+pre-flight invalidated the configuration this plan first proposed for it.**
+
+The first draft ran B4 at schedule 2 (153 variables, about 75 s) on the
+argument that A31's resolution limit made schedule 3 a worse experiment rather
+than merely a costlier one. **That argument was wrong, and the team lead caught
+it.**
+
+- **Schedule 2 is a configuration already shown to lose.** In the prior SPECTRA
+  work, at schedule 2 the classical arm swept overall 8 of 8 and CVQBoost won
+  only about 3 in-segment metrics. At schedule 3 CVQBoost leads in-segment on
+  ROC 5 of 7 and PR 6 of 7, and wins overall on energy_steel. Schedule 3, which
+  adds three-feature interactions, is the accuracy lever. Spending 75 seconds
+  to reproduce a losing configuration is not a cheap experiment; it is a
+  worthless one.
+- **The A31 argument was inverted.** A31 predicts the MECHANISM -- weight over
+  more than about 200 learners is not representable, so the device returns
+  something sparser. It does not predict a bad OUTCOME. B2 ran at exactly 833
+  variables with weight cosine 0.83 and produced the campaign's only positive
+  result at scale, +0.0256 on ten of ten seeds. The sparsified answer was
+  BETTER. Using A31 to argue against 833 variables contradicts our own headline
+  evidence, and it is the same inversion the team lead corrected in the
+  833-variable paragraph at Sprint 17 Manual Validation.
+
+**So B4 belongs at schedule 3, which costs about 1,236 s -- 63% of the 1,961
+remaining.** That is an allocation decision deserving its own sprint and its own
+approval, not a task bundled behind eight others. F90 carries it with the cost
+quoted.
+
+Deferring costs little: B4 and B5 are post-submission work on the current
+calendar and block nothing.
+
 ## Audience-first statement (mandatory, SPRINT_PLANNING.md)
 
-**F87 and F2b's reader is QCi's technical staff**, who will read a cost figure
-and decide whether our estimates are measured or invented. Every number this
-sprint produces about device time must carry its provenance as `measured` or
+**F87's reader is QCi's technical staff**, who will read a cost figure and
+decide whether our estimates are measured or invented. Every number this sprint
+produces about device time must carry its provenance as `measured` or
 `extrapolated`, never `unknown`.
 
 **F64's reader is a reviewer of Appendix B.3**, who currently reads that the
@@ -75,7 +110,7 @@ The schedule-3 QUBO size is `n + C(n,2) + C(n,3)`:
 - **B4 therefore runs at schedule 2 unless the team lead directs otherwise.**
 - B5 (QSVM, 12 fits) sizes like B3: **15-62 s**. Cheap under any balance.
 - **B4 overlaps F5** (SPECTRA in-segment replication, on HOLD). They are the
-  same block from two angles. Task G reconciles them before B4 runs; F5's own
+  same block from two angles. F90 reconciles them before B4 runs; F5's own
   HOLD reason ("needs the QCi grant, which has only been acknowledged") is
   stale, since the grant arrived 2026-09-09.
 
@@ -141,43 +176,17 @@ uses**, and fails loudly if the target value is still reachable.
 - **Acceptance**: all six Sprint 17 green injections replayed through the
   helper and each reported as a FAILED injection rather than a passing guard.
 
-### Task E: Run B5 (F2b) (~45m + APPROVAL STOP) [METERED]
-
-- **Block**: B5, QSVM sign-augmented. **12 calls.**
-- **Expected: 15-62 s**, provenance **extrapolated** from B3's measured
-  5.2 s/fit at comparable size.
-- Runs before B4 deliberately: it is cheap, and it exercises the approval and
-  ledger path before the expensive block.
-
 ### Task F: False-finding mechanism (F88) (~150m)
 
 Design and build, with the two Sprint 17 instances as the acceptance test.
 
-- Candidates named in the card: a guard recognising contradiction language that
+- Candidates named in the card: a guard recognizing contradiction language that
   demands a named artifact citation; a `verify_claim.py` that reports every
   file mentioning a figure; a check that a claim naming an amendment has had
   the log read this session. **The spike picks one**; the card does not
   pre-commit.
 - **Acceptance**: both Sprint 17 instances caught BEFORE the claim is
   committed. Proven by injection, not asserted.
-
-### Task G: Reconcile B4 with F5, and fix F5's stale gate (~30m)
-
-- F5's HOLD reason names a grant that has since arrived. Correct it.
-- State plainly whether B4 and F5 are one block or two, and which this sprint
-  runs. They must not both be scheduled.
-- Zero metered seconds. **Blocks Task H.**
-
-### Task H: Run B4 (F2b) (~60m + APPROVAL STOP) [METERED]
-
-- **Block**: B4, SPECTRA. **15 calls at schedule 2, 153 variables.**
-- **Expected: about 75 s**, provenance **extrapolated** from B3's measured rate
-  at comparable size.
-- **At schedule 3 this block would cost about 1,236 s — 63% of the remaining
-  balance — to hit the resolution wall A31 already measured.** If the team lead
-  wants schedule 3 anyway, that is a deliberate allocation decision and the
-  block is re-quoted at that figure before it runs.
-- Depends on: **Task G**.
 
 ### Task I: Update the QCi package with the measured figures (~60m)
 
@@ -194,52 +203,65 @@ The card is not done until both documents carry the number.
 Derived from the cards and their dependencies, then recorded (SPRINT_PLANNING.md,
 Sprint 17 improvement 1). The plan reports this total; it does not originate it.
 
-- A 90 + B 30 + C 60 + D 120 + E 45 + F 150 + G 30 + H 60 + I 60 = **645 minutes**
-- Verification-dominated portion (A, B, C, E, G, H): 315m -> 30% = **94m**
-- **Total: 739 minutes, 12.3 hours**
+- A 90 + B 30 + C 60 + D 120 + F 150 + I 60 = **510 minutes**
+- Verification-dominated portion (A, B, C): 180m -> 30% = **54m**
+- **Total: 564 minutes, 9.4 hours**
 
-Dependencies that constrain ordering, not cost: G blocks H; B follows A; I
-follows B.
+Dependencies that constrain ordering, not cost: B follows A; I follows B.
+
+(Was 739 minutes across nine tasks before F2b was deferred. Computed by
+summing, not asserted -- the first draft of this plan said 95m of allowance
+against an actual 94m.)
 
 ## Metered summary (Criterion H)
 
-Three blocks, three separate approval stops. Nothing runs on this plan's
-approval.
+ONE block, one approval stop. Nothing runs on this plan's approval.
 
 | Block | Calls | Expected | Provenance |
 |---|---|---|---|
 | Integer probe (Task B) | 2-3 | **unknown** | no comparable anchor; bounded by call count |
-| B5 (Task E) | 12 | 15-62 s | extrapolated from B3 |
-| B4 (Task H) | 15 | ~75 s at schedule 2 | extrapolated from B3 |
 
-**Worst case if all three run: under 200 seconds of 1,961.** The figure that
-would change this is schedule 3 on B4, at about 1,236 s.
+The block is bounded by CALL COUNT rather than by a quoted second figure,
+because that figure is what the card exists to establish. If the first call is
+expensive, the second does not run without a new approval.
+
+B5 and B4 moved to F90 with B4 quoted at about 1,236 s (schedule 3).
 
 ## Premise falsifier (mandatory)
 
-**Premise**: B4 at schedule 2 is the right block to run, and the resolution
-limit makes schedule 3 a worse experiment rather than merely a costlier one.
+**Premise**: the integer path can be built and exercised end to end
+classically, so the metered probe measures the DEVICE rather than a bug in our
+own submission code.
 
-**The check**: if the in-segment effect SPECTRA is meant to show depends on
-three-feature interactions, schedule 2 cannot show it, and a null at schedule 2
-would be a null about our configuration rather than about the device. Before
-B4 runs, state what a schedule-2 null would and would not license.
+**The check**: Task A must run the full path to completion with no metered
+call. If it cannot -- if the only way to exercise the path is to submit a job
+-- then the probe is not a probe, it is a first attempt, and its cost is
+unpredictable in a way the card does not allow for.
 
-**It can fail.** This is the most likely place for this sprint to be wrong.
+**It can fail**, and that is the most likely place for this sprint to be wrong.
+`Dirac3IntegerCloudSolver` is a CLOUD solver; whether a local or simulated
+exercise of the same model is possible is unverified. Task A's first job is to
+find out, and if the answer is no, Task B stops for a re-scoped approval rather
+than proceeding.
+
+(The previous falsifier here concerned B4 at schedule 2. It was retired with
+the task: the premise it tested turned out to be false before the sprint
+started, which is the falsifier doing its job early rather than the plan
+surviving unchallenged.)
 
 ## Risks
 
 - **The integer probe's cost is unknown by construction.** Bounded by call
   count. If the first call is expensive, the second does not run without a new
   approval.
+- **The integer path may not be exercisable without the device.** See the
+  falsifier. This is the risk that would reshape the sprint.
 - **Task F may not converge on a mechanism.** It is a design spike with a build
   attached; if the spike shows no mechanical check is possible, that finding is
   the deliverable and the card returns to the backlog.
 - **F64 may reopen a published figure.** If the decomposition changes what
   +0.0256 is attributable to, that is an amendment and B.3 changes. Planned for,
   not a surprise.
-- **Three approval stops in one sprint** is more interruption than usual. They
-  are separated by the zero-cost tasks deliberately.
 
 ## Definition of Done
 
@@ -247,7 +269,6 @@ B4 runs, state what a schedule-2 null would and would not license.
 - The QCi memo and hardware plan carry that figure; the no-quote sentence is
   gone and a test prevents its return
 - The k=17 order-2 cell run; B.3 states the decomposition as a bound
-- B5 complete; B4 complete or explicitly deferred with its cost quoted
 - Six Sprint 17 injections replayed and reported as failures by the helper
 - F88's mechanism catches both Sprint 17 false findings, or its spike result is
   recorded
@@ -259,4 +280,6 @@ B4 runs, state what a schedule-2 null would and would not license.
 - **F25**, the full cardinality-constrained investigation. Task A and B build
   and size the path; they do not ask whether it beats a classical control.
 - Retrofitting the 168 pre-A33 rows.
-- Any schedule-3 SPECTRA block without a separate allocation decision.
+- **F2b entirely** -- blocks B4 and B5. Carded as F90 with B4 quoted at
+  schedule 3, about 1,236 s, which is 63% of the remaining balance and needs
+  its own approval.
