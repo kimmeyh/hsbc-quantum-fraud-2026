@@ -14,7 +14,8 @@ Consult at EVERY phase boundary (open this file in the same turn; walk lines wit
 
 ## Phase 3: Kickoff & Planning
 - [ ] Previous sprint SUMMARY doc created and linked in master plan (three-doc rule: PLAN + RETROSPECTIVE + SUMMARY, no exceptions)
-- [ ] SPRINT_N_PLAN.md drafted: objective, tasks, quantifiable acceptance criteria, minute estimates
+- [ ] Card estimates and inter-card dependencies recorded FIRST; sprint total computed from them
+- [ ] SPRINT_N_PLAN.md drafted: objective, tasks, quantifiable acceptance criteria, minute estimates taken from that computed total (never typed in and checked later)
 - [ ] Plan verified against branch state (already-shipped work marked, stale paths corrected); re-estimated if findings
 - [ ] Branch exists (usually via prior 6.6 carry-forward); DRAFT PR created/updated (STAYS DRAFT until 7.7)
 - [ ] One GitHub issue per task (`sprint` label) BEFORE first task file is touched; all OPEN

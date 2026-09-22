@@ -185,6 +185,31 @@ sections, with the falsifier result recorded alongside it in
 FALSIFIER_RESULT.md. See SPRINT_15_SUMMARY.md and CHANGELOG.md. Removed from
 candidates per convention.)
 
+**F88. Make a false finding impossible to write, not merely caught later (~3h) Priority 3**
+- Phase: Finalize / tooling (Sprint 17 retrospective IMP-2, team lead: "better to get right the first time than fix problems after they happen")
+- Platform: `.claude/hooks/`, `scripts/`
+- **THE DEFECT CLASS, twice in one sprint.** I wrote a claim that something was broken, when the answer was already recorded in a file I had not opened:
+  - The Sprint 17 plan asserted in bold that the QPU arithmetic "DOES NOT RECONCILE". It reconciles exactly. I had counted `billed_s` and missed that 24 of 25 paid rows carry `measured_seconds` instead. **A reviewer made a version of the same error in Sprint 12** and `SPRINT_12_SUMMARY.md` records the resolution.
+  - Task D reported A31 and the appendix contradicting each other on the linear-term span. **A32 had already corrected it on the day of submission.** `device_resolution.json` carries every figure in a `per_pool` array I did not read.
+- **The rejected approach, and why.** The retrospective proposed "grep the summaries before writing any such claim". The team lead declined it as a remembered step that costs effort on every claim while preventing nothing structurally. He is right: a rule that fires on every claim is a tax, and the two instances above would both have been prevented by reading ONE file completely
+- **What to actually build, to be designed in the card's own spike**: candidates are a PreToolUse guard that recognises contradiction language ("does not reconcile", "contradicts", "disagrees with", "is wrong") in a document being written and requires a named artifact citation alongside it; a `verify_claim.py` that takes a figure and reports every file in the repo that mentions it, so "already answered" is one command rather than a memory; or a check that a claim naming an amendment (A\d+) has had the amendment log read in the same session
+- **Acceptance**: the two Sprint 17 instances are replayed and the mechanism catches both BEFORE the claim is committed. Proven by injection, not asserted
+- Depends on: nothing
+
+**F89. Injections must assert the mutation reached what the test reads (~2h) Priority 4**
+- Phase: Finalize / tooling (Sprint 17 retrospective IMP-3)
+- Platform: `experiments/src/`, a shared injection helper
+- **FIVE INJECTIONS RETURNED GREEN IN SPRINT 17, and every one was a defect in the VERIFICATION rather than in the thing verified.** A green injection reads exactly like a passing guard:
+  - `delim in quoted` in the F82 hook was dead code: unreachable, so removing it broke nothing
+  - `test_bypass_token_allows` passed for two different wrong reasons in succession
+  - the H1b figure `0.7671` appears THREE times in the gate report; `replace(..., 1)` left two behind and the test still found it
+  - the missing-phase marker asserted a phrase `build()` supplies as a fallback anyway
+  - the frozen-clock mutation hit `main()` while the test called `build()` directly
+- **The shape of the fix**: a helper that performs the mutation, re-reads THROUGH THE SAME ACCESSOR THE TEST USES, and fails loudly if the target value is still reachable. `replace()` without a count, and an assertion that the occurrence count went to zero, are the two mechanical parts
+- **Why this is worth building rather than remembering**: the rule "assert your injection landed" already exists in CLAUDE.md, was written after Sprint 16, and was violated five times in Sprint 17 by the person who wrote it
+- **Acceptance**: all five Sprint 17 cases are replayed through the helper and each one is reported as a failed injection rather than a passing guard
+- Depends on: nothing
+
 **F87. Size the integer-solver block so the QCi memo can quote a number (~3h + one metered probe) Priority 2 -- DO FIRST NEXT SPRINT**
 - Phase: Phase 2 preparation / outward commitment (team lead, Sprint 17 Manual Validation)
 - Platform: `experiments/src/` integer path, Dirac-3 integer solver, one probe block

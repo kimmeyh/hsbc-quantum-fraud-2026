@@ -81,7 +81,7 @@ def _size(path: Path) -> tuple[int, int]:
 ALL_PDFS = _pdfs() + _pdfs("qci_package")
 
 
-@pytest.mark.skipif(not ALL_PDFS, reason="no rendered PDFs; run scripts/render-pdf.ps1")
+@pytest.mark.skipif(not ALL_PDFS, reason="no rendered PDFs; run scripts/render_all.py")
 @pytest.mark.parametrize("pdf", ALL_PDFS, ids=lambda p: p.name)
 def test_page_size_is_letter_or_a4(pdf: Path) -> None:
     """The tabloid defect. Guidelines section 5 permits A4 or US Letter only.
@@ -138,7 +138,7 @@ def test_page_count_within_limit(name: str, limit: int) -> None:
     )
 
 
-@pytest.mark.skipif(not ALL_PDFS, reason="no rendered PDFs; run scripts/render-pdf.ps1")
+@pytest.mark.skipif(not ALL_PDFS, reason="no rendered PDFs; run scripts/render_all.py")
 @pytest.mark.parametrize("pdf", ALL_PDFS, ids=lambda p: p.name)
 def test_no_retired_claims(pdf: Path) -> None:
     """A corrected claim reappearing means a lost edit or a stale render.

@@ -185,6 +185,16 @@ only in memory.
   the VERIFICATION rather than in the thing verified, and each looked
   identical to a real defect.)
 
+- **Don't ship a guard with an override flag in the commit that creates it.**
+  If an escape hatch is genuinely needed it arrives LATER, in its own commit,
+  with its own justification. (Sprint 17: `render_all.py` rebuilt the three
+  SUBMITTED PDFs on any invocation. The fix added
+  `--allow-overwrite-submitted`, and the very NEXT command passed it -- not to
+  rebuild a submission, but because the flag was the quickest way to get an
+  unrelated test to run. The filed bytes were destroyed a second time. An
+  escape hatch easier to reach than the correct path is not a guard. The flag
+  is gone and `test_render_all.py` asserts it stays gone.)
+
 - **Don't claim a guard works because the suite is green. Prove it FAILS.** A
   test that cannot fail is worse than no test, because it buys false confidence.
   Break the thing it guards, watch it go red, then restore. (Three vacuous

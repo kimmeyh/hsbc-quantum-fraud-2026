@@ -56,7 +56,29 @@ def main() -> int:
     if not hooklib.normalize(path).endswith(GUARDED_SUFFIX):
         return hooklib.ALLOW
 
-    if hooklib.repo_file(*APPROVAL_TOKEN.split("/")).exists():
+    token = hooklib.repo_file(*APPROVAL_TOKEN.split("/"))
+    if token.exists():
+        # THE TOKEN IS SINGLE-USE AND IS CONSUMED HERE (Sprint 17 improvement
+        # 5). While it exists this guard is disabled, so a token left behind
+        # after the amendment it authorized turns the guard off for every
+        # later edit -- silently, because a disabled guard looks exactly like
+        # a passing one.
+        #
+        # That happened in Sprint 17: the token written for A33 stayed on disk
+        # after the amendment was made, and three hook-parity tests went red
+        # because the hook could no longer block anything. Deleting it was a
+        # remembered step, and a remembered step is the thing this repository
+        # keeps replacing with a mechanical one.
+        #
+        # Consuming it also makes the approval mean what it says: ONE verified
+        # amendment, not "amendments are allowed from now on".
+        try:
+            token.unlink()
+        except OSError:
+            # Never fail the edit over cleanup. A token that cannot be removed
+            # is a stale-guard problem, not a reason to block verified work;
+            # test_amendment_token.py asserts the normal path removes it.
+            pass
         return hooklib.ALLOW
 
     return hooklib.block(MESSAGE)
