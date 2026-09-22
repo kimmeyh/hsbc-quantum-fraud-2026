@@ -1,30 +1,19 @@
 {
   "current_sprint": {
-    "number": 17,
-    "name": "Clear the Deck for Phase 2",
-    "branch": "feature/20260919_Sprint_17",
-    "status": "phase_8_delivery_cycle",
-    "plan_doc": "docs/sprints/SPRINT_17_PLAN.md",
-    "pr": 122,
-    "plan_approved": true,
-    "github_issues": [
-      123,
-      124,
-      125,
-      126,
-      127,
-      128,
-      129,
-      130,
-      131
-    ],
-    "note": "Sprint 17 COMPLETE. F86, F82, F83, F84 delivered; F81 and F85 closed. PR #122 to develop, PR #132 to main, both merged 2026-09-22. Two reviews addressed (Copilot 2, Claude 7), all threads resolved."
+    "number": 18,
+    "name": "The First Phase 2 Evidence, and the Cost of the Ask",
+    "branch": "feature/20260922_Sprint_18",
+    "status": "phase_3_planning",
+    "plan_doc": "docs/sprints/SPRINT_18_PLAN.md",
+    "pr": null,
+    "plan_approved": false,
+    "github_issues": []
   },
   "last_completed_sprint": {
     "number": 17,
     "merged_pr": 122,
-    "main_merge_pr": 132,
-    "docs_triad_complete": true
+    "main_merge_pr": null,
+    "docs_triad_complete": false
   },
   "prereg": {
     "status": "FROZEN",
