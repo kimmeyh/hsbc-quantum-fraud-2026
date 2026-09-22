@@ -185,6 +185,42 @@ sections, with the falsifier result recorded alongside it in
 FALSIFIER_RESULT.md. See SPRINT_15_SUMMARY.md and CHANGELOG.md. Removed from
 candidates per convention.)
 
+**F88. Make a false finding impossible to write, not merely caught later (~3h) Priority 3**
+- Phase: Finalize / tooling (Sprint 17 retrospective IMP-2, team lead: "better to get right the first time than fix problems after they happen")
+- Platform: `.claude/hooks/`, `scripts/`
+- **THE DEFECT CLASS, twice in one sprint.** I wrote a claim that something was broken, when the answer was already recorded in a file I had not opened:
+  - The Sprint 17 plan asserted in bold that the QPU arithmetic "DOES NOT RECONCILE". It reconciles exactly. I had counted `billed_s` and missed that 24 of 25 paid rows carry `measured_seconds` instead. **A reviewer made a version of the same error in Sprint 12** and `SPRINT_12_SUMMARY.md` records the resolution.
+  - Task D reported A31 and the appendix contradicting each other on the linear-term span. **A32 had already corrected it on the day of submission.** `device_resolution.json` carries every figure in a `per_pool` array I did not read.
+- **The rejected approach, and why.** The retrospective proposed "grep the summaries before writing any such claim". The team lead declined it as a remembered step that costs effort on every claim while preventing nothing structurally. He is right: a rule that fires on every claim is a tax, and the two instances above would both have been prevented by reading ONE file completely
+- **What to actually build, to be designed in the card's own spike**: candidates are a PreToolUse guard that recognises contradiction language ("does not reconcile", "contradicts", "disagrees with", "is wrong") in a document being written and requires a named artifact citation alongside it; a `verify_claim.py` that takes a figure and reports every file in the repo that mentions it, so "already answered" is one command rather than a memory; or a check that a claim naming an amendment (A\d+) has had the amendment log read in the same session
+- **Acceptance**: the two Sprint 17 instances are replayed and the mechanism catches both BEFORE the claim is committed. Proven by injection, not asserted
+- Depends on: nothing
+
+**F89. Injections must assert the mutation reached what the test reads (~2h) Priority 4**
+- Phase: Finalize / tooling (Sprint 17 retrospective IMP-3)
+- Platform: `experiments/src/`, a shared injection helper
+- **FIVE INJECTIONS RETURNED GREEN IN SPRINT 17, and every one was a defect in the VERIFICATION rather than in the thing verified.** A green injection reads exactly like a passing guard:
+  - `delim in quoted` in the F82 hook was dead code: unreachable, so removing it broke nothing
+  - `test_bypass_token_allows` passed for two different wrong reasons in succession
+  - the H1b figure `0.7671` appears THREE times in the gate report; `replace(..., 1)` left two behind and the test still found it
+  - the missing-phase marker asserted a phrase `build()` supplies as a fallback anyway
+  - the frozen-clock mutation hit `main()` while the test called `build()` directly
+- **The shape of the fix**: a helper that performs the mutation, re-reads THROUGH THE SAME ACCESSOR THE TEST USES, and fails loudly if the target value is still reachable. `replace()` without a count, and an assertion that the occurrence count went to zero, are the two mechanical parts
+- **Why this is worth building rather than remembering**: the rule "assert your injection landed" already exists in CLAUDE.md, was written after Sprint 16, and was violated five times in Sprint 17 by the person who wrote it
+- **Acceptance**: all five Sprint 17 cases are replayed through the helper and each one is reported as a failed injection rather than a passing guard
+- Depends on: nothing
+
+**F87. Size the integer-solver block so the QCi memo can quote a number (~3h + one metered probe) Priority 2 -- DO FIRST NEXT SPRINT**
+- Phase: Phase 2 preparation / outward commitment (team lead, Sprint 17 Manual Validation)
+- Platform: `experiments/src/` integer path, Dirac-3 integer solver, one probe block
+- **THE PROBLEM IS A DOCUMENT THAT SAYS "UNKNOWN".** `Phase 1 - Hardware Plan for Phase 2` currently tells QCi: "We are not quoting a cost for that block. We have never run your integer solver on this problem and have no comparable anchor." That is honest and it is the correct thing to write with no measurement behind it. It is also the weakest sentence in a package whose whole argument is that our estimates come from measured usage rather than projection. The team lead's instruction: run enough to estimate, do not ship "we don't know"
+- **THE RUN IS A SIZING PROBE, NOT THE EXPERIMENT.** F25 is the full cardinality-constrained investigation and stays on HOLD behind a Phase 2 preregistration. This card buys ONE number: seconds per fit on the integer path at a stated problem size, plus how that scales across two or three sizes. Scope creep into "does it beat the classical control" is F25's job and would need its own approval
+- **EVERYTHING CLASSICAL RUNS FIRST, AND THE PROBE IS LAST.** Per the team lead's revised protocol: the full path runs end to end against the simulator or a local stand-in until it completes without error; only then does a metered call happen. A probe that fails on the device because of a bug in our own submission code costs seconds and buys nothing
+- **Acceptance**: a measured seconds-per-fit figure at a named `num_levels` and variable count, traced to a results row with an evidence tag; a stated scaling basis for extrapolating a Phase 2 block; and the estimate classified as `measured` or `extrapolated` per Criterion H, never `unknown`
+- **OUTPUT IS TWO DOCUMENT UPDATES, and this card is not done until they are made**: `Phase 1 - QCi memo.txt` (the "how the remaining seconds get used" section currently lists the probe as item 1) and `Phase 1 - Hardware Plan for Phase 2.pdf` (replace the no-quote paragraph with the measured figure). Both are in the unsent QCi package, so this lands before the package goes out
+- **Metered cost of the card itself**: small and bounded by call count, not by a quoted second figure, because that figure is what the card exists to establish. Stops for per-block approval like every other metered run
+- Depends on: nothing. Blocks sending the QCi package with a defensible Phase 2 cost
+
 **F64. Decompose the B2 confound: the k=17 order-2 cell (~45m) Priority 1 -- PHASE 2 EXPERIMENT 1**
 - Phase: Experiments / correctness
 - Platform: classical proxy (`qubo_proxy.py`, `mechanism_controls.py`)
@@ -232,24 +268,27 @@ recorded there: F79's defect was an exemption never revoked rather than a
 missing check, and the confidentiality scan reported clean on any single-line
 file. Removed from candidates per convention.)
 
-**F82. Catch the escape-eaten class at WRITE time, not after the fact (~1h) Priority 4**
-- Phase: Finalize / tooling (Sprint 16 retrospective IMP-3, 2026-09-19)
-- Platform: `.claude/hooks`
-- **SEVEN OCCURRENCES IN ONE SPRINT**, which makes this the most frequently recurring defect in the repository's history. A backslash sequence is consumed by a shell or a parser and lands as a control character or a broken string, and the result is a plausible wrong value rather than an error
-- Where it hit in Sprint 16 alone: a JSON hook registration, a CHANGELOG entry, a master-plan card, two injection scripts, a test fixture, and two protected-span strings in the US-English guard and its converter (which broke both files identically)
-- **THE EXISTING HOOKS DO NOT COVER IT, and that is the point.** `block_unraw_escape` catches Windows paths in non-raw Python strings; `block_shell_metachar_expansion` catches shell expansion. Neither sees a backslash sequence written INSIDE a heredoc that then lands in a file, which is where every one of the seven happened
-- `test_no_control_characters` catches the result AFTER it is committed -- it found a sixth instance already in the master plan on its first run. What is missing is a check at write time
-- **Acceptance is behavioural**: a heredoc writing a file whose content contains an unescaped backslash sequence must BLOCK, and a heredoc writing legitimate prose about backslashes must NOT. Both directions proven by injection, because a guard that blocks correct work gets bypassed
-- Depends on: nothing
+(F82 the escape-eaten class, F83 the venv parity question, F84 the environment
+in the row schema, F85 the gate-report rename and F86 the QCi post-submission
+package: COMPLETED in Sprint 17. F81 CLOSED by the team lead. See
+SPRINT_17_SUMMARY.md and CHANGELOG.md. Removed from candidates per convention.
 
-**F81. Put the explainer in front of a real 8th-grade reader (~unknown) Priority 11**
-- Phase: Finalize / verification (Sprint 15 retrospective category 14, 2026-09-16)
-- Platform: external, team-lead owned
-- Both falsifier runs used language models with no repository context. They found six real gaps, so the mechanism works, but a model reading at grade 8 is not a person reading at grade 8
-- The card's own falsifier names the test: someone who has not read the submission explains back what CVQBoost is and why the result is a null
-- **Effort is unknown because it depends on finding a reader**, which is the team lead's to arrange, not mine. Sized as unknown rather than guessed
-- Value: the document's entire purpose is an audience it has never actually met
-- Depends on: nothing, but best after F80
+Four findings outlived their cards and are recorded there rather than here:
+
+- **F83's Appendix C question resolved in the document's favor.** "Python
+  3.12, Linux" is accurate AND enforced in code -- run_hardware.py and
+  tune_proxy.py hard-exit on any non-POSIX platform, because the full-pair pool
+  build needs fork. No submitted document needed correcting. The suite is now
+  identical on both platforms, 1,043 passed / 71 skipped.
+- **The cross-repository guard had never run in CI.** 15 of its 17 cases
+  skipped on non-Windows for a PowerShell reason that stopped applying when
+  F78 converted the hooks. CI is ubuntu-latest, so the boundary rule was
+  enforced on one workstation and nowhere else.
+- **render_all.py rebuilt the three SUBMITTED PDFs on any invocation**, and the
+  first fix's override flag was used within minutes to get an unrelated test
+  running. No override exists now.
+- **The QPU arithmetic does not subtract**, and the reconciliation is at
+  docs/QPU_RECONCILIATION.md so it is not re-derived a fourth time.)
 
 **F36. Pandoc Lua filter: floating tables for the submission PDFs -- CLOSED 2026-09-07, FAILED**
 - **VERDICT: the filter works; the problem it was built for did not exist.** The premise (preserved in the review doc, because it is wrong in an instructive way) rested on a CHARACTER-COUNT page-fill measurement, and a table-heavy page always looks short by that measure. Measured as vertical extent, every page cited below was already full: 724 / 680 / 680 / 682pt of a 792pt page, zero free space anywhere. The appendix was over its limit because it had too much content

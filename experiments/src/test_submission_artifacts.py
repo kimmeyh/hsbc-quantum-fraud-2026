@@ -81,7 +81,7 @@ def _size(path: Path) -> tuple[int, int]:
 ALL_PDFS = _pdfs() + _pdfs("qci_package")
 
 
-@pytest.mark.skipif(not ALL_PDFS, reason="no rendered PDFs; run scripts/render-pdf.ps1")
+@pytest.mark.skipif(not ALL_PDFS, reason="no rendered PDFs; run scripts/render_all.py")
 @pytest.mark.parametrize("pdf", ALL_PDFS, ids=lambda p: p.name)
 def test_page_size_is_letter_or_a4(pdf: Path) -> None:
     """The tabloid defect. Guidelines section 5 permits A4 or US Letter only.
@@ -138,7 +138,7 @@ def test_page_count_within_limit(name: str, limit: int) -> None:
     )
 
 
-@pytest.mark.skipif(not ALL_PDFS, reason="no rendered PDFs; run scripts/render-pdf.ps1")
+@pytest.mark.skipif(not ALL_PDFS, reason="no rendered PDFs; run scripts/render_all.py")
 @pytest.mark.parametrize("pdf", ALL_PDFS, ids=lambda p: p.name)
 def test_no_retired_claims(pdf: Path) -> None:
     """A corrected claim reappearing means a lost edit or a stale render.
@@ -212,6 +212,22 @@ def test_documents_state_the_true_amendment_count():
              20: "twenty"}
     stale = {w for k, w in words.items() if k != n}
 
+    # THE SUBMITTED DOCUMENTS ARE FROZEN AT THE COUNT THEY WERE FILED WITH.
+    #
+    # Until 2026-09-12 every document here had to track the CURRENT count, and
+    # this test kept them honest. After filing, that requirement inverts: the
+    # submitted documents are a record of what was sent, and editing one to
+    # match a later amendment would falsify the record. A33 (Sprint 17) is the
+    # first amendment written after the filing and is what surfaced this.
+    #
+    # So the expected count is per-document: frozen documents keep the filed
+    # number, live documents track the log. Both halves are still enforced --
+    # the guard is not weakened, it is made correct about which is which.
+    FILED_AMENDMENT_COUNT = 32          # the count as filed on 2026-09-12
+    FROZEN = {"docs/paper/appendix.md",
+              "docs/paper/proposal.md",
+              "docs/paper/team_profile.md"}
+
     # qci_cover.md moved to docs/qci_package/ on 2026-09-17 (private
     # correspondence, now gitignored). It is still CHECKED here: the retraction
     # must not reappear in a letter just because the letter is unpublished.
@@ -222,15 +238,18 @@ def test_documents_state_the_true_amendment_count():
         path = ROOT / rel
         if not path.exists():
             continue
+        expected = FILED_AMENDMENT_COUNT if rel in FROZEN else n
         body = path.read_text(encoding="utf-8").lower()
-        for bad in stale:
+        stale_here = {w for k, w in words.items() if k != expected}
+        for bad in stale_here:
             assert f"{bad} amendment" not in body and f"{bad} dated" not in body, (
-                f"{rel} says '{bad}' amendments; the preregistration holds {n}")
+                f"{rel} says '{bad}' amendments; expected {expected}")
         # Match the whole range phrase, not a substring: "a1 to a18" contains
         # "a1 to a1", so a naive `in` test fails on the CORRECT text.
         for found in re.findall(r"a1 to a(\d+)", body):
-            assert int(found) == n, (
-                f"{rel} says 'A1 to A{found}'; the preregistration holds {n}")
+            assert int(found) == expected, (
+                f"{rel} says 'A1 to A{found}'; expected A{expected} "
+                f"({'frozen at the filed count' if rel in FROZEN else 'tracks the log'})")
 
 
 def test_submission_does_not_claim_prior_paid_tier_degree3_work():

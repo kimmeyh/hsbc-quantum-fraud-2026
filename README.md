@@ -129,11 +129,24 @@ reports, and they are not restated here: this paragraph was written with one set
 of numbers and was wrong within the same sprint, which is precisely the failure
 one-source-of-truth avoids.
 
-**The skips are correct and expected.** They are the tests that need raw
-datasets, which are not redistributed here because their licenses do not permit
-it. A fresh clone cannot run them, and they skip rather than fail so that a red
-suite always means a real defect. Each skip states its own reason; run with
-`-rs` to see them.
+**The skips are correct and expected.** Two kinds. Most are the tests that need
+raw datasets, which are not redistributed here because their licenses do not
+permit it. The rest are parity cases for the PowerShell hooks retired in
+Sprint 16: they skip as "already removed" on Windows and "powershell not on
+PATH" elsewhere, and both readings are accurate. A fresh clone cannot run
+either kind, and they skip rather than fail so that a red suite always means a
+real defect. Each skip states its own reason; run with `-rs` to see them.
+
+**The suite gives identical results on Windows and Linux**, measured at the
+same commit with the locked dependency versions (Sprint 17 F83,
+[`docs/VENV_PARITY.md`](docs/VENV_PARITY.md)). Same passes, same skips, zero
+failures on either. If your platform disagrees, that is a finding worth
+reporting rather than an expected difference.
+
+A caveat worth stating plainly: that measurement is why rows written from
+2026-09-19 record their execution environment (amendment A33). The 168 rows
+produced before it do not, so a figure regenerated from them cannot be
+attributed to a platform. Those rows are deliberately not retrofitted.
 
 The pool-mechanism guard is deliberately NOT among them: it runs against a
 committed fixture (`experiments/results/pool_mechanism_fixture.npz`) so the

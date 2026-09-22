@@ -64,7 +64,7 @@ Consult this line at the START and END of every phase; state which steps were do
 
 ### Phase 3: Kickoff & Planning
 - 3.2.1 **Three-doc rule, no exceptions**: every completed sprint has SPRINT_N_PLAN.md, SPRINT_N_RETROSPECTIVE.md, AND SPRINT_N_SUMMARY.md. The summary is created during Sprint N+1 planning (sources: retrospective, git history, PR; never the already-rolled master plan) and its absence blocks close-out.
-- 3.2.2 Plan doc with objective, tasks, acceptance criteria (quantifiable), risk, estimates in MINUTES.
+- 3.2.2 Plan doc with objective, tasks, acceptance criteria (quantifiable), risk, estimates in MINUTES. **The sprint total is DERIVED from the card estimates and their dependencies and RECORDED first; the plan reports that number rather than originating one** (SPRINT_PLANNING.md, Sprint 17 improvement 1). A total typed straight into the plan was wrong in two consecutive sprints.
 - 3.2.2.1 **Plan-to-branch-state verification**: before committing the plan, verify each task against the repo (artifact exists? already shipped? cited paths current?). 3.2.2.2 Re-estimate after findings.
 - 3.3 Branch `feature/YYYYMMDD_Sprint_N` -- normally ALREADY CREATED by the previous sprint's 6.6 carry-forward; verify, do not duplicate.
 - 3.3.1 **Draft PR immediately after the plan is drafted, before approval. The PR STAYS DRAFT through Phase 7.7.** Draft status suppresses Copilot per-commit reviews; marking ready early = review noise on every push. `gh pr ready` happens at exactly one place: end of 7.7.

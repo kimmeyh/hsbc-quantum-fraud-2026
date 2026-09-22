@@ -34,34 +34,6 @@ CAVEAT on dct proxy cells: scores take ~120 distinct values with ~96% of transac
 | xgboost/full | 10 | 0.8296 | 0.0286 | [0.8092, 0.8501] | 0.9791 | 0.00167 |
 | xgboost/matched13 | 10 | 0.8019 | 0.0239 | [0.7847, 0.8190] | 0.9730 | 0.00167 |
 
-## Score health (amendment A6; WARN = degenerate score distribution)
-
-| Cell | Rows | WARN rows | Median mode share | Median n_distinct |
-|------------------------------------------------------|----------|----------------------|----------------------|----------------------|
-| catboost/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| catboost/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| cvqboost_hw/hw_b1_dct/stratified/full | 10 | 10 | 0.951 | 814 |
-| cvqboost_hw/hw_b1_dct/temporal/full | 1 | 1 | 0.940 | 842 |
-| cvqboost_hw/hw_b1_lg/stratified/full | 10 | 0 | 0.518 | 4041 |
-| cvqboost_hw/hw_b1_lg/temporal/full | 1 | 0 | 0.490 | 2369 |
-| cvqboost_hw/hw_b2_full/stratified/full | 10 | 0 | 0.857 | 4412 |
-| cvqboost_hw/hw_b2_full/temporal/full | 1 | 0 | 0.835 | 4945 |
-| cvqboost_hw/hw_g0b_1/stratified/full | 1 | 1 | 0.945 | 821 |
-| cvqboost_hw/hw_g0b_2/stratified/full | 1 | 0 | 0.514 | 4016 |
-| cvqboost_hw/hw_g0b_3/stratified/full | 1 | 0 | 0.514 | 1080 |
-| cvqboost_hw/hw_g0b_4/stratified/full | 1 | 1 | 0.998 | 54 |
-| cvqboost_hw/hw_g0b_5/stratified/full | 1 | 1 | 1.000 | 1 |
-| cvqboost_hw_mixed/mixed_free_sched2/stratified/seq | 10 | 10 | 0.989 | 180 |
-| cvqboost_proxy/free/dct/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| cvqboost_proxy/free/dct/sequential | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| cvqboost_proxy/tuned_free/lg/full | 10 | 0 | 0.531 | 3846 |
-| lightgbm/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| lightgbm/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| logistic/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| logistic/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| xgboost/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
-| xgboost/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
-
 ## G0 (tuned-XGB full features, mean test AP >= 0.85)
 
 Mean AP = 0.8296 over 10 seeds -> **FAIL**
@@ -118,17 +90,56 @@ hw_b1_dct minus exact proxy free/dct: mean -0.0010 CI [-0.0032, +0.0012] (H4 sol
 
 Mean: sequential 0.7803, full-pair 0.7816 -> **A3 selection: full** (chosen on validation only, before any test-set comparison; applied uniformly to every CVQBoost cell).
 
+## Score health (amendment A6; WARN = degenerate score distribution)
+
+| Cell | Rows | WARN rows | Median mode share | Median n_distinct |
+|------------------------------------------------------|----------|----------------------|----------------------|----------------------|
+| catboost/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| catboost/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| cvqboost_hw/hw_b1_dct/stratified/full | 10 | 10 | 0.951 | 814 |
+| cvqboost_hw/hw_b1_dct/temporal/full | 1 | 1 | 0.940 | 842 |
+| cvqboost_hw/hw_b1_lg/stratified/full | 10 | 0 | 0.518 | 4041 |
+| cvqboost_hw/hw_b1_lg/temporal/full | 1 | 0 | 0.490 | 2369 |
+| cvqboost_hw/hw_b2_full/stratified/full | 10 | 0 | 0.857 | 4412 |
+| cvqboost_hw/hw_b2_full/temporal/full | 1 | 0 | 0.835 | 4945 |
+| cvqboost_hw/hw_g0b_1/stratified/full | 1 | 1 | 0.945 | 821 |
+| cvqboost_hw/hw_g0b_2/stratified/full | 1 | 0 | 0.514 | 4016 |
+| cvqboost_hw/hw_g0b_3/stratified/full | 1 | 0 | 0.514 | 1080 |
+| cvqboost_hw/hw_g0b_4/stratified/full | 1 | 1 | 0.998 | 54 |
+| cvqboost_hw/hw_g0b_5/stratified/full | 1 | 1 | 1.000 | 1 |
+| cvqboost_hw_mixed/mixed_free_sched2/stratified/seq | 10 | 10 | 0.989 | 180 |
+| cvqboost_proxy/free/dct/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| cvqboost_proxy/free/dct/sequential | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| cvqboost_proxy/tuned_free/lg/full | 10 | 0 | 0.531 | 3846 |
+| lightgbm/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| lightgbm/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| logistic/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| logistic/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| xgboost/full | 10 | n/a (pre-A6 rows) | n/a | n/a |
+| xgboost/matched13 | 10 | n/a (pre-A6 rows) | n/a | n/a |
+
+```{=latex}
+\newpage
+```
+
 ## Tuning Budget Equivalence (prereg 6; asymmetry reported as-is)
 
-| Study | Trials | CV AP | Wall seconds |
-|-----------------------------------------------|------------------------|------------------------|-----------------------------------|
-| catboost:full | 100 | 0.8580 | 3344 |
-| catboost:matched13 | 100 | 0.8390 | 1858 |
-| lightgbm:full | 100 | 0.8396 | 2106 |
-| lightgbm:matched13 | 100 | 0.8300 | 1460 |
-| logistic:full | 25 | 0.7590 | 34 |
-| logistic:matched13 | 25 | 0.7560 | 21 |
-| xgboost:full | 100 | 0.8555 | 732 |
-| xgboost:matched13 | 100 | 0.8306 | 521 |
+| Study | Trials | Fits per trial | CV AP | Wall seconds |
+|------------------------------------------------------|------------|-----------------------------------|------------|------------------|
+| catboost:full | 100 | 5 folds x early-stopped fit | 0.8580 | 3344 |
+| catboost:matched13 | 100 | 5 folds x early-stopped fit | 0.8390 | 1858 |
+| lightgbm:full | 100 | 5 folds x early-stopped fit | 0.8396 | 2106 |
+| lightgbm:matched13 | 100 | 5 folds x early-stopped fit | 0.8300 | 1460 |
+| logistic:full | 25 | 5 folds x single fit | 0.7590 | 34 |
+| logistic:matched13 | 25 | 5 folds x single fit | 0.7560 | 21 |
+| xgboost:full | 100 | 5 folds x early-stopped fit | 0.8555 | 732 |
+| xgboost:matched13 | 100 | 5 folds x early-stopped fit | 0.8306 | 521 |
+| **cvqboost:proxy** -- DIFFERENT BASIS, see below | 100 | 1 pool build + 1 convex solve | 0.6873 | 488 |
 
-Model fits per GBDT trial: 5 folds x early-stopped fit. CVQBoost proxy fits are pool builds + classical solves (zero metered seconds).
+CVQBoost received the same nominal trial budget (100) as every GBDT arm, for about 7x less wall time than CatBoost -- a proxy trial is one pool build plus one convex solve, median 0.5 s, against 5 folds of early-stopped boosting. **The asymmetry runs against the quantum-inspired arm and is reported rather than equalized.**
+
+**The CV AP column is not comparable between the GBDT rows and the CVQBoost row.** GBDT values are 5-fold cross-validated average precision on their stated feature sets; the CVQBoost value is validation AP from its own proxy study at k=9 (45 variables). The preregistered like-for-like comparison is H1b -- CVQBoost 0.7671 against matched-13-feature CatBoost 0.8070, difference -0.0399 -- not this table. **This table answers whether each arm got a fair tuning budget. It does not rank the arms.**
+
+Because the tuning asymmetry favors the classical arms, it is a candidate explanation for the null. It is measured and rejected elsewhere in this submission: the optimizer's own contribution to the tuned gain is +0.0047 AUPRC (SD 0.0028), below the minimum detectable effect. The value in this formulation sits in the weak learners, not the optimization step, so additional solver tuning has little left to find.
+
+CVQBoost tunes on the classical proxy only (prereg 4), so its entire tuning budget cost zero metered device seconds.
