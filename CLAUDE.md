@@ -185,6 +185,18 @@ only in memory.
   the VERIFICATION rather than in the thing verified, and each looked
   identical to a real defect.)
 
+- **Don't tell the team lead a Phase 3 artifact is "your call". The DRAFT PR
+  and the task issues are Claude's job; only the MERGE is his.**
+  `SPRINT_CHECKLIST.md` Phase 3 requires a draft PR (which stays draft until
+  7.7), one issue per task before the first task file is touched, and the
+  approval recorded. (Sprint 17 ran nine tasks, Manual Validation and a full
+  retrospective with `pr: null`, `github_issues: []` and
+  `plan_approved: false`, and I said "no PR opened; that's your call" across
+  several turns. That moved my own omission onto him. Found only because he
+  asked whether the PR was part of the checklist. The close-out hook missed it
+  because it tested `plan_approved is True and pr is None` -- reading one stale
+  field to decide whether to distrust another.)
+
 - **Don't ship a guard with an override flag in the commit that creates it.**
   If an escape hatch is genuinely needed it arrives LATER, in its own commit,
   with its own justification. (Sprint 17: `render_all.py` rebuilt the three
