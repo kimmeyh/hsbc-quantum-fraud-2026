@@ -3,7 +3,7 @@
     "number": 17,
     "name": "Clear the Deck for Phase 2",
     "branch": "feature/20260919_Sprint_17",
-    "status": "phase_5_validation",
+    "status": "phase_8_delivery_cycle",
     "plan_doc": "docs/sprints/SPRINT_17_PLAN.md",
     "pr": 122,
     "plan_approved": true,
@@ -17,13 +17,14 @@
       129,
       130,
       131
-    ]
+    ],
+    "note": "Sprint 17 COMPLETE. F86, F82, F83, F84 delivered; F81 and F85 closed. PR #122 to develop, PR #132 to main, both merged 2026-09-22. Two reviews addressed (Copilot 2, Claude 7), all threads resolved."
   },
   "last_completed_sprint": {
-    "number": 16,
-    "merged_pr": 120,
-    "main_merge_pr": null,
-    "docs_triad_complete": false
+    "number": 17,
+    "merged_pr": 122,
+    "main_merge_pr": 132,
+    "docs_triad_complete": true
   },
   "prereg": {
     "status": "FROZEN",
