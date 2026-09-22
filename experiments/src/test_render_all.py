@@ -102,3 +102,60 @@ def test_qci_package_renders_only_the_package():
     src = _source()
     assert "docs = QCI_PACKAGE if args.qci_package else CORE" in src
     assert "docs = CORE + (QCI_PACKAGE" not in src
+
+
+def test_a_missing_source_actually_returns_nonzero(tmp_path):
+    """BEHAVIORAL, not a source grep.
+
+    test_missing_source_is_a_failure_not_a_skip asserts the SHAPE of the code.
+    An injection proved that changing `return 1` to `pass` -- leaving both
+    asserted strings intact -- keeps it green, so the exact regression it names
+    (a renamed document dropping out of the package with exit 0) was
+    undetected. Found by the PR #122 review.
+    """
+    src = SCRIPT.read_text(encoding="utf-8")
+    target = '    ("docs/QCI_EQC_MODELS_FEEDBACK.md",'
+    assert src.count(target) == 1, "injection target moved; update this test"
+
+    broken = SCRIPT.with_suffix(".missing_probe.py")
+    broken.write_text(
+        src.replace(target, '    ("docs/DOES_NOT_EXIST_XYZ.md",', 1),
+        encoding="utf-8")
+    try:
+        assert "DOES_NOT_EXIST_XYZ" in broken.read_text(encoding="utf-8")
+        r = subprocess.run([sys.executable, str(broken), "--qci-package"],
+                           cwd=ROOT, capture_output=True, text=True)
+        assert r.returncode == 1, (
+            f"a missing source exited {r.returncode}, not 1; the package can "
+            "silently lose a document")
+        assert "MISSING SOURCE" in r.stdout
+    finally:
+        broken.unlink(missing_ok=True)
+
+
+def test_qci_package_does_not_touch_the_submitted_pdfs(tmp_path):
+    """BEHAVIORAL. The source-grep version survives a revert not spelled
+    exactly `docs = CORE + (QCI_PACKAGE`, and appending a second assignment
+    restores the old behavior with the asserted line still present.
+
+    This asserts the bytes instead. Rendering the QCi package must leave every
+    tracked PDF under docs/paper/out/ byte-identical -- the Sprint 16
+    artifact-loss incident, checked rather than described.
+    """
+    import hashlib
+    out = ROOT / "docs" / "paper" / "out"
+    before = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+              for p in sorted(out.glob("*.pdf"))}
+    assert before, "no submitted PDFs present to protect"
+
+    r = subprocess.run([sys.executable, str(SCRIPT), "--qci-package"],
+                       cwd=ROOT, capture_output=True, text=True)
+
+    after = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+             for p in sorted(out.glob("*.pdf"))}
+    changed = [n for n in before if before[n] != after.get(n)]
+    assert not changed, (
+        f"--qci-package modified submitted PDF(s): {changed}. Each rebuild "
+        "gives the file a new /ID trailer, so it stops being the bytes filed "
+        "on 2026-09-12.")
+    assert r.returncode == 0, f"--qci-package failed: {r.stdout[-400:]}"

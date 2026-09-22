@@ -74,11 +74,21 @@ def main() -> int:
         # amendment, not "amendments are allowed from now on".
         try:
             token.unlink()
-        except OSError:
-            # Never fail the edit over cleanup. A token that cannot be removed
-            # is a stale-guard problem, not a reason to block verified work;
-            # test_amendment_token.py asserts the normal path removes it.
-            pass
+        except OSError as exc:
+            # Never fail the edit over cleanup -- but never do it SILENTLY
+            # either. If the unlink fails the guard is now disabled for every
+            # later edit, which is precisely the harm the comment above
+            # describes, and a silent handler leaves no trace of it.
+            #
+            # Routine causes on Windows: the file held open by an editor, an
+            # antivirus scanner, or a sync client. Stderr from a hook that
+            # returns ALLOW blocks nothing, so the warning is free.
+            # (PR #122 review.)
+            sys.stderr.write(
+                f"[WARNING] Could not consume the amendment token {token}: "
+                f"{exc}. block_reactive_amendment is now DISABLED until that "
+                "file is deleted by hand. This edit is allowed; so is the "
+                "next one.\n")
         return hooklib.ALLOW
 
     return hooklib.block(MESSAGE)

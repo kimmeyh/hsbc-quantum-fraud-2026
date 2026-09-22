@@ -33,9 +33,14 @@ additions, no questions before closing.
 ## What the sprint delivered
 
 Nine tasks, 2,357 insertions across 28 files, and the backlog afterwards holds
-only experiments -- the stated success condition. Tests grew 1,031 -> 1,083
-during the sprint and to 1,164 with the retrospective improvements, across
-seven new guard files.
+only experiments -- the stated success condition. The suite grew across
+seven new guard files; the count itself is not restated here, per the
+standing rule. Run the suite.
+
+That rule was broken in the first draft of this very retrospective: three
+different end-of-sprint totals appeared across the summary, the
+retrospective and the CHANGELOG, none of which matched the suite by the
+time anyone read them. Found by Copilot on PR #122.
 
 ## The two patterns worth carrying forward
 

@@ -113,7 +113,12 @@ From 61 metered fits, all `status: ok`, zero failures, zero retries:
 | Hardware objective vs exact minimum | 0.013% to 0.413% above, never below |
 
 Of the 1,141 seconds, 163 ran on the free tier across 37 fits before your
-grant, and 1,039 drew against the allocation.
+grant and 978 drew against the allocation. The allocation itself shows 1,039
+drawn: the extra 61 seconds went to a B3 run we withdrew and re-ran the same
+day, after finding its pools were built on more data than the arm it was
+quoted against. That run is excluded from the campaign total because its
+result is not ours to claim; the seconds were still spent, so they count
+against the grant.
 
 Two things worth saying plainly. **The per-call rate is stable and predictable
 within a problem size** -- on the free-tier configurations it held a 1-second

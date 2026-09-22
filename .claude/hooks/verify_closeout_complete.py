@@ -132,27 +132,45 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
         # The fix is to anchor on something that cannot be stale: commits
         # exist on this branch. If work has happened, Phase 3's artifacts were
         # due before it started.
-        rc_commits, commits_out = hooklib.git(
-            "rev-list", "--count", f"develop..HEAD", cwd=root)
-        work_started = rc_commits == 0 and commits_out.strip().isdigit() \
-            and int(commits_out.strip()) > 0
+        def _count(*rev: str) -> int | None:
+            rc, out = hooklib.git("rev-list", "--count", *rev, cwd=root)
+            if rc != 0 or not out.strip().isdigit():
+                return None
+            return int(out.strip())
+
+        # AN UNRESOLVABLE BASE MUST NOT DISABLE THE CHECKS. `develop..HEAD`
+        # exits 128 with EMPTY STDOUT when develop is not a local ref, and
+        # hooklib.git swallows stderr, so the first version of this read that
+        # as "no commits" and skipped all three Phase 3 checks -- reproducing
+        # the very failure it was written to catch.
+        #
+        # develop is absent in more situations than it is present: an
+        # actions/checkout@v4 clone fetches only the PR ref, --single-branch
+        # clones and worktrees do not carry it, and a pruned local branch is
+        # routine. Falling back to HEAD's own history is strictly safer: it
+        # cannot prove work has NOT started, so it does not get to skip.
+        commits = _count("develop..HEAD")
+        if commits is None:
+            commits = _count("HEAD")
+        work_started = commits is not None and commits > 0
+        commits_out = str(commits) if commits is not None else "?"
 
         if work_started:
             if cur.get("pr") is None:
                 violations.append(
-                    f"{commits_out.strip()} commit(s) on this branch but "
+                    f"{commits_out} commit(s) on this branch but "
                     "current_sprint.pr is null -- SPRINT_CHECKLIST.md Phase 3 "
                     "requires a DRAFT PR created before the first task file is "
                     "touched (it stays draft until 7.7).")
             if not cur.get("github_issues"):
                 violations.append(
-                    f"{commits_out.strip()} commit(s) on this branch but "
+                    f"{commits_out} commit(s) on this branch but "
                     "current_sprint.github_issues is empty -- "
                     "SPRINT_CHECKLIST.md Phase 3 requires one issue per task "
                     "BEFORE the first task file is touched.")
             if cur.get("plan_approved") is not True:
                 violations.append(
-                    f"{commits_out.strip()} commit(s) on this branch but "
+                    f"{commits_out} commit(s) on this branch but "
                     "plan_approved is not true -- SPRINT_CHECKLIST.md Phase 3 "
                     "requires explicit team-lead approval, recorded. Either "
                     "the plan was not approved, or the approval was never "

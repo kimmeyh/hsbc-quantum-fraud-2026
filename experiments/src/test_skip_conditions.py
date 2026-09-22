@@ -119,3 +119,45 @@ def test_the_cross_repo_guard_is_not_skipped_anywhere():
         assert "skipif" not in src.lower(), (
             "test_cross_repo_write_guard.py has a skipif again; this guard "
             "must run on every platform, including CI")
+
+
+def test_the_scanner_actually_finds_skips():
+    """GUARD THE GUARD. All three tests above fail OPEN on a blind scanner.
+
+    Blinding `_skip_sources` (returning [] always) leaves every one of them
+    green: two are negative assertions satisfied by an empty offender list,
+    and the third iterates an empty list. The scanner currently sees over a
+    hundred skip expressions across the suite, and all of that coverage can
+    go to zero silently.
+
+    That is the sharpest possible version of this repository's recurring
+    defect: a file written to detect tests that pass without running, itself
+    passing without running. Found by the PR #122 review.
+    """
+    found = sum(len(_skip_sources(p)) for p in _test_files())
+    assert found >= 50, (
+        f"the scanner found only {found} skip expressions across "
+        f"{len(_test_files())} files; it is blind or broken")
+
+    # A file known to carry several, so a change in one file cannot hide it.
+    known = SRC / "test_submission_artifacts.py"
+    if known.exists():
+        assert len(_skip_sources(known)) >= 2, (
+            f"the scanner found {len(_skip_sources(known))} skips in "
+            f"{known.name}, which has several")
+
+
+def test_the_scanner_detects_a_retired_token_when_one_is_present(tmp_path):
+    """A POSITIVE case. The tests above only ever assert an empty result, so
+    nothing proves the matching works at all."""
+    probe = tmp_path / "test_probe.py"
+    probe.write_text(
+        "import pytest, shutil\n"
+        '@pytest.mark.skipif(shutil.which("powershell") is None, reason="x")\n'
+        "def test_x():\n    pass\n",
+        encoding="utf-8")
+
+    sources = _skip_sources(probe)
+    assert sources, "the scanner found no skip in a file that plainly has one"
+    assert any("powershell" in s.lower() for s in sources), (
+        "the scanner found the skip but not the retired token inside it")

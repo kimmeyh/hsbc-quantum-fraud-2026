@@ -63,6 +63,45 @@ def test_blas_is_recorded_when_numpy_is_loaded():
     assert env["blas"], "blas present but empty"
 
 
+def test_the_blas_field_is_a_blas_not_a_numpy_version():
+    """The field must answer "which BLAS?", which is what A33 exists for.
+
+    The first version called np.__config__.get_info("blas_opt"), removed in
+    numpy 1.26 -- the version this repo PINS -- so the fallback was the live
+    path everywhere and every row read blas: "numpy-1.26.4". The old test
+    asserted only presence and truthiness, so the degraded value passed.
+
+    OpenBLAS versus MKL is the classic cause of float-level divergence in this
+    workload. Two rows both reading "numpy-<version>" cannot answer the
+    question the field is named for. Found by the PR #122 review.
+    """
+    import numpy  # noqa: F401
+    blas = store.environment()["blas"]
+    assert not blas.startswith("numpy-"), (
+        f"blas reports a numpy VERSION ({blas!r}), not a BLAS library")
+
+
+def test_numpy_version_has_its_own_field():
+    """Recorded separately rather than smuggled into `blas`."""
+    import numpy
+    env = store.environment()
+    assert env.get("numpy") == numpy.__version__
+
+
+def test_an_undeterminable_blas_says_so_rather_than_guessing():
+    """"I could not check" must never render as a value that reads like an
+    answer -- the conflation this repository keeps paying for."""
+    import numpy
+    real = numpy.__config__
+    try:
+        numpy.__config__ = object()          # no CONFIG, no get_info
+        blas = store.environment()["blas"]
+        assert "unavailable" in blas, (
+            f"an undeterminable BLAS rendered as {blas!r}")
+    finally:
+        numpy.__config__ = real
+
+
 def test_append_row_stamps_the_environment(tmp_path, monkeypatch):
     """The stamp happens in the single write path, so no caller can forget."""
     target = tmp_path / "results.json"

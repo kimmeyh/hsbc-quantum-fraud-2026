@@ -190,3 +190,23 @@ def test_the_script_never_exits_nonzero_on_a_broken_file(tmp_path):
 def test_overrides_win_over_the_file():
     line = _run("--sprint", "99", "--phase", "2.1 Sprint Pre-Kickoff")
     assert "Sprint 99 Phase 2.1 Sprint Pre-Kickoff" in line
+
+
+def test_an_explicitly_supplied_phase_is_never_discarded():
+    """`--phase` outside a sprint repo must still appear in the footer.
+
+    The first version fell through to the no-sprint branch and printed "phase
+    unknown" while the caller had just supplied the phase on the command line
+    -- reintroducing the silent phase drop this script exists to replace.
+    Found by the PR #122 review.
+    """
+    line = sf.build(datetime(2026, 9, 22, 13, 6), None, None,
+                    "5.3 Manual Validation")
+    assert "5.3 Manual Validation" in line, line
+    assert "phase unknown" not in line, line
+
+
+def test_a_supplied_phase_survives_a_malformed_status_file(tmp_path):
+    p = _write(tmp_path, "{ broken")
+    line = sf.build(datetime(2026, 9, 22, 13, 6), p, None, "4.0 Execution")
+    assert "4.0 Execution" in line

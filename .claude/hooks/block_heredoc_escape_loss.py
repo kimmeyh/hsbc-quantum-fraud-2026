@@ -60,16 +60,44 @@ from hooklib import ALLOW, block, command_of, read_payload  # noqa: E402
 # anything it would have caught was already excluded here. Removed after an
 # injection run showed that deleting it broke no test -- which is the signature
 # of a guard that cannot fire, the same class this repository keeps paying for.
-UNQUOTED_HEREDOC = re.compile(r"<<-?\s*([A-Za-z_][A-Za-z0-9_]*)\s*$", re.MULTILINE)
+# The delimiter may be followed by a REDIRECT, so the old `\s*$` anchor was
+# wrong: `cat <<EOF > f.py` is at least as idiomatic as `cat > f.py <<EOF`, and
+# the anchor made the first form unrecognisable, so it was allowed outright.
+# Found by the PR #122 review.
+UNQUOTED_HEREDOC = re.compile(
+    r"<<-?\s*([A-Za-z_][A-Za-z0-9_]*)(?=\s|$|[>|&;])", re.MULTILINE)
 
-# Escape sequences the shell will consume or transform inside an unquoted
-# heredoc. \n \t \r \b \0 \x are the ones that silently become something else;
-# \\ and \$ are consumed one level.
-RISKY_ESCAPE = re.compile(r"\\[ntrb0xuU\\$`]")
+# WHAT BASH ACTUALLY CONSUMES in an unquoted heredoc, measured rather than
+# assumed (PR #122 review; re-measured here on Linux bash with every sequence
+# built from chr(92) so no layer could eat the test input):
+#
+#   written   [n]a\nb [t]a\tb [r]a\rb [b]a\bb [0]a\0b [x41]a\x41b [$x]a\$xb [\]a\\b
+#   landed    [n]a\nb [t]a\tb [r]a\rb [b]a\bb [0]a\0b [x41]a\x41b []a$xb    [\]a\b
+#
+# Only `\$` and `\\` change. `\n`, `\t`, `\r`, `\b`, `\0` and `\x` pass through
+# COMPLETELY UNTOUCHED -- bash does not interpret them in a heredoc body at all.
+#
+# The first version of this pattern blocked all eight. That is a large
+# false-positive surface on a guard whose own docstring says a guard that
+# blocks correct work gets bypassed, and the block message told the author
+# something untrue about their `\n`.
+#
+# The real Sprint 17 failure was the `\\` in `\\n` inside an f-string: bash ate
+# one level and the intended `\n` escape became a literal newline. That is the
+# `\\` case below, which is still caught.
+RISKY_ESCAPE = re.compile(r"\\[\\$]|\\$")
 
 # Writing to a FILE is what makes this dangerous. A heredoc feeding a pager or
 # a diff is throwaway; one feeding a file persists the damage.
-WRITES_A_FILE = re.compile(r"(?:^|[|&;]\s*)(?:cat|tee|dd)\b[^<]*>|>\s*\S+\s*<<")
+#
+# Decided INDEPENDENTLY OF OPERATOR ORDER. The old pattern required `>` to
+# follow cat/tee/dd with no `<` between them, so it missed `cat <<EOF > f.py`,
+# `python - <<EOF > out.txt` and `tee f.py <<EOF` -- three forms that write a
+# file exactly as destructively as the one form it did catch. `tee` and `dd`
+# need no `>` at all, which the old comment claimed to cover and did not.
+WRITES_A_FILE = re.compile(
+    r">>?\s*\S"                              # any output redirect on the line
+    r"|(?:^|[|&;]\s*)(?:tee|dd)\b")          # tee/dd write without needing `>`
 
 
 def risky_heredocs(cmd: str) -> list[tuple[str, str]]:
@@ -98,17 +126,28 @@ def risky_heredocs(cmd: str) -> list[tuple[str, str]]:
 
 def message(hits: list[tuple[str, str]]) -> str:
     delim, sample = hits[0]
+    # The escape examples are BUILT, not typed. Writing `\x` in a non-raw
+    # string is a truncated-escape SyntaxError, and writing `\n` in a message
+    # ABOUT `\n` silently becomes a newline. Both happened here while editing
+    # this very function -- the class the hook exists to catch, inside the hook.
+    bs = chr(92)
+    seqs = ", ".join(f"`{bs}{c}`" for c in "ntrb0x")
     return f"""[BLOCKED] Unquoted heredoc will eat a backslash escape (F82, Sprint 17).
 
 Heredoc delimiter: <<{delim}   (unquoted, so the shell expands the body first)
 Offending line:
     {sample}
 
-The shell consumes one level of backslash before the content reaches the file,
-so what lands on disk is not what you wrote. The result is usually a plausible
-wrong file rather than an error, which is why this class has now cost eleven
-occurrences across two sprints -- nine in Sprint 16, two more in Sprint 17
-inside five minutes, the second while trying to avoid the first.
+Bash consumes one level of backslash from `{bs}{bs}` and `{bs}$` before the
+content reaches the file, so what lands on disk is not what you wrote. A
+`{bs}{bs}n` meant as an escaped newline arrives as a LITERAL newline and breaks
+the string it was in. (Measured: {seqs} pass through a heredoc untouched and
+are not blocked here.)
+
+The result is usually a plausible wrong file rather than an error, which is why
+this class has now cost eleven occurrences across two sprints -- nine in
+Sprint 16, two more in Sprint 17 inside five minutes, the second while trying
+to avoid the first.
 
 FIX, one keystroke:
     cat > f <<'{delim}'     <- QUOTE the delimiter; body passes through verbatim

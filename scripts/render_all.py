@@ -77,10 +77,39 @@ QCI_PACKAGE = [
 
 def is_tracked(rel: str) -> bool:
     """True if git tracks this path. Tracked PDFs under docs/paper/out/ are
-    the SUBMITTED artifacts."""
-    r = subprocess.run(["git", "ls-files", "--error-unmatch", rel],
-                       cwd=ROOT, capture_output=True, text=True)
-    return r.returncode == 0
+    the SUBMITTED artifacts.
+
+    FAILS CLOSED. `git ls-files --error-unmatch` exits non-zero for several
+    reasons, and only one of them means "not tracked": it also exits 128
+    outside a work tree, and raises FileNotFoundError when git is not
+    installed. The first version returned `r.returncode == 0`, so any of those
+    read as "not a submitted artifact" and the refusal never fired.
+
+    The consequence is the one this repository has already paid for twice: the
+    script would render over docs/paper/out/*.pdf, each PDF would get a new
+    /ID trailer, and the files would stop being the bytes filed 2026-09-12 --
+    with exit 0 and "Rendered 3 document(s)." on stdout. A guard against
+    destroying evidence must not treat "I could not check" as "it is safe".
+
+    Found by the PR #122 review.
+    """
+    try:
+        r = subprocess.run(["git", "ls-files", "--error-unmatch", "--", rel],
+                           cwd=ROOT, capture_output=True, text=True, timeout=15)
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise SystemExit(
+            f"REFUSING to render: cannot determine whether {rel} is a tracked "
+            f"submitted artifact ({exc}). Not proceeding.")
+
+    if r.returncode == 0:
+        return True
+    # git's own wording for the one benign case.
+    if "did not match any file" in r.stderr:
+        return False
+    raise SystemExit(
+        f"REFUSING to render: `git ls-files` exited {r.returncode} for {rel}: "
+        f"{r.stderr.strip()}. Cannot verify submitted-artifact status, so the "
+        "submitted PDFs cannot be protected.")
 
 
 def main(argv: list[str] | None = None) -> int:

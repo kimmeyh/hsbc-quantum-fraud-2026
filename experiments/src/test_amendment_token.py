@@ -67,3 +67,21 @@ def test_no_token_is_committed_to_the_repository():
                        cwd=str(ROOT), capture_output=True, text=True)
     assert not r.stdout.strip(), (
         "the approval token is tracked in git; it must never be committed")
+
+
+def test_a_failed_consume_warns_rather_than_going_silent():
+    """If unlink() fails the guard is DISABLED for every later edit.
+
+    That is precisely the harm this file's docstring describes, and the first
+    version swallowed it with a bare `except OSError: pass` -- no trace at all.
+    Stderr from a hook returning ALLOW blocks nothing, so the warning is free.
+    Found by the PR #122 review.
+    """
+    src = HOOK.read_text(encoding="utf-8")
+    assert "except OSError as exc:" in src, (
+        "the unlink failure is swallowed without binding the exception")
+    assert "DISABLED" in src, (
+        "a failed token consume leaves no warning; a disabled guard looks "
+        "exactly like a passing one")
+    assert "pass" not in src.split("token.unlink()")[1][:200], (
+        "the OSError handler is still a silent pass")

@@ -93,16 +93,45 @@ def environment() -> dict:
         "threads": os.cpu_count(),
     }
     # BLAS only if numpy is ALREADY loaded. No import side effect.
+    #
+    # THE FIRST VERSION RECORDED A NUMPY VERSION IN A FIELD NAMED `blas`.
+    # It called np.__config__.get_info("blas_opt"), which was removed in numpy
+    # 1.26 -- the version this repository PINS -- so the try block never ran
+    # and the except branch was the live path on every platform. Every row
+    # said blas: "numpy-1.26.4", and the test asserted only that the key was
+    # present and truthy, so the degraded value passed.
+    #
+    # That defeats the point of A33. The amendment exists so a reader
+    # comparing a regenerated figure against a stored one can tell a platform
+    # artifact from a real change, and OpenBLAS versus MKL is the classic
+    # cause of float-level divergence in this workload. Two rows both reading
+    # "numpy-<version>" answer "same BLAS?" with a string that cannot.
+    #
+    # `__config__.CONFIG` carries the real identity on 1.26 (measured here:
+    # openblas64 0.3.23.dev). numpy is recorded as its own field rather than
+    # smuggled into this one. Found by the PR #122 review.
     np = sys.modules.get("numpy")
     if np is not None:
+        env["numpy"] = str(getattr(np, "__version__", "unknown"))
+        cfg = getattr(np, "__config__", None)
+        blas = None
         try:
-            cfg = np.__config__.get_info("blas_opt")
-            libs = cfg.get("libraries") if isinstance(cfg, dict) else None
-            env["blas"] = ",".join(libs) if libs else "unknown"
-        except Exception:                                # noqa: BLE001
-            # numpy 2.x dropped get_info. Fall back to the version, which at
-            # least pins the build, rather than dropping the field.
-            env["blas"] = f"numpy-{getattr(np, '__version__', 'unknown')}"
+            config = getattr(cfg, "CONFIG", None)
+            if isinstance(config, dict):
+                b = config.get("Build Dependencies", {}).get("blas", {})
+                name, ver = b.get("name"), b.get("version")
+                if name:
+                    blas = f"{name}-{ver}" if ver else str(name)
+            if blas is None and hasattr(cfg, "get_info"):
+                info = cfg.get_info("blas_opt")
+                libs = info.get("libraries") if isinstance(info, dict) else None
+                if libs:
+                    blas = ",".join(libs)
+        except (AttributeError, TypeError, KeyError, ValueError) as exc:
+            blas = f"unavailable ({exc!r})"
+        # "I could not determine it" is recorded AS THAT, never as a value
+        # that reads like an answer.
+        env["blas"] = blas or "unavailable (numpy exposes no BLAS identity)"
     return env
 
 

@@ -149,6 +149,18 @@ def build(now: datetime, status_path: Path | None,
 
     if sprint and phase:
         return f"{stamp} | Sprint {sprint} Phase {phase}"
+    # AN EXPLICITLY SUPPLIED PHASE IS NEVER DISCARDED. The first version fell
+    # straight through to the last line when no sprint was found, so
+    # `--phase "5.3 Manual Validation"` outside a sprint repo printed "phase
+    # unknown" -- reintroducing the exact silent phase drop this script exists
+    # to replace. Found by the PR #122 review.
+    if phase:
+        # The note says "phase unknown", which is now false -- the caller
+        # supplied it. Report only what IS unknown here.
+        why = ""
+        if note:
+            why = note.split("--", 1)[1].strip() if "--" in note else ""
+        return f"{stamp} | Phase {phase} (sprint unknown{f' -- {why}' if why else ''})"
     if sprint:
         return f"{stamp} | Sprint {sprint} {note or 'phase unknown'}"
     return f"{stamp} | {note or 'sprint and phase unknown'}"

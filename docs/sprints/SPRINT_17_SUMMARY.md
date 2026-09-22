@@ -28,9 +28,9 @@ at the same commit.
 
 | | |
 |---|---|
-| Tests | 1,031 -> **1,043**, no xfails |
-| Windows | 1,043 passed, 71 skipped, 0 failed |
-| Linux | 1,043 passed, 71 skipped, 0 failed |
+| Tests | grew by seven new guard files; counts are not restated here -- run the suite |
+| Windows | zero failures |
+| Linux | zero failures, and the SAME pass and skip counts as Windows |
 | Amendments | A32 -> **A33** |
 | Metered seconds | 0 |
 | Grant position | 1,039 of 3,000 drawn, **1,961 remaining** |

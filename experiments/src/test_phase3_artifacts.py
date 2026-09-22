@@ -109,3 +109,54 @@ def test_the_hook_blocks_when_a_phase_3_artifact_is_missing(field, broken,
     finally:
         STATUS.write_text(orig, encoding="utf-8")
         assert STATUS.read_text(encoding="utf-8") == orig
+
+
+def test_an_unresolvable_base_ref_does_not_disable_the_checks(tmp_path):
+    """The Phase 3 checks must fire even where `develop` is not a local ref.
+
+    `git rev-list --count develop..HEAD` exits 128 with EMPTY STDOUT when
+    develop does not resolve, and hooklib.git swallows stderr. The first
+    version read that as "no commits" and skipped all three checks -- which
+    reproduces the exact Sprint 17 defect the checks exist to catch, in every
+    environment that lacks a local develop: an actions/checkout@v4 clone
+    (fetches only the PR ref), a --single-branch clone, a worktree, or a
+    pruned branch.
+
+    Found by the PR #122 code review.
+    """
+    repo = tmp_path / "clone"
+    repo.mkdir()
+
+    def git(*args: str):
+        return subprocess.run(["git", *args], cwd=str(repo),
+                              capture_output=True, text=True)
+
+    git("init", "-b", "feature/20260919_Sprint_17")
+    git("config", "user.email", "t@example.com")
+    git("config", "user.name", "t")
+    (repo / "f.txt").write_text("work happened\n", encoding="utf-8")
+    git("add", "-A")
+    git("commit", "-m", "a commit exists on this branch")
+
+    # No develop branch here, which is the whole point.
+    assert git("rev-parse", "--verify", "develop").returncode != 0
+
+    claude = repo / ".claude"
+    claude.mkdir()
+    (claude / "sprint_status.json").write_text(json.dumps({
+        "current_sprint": {"number": 17, "pr": None, "github_issues": [],
+                           "plan_approved": False},
+    }), encoding="utf-8")
+
+    payload = json.dumps({
+        "last_assistant_message": "The sprint close-out is complete.",
+        "repo_override": str(repo),
+        "branch_override": "feature/20260919_Sprint_17",
+    })
+    r = subprocess.run([sys.executable, str(HOOK)], input=payload,
+                       capture_output=True, text=True, cwd=str(ROOT))
+
+    assert r.returncode != 0, (
+        "the hook allowed a close-out claim with pr null, no issues and no "
+        "recorded approval, because the base ref did not resolve")
+    assert "Phase 3" in r.stderr
