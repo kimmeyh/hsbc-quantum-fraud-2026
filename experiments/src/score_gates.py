@@ -86,6 +86,36 @@ def _fit_table_widths(lines: list[str]) -> list[str]:
     return out
 
 
+def _cvqboost_tuning() -> dict | None:
+    """CVQBoost's tuning budget, for its row in the equivalence table.
+
+    Read from the committed study record rather than recomputed: the figures
+    are what the tuning run actually did, and nothing here re-runs anything.
+    Returns None rather than raising if the artifact is absent, so the report
+    still generates and says the row is missing instead of dying.
+    """
+    path = RESULTS_DIR / "proxy_tuning.json"
+    if not path.exists():
+        return None
+    try:
+        doc = json.loads(path.read_text(encoding="utf-8"))
+        trials = doc.get("trials") or []
+        wall = [t["wall_s"] for t in trials if t.get("wall_s") is not None]
+        best = doc["best_overall"]
+        if not wall:
+            return None
+        return {
+            "n_trials": doc.get("n_complete", len(trials)),
+            "val_ap": best["val_ap"],
+            "wall_seconds": sum(wall),
+            "median_wall_s": sorted(wall)[len(wall) // 2],
+            "k": best["params"]["k"],
+            "n_vars": best["n_vars"],
+        }
+    except (KeyError, ValueError, TypeError):
+        return None
+
+
 def is_metered_arm(row) -> bool:
     """True for a row belonging to an arm that consumes device seconds.
 
@@ -173,18 +203,26 @@ def main() -> int:
     lines.append("")
 
     # ---- score health (A6) ----
-    lines += ["## Score health (amendment A6; WARN = degenerate score distribution)", "",
-              "| Cell | Rows | WARN rows | Median mode share | Median n_distinct |", "|---|---|---|---|---|"]
+    #
+    # BUILT HERE, EMITTED LATER, directly above the Tuning Budget Equivalence
+    # table (team lead, Sprint 17 Manual Validation). The two belong together:
+    # score health reports WHERE the score distribution is degenerate, and the
+    # budget table reports whether each arm was tuned fairly. A reader judging
+    # the CVQBoost row wants both on one spread, not three pages apart.
+    health_lines = [
+        "## Score health (amendment A6; WARN = degenerate score distribution)", "",
+        "| Cell | Rows | WARN rows | Median mode share | Median n_distinct |",
+        "|---|---|---|---|---|"]
     for key in sorted(by_cell, key=str):
         cell = by_cell[key]
         hs = [r["metrics"].get("score_health") for r in cell]
         hs = [h for h in hs if h]
         if not hs:
-            lines.append(f"| {'/'.join(str(k) for k in key)} | {len(cell)} | n/a (pre-A6 rows) | n/a | n/a |")
+            health_lines.append(f"| {'/'.join(str(k) for k in key)} | {len(cell)} | n/a (pre-A6 rows) | n/a | n/a |")
             continue
-        lines.append(f"| {'/'.join(str(k) for k in key)} | {len(cell)} | {sum(h['warn'] for h in hs)} "
-                     f"| {np.median([h['mode_share'] for h in hs]):.3f} | {int(np.median([h['n_distinct'] for h in hs]))} |")
-    lines.append("")
+        health_lines.append(f"| {'/'.join(str(k) for k in key)} | {len(cell)} | {sum(h['warn'] for h in hs)} "
+                            f"| {np.median([h['mode_share'] for h in hs]):.3f} | {int(np.median([h['n_distinct'] for h in hs]))} |")
+    health_lines.append("")
 
     # ---- G0 ----
     xgb_full = cell_aps.get(("xgboost", "full"), {})
@@ -360,14 +398,88 @@ def main() -> int:
                      f"(sequential {len(seq)}, full {len(ful)}).")
     lines.append("")
 
+    # Score health immediately precedes the budget table; see where it is built.
+    #
+    # THE PAGE BREAK GOES BETWEEN THEM, not before both. Three layouts were
+    # rendered and measured rather than reasoned about:
+    #   - no break:    the budget HEADING orphans at the foot of one page with
+    #                  all nine of its rows on the next
+    #   - break first: both tables fit, but the three paragraphs that explain
+    #                  the table -- including "the AP column is not
+    #                  comparable" -- push onto a page of their own, which is
+    #                  the same defect one step later and on the sentence that
+    #                  most needs to be beside the numbers
+    #   - break here:  score health ends one page, and the budget table plus
+    #                  every word explaining it occupy the next, whole
+    # The raw-LaTeX block is inert in markdown viewers and honored by
+    # pandoc -> xelatex (verified against this pipeline before it was used).
+    lines += health_lines
+    lines += ["```{=latex}", "\\newpage", "```", ""]
+
     # ---- budget equivalence ----
+    #
+    # THE QUANTUM ARM MUST HAVE A ROW. Until Sprint 17 this table listed the
+    # four classical studies and mentioned CVQBoost only in a trailing footnote,
+    # so the "asymmetry reported as-is" in the heading had nothing to be
+    # asymmetric WITH: a reader could not tell whether CVQBoost got 5 trials or
+    # 500. Prereg section 6 commits to publishing trials, FITS PER TRIAL and
+    # wall-clock per arm; the fits-per-trial column was missing too.
+    #
+    # The table's job is to pre-empt "you under-tuned the quantum arm" as an
+    # explanation for the H1b null. It cannot do that job without the arm.
     lines += ["## Tuning Budget Equivalence (prereg 6; asymmetry reported as-is)", "",
-              "| Study | Trials | CV AP | Wall seconds |", "|---|---|---|---|"]
+              "| Study | Trials | Fits per trial | CV AP | Wall seconds |",
+              "|---|---|---|---|---|"]
     for k in sorted(tuned):
         t = tuned[k]
-        lines.append(f"| {k} | {t['n_trials']} | {t['cv_ap']:.4f} | {t['wall_seconds']:.0f} |")
-    lines += ["", "Model fits per GBDT trial: 5 folds x early-stopped fit. CVQBoost proxy "
-              "fits are pool builds + classical solves (zero metered seconds).", ""]
+        fits = ("5 folds x single fit" if k.startswith("logistic")
+                else "5 folds x early-stopped fit")
+        lines.append(f"| {k} | {t['n_trials']} | {fits} | {t['cv_ap']:.4f} "
+                     f"| {t['wall_seconds']:.0f} |")
+
+    cvq = _cvqboost_tuning()
+    if cvq:
+        # Marked in the row label rather than by a second separator row: a
+        # literal |---| inside the body renders as dashes in a data cell, not
+        # as a rule, in both pandoc and GitHub.
+        lines.append(f"| **cvqboost:proxy** -- DIFFERENT BASIS, see below "
+                     f"| {cvq['n_trials']} | 1 pool build + 1 convex solve "
+                     f"| {cvq['val_ap']:.4f} | {cvq['wall_seconds']:.0f} |")
+
+        ratio = max(t["wall_seconds"] for t in tuned.values()) / max(cvq["wall_seconds"], 1)
+        lines += ["",
+                  f"CVQBoost received the same nominal trial budget "
+                  f"({cvq['n_trials']}) as every GBDT arm, for about "
+                  f"{ratio:.0f}x less wall time than CatBoost -- a proxy trial is "
+                  f"one pool build plus one convex solve, median "
+                  f"{cvq['median_wall_s']} s, against 5 folds of early-stopped "
+                  f"boosting. **The asymmetry runs against the quantum-inspired "
+                  f"arm and is reported rather than equalized.**",
+                  "",
+                  "**The CV AP column is not comparable between the GBDT rows "
+                  "and the CVQBoost row.** GBDT values are 5-fold "
+                  "cross-validated average "
+                  f"precision on their stated feature sets; the CVQBoost value is "
+                  f"validation AP from its own proxy study at k={cvq['k']} "
+                  f"({cvq['n_vars']} variables). The preregistered like-for-like "
+                  "comparison is H1b -- CVQBoost 0.7671 against matched-13-feature "
+                  "CatBoost 0.8070, difference -0.0399 -- not this table. **This "
+                  "table answers whether each arm got a fair tuning budget. It "
+                  "does not rank the arms.**",
+                  "",
+                  "Because the tuning asymmetry favors the classical arms, it is a "
+                  "candidate explanation for the null. It is measured and rejected "
+                  "elsewhere in this submission: the optimizer's own contribution "
+                  "to the tuned gain is +0.0047 AUPRC (SD 0.0028), below the "
+                  "minimum detectable effect. The value in this formulation sits "
+                  "in the weak learners, not the optimization step, so additional "
+                  "solver tuning has little left to find."]
+    else:
+        lines += ["", "CVQBOOST ROW MISSING: proxy_tuning.json absent or "
+                  "unreadable. The table is incomplete without it (prereg 6)."]
+
+    lines += ["", "CVQBoost tunes on the classical proxy only (prereg 4), so its "
+              "entire tuning budget cost zero metered device seconds.", ""]
 
     out = RESULTS_DIR / "gate_report.md"
     lines = _fit_table_widths(lines)

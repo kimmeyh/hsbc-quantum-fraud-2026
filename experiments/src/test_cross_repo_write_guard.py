@@ -25,7 +25,6 @@ repository stayed dead for their entire life.
 from __future__ import annotations
 
 import json
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -108,8 +107,16 @@ def test_the_hook_file_exists():
     assert HOOK.exists(), f"{HOOK} is missing; the boundary would be unenforced"
 
 
-@pytest.mark.skipif(shutil.which("powershell") is None,
-                    reason="powershell not on PATH (non-Windows CI)")
+# NO skipif. This test ran only where PowerShell was on PATH until Sprint 17
+# Task H measured the suite on both platforms and found 15 cases skipping on
+# Linux. The gate was a leftover from the PowerShell era: the hook under test
+# is block_cross_repo_write.py, a PYTHON file invoked through sys.executable,
+# so PowerShell has nothing to do with it.
+#
+# The cost of the leftover was precise. CI is ubuntu-latest, so the guard
+# enforcing the team lead's cross-repo boundary -- the rule added after a
+# session wrote into EvidenceBasedDB -- was never actually exercised there.
+# It passed by being skipped.
 @pytest.mark.parametrize("name,expected,payload", CASES, ids=[c[0] for c in CASES])
 def test_guard_decides_correctly(name, expected, payload, tmp_path):
     f = tmp_path / "payload.json"

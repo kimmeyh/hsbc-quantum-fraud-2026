@@ -11,6 +11,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import platform
+import sys
 import time
 from pathlib import Path
 
@@ -63,8 +65,86 @@ class _Lock:
             pass
 
 
+def environment() -> dict:
+    """The execution environment of the row about to be written (A33, F84).
+
+    WHY THIS EXISTS. Sprint 17 Task H measured the suite on Windows and Linux
+    and found ZERO behavioral divergence, so this is not a fix for a known
+    difference. It is provenance: of the 168 rows written before this change,
+    not one records which operating system, interpreter or BLAS produced it.
+    The submission's reproducibility claim rests on a lock file that pins 18
+    package versions and, deliberately, no platform -- so a future reader
+    comparing a regenerated figure against a stored one has no way to tell
+    whether a difference is a real regression or a platform artifact.
+
+    "We measured no divergence today" and "a row can prove where it ran" are
+    different claims, and only the second survives contact with a machine that
+    is not this one.
+
+    Kept CHEAP and DEPENDENCY-FREE: this runs on every row write. BLAS is read
+    through numpy when numpy is already imported and is skipped otherwise,
+    because importing numpy inside the store to describe the environment would
+    be a real cost on rows that never touch it.
+    """
+    env = {
+        "os": platform.system(),
+        "os_release": platform.release(),
+        "python": platform.python_version(),
+        "threads": os.cpu_count(),
+    }
+    # BLAS only if numpy is ALREADY loaded. No import side effect.
+    #
+    # THE FIRST VERSION RECORDED A NUMPY VERSION IN A FIELD NAMED `blas`.
+    # It called np.__config__.get_info("blas_opt"), which was removed in numpy
+    # 1.26 -- the version this repository PINS -- so the try block never ran
+    # and the except branch was the live path on every platform. Every row
+    # said blas: "numpy-1.26.4", and the test asserted only that the key was
+    # present and truthy, so the degraded value passed.
+    #
+    # That defeats the point of A33. The amendment exists so a reader
+    # comparing a regenerated figure against a stored one can tell a platform
+    # artifact from a real change, and OpenBLAS versus MKL is the classic
+    # cause of float-level divergence in this workload. Two rows both reading
+    # "numpy-<version>" answer "same BLAS?" with a string that cannot.
+    #
+    # `__config__.CONFIG` carries the real identity on 1.26 (measured here:
+    # openblas64 0.3.23.dev). numpy is recorded as its own field rather than
+    # smuggled into this one. Found by the PR #122 review.
+    np = sys.modules.get("numpy")
+    if np is not None:
+        env["numpy"] = str(getattr(np, "__version__", "unknown"))
+        cfg = getattr(np, "__config__", None)
+        blas = None
+        try:
+            config = getattr(cfg, "CONFIG", None)
+            if isinstance(config, dict):
+                b = config.get("Build Dependencies", {}).get("blas", {})
+                name, ver = b.get("name"), b.get("version")
+                if name:
+                    blas = f"{name}-{ver}" if ver else str(name)
+            if blas is None and hasattr(cfg, "get_info"):
+                info = cfg.get_info("blas_opt")
+                libs = info.get("libraries") if isinstance(info, dict) else None
+                if libs:
+                    blas = ",".join(libs)
+        except (AttributeError, TypeError, KeyError, ValueError) as exc:
+            blas = f"unavailable ({exc!r})"
+        # "I could not determine it" is recorded AS THAT, never as a value
+        # that reads like an answer.
+        env["blas"] = blas or "unavailable (numpy exposes no BLAS identity)"
+    return env
+
+
 def append_row(row: dict) -> None:
-    """Locked read-modify-append so parallel writers cannot lose rows (ADR-0008)."""
+    """Locked read-modify-append so parallel writers cannot lose rows (ADR-0008).
+
+    Stamps `environment` on every NEW row (A33). Does not retrofit the 168
+    rows written before the amendment, and must not: back-filling a field that
+    was never observed would be inventing provenance, which is worse than
+    recording its absence.
+    """
+    row = dict(row)
+    row.setdefault("environment", environment())
     with _Lock(RESULTS):
         store = (json.loads(RESULTS.read_text())
                  if RESULTS.exists() else {"meta": {}, "rows": []})

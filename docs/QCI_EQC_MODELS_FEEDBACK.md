@@ -1,14 +1,17 @@
 ---
 title: "eqc-models and Dirac-3: Integration Feedback"
-subtitle: "From 37 metered fits and a sustained proxy build, September 2026"
+subtitle: "From 61 metered fits and a sustained proxy build, September 2026"
 date: "September 2026"
 ---
 
 # Integration feedback for QCi
 
+**Content current to 2026-09-12**, the date our Phase 1 entry was filed.
+Nothing later has been added.
+
 This is the package promised in our access request. It covers what we found
 building against `eqc-models` 0.21.0 and `qci-client` 5.0.2 over five weeks,
-across 37 metered Dirac-3 fits and several thousand classical solves of the
+across 61 metered Dirac-3 fits and several thousand classical solves of the
 same Hamiltonian.
 
 Every item states what we observed, what we expected, and what we did about it.
@@ -17,7 +20,7 @@ can check any claim rather than take our word for it. Line references are to
 the repository accompanying our submission.
 
 Nothing here is a complaint. The device did what it said it would do on every
-one of those 37 calls, with zero failures and zero retries. These are the
+one of those 61 calls, with zero failures and zero retries. These are the
 places where a competent user loses time, which is the part we can usefully
 tell you about.
 
@@ -30,19 +33,19 @@ before billing, with:
 > Number of variables '312' in problem is greater than the free-tier device
 > limit '100'
 
-**Expected.** The documented limit we could find is 949, described as a sum over
-`num_levels`. We had sized our experiment against that number.
+**Expected.** The documented limit is 949, described as a sum over
+`num_levels`. That is the figure a reader sizing an experiment from the
+documentation will use.
 
 **The divergence.** The 949 figure applies to integer-encoded jobs. It does not
 bind a continuous, sum-constrained run, which is instead capped at 100
 variables on the free tier. Both limits are real; they apply to different job
 classes, and only one of them is documented.
 
-**Cost to us.** This was found empirically, by a rejected job, after the
-experiment had been designed. It forced a preregistration amendment (A12) and
-a reduction from k=13 to k=6 features, which is four families at 60 variables.
-Every scaling statement we can currently make is bounded by a tier limit rather
-than by the device.
+**Cost to us.** The ceiling is confirmable only empirically, by a rejected job.
+It forced a preregistration amendment (A12) and a reduction from k=13 to k=6
+features, which is four families at 60 variables. Every scaling statement we
+could make at the time was bounded by a tier limit rather than by the device.
 
 **What we did.** Recorded the ceiling as a device constraint in
 `run_hardware_f32.py:59-64`, and added a property test pinning the rejection
@@ -51,7 +54,7 @@ message so a future change surfaces as a test failure rather than a mystery
 
 **Suggested fix.** State the continuous-job variable ceiling in the free-tier
 documentation next to the 949 figure, and say which job class each applies to.
-One sentence would have saved us a redesign.
+One sentence would have saved time.
 
 ## 2. The billed-seconds field is not reachable as a dictionary key
 
@@ -78,8 +81,7 @@ unrecognised vendor format still charges rather than zeroing
 (`test_hardware_guards.py:43`).
 
 **Suggested fix.** Expose `device_usage_s` as an attribute or mapping key on
-`SolutionResults`, and keep its name stable. Parsing a `repr()` is not a
-contract either of us should rely on.
+`SolutionResults`, and keep its name stable.
 
 ## 3. Pool construction requires `fork` and fails on Windows
 
@@ -99,27 +101,37 @@ behavior reads as a bug in the user's setup rather than a platform constraint.
 
 ## 4. Measured cost and dispersion, which you may find useful
 
-From 37 metered fits, all `status: ok`, zero failures, zero retries:
+From 61 metered fits, all `status: ok`, zero failures, zero retries:
 
 | Quantity | Value |
 |---|---|
-| Total metered device time | 163.0 s |
-| Per-call billed time | 4.0 s min, 4.0 s median, 5.0 s max |
+| Total metered device time | 1,141.0 s |
+| Fits | 61 |
+| Per-call billed time | 4.0 s min, 5.0 s median, 92.0 s max |
 | Failures / retries | 0 / 0 |
-| Identical draws across 8 samples | 0 of 27 fits |
-| Within-fit energy spread | median 0.019%, max 0.343% |
+| Within-fit energy spread | median 0.020%, max 0.343% (48 fits) |
 | Hardware objective vs exact minimum | 0.013% to 0.413% above, never below |
 
-Two things worth saying plainly. **The per-call rate is remarkably stable** --
-a 1-second spread across 37 calls made budget forecasting straightforward, and
-our block caps never came close to firing for the wrong reason. **The solver
-never returned a solution better than the certified classical optimum**, which
-is the correct behavior and is worth having measured by an outside party.
+Of the 1,141 seconds, 163 ran on the free tier across 37 fits before your
+grant and 978 drew against the allocation. The allocation itself shows 1,039
+drawn: the extra 61 seconds went to a B3 run we withdrew and re-ran the same
+day, after finding its pools were built on more data than the arm it was
+quoted against. That run is excluded from the campaign total because its
+result is not ours to claim; the seconds were still spent, so they count
+against the grant.
 
-The stochasticity is real but small at this problem size: no fit returned
-identical energies across its eight samples, yet the within-fit spread has a
-median of 0.019%. Near a flat optimum, sampling variation barely moves the
-answer.
+Two things worth saying plainly. **The per-call rate is stable and predictable
+within a problem size** -- on the free-tier configurations it held a 1-second
+spread across 37 calls, and our block caps never came close to firing for the
+wrong reason. The 92-second maximum is the 833-variable arm, an order of
+magnitude larger problem; the cost tracked size rather than varying at a given
+size, which is what makes forecasting practical. **The solver never returned a
+solution better than the certified classical optimum**, which is the correct
+behavior and is worth having measured by an outside party.
+
+The stochasticity is real but small at this problem size: the within-fit
+spread has a median of 0.020% across 48 fits. Near a flat optimum, sampling
+variation barely moves the answer.
 
 ## 5. The classical proxy, and an ask
 
@@ -135,21 +147,75 @@ a device result has nothing to be compared against.
 
 It is yours to use. For QCi it is a regression oracle for CVQBoost changes and
 a way for an evaluating customer to size a problem before spending on it. It
-also let us develop against the free tier while spending 163 metered seconds in
-total.
+also let us build and debug the entire pipeline against the free tier for 163
+metered seconds, so that the allocation you granted went to the experiments
+that needed hardware rather than to development.
 
 **The ask.** We would value your correction on whether we have read the
 Hamiltonian correctly. Our entire fidelity argument rests on that reading, and
 you are the only ones who can confirm it.
 
-## 6. Two questions we would run on approval
+## 6. Two questions we posed, and what the campaign answered
 
-Both are single-fit experiments.
+We listed these as single-fit experiments we would run on approval. The
+allocation let us answer the second one properly, and it turned into the most
+useful thing we learned about your device.
 
-1. **Would relaxation schedule 4 close the residual?** We see hardware
-   objective values 0.013% to 0.413% above the exact minimum on schedule 2.
-2. **Would a larger sum constraint help?** Spreading 1.0 across 91 variables
-   puts each weight near 0.011, which may approach the analog resolution floor.
+1. **Would relaxation schedule 4 close the residual?** Still open. Every fit in
+   the campaign ran schedule 2, which was frozen in the preregistration before
+   the grant, and we did not spend allocation seconds changing a frozen
+   protocol variable mid-campaign.
+
+2. **Would a larger sum constraint help?** We suspected the analog resolution
+   floor. It is the floor, and the effect is larger than we guessed.
+
+### The 200:1 resolution finding
+
+Your user guide documents an effective analog resolution of about 200:1 (Emami
+et al. cite a 23 dB dynamic-range limit). We had never checked our own
+Hamiltonians against that number. When we did:
+
+- Across all ten frozen pools, off-diagonal entries differ by at most **20.0**,
+  against a resolvable difference of **2,553.5**
+  (`device_resolution.json`).
+- **No coefficient difference in this problem is visible to the device.**
+  Quantized at that resolution, the off-diagonal collapses to a single distinct
+  value and the simplex minimizer of what remains is uniform to 2e-15.
+
+This has two consequences we think you will want.
+
+**It explained our 833-variable arm.** With the sum constraint at 1, a diffuse
+optimum over 833 learners averages 0.0012 per weight, against a representable
+step near 1/200 = 0.005. Not representable, so the device must return something
+sparser. Every one of those eleven fits contains exact zeros, with printed
+nonzero weights from 0.0007 to 0.0029 -- all below the resolution. The weight
+cosine of 0.83 measures a device solving a sparsified version of the problem it
+was given, not a device failing to solve the problem.
+
+**In one sentence: we asked the device to spread weight across 833 learners, it
+could only represent about 200, so it picked a subset instead -- and that
+subset was our best result at scale, gaining +0.0256 AUPRC on ten of ten
+seeds.** We are not reporting this as a limitation we worked around. The device
+answered a sparse-selection problem we had not meant to ask, and the answer was
+better than the one we did ask for. That is the whole reason Phase 2 asks it
+deliberately.
+
+**It corrected a claim of ours that was backwards.** We had written that
+hardware agreeing with the classical proxy bounded any resolution effect. It
+does not: the agreement *is* a resolution effect, and carries no information
+about solver fidelity on that pool. We withdrew the claim as a dated
+preregistration amendment (A31) and pinned both halves with tests. An external
+reviewer found it by reading our mechanism paragraph against your
+specification, which is a check we had never run against any claim in the
+submission.
+
+**Why we think this is a result about the device rather than a limitation of
+it.** A machine that cannot represent diffuse weight over more than about two
+hundred learners is not a machine that is bad at this problem. It is a machine
+whose native problem is sparse selection under a cardinality constraint, which
+is NP-hard and is exactly what your integer mode is for. That is the Phase 2
+formulation, and it now follows from your device's documented physics rather
+than from our preference.
 
 ## A note on what this is not
 

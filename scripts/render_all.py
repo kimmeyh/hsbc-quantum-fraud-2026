@@ -17,8 +17,12 @@ This script is the single source of truth for how each document renders. Use it
 instead of calling render_pdf.py directly.
 
 Usage:
-    python scripts/render_all.py
-    python scripts/render_all.py --qci-package
+    python scripts/render_all.py                 # the three submission PDFs
+    python scripts/render_all.py --qci-package   # the QCi package ONLY
+
+The bare form now REFUSES, because all three submission PDFs are tracked and
+are the bytes filed on 2026-09-12. That refusal is the correct outcome, not a
+breakage: nothing should rebuild a submitted artifact in place.
 """
 from __future__ import annotations
 
@@ -38,6 +42,13 @@ CORE = [
 ]
 
 QCI_PACKAGE = [
+    # THREE OUTPUT NAMES ARE THE ONES QCi SEES (F85, folded into F86). They
+    # carry spaces on purpose: this package is read by a person, not a build.
+    # Every consumer must quote them.
+    #
+    # The SOURCES are deliberately NOT renamed. `experiments/results/gate_report.md`
+    # is referenced by score_gates.py and several tests; renaming it would touch
+    # the evidence pipeline for a presentational reason.
     ("docs/paper/proposal.md",
      "docs/qci_package/DRAFT_proposal.pdf", "1in", False),
     ("docs/paper/appendix.md",
@@ -51,29 +62,113 @@ QCI_PACKAGE = [
     ("experiments/PREREGISTRATION.md",
      "docs/qci_package/DRAFT_preregistration.pdf", "1in", False),
     ("experiments/results/gate_report.md",
-     "docs/qci_package/DRAFT_gate_report.pdf", "0.75in", True),
-    ("docs/HARDWARE_REQUEST_B1_G0b.md",
-     "docs/qci_package/DRAFT_hardware_plan.pdf", "1in", False),
+     "docs/qci_package/Phase 1 - Results Against Preregistered Criteria.pdf", "0.75in", True),
+    # HARDWARE_REQUEST_B1_G0b.md is NOT the source here. That document is the
+    # Phase 1 request for blocks B1 and G0b, executed 2026-09-03, and it is a
+    # dated record of what was approved. QCi needs the PHASE 2 plan, which is
+    # a different document. The Phase 1 request stays in the repository
+    # unchanged as the historical record.
+    ("docs/HARDWARE_PLAN_PHASE_2.md",
+     "docs/qci_package/Phase 1 - Hardware Plan for Phase 2.pdf", "1in", False),
     ("docs/QCI_EQC_MODELS_FEEDBACK.md",
-     "docs/qci_package/DRAFT_eqc_models_feedback.pdf", "1in", False),
+     "docs/qci_package/Phase 1 - eqc_models Feedback.pdf", "1in", False),
 ]
+
+
+def is_tracked(rel: str) -> bool:
+    """True if git tracks this path. Tracked PDFs under docs/paper/out/ are
+    the SUBMITTED artifacts.
+
+    FAILS CLOSED. `git ls-files --error-unmatch` exits non-zero for several
+    reasons, and only one of them means "not tracked": it also exits 128
+    outside a work tree, and raises FileNotFoundError when git is not
+    installed. The first version returned `r.returncode == 0`, so any of those
+    read as "not a submitted artifact" and the refusal never fired.
+
+    The consequence is the one this repository has already paid for twice: the
+    script would render over docs/paper/out/*.pdf, each PDF would get a new
+    /ID trailer, and the files would stop being the bytes filed 2026-09-12 --
+    with exit 0 and "Rendered 3 document(s)." on stdout. A guard against
+    destroying evidence must not treat "I could not check" as "it is safe".
+
+    Found by the PR #122 review.
+    """
+    try:
+        r = subprocess.run(["git", "ls-files", "--error-unmatch", "--", rel],
+                           cwd=ROOT, capture_output=True, text=True, timeout=15)
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise SystemExit(
+            f"REFUSING to render: cannot determine whether {rel} is a tracked "
+            f"submitted artifact ({exc}). Not proceeding.")
+
+    if r.returncode == 0:
+        return True
+    # git's own wording for the one benign case.
+    if "did not match any file" in r.stderr:
+        return False
+    raise SystemExit(
+        f"REFUSING to render: `git ls-files` exited {r.returncode} for {rel}: "
+        f"{r.stderr.strip()}. Cannot verify submitted-artifact status, so the "
+        "submitted PDFs cannot be protected.")
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--qci-package", action="store_true",
-                    help="also render the QCi draft package")
+                    help="render the QCi package ONLY (does not touch the "
+                         "submitted PDFs)")
     ap.add_argument("--paper", choices=("letter", "a4"), default="letter")
     args = ap.parse_args(argv)
 
-    docs = CORE + (QCI_PACKAGE if args.qci_package else [])
+    # `--qci-package` renders the QCi package ONLY. It used to mean "CORE AND
+    # the package", which made rebuilding the submitted PDFs an unavoidable
+    # side effect of producing QCi's copies. Sprint 17 Task C hit exactly that:
+    # a run intended to prove an unrelated guard overwrote all three filed
+    # artifacts, twice.
+    docs = QCI_PACKAGE if args.qci_package else CORE
+
+    # REFUSE TO REBUILD A SUBMITTED ARTIFACT (Sprint 16 IMP-1, and again in
+    # Sprint 17 Task C). A PDF carries a per-build /ID trailer, so a rebuild is
+    # never byte-identical even when the content is: the file stops being the
+    # one that was filed on 2026-09-12. In Sprint 16 that cost an Acronis
+    # restore.
+    #
+    # THERE IS NO OVERRIDE FLAG, deliberately. The first version of this guard
+    # had one, and the very next command in the same session passed it -- not
+    # to rebuild a submission, but because the flag was the quickest way to get
+    # an unrelated test to run. An escape hatch that is easier to reach than
+    # the correct path is not a guard.
+    #
+    # To inspect what a source renders to, point --out at a scratch path via
+    # render_pdf.py directly. To genuinely re-issue a submitted document, do it
+    # deliberately: delete the tracked PDF in its own commit, with the reason in
+    # the sprint record, and render it fresh.
+    blocked = [out for _s, out, _m, _l in docs
+               if out.endswith(".pdf") and is_tracked(out)]
+    if blocked:
+        print("REFUSING to rebuild submitted artifact(s):")
+        for b in blocked:
+            print(f"  {b}")
+        print("\nThese PDFs are tracked in git and are the bytes filed on "
+              "2026-09-12. A rebuild changes the /ID trailer, so the file is "
+              "no longer the submitted one even if the text is identical.\n\n"
+              "There is no override flag. To inspect a render, use "
+              "render_pdf.py with --out pointing at a scratch path.")
+        return 1
 
     failures = []
+    missing = []
     for source, out, margin, landscape in docs:
         src = ROOT / source
         if not src.exists():
-            print(f"SKIP (missing source): {source}")
+            # A MISSING SOURCE IS A FAILURE, not a note. This previously
+            # printed SKIP and continued, so a renamed or moved document
+            # produced "Rendered N document(s)" and exit 0 with that document
+            # absent from the package. Same class as the confidentiality
+            # scanner's missing-file bypass fixed in Sprint 16: a step that
+            # skips its input has produced nothing and said it succeeded.
+            missing.append(source)
             continue
         cmd = [sys.executable, str(RENDER), "--source", str(src),
                "--out", str(ROOT / out), "--margin", margin,
@@ -86,8 +181,12 @@ def main(argv: list[str] | None = None) -> int:
             sys.stderr.write(r.stderr)
             failures.append(source)
 
+    if missing:
+        print(f"\nMISSING SOURCE: {len(missing)} document(s): "
+              f"{', '.join(missing)}")
     if failures:
         print(f"\nFAILED: {len(failures)} document(s): {', '.join(failures)}")
+    if missing or failures:
         return 1
     print(f"\nRendered {len(docs)} document(s).")
     return 0

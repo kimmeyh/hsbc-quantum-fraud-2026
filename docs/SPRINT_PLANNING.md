@@ -53,6 +53,35 @@ Inputs: sprint goal (1-2 sentences), refined candidates (BACKLOG_REFINEMENT.md f
 
 Minutes, from recorded actuals of comparable step-types; `[no-history]` + timebox where uncalibrated. Re-estimate after plan-to-branch-state verification findings (workflow 3.2.2.1/3.2.2.2). Record actuals at task completion; recompute at retro Category 3.
 
+### The sprint total is DERIVED from the cards, never asserted in the plan (Sprint 17 improvement 1)
+
+**Order of operations, and the order is the point:**
+
+1. **Each card carries its own estimate**, written on the card during
+   refinement, from that card's detailed scope.
+2. **Dependencies between cards are stated on the cards**, because a
+   dependency changes what can run in parallel and therefore what the sprint
+   costs in elapsed time. A card that blocks another is not the same cost as
+   one that does not.
+3. **The total is COMPUTED from those card estimates and their dependencies,
+   and recorded.**
+4. **The plan is then written or updated FROM the recorded total.** The plan
+   document reports the number; it does not originate it.
+
+**A total typed into the plan document is not an estimate. It is a guess that
+looks like an estimate**, and it has been wrong in two consecutive sprints:
+Sprint 16's draft said 590 against an actual 585, and Sprint 17's said 605 and
+716 against an actual 585 and 696. Both were caught only by summing the table
+during the mandatory plan-to-branch-state verification, which is late.
+
+Estimating before the cards are detailed is worse than useless: the number is
+stale before it is written, because the detail that would change it does not
+exist yet. Estimate the cards first, derive the total, then write the plan.
+
+**When a card's estimate changes mid-sprint**, the recorded total is recomputed
+and the plan updated, not left to drift. A plan whose total no longer matches
+its own cards is reporting a number nothing owns.
+
 ### Runtime is estimated SEPARATELY from implementation (Sprint 8 improvement 1)
 
 Any task that produces results by running over a dataset carries TWO numbers in
