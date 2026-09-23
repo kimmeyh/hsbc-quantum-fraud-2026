@@ -48,9 +48,31 @@ LEDGER = RESULTS_DIR / "integer_probe.json"
 
 # Smallest first. The point is a SCALING BASIS, so two sizes beat one big one,
 # and a cheap first call bounds the risk of the second.
+#
+# ROUND 2 (2026-09-23) adds four points, because the round-1 fit is weak in two
+# specific ways and one more far point would not fix either:
+#
+#   THE SHAPE IS UNIDENTIFIED. With 32 and 96 plus ONE far point, a line and a
+#   parabola both pass through all three exactly. You learn the VALUE there and
+#   not the LAW between. Two far points make the shape testable: a curve fitted
+#   to the first three either predicts the fourth or it does not.
+#
+#   LEVELS AND VARIABLES ARE CONFOUNDED. Both round-1 probes used
+#   upper_bound=3, so the level budget and the variable count moved together
+#   and neither can be credited. probe_ceiling and probe_deep fix that: they
+#   carry the SAME 840-level budget with 210 variables against 60. If cost
+#   tracks levels they agree; if it tracks variables they diverge. That is the
+#   controlled comparison, and it is the reason this round is worth its
+#   seconds.
+#
+# Ordered small to large, so a surprise at 240 stops the block before 840.
 PROBE_SIZES = (
-    {"label": "probe_small", "n": 8, "upper_bound": 3},    # 32 levels
-    {"label": "probe_mid", "n": 24, "upper_bound": 3},     # 96 levels
+    {"label": "probe_small", "n": 8, "upper_bound": 3},      # 32 levels
+    {"label": "probe_mid", "n": 24, "upper_bound": 3},       # 96 levels
+    {"label": "probe_mid_hi", "n": 60, "upper_bound": 3},    # 240 levels
+    {"label": "probe_high", "n": 150, "upper_bound": 3},     # 600 levels
+    {"label": "probe_ceiling", "n": 210, "upper_bound": 3},  # 840, 210 vars
+    {"label": "probe_deep", "n": 60, "upper_bound": 13},     # 840, 60 vars
 )
 
 RELAXATION_SCHEDULE = 2      # frozen; never tuned inside a sizing probe
