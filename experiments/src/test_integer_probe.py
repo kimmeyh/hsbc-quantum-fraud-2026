@@ -446,3 +446,28 @@ def test_the_designs_are_ordered_by_variable_count_not_by_cost():
     src = SCRIPT.read_text(encoding="utf-8")
     assert "smallest first" not in src, (
         "the loader docstring promises an ordering the file does not have")
+
+
+def test_a_completed_design_does_not_consume_a_call_slot(probe):
+    """--max-calls means N NEW calls, not N designs considered.
+
+    The slice used to happen before the done filter, so after a
+    --max-calls 1 run, --max-calls 2 offered only ONE new design: the
+    completed label ate a slot. An operator who approved two calls and got
+    one would re-invoke with a higher number, which is precisely how the
+    2026-09-23 over-spend happened. Found by the PR #139 review.
+    """
+    labels = [d["label"] for d in probe.load_designs()]
+    _seed(probe, {"label": labels[0], "status": "ok", "metered_seconds": 4})
+
+    import contextlib
+    import io
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        probe.main(["--max-calls", "2"])
+    offered = [ln.split()[1] for ln in buf.getvalue().splitlines()
+               if ln.startswith("  --- ")]
+
+    assert offered == labels[1:3], (
+        f"--max-calls 2 with one design done offered {offered}; it must "
+        f"offer the next two NEW designs")
