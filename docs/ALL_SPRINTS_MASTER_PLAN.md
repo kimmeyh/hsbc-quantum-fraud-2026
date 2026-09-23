@@ -274,7 +274,8 @@ Four findings outlived their cards and are recorded there rather than here:
   3.12, Linux" is accurate AND enforced in code -- run_hardware.py and
   tune_proxy.py hard-exit on any non-POSIX platform, because the full-pair pool
   build needs fork. No submitted document needed correcting. The suite is now
-  identical on both platforms, 1,043 passed / 71 skipped.
+  identical on both platforms; the count is not restated here, per
+  `docs/VENV_PARITY.md`, which owns that evidence. Run the suite.
 - **The cross-repository guard had never run in CI.** 15 of its 17 cases
   skipped on non-Windows for a PowerShell reason that stopped applying when
   F78 converted the hooks. CI is ubuntu-latest, so the boundary rule was
