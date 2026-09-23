@@ -66,8 +66,8 @@ count instead of quoting a number.
 The campaign total reported in our submission is 1,141 metered seconds over 61
 fits. That figure and the 1,039 above differ for two reasons, both of which we
 would rather state than have you reconcile: 163 of the 1,141 seconds ran on the
-free tier before the grant existed, and 61 seconds of grant time went to a B3
-run we withdrew and re-ran the same day after finding that its pools were built
+free tier before the grant existed, and 61 seconds of grant time went to a run
+we withdrew and re-ran the same day after finding that its pools were built
 on more data than the arm it was quoted against. The withdrawn run is excluded
 from the campaign total because its result is not ours to claim; the seconds
 were still spent, so they are included in the draw.
@@ -78,9 +78,9 @@ From 61 fits, all `status: ok`, zero failures, zero retries:
 
 | Problem size | Seconds per fit | Basis |
 |---|---|---|
-| 833 variables (order-3 pool) | 82 mean, 71 to 92 | 11 fits, B2 |
-| 136 variables | 4 to 9 | B3 ladder |
-| 91 variables | 4 to 5 | B1, free tier |
+| 833 variables (order-3 pool) | 82 mean, 71 to 92 | 11 fits |
+| 136 variables | 4 to 9 | 12 fits |
+| 91 variables | 4 to 5 | 22 fits, free tier |
 
 Cost tracks problem size and is stable within a size. That is what made block
 budgeting practical for us, and it is the single most useful operational fact
@@ -151,11 +151,11 @@ moves to the formulation where the optimizer has real work to do.
   The other two metered experiments are sized from the Phase 1 campaign:
   experiment 5 at 30 fits in the 91-136 variable range (about 270 s at the
   upper rate), and experiment 6 at 12 fits of the 833-variable configuration
-  (about 984 s at B2's measured 82 s per fit).
+  (about 984 s at the measured 82 s per fit for that size).
 
 ### The blocks with measured costs
 
-- **Experiment 5, segment transfer (H5).** Replicates a prior Dirac-3
+- **Experiment 5, segment transfer.** Replicates a prior Dirac-3
   campaign's in-segment wins with proper seeds and intervals, then tests
   transfer against a matched random-segment control. Sized in the 91 to 136
   variable range, so 4 to 9 seconds per fit.
