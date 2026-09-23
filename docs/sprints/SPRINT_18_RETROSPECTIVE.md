@@ -130,6 +130,13 @@ argued with; one that reads as a question gets answered.
 Four guards failed on correct behavior this sprint, which is a pattern worth
 watching but not yet a trend. Team lead: hold and see if it recurs.
 
+**IT RECURRED THE SAME DAY.** The PR #139 review found three more guards that
+failed on correct behavior -- two pinning the Phase 2 ask's wording, one
+pinning a `return 1` that became a stronger `SystemExit` -- plus four more
+vacuous guards, two of which could not fail at all. The hold was the right
+call on one sprint's evidence; the evidence has since arrived. Carried to the
+next sprint's improvement list rather than reopened here.
+
 ## Next sprint readiness
 
 The backlog holds F90 (B4 at schedule 3, ~1,236 s, its own allocation

@@ -78,6 +78,44 @@ to submit at all if the ledger is unreadable.
 | Metered seconds | **280** across six calls, in two approved rounds |
 | Grant position | 1,319 of 3,000 drawn, **1,681 remaining** |
 
+## What PR #139 review found
+
+Three reviews ran: Copilot, test coverage, comment accuracy. Every finding was
+reproduced before it was acted on, and every fix carries a test proven to fail
+without it. The pattern across them is one class.
+
+**Two wrong figures in a vendor-facing document.** The Phase 2 ask stated
+9,000 - 1,681 = 7,500 (it is 7,319), and labeled two compounding buffers as
+parallel percentages, so the column summed to 8,216 against a stated ~9,000.
+The guards on that section pinned the old WORDING and went red on the
+correction; they now re-derive the subtraction.
+
+**A claim to QCi that a test pins the sizing rejection message.** That test
+re-implemented the matcher inline and never imported production code, so
+nothing could fail it -- and no production matcher exists at all. Replaced
+with a test of the real pre-submission size check, and the claim rewritten to
+describe what the code does.
+
+**Four more vacuous guards**, on top of the four already recorded above. Two
+could not fail (confirmed by mutation), and the F64 decomposition guard
+checked only that figures were PRESENT -- so it passed while the interaction
+read +0.0011, which is B2's [HW]-vs-proxy gain substituted for a
+corner-to-corner subtraction. Tenfold inflation, in a results document. The
+true value is +0.0001, which strengthens the conclusion rather than weakening
+it.
+
+**A design nobody approved was reachable by raising a flag.** probe_ceiling,
+estimated near 181 s and explicitly not approved, sat in the designs file with
+no marker. The ledger skip does not protect a design that never ran.
+
+**Two scripts that conflated "clean" with "could not check."** Both now fail
+closed.
+
+THE COMMON THREAD: presence is not correctness. A figure that appears, a test
+that runs, a path that is scanned -- each was treated as evidence of the thing
+it was supposed to prove. Six of the eight findings are that substitution.
+IMP-2 was held this sprint pending recurrence; it recurred within the day.
+
 ## Defects found in this sprint's own work
 
 - **The over-spend above**, and the missing idempotency check behind it.
