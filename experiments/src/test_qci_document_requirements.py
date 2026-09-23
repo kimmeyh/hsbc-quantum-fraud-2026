@@ -222,11 +222,20 @@ def test_the_hardware_plan_states_that_cost_tracks_variables():
 
 
 def test_the_hardware_plan_does_not_quote_a_high_variable_ceiling_figure():
-    """probe_ceiling was designed and not run. Quoting a figure there would
-    extrapolate past the data."""
+    """probe_ceiling was designed and NOT run, so no figure exists for a
+    high-variable job at the ceiling. Quoting one would extrapolate past our
+    own data.
+
+    The team lead removed the standalone "What we will not quote" section on
+    2026-09-23, so this now tests the REQUIREMENT rather than the heading:
+    the per-run table must say the omission is deliberate, and the discarded
+    round-1 line must not read as current.
+    """
     text = _read(HARDWARE)
-    assert "What we will not quote" in text
-    assert "61 s at the ceiling" not in text or "discarded" in text or         "We first fitted" in text, (
+    assert "deliberately NOT extrapolated" in text, (
+        "the plan does not say the ceiling figure was withheld on purpose")
+    assert "past our own data" in text
+    assert "We first fitted" in text, (
         "the falsified round-1 extrapolation is presented as current")
 
 
@@ -261,3 +270,52 @@ def test_the_memo_states_the_variables_not_levels_finding():
     text = _read(MEMO)
     assert "COST TRACKS THE VARIABLE COUNT, NOT THE LEVEL BUDGET" in text
     assert "4.1x" in text, "the memo does not own the mispricing"
+
+
+# ------------------------------------- the Phase 2 ask (team lead, 2026-09-23)
+
+def test_the_hardware_plan_states_the_phase_2_ask_up_front():
+    """The team lead's instruction: the overall cost and the per-run cost must
+    both appear, and the ask must be near the top rather than buried."""
+    text = _read(HARDWARE)
+    assert "The ask, up front" in text
+    assert "9,000" in text, "the total request is not stated"
+    assert "7,500" in text, "the additional request is not stated"
+    head = text[:text.index("Allocation position")]
+    assert "9,000" in head, "the ask is not up front"
+
+
+def test_the_ask_separates_its_two_buffers():
+    """Estimation contingency and discovery buffer cover DIFFERENT risks.
+    Collapsing them into one round number hides what is being asked for."""
+    text = _read(HARDWARE)
+    assert "Estimation contingency, 50%" in text
+    assert "Discovery buffer, 40%" in text
+    assert "4,324" in text, "the measured-rate subtotal is not shown"
+
+
+def test_the_estimation_contingency_is_justified_by_our_own_error():
+    """50% is calibrated, not conventional: the opening two-point integer
+    estimate was wrong by 4.1x."""
+    text = _read(HARDWARE)
+    i = text.index("50% estimation contingency")
+    assert "4.1x" in text[i:i + 400], (
+        "the contingency does not cite the error that calibrates it")
+
+
+def test_the_discovery_buffer_says_what_it_is_for():
+    """Not slack. It buys the ability to follow an unplanned finding without
+    stopping to re-ask -- and Phase 1's best result was exactly that."""
+    text = _read(HARDWARE)
+    i = text.index("40% discovery buffer")
+    window = text[i:i + 600]
+    assert "was not in any plan we wrote" in window
+    assert "re-ask" in window
+
+
+def test_the_per_run_costs_are_measured_not_fitted():
+    """Both experiment-3 rates are probe measurements, so the expensive half
+    of the ask rests on data rather than on the discarded line."""
+    text = _read(HARDWARE)
+    assert "71 s (measured)" in text and "165 s (measured)" in text
+    assert "| 1,420 |" in text and "| 1,650 |" in text

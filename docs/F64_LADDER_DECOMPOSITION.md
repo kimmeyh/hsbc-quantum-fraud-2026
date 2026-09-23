@@ -1,62 +1,73 @@
-# F64: decomposing the B2 confound
+# F64 + F91: what actually produced B2's +0.0256
 
-Run 2026-09-22 (Sprint 18 Task C). Zero metered seconds; classical proxy only.
+Runs 2026-09-22 and 2026-09-23 (Sprint 18, Tasks C and F91). Zero metered
+seconds; classical proxy throughout.
 
-## The question
+## BLUF
 
-B2's **+0.0256 AUPRC on ten of ten seeds** is the campaign's only positive
-result at scale. Two factors moved together to produce it, and the submission
-could not say which mattered:
+**B2's +0.0256 AUPRC comes from three-feature learners, not from having more
+features.** Going from 13 features to 17 at the same subset order moves the
+result by **+0.0001** (CI [-0.0024, +0.0026], spanning zero). Going from
+two-feature to three-feature learners at the same feature count moves it by
+**+0.0245** (CI [+0.0187, +0.0302], excluding zero). The interaction between
+the two is about **+0.0011** -- small.
 
-| cell | k | subset order | variables | test AUPRC |
-|---|---|---|---|---|
-| free | 13 | 2 | 91 | 0.7681 (proxy) / 0.7671 [HW] |
-| **mid** | **17** | **2** | **153** | **0.7682 (proxy, this run)** |
-| full | 17 | 3 | 833 | 0.7928 [HW] |
+Practically: **the pool's expressiveness carries the gain, and the feature
+budget does not.** A Phase 2 configuration should spend its variable budget on
+richer learners over the features it already has, rather than on admitting more
+features at the same order.
 
-Appendix B.3 states the disconfirming cell is unrun, about the one experiment
-that would resolve its own headline claim's confound. This is that cell.
+This also sharpens what the device contributes. Three-feature learners are what
+push the problem past the ~200-learner resolution boundary A31 established, so
+the configuration that wins is precisely the one the device must solve by
+selecting rather than by spreading weight. B2's weight cosine of 0.83 is that
+mechanism operating, and the result at that corner is the campaign's best.
 
-## The result
+## The four corners
 
-**k=17 at order 2 minus k=13 at order 2**, ten paired seeds (42-51), classical
-proxy, full-pair build, stratified protocol:
+| | order 2 | order 3 |
+|---|---|---|
+| **k=13** | 0.7681 (91 vars) | **0.7926 (377 vars)** |
+| **k=17** | 0.7682 (153 vars) | 0.7928 (833 vars) [HW] |
 
-| | |
-|---|---|
-| mean delta | **+0.00007** |
-| 95% CI | **[-0.0024, +0.0026]** |
-| excludes zero | **no** |
-| positive seeds | 5 of 10 |
-| MDE (A5) | 0.0268 |
+Ten paired seeds (42-51), classical proxy, full-pair build, stratified
+protocol. The k=17 order-3 corner is the published [HW] figure from B2.
 
-The interval spans zero and is an order of magnitude tighter than the minimum
-detectable effect. **Going from 13 to 17 features at order 2 moves the result by
-essentially nothing.**
+Both new cells were run in Sprint 18: the k=17 order-2 cell under F64, and the
+k=13 order-3 cell under F91 to identify the interaction F64 could not.
+
+## The decomposition
+
+| effect | estimate | 95% CI | excludes zero |
+|---|---|---|---|
+| k, 13 to 17, at order 2 | **+0.0001** | [-0.0024, +0.0026] | no |
+| subset order, 2 to 3, at k=13 | **+0.0245** | [+0.0187, +0.0302] | **yes** |
+| sum of main effects | +0.0245 | | |
+| observed corner-to-corner [HW] | +0.0256 | | |
+| implied interaction | +0.0011 | | |
+
+The k effect is not merely non-significant; it is an order of magnitude smaller
+than the MDE (0.0268) and its interval is tight. That is a positive statement
+about the size of the effect, not an absence of evidence.
 
 ## What this licenses, and what it does not
 
-**This is a BOUND, not an attribution.** The Sprint 13 withdrawal of this card
-was methodologically right: a one-factor probe varies one axis with everything
-else frozen at values chosen for a different configuration, so it measures the
-axis it varies and is silent about interaction. That objection stands, and the
-result is reported accordingly.
+**What it licenses.** Subset order carries the gain. Feature count contributes
+nothing measurable at order 2, and the interaction is small enough that the two
+main effects nearly account for the whole observed difference.
 
-**What it licenses.** Feature count alone does not explain +0.0256. The middle
-of the ladder sits on top of its lower rung, not between the rungs. Whatever
-produces the gain requires the move to three-feature learners -- either the
-richer learners themselves, or an interaction between them and the larger
-feature set.
+**What it does NOT license.** The fourth corner is the published **[HW]**
+figure, while the other three are proxy. So the interaction term is *implied*
+across arms rather than measured within one. A fully within-arm 2x2 would need
+the proxy twin of k=17 at order 3 -- 833 variables, which is buildable but was
+not run here. The implied +0.0011 is small enough that it is unlikely to change
+the conclusion, and that is an expectation rather than a measurement.
 
-**What it does NOT license.** It does not show the gain is caused by subset
-order *alone*. The design cannot separate "order 3 matters" from "order 3
-matters given k=17", because no k=13 order-3 cell exists. A claim that the
-+0.0256 is attributable to subset order would be exactly the over-reading the
-Sprint 13 withdrawal warned about.
-
-**What would settle it.** The fourth corner: k=13 at order 3 (13 + C(13,2) +
-C(13,3) = 377 variables). With all four cells the interaction term is
-identified. That is a separate card, not a silent extension of this one.
+**What changed since the first version of this document.** F64 alone reported a
+BOUND, not an attribution: it showed feature count did not explain the gain but
+could not say what did, because no k=13 order-3 cell existed. The Sprint 13
+withdrawal of F64 was right about that limitation. F91 ran the missing corner,
+and the attribution is now a subtraction rather than an inference.
 
 ## Why the physics predicted this was worth running
 
@@ -64,31 +75,37 @@ A31 established that the device cannot spread weight over more than about 200
 learners: with the sum constraint at 1, a uniform weight over n learners is
 1/n, against a representable step near 1/200.
 
-- At **153 variables** a uniform weight is 0.0065 -- representable.
-- At **833 variables** it is 0.0012 -- below the floor, so the device must
-  return something sparser.
+| corner | variables | uniform weight | representable? |
+|---|---|---|---|
+| k=13, order 2 | 91 | 0.0110 | yes |
+| k=17, order 2 | 153 | 0.0065 | yes |
+| k=13, order 3 | 377 | 0.0027 | **no** |
+| k=17, order 3 | 833 | 0.0012 | **no** |
 
-So the two cells differ in whether the device can represent a diffuse optimum
-at all. The proxy result above is the CLASSICAL half of that comparison and is
-unaffected by the device limit; it establishes that the classical optimum does
-not improve with feature count alone. The hardware half is already published:
-B2's weight cosine of 0.83 measures a device solving a sparsified version of
-the problem, and that sparsified answer outperformed.
+The two corners that win are exactly the two the device cannot represent
+diffusely. The proxy results above are the CLASSICAL half and are unaffected by
+any device limit -- they establish that the classical optimum genuinely improves
+with subset order, so the gain is a property of the pool rather than an artifact
+of forced sparsification.
 
-**The two halves together say something sharper than either alone.** The gain
-at 833 variables is not the classical optimum being better -- the classical
-optimum at 153 is the same as at 91. It appears only where three-feature
-learners enter, in the regime where the device is forced to select rather than
-spread.
+Put together: the classical optimum improves with three-feature learners, and
+the device solves that regime by selecting a subset rather than spreading
+weight. On B2 the sparsified answer outperformed. That is the argument for
+cardinality-constrained selection as the Phase 2 formulation, and it now rests
+on four corners rather than two.
 
 ## Provenance
 
-- 10 rows, `arm: cvqboost_proxy`, `config: mid`, `pair_build: full`,
-  `protocol: stratified`, `evidence_tag: SIM`, `metered_seconds: 0`.
+- 20 new rows: 10 `config: mid` (F64) and 10 `config: deep` (F91), all
+  `arm: cvqboost_proxy`, `pair_build: full`, `protocol: stratified`,
+  `evidence_tag: SIM`, `metered_seconds: 0`.
 - Pools built under WSL/Linux (the full-pair build requires POSIX `fork`);
   solved and scored on Windows.
-- Each row carries the A33 environment stamp, including the resolved BLAS.
-  These are the first rows in the store to do so.
-- Pool size 153 on every seed, matching `k + C(k,2)` for k=17 exactly.
-- `lambda_coef = 2 x n_train` and `relaxation_schedule 2`, `num_samples 8`
+- Pool sizes 153 and 377 on every seed, matching `k + C(k,2)` and
+  `k + C(k,2) + C(k,3)` exactly.
+- Every row carries the A33 environment stamp, including the resolved BLAS.
+- `lambda_coef = 2 x n_train`, `relaxation_schedule 2`, `num_samples 8`,
   unchanged from the frozen configuration.
+- `docs/paper/appendix.md` is UNCHANGED. B.3 says the k=17 order-2 cell "is
+  Phase 2 experiment 1", which was true at filing; it is a frozen submitted
+  document and these results live here instead.

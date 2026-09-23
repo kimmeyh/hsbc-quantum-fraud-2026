@@ -71,37 +71,109 @@ def test_the_delta_is_below_the_mde_and_spans_zero():
 
 
 def test_the_writeup_figures_match_the_rows():
-    """No restated number may drift from its artifact."""
+    """No restated number may drift from its artifact.
+
+    Checks BOTH main effects at the precision the write-up quotes them. The
+    first version checked only the k effect at 5dp, which the BLUF now states
+    at 4dp -- so it would have failed on a correct document.
+    """
     import metrics
     if not WRITEUP.exists():
         pytest.skip("write-up not present")
-    mid, free = _cells()
-    common = sorted(set(mid) & set(free))
-    r = metrics.seed_mean_t_interval([mid[s] - free[s] for s in common])
+    rows = json.loads(RESULTS.read_text(encoding="utf-8"))["rows"]
+
+    def cell(cfg):
+        return {r["seed"]: r["metrics"]["auprc"] for r in rows
+                if r.get("arm") == "cvqboost_proxy" and r.get("config") == cfg
+                and r.get("pair_build") == "full"
+                and r.get("protocol") == "stratified"}
+
+    free, mid, deep = cell("free"), cell("mid"), cell("deep")
+    s = sorted(set(free) & set(mid) & set(deep))
     text = WRITEUP.read_text(encoding="utf-8")
 
-    assert f"{r['mean']:+.5f}" in text, (
-        f"the write-up does not state the computed mean {r['mean']:+.5f}")
-    lo, hi = r["ci95"]
-    assert f"{lo:+.4f}" in text and f"{hi:+.4f}" in text, (
-        "the write-up does not state the computed 95% interval")
+    for label, d in (("k", [mid[x] - free[x] for x in s]),
+                     ("order", [deep[x] - free[x] for x in s])):
+        r = metrics.seed_mean_t_interval(d)
+        assert f"{r['mean']:+.4f}" in text, (
+            f"the write-up does not state the computed {label} effect "
+            f"{r['mean']:+.4f}")
+        lo, hi = r["ci95"]
+        assert f"{lo:+.4f}" in text and f"{hi:+.4f}" in text, (
+            f"the write-up does not state the {label} effect's interval")
 
 
-def test_the_claim_is_a_bound_not_an_attribution():
-    """The Sprint 13 withdrawal objection, pinned.
+def test_the_fourth_corner_exists_on_all_ten_seeds():
+    """F91. Without it the interaction term is unidentified."""
+    rows = json.loads(RESULTS.read_text(encoding="utf-8"))["rows"]
+    deep = {r["seed"] for r in rows
+            if r.get("arm") == "cvqboost_proxy" and r.get("config") == "deep"
+            and r.get("pair_build") == "full"
+            and r.get("protocol") == "stratified"}
+    assert sorted(deep) == list(range(42, 52)), (
+        f"expected 10 deep-config seeds, found {len(deep)}")
 
-    A one-factor probe is silent about interaction. The write-up must keep
-    saying so, and must keep naming the missing fourth corner that would
-    settle it.
+
+def test_the_deep_pool_is_377_variables_on_every_seed():
+    """k + C(k,2) + C(k,3) for k=13. A different size is a different cell."""
+    rows = json.loads(RESULTS.read_text(encoding="utf-8"))["rows"]
+    sizes = {r.get("n_weak_classifiers") for r in rows
+             if r.get("config") == "deep"}
+    assert sizes == {377}, f"deep pool sizes are {sizes}, expected {{377}}"
+
+
+def test_the_order_effect_is_real_and_the_k_effect_is_not():
+    """THE ATTRIBUTION, which F64 alone could not make.
+
+    Subset order carries the gain; feature count does not. Both halves are
+    asserted, because either alone would pass on a coincidence.
     """
+    import metrics
+    rows = json.loads(RESULTS.read_text(encoding="utf-8"))["rows"]
+
+    def cell(cfg):
+        return {r["seed"]: r["metrics"]["auprc"] for r in rows
+                if r.get("arm") == "cvqboost_proxy" and r.get("config") == cfg
+                and r.get("pair_build") == "full"
+                and r.get("protocol") == "stratified"}
+
+    free, mid, deep = cell("free"), cell("mid"), cell("deep")
+    s = sorted(set(free) & set(mid) & set(deep))
+    assert len(s) == 10
+
+    order = metrics.seed_mean_t_interval([deep[x] - free[x] for x in s])
+    kfx = metrics.seed_mean_t_interval([mid[x] - free[x] for x in s])
+
+    assert order["excludes_zero"], (
+        "the order-3 effect no longer excludes zero; the BLUF's central claim "
+        "has changed")
+    assert order["mean"] > 0.015, f"order effect fell to {order['mean']:+.4f}"
+    assert not kfx["excludes_zero"], (
+        "the k effect now excludes zero; the BLUF says it contributes nothing "
+        "measurable")
+
+
+def test_the_writeup_leads_with_a_bluf():
+    """Team lead, 2026-09-23: the document must state the overall conclusion
+    up front rather than making the reader assemble it."""
     if not WRITEUP.exists():
         pytest.skip("write-up not present")
     text = WRITEUP.read_text(encoding="utf-8")
-    assert "BOUND, not an attribution" in text
+    assert "## BLUF" in text
+    head = text[:text.index("## The four corners")]
+    assert "three-feature learners" in head
+    assert "+0.0245" in head and "+0.0001" in head
+
+
+def test_the_writeup_still_states_what_it_does_not_license():
+    """The fourth corner is [HW] while the others are proxy, so the
+    interaction is implied ACROSS arms rather than measured within one. That
+    limit must survive the upgrade from bound to attribution."""
+    if not WRITEUP.exists():
+        pytest.skip("write-up not present")
+    text = WRITEUP.read_text(encoding="utf-8")
     assert "does NOT license" in text
-    assert "k=13 at order 3" in text, (
-        "the write-up no longer names the fourth corner that would identify "
-        "the interaction term")
+    assert "implied" in text and "within one" in text
 
 
 def test_the_new_rows_carry_the_a33_environment_stamp():
@@ -117,11 +189,20 @@ def test_the_new_rows_carry_the_a33_environment_stamp():
             assert field in env, f"environment is missing {field}"
 
 
+HISTORICAL_ROW_COUNT = 168   # rows written before amendment A33
+
+
 def test_the_historical_rows_are_still_not_retrofitted():
-    """A33 says the 168 pre-amendment rows stay as they are."""
+    """A33 says the 168 pre-amendment rows stay as they are.
+
+    Pinned to the ROW BOUNDARY, not to a config name. The first version
+    excluded `config == "mid"` as shorthand for "written this sprint", which
+    broke the moment F91 added `deep` rows that legitimately carry the stamp.
+    A guard that fails on correct behaviour gets deleted rather than fixed.
+    """
     rows = json.loads(RESULTS.read_text(encoding="utf-8"))["rows"]
-    stamped_old = [r for r in rows
-                   if r.get("config") != "mid" and "environment" in r]
+    stamped_old = [i for i, r in enumerate(rows[:HISTORICAL_ROW_COUNT])
+                   if "environment" in r]
     assert not stamped_old, (
-        f"{len(stamped_old)} historical row(s) gained an environment field "
-        "they could not have observed")
+        f"{len(stamped_old)} of the first {HISTORICAL_ROW_COUNT} row(s) gained "
+        "an environment field they could not have observed")

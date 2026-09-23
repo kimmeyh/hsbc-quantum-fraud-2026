@@ -203,6 +203,21 @@ Three findings outlived their cards and are recorded there:
 - **Three metered calls were made against a two-call approval.** The runner
   had no idempotency check; it now has one.)
 
+**F91. The fourth ladder corner: k=13 at order 3 (~1h, zero metered) Priority 1 -- IDENTIFIES THE INTERACTION**
+- Phase: Experiments / correctness
+- Platform: classical proxy (`qubo_proxy.py`)
+- **F64 LEFT THE INTERACTION TERM UNIDENTIFIED, AND SAID SO.** Sprint 18 ran the k=17 order-2 cell and found +0.00007, CI [-0.0024, +0.0026]: feature count alone does not explain B2's +0.0256. But with three corners the design cannot separate "order 3 matters" from "order 3 matters GIVEN k=17", because no k=13 order-3 cell exists. F64's write-up names this as the missing fourth corner and declines to claim more
+- **The four corners, with the missing one named**:
+  - k=13, order 2, 91 vars -> 0.7681 **[have]**
+  - k=17, order 2, 153 vars -> 0.7682 **[have, Sprint 18]**
+  - **k=13, order 3, 377 vars -> ? [THIS CARD]**
+  - k=17, order 3, 833 vars -> 0.7928 **[have, B2]**
+- With all four, the interaction is a subtraction rather than an inference: (order-3 effect at k=17) minus (order-3 effect at k=13). If those differ, the gain needs BOTH and the +0.0256 is a joint effect; if they agree, subset order carries it alone
+- **377 variables is the interesting size for a second reason.** A31 says the device cannot spread weight over more than about 200 learners. 91 and 153 are representable; 377 and 833 are not. So the fourth corner also sits on the far side of the resolution boundary, and the proxy result establishes what the CLASSICAL optimum does there, independent of any device limit
+- **ZERO METERED SECONDS.** Classical proxy only, ten seeds, same protocol as its three neighbors
+- Acceptance: ten seeds at 377 variables on seeds 42-51; the decomposition stated as an interaction rather than a bound; F64's write-up updated with a BLUF giving the overall conclusion across all four corners
+- Depends on: nothing. F64 is complete and this completes it
+
 **F90. F2b at the configuration that can actually show an effect: B5, then B4 at schedule 3 (~4h + approvals) Priority 5**
 - Phase: Experiments / Phase 2 evidence
 - Platform: SPECTRA, Dirac-3

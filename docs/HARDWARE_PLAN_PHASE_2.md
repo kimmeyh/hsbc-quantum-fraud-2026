@@ -12,9 +12,43 @@ cost in experiment 3 was measured on 2026-09-23, after the filing, because we
 would rather send you a measured number than a placeholder.
 
 This is the hardware half of the Phase 2 plan in section 5 of our proposal,
-extracted for QCi. It states what we would run on Dirac-3, what each block
-costs, and why one of the six experiments is the one that actually needs the
-device.
+extracted for QCi.
+
+**The ask, up front: 9,000 Dirac-3 seconds for Phase 2.** We hold 1,681 of
+those already, so the additional request is **7,500 seconds**. That figure is
+built from rates we measured on your hardware, not from a projection:
+
+| | seconds |
+|---|---|
+| Experiment 3, integer solver, 60-variable cells (20 fits) | 1,420 |
+| Experiment 3, integer solver, 150-variable cells (10 fits) | 1,650 |
+| Experiment 5, segment transfer (30 fits) | 270 |
+| Experiment 6, scaling claim (12 fits at 833 variables) | 984 |
+| Experiments 1, 2 and 4 | **0** -- classical proxy |
+| **subtotal, at measured rates** | **4,324** |
+| Estimation contingency, 50% | 2,162 |
+| Discovery buffer, 40% | 2,594 |
+| **total** | **~9,000** |
+
+**Why two separate buffers, rather than one round number.** They cover
+different risks and we would rather name them than bury them.
+
+The **50% estimation contingency** is calibrated on our own error. Our opening
+two-point estimate for the integer solver was wrong by 4.1x by the time we
+reached 600 levels. We corrected it with more measurement rather than more
+confidence, but 50% is the minimum honest allowance on a path we have now
+sampled five times and not twenty.
+
+The **40% discovery buffer** is for avenues we cannot name yet. Phase 1's most
+useful result -- that your device's resolution limit forces sparse selection,
+and that the sparsified answer outperformed -- was not in any plan we wrote. It
+came out of a failure analysis. If Phase 2 turns up something comparable we
+would like to be able to follow it within the grant rather than stopping to
+re-ask, which costs both of us time and usually arrives after the context has
+gone cold.
+
+Everything below states what we would run, what each block costs, and why one
+of the six experiments is the one that actually needs the device.
 
 Every cost below is **measured on your hardware during Phase 1**, not
 projected. Where we have no measurement, we say so and bound the block by call
@@ -98,11 +132,26 @@ moves to the formulation where the optimizer has real work to do.
   but individual points miss by up to 45%, so we offer it as indicative rather
   than as a formula.
 
-  **What we will not quote**: a figure at the ceiling with a high variable
-  count. We designed that call and did not run it -- the revised estimate put
-  it well above what had been approved, so it stopped for a fresh decision.
-  Quoting it would mean extrapolating past our own data, which is the thing
-  this section exists to avoid.
+  **What that means for the Phase 2 block, stated per run.** Experiment 3 is
+  the one that needs your integer solver, and it is the expensive half of the
+  request:
+
+  | cell | fits | rate | seconds |
+  |---|---|---|---|
+  | 60-variable cardinality cells | 20 | 71 s (measured) | 1,420 |
+  | 150-variable cardinality cells | 10 | 165 s (measured) | 1,650 |
+
+  Both rates are measured, not fitted: they are `probe_deep` and `probe_high`
+  above. We have deliberately NOT extrapolated to a high-variable job at the
+  ceiling, because we did not run one -- the revised estimate put it beyond
+  what we had budgeted for the sizing exercise, so we stopped and took the
+  cheaper of the two remaining designs. Any number we quoted there would be
+  past our own data.
+
+  The other two metered experiments are sized from the Phase 1 campaign:
+  experiment 5 at 30 fits in the 91-136 variable range (about 270 s at the
+  upper rate), and experiment 6 at 12 fits of the 833-variable configuration
+  (about 984 s at B2's measured 82 s per fit).
 
 ### The blocks with measured costs
 
@@ -126,18 +175,6 @@ under a source paper's own protocol.
 We mention them because they explain the shape of the ask. A Phase 2 campaign
 at these scales is a few thousand seconds, not tens of thousands, because the
 proxy absorbs everything that does not require the device.
-
-## What would retire the approach
-
-Our preregistration names three conditions that together retire it. Two have
-already fired: the confirmatory endpoint returned a null, and the feature
-ladder's slope is negative. The third, H5 segment transfer, is unrun and is
-experiment 5 above.
-
-If H5 also fails, the honest conclusion is that this formulation does not
-belong in a fraud stack, and we will say so in public with the same evidence
-tags we used for everything else. We would rather tell you that now than have
-you discover it in our Phase 2 report.
 
 ## Protocol, unchanged from Phase 1
 

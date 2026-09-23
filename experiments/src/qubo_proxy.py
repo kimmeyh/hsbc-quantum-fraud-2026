@@ -60,6 +60,12 @@ CONFIGS = {
     # after the submission, and its result is reported as a BOUND rather than
     # an attribution (see the Task C write-up).
     "mid": {"k": 17, "schedule": 2},    # 153 full-pair
+    # THE FOURTH CORNER (F91, Sprint 18). With "free", "mid" and "full"
+    # the design still cannot separate "order 3 matters" from "order 3
+    # matters GIVEN k=17", because no k=13 order-3 cell exists. This is
+    # that cell: 13 + C(13,2) + C(13,3) = 377 variables. With all four
+    # corners the interaction is a subtraction rather than an inference.
+    "deep": {"k": 13, "schedule": 3},   # 377 full-pair
 }
 FIXED = {"relaxation_schedule": 2, "num_samples": 8}   # frozen, not tuned
 LAMBDA_MULT = 2.0                                      # lambda_coef = 2 * n_train
