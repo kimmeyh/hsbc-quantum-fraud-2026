@@ -22,6 +22,8 @@ Remote: private (kimmeyh/hsbc-quantum-fraud-2026) until the Stage 7 confidential
 
 Auto-advance (no permission-asking) runs from Phase 3.7 plan approval to the start of Phase 5 team-lead validation. **Criterion H overrides it always: every metered Dirac-3 run stops for explicit approval with call count and expected seconds stated.**
 
+**CI is checked after every push, not only at the end** (`scripts/check_ci_status.py`). The draft PR exists from Phase 3, so CI runs for the whole sprint; a red check found at Phase 5 has usually been red for days. A failure seen only on CI is Criterion 4, not the "single test failure" that Criterion 10 says to fix and move past.
+
 ## Decision classes (never covered by sprint approval)
 
 1. Frozen-preregistration amendments (gates, budgets, splits, arms, statistics).

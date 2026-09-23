@@ -15,8 +15,11 @@ This is the hardware half of the Phase 2 plan in section 5 of our proposal,
 extracted for QCi.
 
 **The ask, up front: 9,000 Dirac-3 seconds for Phase 2.** We hold 1,681 of
-those already, so the additional request is **7,319 seconds**. That figure is
-built from rates we measured on your hardware, not from a projection:
+those already, leaving 7,319, which we round up to an additional request of
+**7,500 seconds**. The rounding is deliberate and in your favor to grant or
+refuse plainly: a request stated to the second implies a precision the
+estimate does not have. Both figures are built from rates we measured on your
+hardware, not from a projection:
 
 **This is well below what we originally told you Phase 2 might need.** Our
 sponsorship request estimated 2,000 seconds for the preregistered runs plus

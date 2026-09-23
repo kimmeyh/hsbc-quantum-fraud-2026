@@ -256,6 +256,23 @@ only in memory.
   F67, F39 and F72 shipped and stayed unticked -- and it was found a sprint
   later.)
 
+- **Don't treat a local green suite as evidence that CI is green. OPEN THE
+  CHECK.** Run `scripts/check_ci_status.py` after every push, not only before
+  handover. The draft PR exists from Phase 3, so CI runs for the whole sprint,
+  and a red check found at Phase 5 has usually been red for days. A failure
+  seen ONLY on CI is Criterion 4 (stop, fix, regression test), never the
+  "single test failure" Criterion 10 says to fix and move past -- the
+  difference is that you cannot see this one. (Sprint 18 ran red from its
+  first push to its last. Three tests sent a Stop hook a payload with no
+  `branch_override`, so the hook read the live branch name: populated in a
+  normal clone, EMPTY on the detached HEAD `actions/checkout` leaves, so the
+  hook's first gate returned ALLOW before reaching any check. Those tests
+  could not fail locally on any run. Worse, an entire PR review round shipped
+  under the red X -- three review reports were read and the check status was
+  not. The script exits non-zero for red, for still-running AND for
+  cannot-determine, because "I could not tell" is the state that reads as
+  green and is not.)
+
 - **Don't state what an external system contains without opening it.** Reasoning
   from adjacent code or a stale note is not evidence. If it cannot be inspected
   this turn, write the claim with the word **unverified** and say what would

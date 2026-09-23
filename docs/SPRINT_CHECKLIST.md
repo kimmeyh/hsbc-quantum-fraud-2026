@@ -27,21 +27,25 @@ Consult at EVERY phase boundary (open this file in the same turn; walk lines wit
 - [ ] `git status --short` before every staging; every entry accounted for; 0* files committed neutrally, never read
 - [ ] Results only via frozen protocol; every metric -> results.json with evidence tag
 - [ ] HARDWARE: any metered run stops for approval (Criterion H), always
+- [ ] CI checked after each push (`scripts/check_ci_status.py`); a red check is fixed BEFORE the next task, not at the end (Sprint 18 ran red from its first push to its last and nobody opened it)
 
 ## Phase 5: Review & Validation
 - [ ] Full suite green; no unamended drift from prereg-freeze in analysis code
 - [ ] Plan acceptance criteria walked line by line WITH EVIDENCE
 - [ ] OUTWARD documents pass `scripts/outward_readability.py` BEFORE handover (IMP-5: the QCi package needed a revision round purely to strip tokens a vendor reader cannot resolve, after the team lead had already reviewed it)
+- [ ] CI GREEN on the pushed HEAD (`scripts/check_ci_status.py`, exit 0). Not "no failures seen" -- the script exits non-zero for red, for still-running and for cannot-determine, and each of those blocks handover
 - [ ] Handed to team lead for manual validation (questions correct from here)
 
 ## Phase 6: Push & Finalize PR
 - [ ] Branch pushed; existing draft PR body updated (still DRAFT); interim status given, not "ready"
+- [ ] CI re-checked after the push (the push is what triggers it; a Phase 5 check cannot cover commits made after it)
 - [ ] ON MERGE NOTIFICATION: next sprint branch created FROM CURRENT FEATURE BRANCH immediately; post-merge work committed there; never stash; never branch from develop post-merge
 
 ## Phase 7: Retrospective (before ready)
 - [ ] 7-step protocol run in order (SPRINT_RETROSPECTIVE.md); 16 categories x 4 roles, verbatim, no placeholders
 - [ ] Improvements proposed + dispositioned; now-items committed; backlog-items -> master plan with F#s
 - [ ] Completion updates: master plan Last Completed Sprint; CHECKLIST-Phase2-pre.md reconciled; sprint_status updated
+- [ ] CI green on the final HEAD; the close-out hook blocks the completion claim otherwise
 - [ ] `gh pr ready` (ONLY here); final gate; team lead notified for approval
 
 ## Phase 8: Delivery Cycle (after develop merge)

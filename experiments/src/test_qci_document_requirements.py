@@ -290,18 +290,41 @@ def test_the_hardware_plan_states_the_phase_2_ask_up_front():
     assert "9,000" in head, "the ask is not up front"
 
     # THE SUBTRACTION, not the phrasing. This guard pinned the literal
-    # "7,500", which was wrong: 9,000 - 1,681 = 7,319. The document asserted
-    # 7,500 with the word "so", presenting it as the result of that
-    # subtraction, and the guard agreed with it. A vendor-facing figure is
-    # exactly where a number must be re-derived rather than matched.
+    # "7,500" and so could not tell a deliberate round-up from an arithmetic
+    # error. 9,000 - 1,681 = 7,319, and the ask is 7,500 BY CHOICE: a figure
+    # stated to the second implies a precision the estimate does not have.
+    #
+    # So the rule is not "the subtraction must be exact". It is: the exact
+    # remainder must appear, the asked figure must be >= it (never asking for
+    # less than the plan needs), the gap must be small, and the rounding must
+    # be stated in words. An unexplained 7,500 fails on the last clause.
     import re
     held = int(re.search(r"We hold ([\d,]+) of", text).group(1).replace(",", ""))
+    remainder = 9000 - held
     additional = int(
-        re.search(r"additional request is \*\*([\d,]+) seconds",
+        re.search(r"additional request of\s+\*\*([\d,]+) seconds",
                   text).group(1).replace(",", ""))
-    assert 9000 - held == additional, (
-        f"the document says it holds {held:,} of 9,000 and asks for "
-        f"{additional:,} more; 9,000 - {held:,} = {9000 - held:,}")
+
+    # The remainder must appear IN THE SENTENCE that does the subtraction,
+    # not merely somewhere in the document. A drift in the held figure was
+    # otherwise invisible: changing 1,681 to 1,500 makes the remainder equal
+    # the rounded ask, and a document-wide search still found the stale 7,319
+    # elsewhere on the page.
+    ask_sentence = text[text.index("The ask, up front"):
+                        text.index("Allocation position")]
+    assert f"leaving {remainder:,}" in ask_sentence, (
+        f"9,000 - {held:,} = {remainder:,}, which the ask sentence does not "
+        "state; a reader cannot check the ask against what we hold")
+    assert additional >= remainder, (
+        f"the ask of {additional:,} is BELOW the {remainder:,} the plan "
+        "needs")
+    assert additional - remainder < 500, (
+        f"the ask rounds {remainder:,} up to {additional:,}; that is not a "
+        "rounding")
+    if additional != remainder:
+        assert "round" in text[:text.index("Allocation position")].lower(), (
+            f"the ask states {additional:,} rather than the exact "
+            f"{remainder:,} and never says it is rounded")
 
 
 def test_the_ask_separates_its_two_buffers():

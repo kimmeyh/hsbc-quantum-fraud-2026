@@ -84,11 +84,22 @@ Three reviews ran: Copilot, test coverage, comment accuracy. Every finding was
 reproduced before it was acted on, and every fix carries a test proven to fail
 without it. The pattern across them is one class.
 
-**Two wrong figures in a vendor-facing document.** The Phase 2 ask stated
-9,000 - 1,681 = 7,500 (it is 7,319), and labeled two compounding buffers as
-parallel percentages, so the column summed to 8,216 against a stated ~9,000.
-The guards on that section pinned the old WORDING and went red on the
-correction; they now re-derive the subtraction.
+**An unexplained round-up and a mislabeled buffer in a vendor-facing
+document.** The Phase 2 ask wrote "we hold 1,681 of those already, SO the
+additional request is 7,500" -- but 9,000 - 1,681 = 7,319. The 7,500 was a
+deliberate round-up (team lead, 2026-09-23): a figure stated to the second
+implies a precision the estimate does not have. The word "so" presented it as
+the result of a subtraction it is not, which is the actual defect. The text
+now shows the remainder and names the rounding. Separately, two compounding
+buffers were labeled as parallel percentages of the subtotal, so the column
+summed to 8,216 against a stated ~9,000.
+
+I initially reported the 7,500 as an arithmetic error and "corrected" it to
+7,319. That was wrong, and it is the more useful half of this entry: the
+figure was intentional and the DOCUMENT was silent about why, so a reader
+checking the arithmetic -- reviewer or model -- reaches for the wrong
+conclusion. The guard now permits a round-up that is stated and rejects one
+that is not, rather than demanding an exact subtraction.
 
 **A claim to QCi that a test pins the sizing rejection message.** That test
 re-implemented the matcher inline and never imported production code, so
