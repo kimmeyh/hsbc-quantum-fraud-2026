@@ -319,3 +319,26 @@ def test_the_per_run_costs_are_measured_not_fitted():
     text = _read(HARDWARE)
     assert "71 s (measured)" in text and "165 s (measured)" in text
     assert "| 1,420 |" in text and "| 1,650 |" in text
+
+
+def test_the_ask_is_reconciled_against_the_original_sponsorship_request():
+    """A request that shrinks by 3-5x needs an explanation (team lead).
+
+    The original sponsorship request estimated 2,000 seconds for the
+    preregistered runs plus 20,000-40,000 for the full grid, both marked TBD.
+    Asking for 9,000 without reference to that would look like either a
+    different project or a quiet climbdown. It is neither: the proxy absorbs
+    four of six experiments, the null narrowed the grid, and measured costs
+    came in below the estimate that sized the original ask.
+    """
+    text = _read(HARDWARE)
+    assert "well below what we originally told you" in text, (
+        "the plan does not reconcile the new ask against the original request")
+    assert "20,000 to 40,000" in text, (
+        "the original estimate is not quoted, so the reader cannot check the "
+        "comparison")
+    for reason in ("classical proxy absorbs", "null result narrowed",
+                   "Measured costs came in below"):
+        assert reason in text, f"the reduction is unexplained: {reason!r}"
+    assert "reduction in ambition" in text, (
+        "the plan does not say the shrink is evidence-driven")

@@ -18,6 +18,27 @@ extracted for QCi.
 those already, so the additional request is **7,500 seconds**. That figure is
 built from rates we measured on your hardware, not from a projection:
 
+**This is well below what we originally told you Phase 2 might need.** Our
+sponsorship request estimated 2,000 seconds for the preregistered runs plus
+20,000 to 40,000 for the full benchmark grid, tuning ladder and scaling study
+-- both marked TBD, because at the time we had no measured cost at scale and
+said so. We now do, and three things shrank the number:
+
+- **The classical proxy absorbs four of the six experiments.** It solves the
+  identical Hamiltonian, so anything that does not need the device does not
+  touch it. That was the single largest reduction.
+- **The null result narrowed the grid.** A full benchmark sweep made sense when
+  the question was open. It is not, on the continuous formulation, so Phase 2
+  runs the one formulation where the optimizer has real work to do rather than
+  a ladder across configurations we can already predict.
+- **Measured costs came in below the estimate that sized the original ask.**
+  That estimate used 26 to 34 seconds per tuned fit from a prior campaign; our
+  own fits ran 4 to 9 seconds at 91 to 136 variables.
+
+We mention it because a request that shrinks by a factor of three to five
+deserves an explanation, and because the reason is evidence rather than a
+reduction in ambition.
+
 | | seconds |
 |---|---|
 | Experiment 3, integer solver, 60-variable cells (20 fits) | 1,420 |
