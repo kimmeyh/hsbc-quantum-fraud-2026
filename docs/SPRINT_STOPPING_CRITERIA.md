@@ -6,6 +6,8 @@ Adapted 2026-08-30 from spamfilter-multi's SPRINT_STOPPING_CRITERIA.md. Purpose:
 
 Any metered Dirac-3 run STOPS for explicit team-lead approval, every time: state the block, the call count, and the expected metered seconds, then wait.
 
+**The runner must be IDEMPOTENT before its first approval, not after its first over-spend (IMP-3, Sprint 18).** A runner that submits metered work refuses to re-submit a unit it has already completed, and refuses to submit at all if it cannot read its own ledger. Sprint 18 spent three calls against a two-call approval because a second invocation with a higher `--max-calls` restarted from the top; the duplicate cost 4 seconds, and had it been the largest probe it would have cost 165. The allocation has no undo.
+
 **The estimate must carry its PROVENANCE (Sprint 11 improvement 2).** State which of the three it is:
 
 - **measured** at this configuration -- cite the calls it comes from

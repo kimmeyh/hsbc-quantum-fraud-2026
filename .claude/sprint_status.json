@@ -14,7 +14,10 @@
       136,
       137,
       138
-    ]
+    ],
+    "task_actuals": {
+      "_note": "NOT RECORDED. Sprint 18 did not capture actuals at task completion, which is the gap IMP-1 closes for Sprint 19 onward. Reconstruction from commit timestamps was ATTEMPTED and DISCARDED: it produced 3 minutes for a 90-minute task, because the gap between commits measures neither the work nor the order it happened in. A fabricated actual is worse than a missing one -- it would have recalibrated future estimates against noise."
+    }
   },
   "last_completed_sprint": {
     "number": 17,

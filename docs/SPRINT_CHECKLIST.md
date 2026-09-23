@@ -23,6 +23,7 @@ Consult at EVERY phase boundary (open this file in the same turn; walk lines wit
 
 ## Phase 4: Execution (auto-advance window: no permission-asking)
 - [ ] Tasks in plan order; tests after each change; commits reference issue #N
+- [ ] ACTUAL minutes recorded in `sprint_status.json` `task_actuals` as each task completes (not reconstructed at the retrospective)
 - [ ] `git status --short` before every staging; every entry accounted for; 0* files committed neutrally, never read
 - [ ] Results only via frozen protocol; every metric -> results.json with evidence tag
 - [ ] HARDWARE: any metered run stops for approval (Criterion H), always
@@ -30,6 +31,7 @@ Consult at EVERY phase boundary (open this file in the same turn; walk lines wit
 ## Phase 5: Review & Validation
 - [ ] Full suite green; no unamended drift from prereg-freeze in analysis code
 - [ ] Plan acceptance criteria walked line by line WITH EVIDENCE
+- [ ] OUTWARD documents pass `scripts/outward_readability.py` BEFORE handover (IMP-5: the QCi package needed a revision round purely to strip tokens a vendor reader cannot resolve, after the team lead had already reviewed it)
 - [ ] Handed to team lead for manual validation (questions correct from here)
 
 ## Phase 6: Push & Finalize PR

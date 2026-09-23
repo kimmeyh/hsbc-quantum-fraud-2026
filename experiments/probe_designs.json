@@ -1,0 +1,40 @@
+{
+  "_note": "Probe designs for run_integer_probe.py. IMP-4 (Sprint 18 retrospective): these were a module constant, so running ONE design required monkeypatching the list from a throwaway script. That is fine for a careful operator and dangerous when the thing being selected costs metered seconds. A config file can be edited, reviewed and diffed before an approval stop.",
+  "_fields": {
+    "label": "unique; the ledger skips a label already completed",
+    "n": "variable count -- THE COST DRIVER (measured, Sprint 18)",
+    "upper_bound": "levels per variable are upper_bound + 1"
+  },
+  "designs": [
+    {
+      "label": "probe_small",
+      "n": 8,
+      "upper_bound": 3
+    },
+    {
+      "label": "probe_mid",
+      "n": 24,
+      "upper_bound": 3
+    },
+    {
+      "label": "probe_mid_hi",
+      "n": 60,
+      "upper_bound": 3
+    },
+    {
+      "label": "probe_high",
+      "n": 150,
+      "upper_bound": 3
+    },
+    {
+      "label": "probe_ceiling",
+      "n": 210,
+      "upper_bound": 3
+    },
+    {
+      "label": "probe_deep",
+      "n": 60,
+      "upper_bound": 13
+    }
+  ]
+}
