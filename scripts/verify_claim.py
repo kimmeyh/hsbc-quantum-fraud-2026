@@ -65,18 +65,30 @@ AUTHORITATIVE = (
 )
 
 
+class SearchFailed(RuntimeError):
+    """The search could not run. NOT the same as finding nothing.
+
+    This script answers "who has already spoken about this figure?", and a
+    wrong answer of "nobody" is the one that does damage: it invites a
+    contradiction of a number some authoritative file already settled. The
+    first version returned an empty list when git failed and when no search
+    path existed, so a broken search was indistinguishable from a clean one.
+    Found by the PR #139 review.
+    """
+
+
 def _git_grep(pattern: str, paths: tuple[str, ...]) -> list[str]:
     existing = [p for p in paths if (ROOT / p).exists()]
     if not existing:
-        return []
+        raise SearchFailed(
+            "none of the search paths exists: " + ", ".join(paths))
     r = subprocess.run(
         ["git", "grep", "-l", "-F", "--", pattern, *existing],
         cwd=str(ROOT), capture_output=True, text=True)
     # git grep exits 1 when nothing matches, which is not an error here.
     if r.returncode not in (0, 1):
-        print(f"WARNING: git grep exited {r.returncode}: {r.stderr.strip()}",
-              file=sys.stderr)
-        return []
+        raise SearchFailed(
+            f"git grep exited {r.returncode}: {r.stderr.strip()[:200]}")
     return sorted({ln.strip() for ln in r.stdout.splitlines() if ln.strip()})
 
 
@@ -97,11 +109,18 @@ def amendments_mentioning(figure: str) -> list[str]:
 
 
 def report(figure: str, amendment: str | None = None) -> int:
-    files = _git_grep(figure, SEARCH_PATHS)
-    amends = amendments_mentioning(figure)
-
     print(f"FIGURE: {figure}")
     print("=" * 66)
+
+    try:
+        files = _git_grep(figure, SEARCH_PATHS)
+    except SearchFailed as exc:
+        print(f"  THE SEARCH DID NOT RUN: {exc}")
+        print()
+        print("  This is NOT a result. Nothing was checked, so nothing can be")
+        print("  concluded about who has already spoken about this figure.")
+        return 2
+    amends = amendments_mentioning(figure)
 
     if not files:
         print("  No tracked file mentions it.")

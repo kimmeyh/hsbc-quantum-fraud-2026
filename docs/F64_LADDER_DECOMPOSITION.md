@@ -10,7 +10,8 @@ features.** Going from 13 features to 17 at the same subset order moves the
 result by **+0.0001** (CI [-0.0024, +0.0026], spanning zero). Going from
 two-feature to three-feature learners at the same feature count moves it by
 **+0.0245** (CI [+0.0187, +0.0302], excluding zero). The interaction between
-the two is about **+0.0011** -- small.
+the two is about **+0.0001** -- the two main effects account for the corner-to-
+corner difference almost exactly.
 
 Practically: **the pool's expressiveness carries the gain, and the feature
 budget does not.** A Phase 2 configuration should spend its variable budget on
@@ -42,9 +43,15 @@ k=13 order-3 cell under F91 to identify the interaction F64 could not.
 |---|---|---|---|
 | k, 13 to 17, at order 2 | **+0.0001** | [-0.0024, +0.0026] | no |
 | subset order, 2 to 3, at k=13 | **+0.0245** | [+0.0187, +0.0302] | **yes** |
-| sum of main effects | +0.0245 | | |
-| observed corner-to-corner [HW] | +0.0256 | | |
-| implied interaction | +0.0011 | | |
+| sum of main effects | +0.0246 | | |
+| observed corner-to-corner | +0.0247 | | |
+| implied interaction | **+0.0001** | | |
+
+The corner-to-corner figure is 0.7928 - 0.7681, both cells in the table above.
+It is NOT B2's +0.0256, which is that arm's [HW]-vs-proxy gain at the k=17
+order-3 corner -- a comparison between arms, not between corners. An earlier
+version of this table used +0.0256 in this row, which inflated the interaction
+by roughly a factor of ten, to +0.0011.
 
 The k effect is not merely non-significant; it is an order of magnitude smaller
 than the MDE (0.0268) and its interval is tight. That is a positive statement
@@ -53,15 +60,20 @@ about the size of the effect, not an absence of evidence.
 ## What this result supports, and what it does not
 
 **What it supports.** Subset order carries the gain. Feature count contributes
-nothing measurable at order 2, and the interaction is small enough that the two
-main effects nearly account for the whole observed difference.
+nothing measurable at order 2, and the interaction is +0.0001 -- the two main
+effects account for the observed corner-to-corner difference almost exactly.
 
 **What it does NOT support.** The fourth corner is the published **[HW]**
 figure, while the other three are proxy. So the interaction term is *implied*
 across arms rather than measured within one. A fully within-arm 2x2 would need
 the proxy twin of k=17 at order 3 -- 833 variables, which is buildable but was
-not run here. The implied +0.0011 is small enough that it is unlikely to change
+not run here. The implied +0.0001 is small enough that it is unlikely to change
 the conclusion, and that is an expectation rather than a measurement.
+
+Concretely, three corners carry `evidence_tag: SIM` with `arm:
+cvqboost_proxy`, and the fourth is the [HW] figure with no proxy twin. The
+subtraction that yields +0.0001 therefore crosses arms at one corner, which is
+why it is labeled *implied*.
 
 **What changed since the first version of this document.** F64 alone reported a
 BOUND, not an attribution: it showed feature count did not explain the gain but

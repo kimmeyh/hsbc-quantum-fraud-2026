@@ -15,7 +15,7 @@ This is the hardware half of the Phase 2 plan in section 5 of our proposal,
 extracted for QCi.
 
 **The ask, up front: 9,000 Dirac-3 seconds for Phase 2.** We hold 1,681 of
-those already, so the additional request is **7,500 seconds**. That figure is
+those already, so the additional request is **7,319 seconds**. That figure is
 built from rates we measured on your hardware, not from a projection:
 
 **This is well below what we originally told you Phase 2 might need.** Our
@@ -47,12 +47,16 @@ reduction in ambition.
 | Experiment 6, scaling claim (12 fits at 833 variables) | 984 |
 | Experiments 1, 2 and 4 | **0** -- classical proxy |
 | **subtotal, at measured rates** | **4,324** |
-| Estimation contingency, 50% | 2,162 |
-| Discovery buffer, 40% | 2,594 |
-| **total** | **~9,000** |
+| Estimation contingency, +50% of the subtotal | 2,162 |
+| running total | 6,486 |
+| Discovery buffer, +40% of the running total | 2,594 |
+| **total** (4,324 x 1.5 x 1.4, rounded down from 9,080) | **9,000** |
 
 **Why two separate buffers, rather than one round number.** They cover
-different risks and we would rather name them than bury them.
+different risks and we would rather name them than bury them. They apply in
+sequence rather than in parallel: the discovery buffer is 40% of the
+already-contingent total, because what we discover mid-campaign has to be run
+at whatever the true rate turns out to be, not at the measured one.
 
 The **50% estimation contingency** is calibrated on our own error. Our opening
 two-point estimate for the integer solver was wrong by 4.1x by the time we

@@ -194,3 +194,52 @@ def test_the_helper_proves_a_real_repository_guard_can_fail():
                   expect_occurrences=1)],
         run=lambda: run_pytest(node, root=ROOT),
         label="blas field reports a real BLAS")
+
+
+def test_a_mutation_that_writes_then_raises_is_still_restored(tmp_path):
+    """apply() writes the file BEFORE checking that no target survived.
+
+    A mutation whose `new` contains `old` trips that check: the file is on
+    disk mutated, and apply() raises. The first version recorded the original
+    from apply()'s RETURN value, so a mutation that raised was never recorded
+    and the `finally` had nothing to restore -- leaving a tracked source file
+    silently altered, which is the exact outcome injected() promises to
+    prevent.
+
+    Measured before the fix: the file read "XVALUEX = 1" afterwards.
+    Found by Copilot on PR #139.
+    """
+    f = tmp_path / "target.py"
+    f.write_text("VALUE = 1\n", encoding="utf-8")
+
+    with pytest.raises(InjectionError):
+        with injected(Mutation(f, "VALUE", "XVALUEX")):
+            pass
+
+    assert f.read_text(encoding="utf-8") == "VALUE = 1\n", (
+        "a mutation that wrote and then raised left the file altered")
+
+
+def test_a_partial_application_restores_the_mutations_that_landed(tmp_path):
+    """Mutation 2 of 2 fails to apply; mutation 1 must still be undone.
+
+    NOT a guard on the PR #139 restore fix: this case passes under the old
+    code too, because mutation 2 fails at the target-not-found check before
+    any write, so mutation 1's return value was already recorded. Verified by
+    reverting the fix and watching this stay green while the test above went
+    red.
+
+    It is kept as a behavioral pin on the ordering contract -- `originals` is
+    appended per mutation inside the `try`, not built up front -- and labeled
+    so nobody later mistakes it for coverage of the write-then-raise path.
+    """
+    f = tmp_path / "two.py"
+    f.write_text("A = 1\nB = 2\n", encoding="utf-8")
+
+    with pytest.raises(InjectionError):
+        with injected(Mutation(f, "A = 1", "A = 99"),
+                      Mutation(f, "NOT_PRESENT_ANYWHERE", "x")):
+            pass
+
+    assert f.read_text(encoding="utf-8") == "A = 1\nB = 2\n", (
+        "the first mutation leaked when the second failed to apply")

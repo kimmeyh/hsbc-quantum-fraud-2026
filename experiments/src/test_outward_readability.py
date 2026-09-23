@@ -91,3 +91,32 @@ def test_a_hit_is_framed_as_a_question_not_a_verdict(tmp_path):
     out = _run(str(p)).stdout
     assert "QUESTION, not a verdict" in out
     assert "--allow" in out
+
+
+def test_checking_nothing_is_not_a_pass():
+    """A typo in a path used to print "No unresolvable internal references
+    found" and exit 0 -- a clean bill of health from a check that never
+    opened a file. This script gates a handover to an external vendor.
+
+    Found by the PR #139 review.
+    """
+    import outward_readability as orx
+    rc = orx.main(["docs/THIS_FILE_DOES_NOT_EXIST.md"])
+    assert rc != 0, "a run that scanned nothing reported success"
+
+
+def test_one_missing_path_among_real_ones_is_still_flagged():
+    """Partial coverage is the subtler case: the documents that WERE scanned
+    are clean, so the exit code would otherwise say everything is fine."""
+    import outward_readability as orx
+    rc = orx.main(["docs/HARDWARE_PLAN_PHASE_2.md",
+                   "docs/THIS_FILE_DOES_NOT_EXIST.md"])
+    assert rc != 0, "a partially-skipped run reported success"
+
+
+def test_a_clean_run_over_real_documents_still_passes():
+    """The companion. Without it, returning non-zero unconditionally would
+    satisfy both tests above and the check would be useless."""
+    import outward_readability as orx
+    assert orx.main(["docs/HARDWARE_PLAN_PHASE_2.md",
+                     "docs/QCI_EQC_MODELS_FEEDBACK.md"]) == 0

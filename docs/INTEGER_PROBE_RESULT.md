@@ -1,7 +1,8 @@
 # The Dirac-3 integer path: first measured cost
 
-Rounds 1 and 2, 2026-09-23 (Sprint 18 Task B, F87). **209 metered seconds
-across five calls.** This is the first cost data this project has for the
+Rounds 1 and 2, 2026-09-23 (Sprint 18 Task B, F87). **280 metered seconds
+across six calls**, five distinct designs plus one duplicate submission of the
+smallest (4 s), recorded in "Two approval stops, one over-spend" below. This is the first cost data this project has for the
 integer solver; Phase 1 ran only the continuous relaxation.
 
 ## What it replaces

@@ -109,7 +109,18 @@ def injected(*mutations: Mutation) -> Iterator[None]:
     originals: list[tuple[Path, str]] = []
     try:
         for m in mutations:
-            originals.append((m.path, m.apply()))
+            # RECORD BEFORE APPLYING. apply() writes the file and only then
+            # checks that no occurrence of the target survived, so a mutation
+            # whose `new` contains `old` -- or any future write-then-raise
+            # path -- leaves the file mutated and raises. Appending its RETURN
+            # value meant that file was never recorded, so this finally could
+            # not restore it, contradicting the docstring above.
+            #
+            # Measured, not reasoned: injecting "VALUE" -> "XVALUEX" left the
+            # file reading "XVALUEX = 1" with no restore. Found by Copilot on
+            # PR #139.
+            originals.append((m.path, m.path.read_text(encoding="utf-8")))
+            m.apply()
         yield
     finally:
         for path, text in reversed(originals):

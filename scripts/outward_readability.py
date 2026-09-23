@@ -89,11 +89,15 @@ def main(argv: list[str] | None = None) -> int:
 
     allow = set(args.allow)
     total = 0
+    scanned = 0
+    missing: list[str] = []
     for raw in args.paths:
         p = Path(raw)
         if not p.is_file():
             print(f"  SKIP (not a file): {p}")
+            missing.append(raw)
             continue
+        scanned += 1
         hits = scan(p, allow)
         total += len(hits)
         if not hits:
@@ -104,6 +108,20 @@ def main(argv: list[str] | None = None) -> int:
             print(f"      line {line:4d}  {token:12s} {why}")
 
     print()
+    # NOTHING SCANNED IS NOT A PASS. A typo in a path, or a document that
+    # moved, printed "No unresolvable internal references found" and exited 0
+    # -- a clean bill of health for a check that never ran. This script gates
+    # a handover to an external vendor, so it must distinguish "clean" from
+    # "could not look". Found by the PR #139 review.
+    if not scanned:
+        print("CHECKED NOTHING. None of the paths given is a file:")
+        for raw in missing:
+            print(f"  {raw}")
+        print("This is not a pass. Fix the paths and re-run.")
+        return 2
+    if missing:
+        print(f"WARNING: {len(missing)} path(s) were not files and were not "
+              "checked. Listed above.")
     if total:
         print(f"{total} token(s) a recipient outside this repository cannot "
               "resolve.")
@@ -111,8 +129,9 @@ def main(argv: list[str] | None = None) -> int:
               "this means?")
         print("If one is genuinely fine, re-run with --allow <token>.")
         return 1
-    print("No unresolvable internal references found.")
-    return 0
+    print(f"No unresolvable internal references found in {scanned} "
+          f"document(s).")
+    return 1 if missing else 0
 
 
 if __name__ == "__main__":

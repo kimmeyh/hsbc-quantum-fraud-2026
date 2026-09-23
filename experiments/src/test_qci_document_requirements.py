@@ -172,13 +172,19 @@ def test_the_memo_states_the_submission_date_the_receipt_records():
 
 
 def test_the_memo_reports_the_allocation_position():
-    """1,039 drawn of 3,000 in Phase 1, plus 16 on the Sprint 18 integer
-    probe, leaving 1,945.
+    """1,039 drawn of 3,000 in Phase 1, plus 280 on the Sprint 18 integer
+    probe, leaving 1,681.
 
     The subtraction 3000-1141 is wrong in both directions; see
     docs/QPU_RECONCILIATION.md. This test asserted 1,961 until the probe ran
     and spent against it -- a figure that was right when written and went
     stale the moment the allocation moved.
+
+    IT THEN WENT STALE THE SAME WAY. This docstring said "plus 16 ... leaving
+    1,945" after round 2 had spent 264 more, while the assertion below it
+    already read 1,681. A docstring carrying a number is a second copy of it,
+    and this one recorded the lesson about stale figures in the same breath as
+    repeating the mistake. Found by Copilot on PR #139.
     """
     text = _read(MEMO)
     assert "1,039" in text and "1,681" in text
@@ -280,18 +286,48 @@ def test_the_hardware_plan_states_the_phase_2_ask_up_front():
     text = _read(HARDWARE)
     assert "The ask, up front" in text
     assert "9,000" in text, "the total request is not stated"
-    assert "7,500" in text, "the additional request is not stated"
     head = text[:text.index("Allocation position")]
     assert "9,000" in head, "the ask is not up front"
+
+    # THE SUBTRACTION, not the phrasing. This guard pinned the literal
+    # "7,500", which was wrong: 9,000 - 1,681 = 7,319. The document asserted
+    # 7,500 with the word "so", presenting it as the result of that
+    # subtraction, and the guard agreed with it. A vendor-facing figure is
+    # exactly where a number must be re-derived rather than matched.
+    import re
+    held = int(re.search(r"We hold ([\d,]+) of", text).group(1).replace(",", ""))
+    additional = int(
+        re.search(r"additional request is \*\*([\d,]+) seconds",
+                  text).group(1).replace(",", ""))
+    assert 9000 - held == additional, (
+        f"the document says it holds {held:,} of 9,000 and asks for "
+        f"{additional:,} more; 9,000 - {held:,} = {9000 - held:,}")
 
 
 def test_the_ask_separates_its_two_buffers():
     """Estimation contingency and discovery buffer cover DIFFERENT risks.
     Collapsing them into one round number hides what is being asked for."""
     text = _read(HARDWARE)
-    assert "Estimation contingency, 50%" in text
-    assert "Discovery buffer, 40%" in text
+    assert "Estimation contingency" in text
+    assert "Discovery buffer" in text
     assert "4,324" in text, "the measured-rate subtotal is not shown"
+
+    # THE BUFFERS COMPOUND, and the table must say so. Presented as two
+    # parallel percentages of the 4,324 subtotal, the column sums to 8,216
+    # against a stated 9,000: 40% of the subtotal is 1,730, but the table
+    # shows 2,594, which is 40% of the POST-contingency 6,486. A reviewer
+    # checking the arithmetic concludes the ask is padded. Found by the PR
+    # #139 review.
+    assert "4,324 x 1.5 x 1.4" in text, (
+        "the table does not show how the buffers compose")
+    assert "6,486" in text, "the running total between buffers is not shown"
+    # Each buffer row shows its INCREMENT; the running total sits between
+    # them. Re-derived here so the table cannot drift from its own basis.
+    assert round(4324 * 0.5) == 2162, "the contingency increment"
+    assert round(4324 * 1.5) == 6486, "the running total"
+    assert round(4324 * 1.5 * 0.4) == 2594, "the discovery increment"
+    for figure in ("2,162", "6,486", "2,594"):
+        assert figure in text, f"{figure} is missing from the ask table"
 
 
 def test_the_estimation_contingency_is_justified_by_our_own_error():

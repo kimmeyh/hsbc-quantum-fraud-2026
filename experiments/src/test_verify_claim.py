@@ -147,3 +147,40 @@ def test_the_preregistration_is_listed_as_a_file_not_only_scanned():
     assert "PREREGISTRATION.md" in listed, (
         "the amendment log is not in the surfaced file list; the search no "
         "longer covers it")
+
+
+def test_a_failed_search_is_not_reported_as_nothing_found(monkeypatch):
+    """This script answers "who has already spoken about this figure?", and a
+    wrong answer of "nobody" is the one that does damage: it invites a
+    contradiction of a number some authoritative file already settled.
+
+    A git failure used to warn on stderr and return an empty list, which the
+    caller printed as "nothing has answered this yet". Found by the PR #139
+    review.
+    """
+    import verify_claim as vc
+
+    class Failed:
+        returncode = 128
+        stdout = ""
+        stderr = "fatal: not a git repository"
+
+    monkeypatch.setattr(vc.subprocess, "run", lambda *a, **k: Failed())
+    rc = vc.report("0.0245")
+    assert rc == 2, f"a failed search returned {rc}, not a failure code"
+
+
+def test_missing_search_paths_are_not_reported_as_nothing_found(monkeypatch):
+    """The other entry point to the same wrong answer: every search path
+    gone, which happens when a directory is renamed."""
+    import verify_claim as vc
+    monkeypatch.setattr(vc, "SEARCH_PATHS", ("no/such/dir",))
+    assert vc.report("0.0245") == 2
+
+
+def test_a_figure_nobody_mentions_is_still_distinguishable(monkeypatch):
+    """The companion. "Searched and found nothing" must remain a DIFFERENT
+    outcome from "could not search" -- otherwise the fix above just moves the
+    conflation instead of removing it."""
+    import verify_claim as vc
+    assert vc.report("0.31415926535") == 0

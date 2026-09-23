@@ -165,6 +165,90 @@ def test_the_writeup_leads_with_a_bluf():
     assert "+0.0245" in head and "+0.0001" in head
 
 
+def _corners(text: str) -> dict:
+    """The four cells, parsed from the document's own table.
+
+    Deliberately parsed rather than hardcoded. A constant here would be a
+    second copy of a number the document owns, and the whole defect this
+    guards is a figure that stopped matching its source.
+    """
+    import re
+    corners = {}
+    for k, row in (("13", r"\*\*k=13\*\*"), ("17", r"\*\*k=17\*\*")):
+        m = re.search(row + r"\s*\|([^|]*)\|([^|]*)\|", text)
+        assert m, f"the k={k} row is no longer parseable from the table"
+        for order, cell in (("2", m.group(1)), ("3", m.group(2))):
+            v = re.search(r"0\.\d{4}", cell)
+            assert v, f"no figure in the k={k} order-{order} cell: {cell!r}"
+            corners[(k, order)] = float(v.group(0))
+    return corners
+
+
+def test_every_effect_follows_from_the_four_corners():
+    """The decomposition is arithmetic. Each effect must equal the
+    subtraction it claims to be, to the precision the document quotes.
+
+    THE DEFECT THIS EXISTS FOR. The interaction row read +0.0011, obtained by
+    substituting B2's +0.0256 -- that arm's [HW]-vs-proxy gain -- for the
+    corner-to-corner difference of +0.0247. Both are real measured
+    quantities; only one belongs in this subtraction. The presence-based BLUF
+    test passed throughout, because +0.0245 and +0.0001 were both still on
+    the page.
+    """
+    assert WRITEUP.exists(), (
+        "the F64 write-up is missing; this guard must not pass by skipping")
+    text = WRITEUP.read_text(encoding="utf-8")
+    c = _corners(text)
+
+    k_effect = c[("17", "2")] - c[("13", "2")]
+    order_effect = c[("13", "3")] - c[("13", "2")]
+    corner_to_corner = c[("17", "3")] - c[("13", "2")]
+    interaction = corner_to_corner - k_effect - order_effect
+
+    # EACH VALUE IS CHECKED IN THE ROW THAT CLAIMS IT. Asserting only that a
+    # figure appears somewhere in the document is presence-checking one level
+    # removed: restoring the +0.0011 interaction left an earlier version of
+    # this test green, because +0.0001 was still on the page as the k effect.
+    rows = {
+        "k, 13 to 17, at order 2": k_effect,
+        "subset order, 2 to 3, at k=13": order_effect,
+        "sum of main effects": k_effect + order_effect,
+        "observed corner-to-corner": corner_to_corner,
+        "implied interaction": interaction,
+    }
+    for prefix, value in rows.items():
+        line = next((ln for ln in text.splitlines()
+                     if ln.lstrip("| ").startswith(prefix)), None)
+        assert line, f"the {prefix!r} row is gone from the decomposition table"
+        quoted = f"{value:+.4f}"
+        assert quoted in line, (
+            f"the {prefix!r} row must read {quoted}, derived from the four "
+            f"corners in this same document. It reads: {line.strip()}")
+
+    # The BLUF restates the same three numbers, so it is a second copy that
+    # can drift independently. It did.
+    head = text[:text.index("## The four corners")]
+    for label, value in (("k effect", k_effect),
+                         ("order effect", order_effect),
+                         ("interaction", interaction)):
+        assert f"{value:+.4f}" in head, (
+            f"the BLUF does not quote the {label} as {value:+.4f}")
+    assert "+0.0011" not in head, (
+        "the BLUF quotes +0.0011 as the interaction; that is B2's [HW] gain "
+        "carried into a corner-to-corner subtraction")
+
+
+def test_the_writeup_names_the_arm_of_each_corner():
+    """Three corners are proxy and the fourth is [HW]. A reader who cannot
+    tell which is which cannot judge the interaction term, and a draft of
+    this document briefly claimed all four were proxy."""
+    assert WRITEUP.exists(), (
+        "the F64 write-up is missing; this guard must not pass by skipping")
+    text = WRITEUP.read_text(encoding="utf-8")
+    assert "[HW]" in text
+    assert "proxy" in text
+
+
 def test_the_writeup_still_states_what_it_does_not_support():
     """The fourth corner is [HW] while the others are proxy, so the
     interaction is implied ACROSS arms rather than measured within one. That

@@ -45,7 +45,7 @@ estimate did exactly that.
 
 **F64 + F91.** The full 2x2: subset order carries B2's +0.0256 (+0.0245, CI
 excluding zero), feature count contributes nothing measurable (+0.0001, CI
-spanning zero), and the interaction is about +0.0011.
+spanning zero), and the interaction is about +0.0001.
 
 **F89** caught two vacuous guards on its first real use. **F88** was tested
 against both Sprint 17 false findings verbatim.

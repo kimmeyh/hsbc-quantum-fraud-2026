@@ -75,8 +75,8 @@ to submit at all if the ledger is unreadable.
 | Tests | grew across six new guard files; counts are not restated here -- run the suite |
 | Both platforms | zero failures |
 | Amendments | A33, unchanged |
-| Metered seconds | **16** of an approved 12 |
-| Grant position | 1,055 of 3,000 drawn, **1,945 remaining** |
+| Metered seconds | **280** across six calls, in two approved rounds |
+| Grant position | 1,319 of 3,000 drawn, **1,681 remaining** |
 
 ## Defects found in this sprint's own work
 
