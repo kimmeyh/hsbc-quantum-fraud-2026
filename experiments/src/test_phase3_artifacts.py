@@ -21,6 +21,7 @@ If work has happened, Phase 3's artifacts were due before it started.
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -34,12 +35,31 @@ STATUS = ROOT / ".claude" / "sprint_status.json"
 # The hook only fires on a close-out CLAIM; an empty payload exits early. The
 # first proof of this fix sent "{}" and reported every case as allowed, which
 # is a vacuous injection rather than a broken hook.
-CLOSEOUT_CLAIM = json.dumps(
-    {"last_assistant_message": "The sprint close-out is complete."})
+# branch_override IS REQUIRED, not optional. Without it the hook falls back to
+# `git branch --show-current`, which returns EMPTY on a detached HEAD -- and
+# actions/checkout leaves CI detached. The hook's first gate is "sprint feature
+# branch only", so it returned ALLOW before reaching any artifact check, and
+# every test here asserting a block failed on Linux while passing on Windows.
+#
+# The branch name must match SPRINT_BRANCH and carry the sprint number in
+# sprint_status.json, or the hook exits on the stale-state path instead.
+# Mirrors SPRINT_BRANCH in .claude/hooks/verify_closeout_complete.py. A copy,
+# so a drift in either is visible: the test below asserts the pinned branch
+# still satisfies it.
+SPRINT_BRANCH_IN_HOOK = re.compile(r"^feature/\d+_Sprint_(\d+)")
+
+
+def _claim() -> str:
+    number = json.loads(STATUS.read_text(encoding="utf-8"))[
+        "current_sprint"]["number"]
+    return json.dumps({
+        "last_assistant_message": "The sprint close-out is complete.",
+        "branch_override": f"feature/20260922_Sprint_{number}",
+    })
 
 
 def _run_hook() -> tuple[int, str]:
-    r = subprocess.run([sys.executable, str(HOOK)], input=CLOSEOUT_CLAIM,
+    r = subprocess.run([sys.executable, str(HOOK)], input=_claim(),
                        capture_output=True, text=True, cwd=str(ROOT))
     return r.returncode, r.stderr
 
@@ -160,3 +180,34 @@ def test_an_unresolvable_base_ref_does_not_disable_the_checks(tmp_path):
         "the hook allowed a close-out claim with pr null, no issues and no "
         "recorded approval, because the base ref did not resolve")
     assert "Phase 3" in r.stderr
+
+
+def test_the_hook_tests_do_not_depend_on_the_checked_out_branch():
+    """These tests must give the same answer on a detached HEAD.
+
+    THE DEFECT THIS EXISTS FOR. The payload omitted `branch_override`, so the
+    hook fell back to `git branch --show-current`. That returns a name in a
+    normal clone and EMPTY on a detached HEAD, which is what
+    actions/checkout leaves behind. The hook's first gate is "sprint feature
+    branch only", so on CI it returned ALLOW before reaching any artifact
+    check, and three tests asserting a block failed on Linux while passing on
+    Windows -- for every commit of this sprint.
+
+    Verified by running the pre-fix file in a detached worktree: 3 failed.
+    """
+    # BEHAVIORAL, not a source grep: the payload the hook actually receives
+    # must name a branch. A grep on this file matched the phrase inside this
+    # docstring, which is its own small lesson about presence-checking.
+    payload = json.loads(_claim())
+    assert payload.get("branch_override"), (
+        "the hook payload does not pin the branch, so these tests depend on "
+        "how the repository happens to be checked out")
+    assert SPRINT_BRANCH_IN_HOOK.match(payload["branch_override"]), (
+        f"{payload['branch_override']!r} does not match the pattern the hook "
+        "requires, so the hook would exit before any artifact check")
+
+    number = json.loads(STATUS.read_text(encoding="utf-8"))[
+        "current_sprint"]["number"]
+    assert str(number) in payload["branch_override"], (
+        "the pinned branch names a different sprint than the status file, "
+        "so the hook takes its stale-state path instead")
