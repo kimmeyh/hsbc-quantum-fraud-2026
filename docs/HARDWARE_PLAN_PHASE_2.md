@@ -26,8 +26,8 @@ count instead of quoting a number.
 |---|---|
 | Granted 2026-09-09 | 3,000 |
 | Drawn during the Phase 1 campaign | 1,039 |
-| Drawn by the integer sizing probe, 2026-09-23 | 16 |
-| **Remaining** | **1,945** |
+| Drawn by the integer sizing probes, 2026-09-23 | 280 |
+| **Remaining** | **1,681** |
 
 The campaign total reported in our submission is 1,141 metered seconds over 61
 fits. That figure and the 1,039 above differ for two reasons, both of which we
@@ -72,29 +72,37 @@ moves to the formulation where the optimizer has real work to do.
   solve, greedy selection, and simulated annealing. A win against a
   certified-optimal classical solve is a result; a win against no control is
   not.
-- **Cost**: **measured, on your integer solver, in a two-point sizing probe.**
+- **Cost**: **measured, on your integer solver, across five sizing calls.**
 
-  | level budget | variables | metered seconds |
+  | variables | level budget | metered seconds |
   |---|---|---|
-  | 32 | 8 | 4 |
-  | 96 | 24 | 8 |
+  | 8 | 32 | 4 |
+  | 24 | 96 | 8 |
+  | 60 | 240 | 28 |
+  | 150 | 600 | 165 |
+  | 60 | 840 | 71 |
 
-  Both `status: ok`, zero failures, `relaxation_schedule 2`, `num_samples 8`.
-  Note that the binding quantity is the LEVEL BUDGET -- `sum(upper_bound + 1)`
-  against your documented 949 ceiling -- rather than the variable count. That
-  distinction is not obvious from the documentation and cost us a corrected
-  assumption before the probe ran.
+  All `status: ok`, zero failures, `relaxation_schedule 2`, `num_samples 8`.
 
-  Tripling the budget doubled the cost. Fitted across the two points that is
-  about **0.0625 s per level plus a 2 s floor**, which **extrapolates** to
-  roughly 14 s at 200 levels and 61 s at the ceiling.
+  **The finding we think is most useful to you: cost tracks the VARIABLE
+  COUNT, not the level budget.** The last two rows are a controlled pair. The
+  60-variable job carries 1.4x more levels than the 150-variable one and cost
+  2.3x LESS. Your documented ceiling is expressed in levels --
+  `sum(upper_bound + 1)` against 949 -- but sizing a block on levels alone
+  would misprice it, and our own first estimate made exactly that mistake.
 
-  **We are labeling that extrapolation rather than presenting it as
-  measured, because two points define a line by construction.** Your
-  continuous path is the reason for the caution: between 136 and 833 variables
-  it showed an 18.8x per-sample step. Before committing a large integer block
-  we would take a third point near the ceiling, and we would quote that block
-  from the third point rather than from this line.
+  Cost is also superlinear in variables. We first fitted two small points and
+  got 0.0625 s per level, extrapolating to about 61 s at the ceiling. The next
+  two calls came in at 1.6x and 4.1x that line, so we discarded it. A
+  two-factor fit over all five points gives roughly `vars^0.75 x levels^0.52`,
+  but individual points miss by up to 45%, so we offer it as indicative rather
+  than as a formula.
+
+  **What we will not quote**: a figure at the ceiling with a high variable
+  count. We designed that call and did not run it -- the revised estimate put
+  it well above what had been approved, so it stopped for a fresh decision.
+  Quoting it would mean extrapolating past our own data, which is the thing
+  this section exists to avoid.
 
 ### The blocks with measured costs
 

@@ -181,7 +181,7 @@ def test_the_memo_reports_the_allocation_position():
     stale the moment the allocation moved.
     """
     text = _read(MEMO)
-    assert "1,039" in text and "1,945" in text
+    assert "1,039" in text and "1,681" in text
     assert "1,859" not in text, (
         "the memo quotes 1,859, which is grant minus CAMPAIGN total -- wrong "
         "in both directions (see QPU_RECONCILIATION.md)")
@@ -206,17 +206,38 @@ def test_the_hardware_plan_no_longer_refuses_to_quote_a_cost():
 
 
 def test_the_hardware_plan_carries_the_measured_integer_figures():
+    """Five measured points, not the discarded two-point line."""
     text = _read(HARDWARE)
-    assert "32" in text and "96" in text, "the level budgets are not stated"
-    assert "0.0625 s per level" in text, "the fitted rate is not stated"
+    for probe in ("| 8 | 32 | 4 |", "| 150 | 600 | 165 |", "| 60 | 840 | 71 |"):
+        assert probe in text, f"missing measured row: {probe}"
 
 
-def test_the_extrapolation_is_labelled_as_such():
-    """Two points define a line by construction. Presenting the ceiling figure
-    as measured would be exactly the overstatement this card exists to fix."""
+def test_the_hardware_plan_states_that_cost_tracks_variables():
+    """THE FINDING. The ceiling is expressed in levels, so sizing a block on
+    levels is the natural mistake -- and the one we made first."""
     text = _read(HARDWARE)
-    assert "extrapolat" in text.lower()
-    assert "two points define a line by construction" in text.lower()
+    # _read collapses whitespace, so this matches across the line wrap.
+    assert "cost tracks the VARIABLE COUNT, not the level budget" in text
+    assert "controlled pair" in text
+
+
+def test_the_hardware_plan_does_not_quote_a_high_variable_ceiling_figure():
+    """probe_ceiling was designed and not run. Quoting a figure there would
+    extrapolate past the data."""
+    text = _read(HARDWARE)
+    assert "What we will not quote" in text
+    assert "61 s at the ceiling" not in text or "discarded" in text or         "We first fitted" in text, (
+        "the falsified round-1 extrapolation is presented as current")
+
+
+def test_the_discarded_fit_is_reported_as_discarded():
+    """Round 1's line was falsified by round 2 at 1.6x and 4.1x. The document
+    says so rather than quietly dropping it, because QCi may have read the
+    earlier figure."""
+    text = _read(HARDWARE)
+    assert "4.1x" in text, "the falsification is not quantified"
+    assert "indicative rather than as a formula" in text, (
+        "the two-factor fit is presented as more certain than it is")
 
 
 def test_the_level_budget_distinction_is_explained_to_qci():
@@ -229,7 +250,14 @@ def test_the_level_budget_distinction_is_explained_to_qci():
 
 def test_the_memo_reports_the_probe_as_done_and_the_balance_as_spent():
     text = _read(MEMO)
-    assert "1,945" in text, "the memo does not carry the post-probe balance"
-    assert "1,961" not in text, (
-        "the memo still quotes the pre-probe balance somewhere; the figures "
-        "must be internally consistent")
+    assert "1,681" in text, "the memo does not carry the post-probe balance"
+    for stale in ("1,961", "1,945"):
+        assert stale not in text, (
+            f"the memo still quotes {stale}; the figures must be internally "
+            "consistent")
+
+
+def test_the_memo_states_the_variables_not_levels_finding():
+    text = _read(MEMO)
+    assert "COST TRACKS THE VARIABLE COUNT, NOT THE LEVEL BUDGET" in text
+    assert "4.1x" in text, "the memo does not own the mispricing"

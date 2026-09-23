@@ -44,6 +44,51 @@
    "balance_after": 1945,
    "metered_seconds": 8,
    "cost_source": "allocation balance before minus after"
+  },
+  {
+   "label": "probe_mid_hi",
+   "n_variables": 60,
+   "level_budget": 240,
+   "relaxation_schedule": 2,
+   "num_samples": 8,
+   "balance_before": 1945,
+   "started_utc": "2026-09-23T00:52:35",
+   "status": "ok",
+   "response_repr": "SolutionResults(solutions=array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,\n        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,\n        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,\n        0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,\n        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\n       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,\n        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,\n        0, 0, 0,",
+   "finished_utc": "2026-09-23T00:53:24",
+   "balance_after": 1917,
+   "metered_seconds": 28,
+   "cost_source": "allocation balance before minus after"
+  },
+  {
+   "label": "probe_high",
+   "n_variables": 150,
+   "level_budget": 600,
+   "relaxation_schedule": 2,
+   "num_samples": 8,
+   "balance_before": 1917,
+   "started_utc": "2026-09-23T00:53:38",
+   "status": "ok",
+   "response_repr": "SolutionResults(solutions=array([[0, 0, 0, ..., 0, 0, 0],\n       [0, 0, 0, ..., 0, 1, 0],\n       [0, 0, 0, ..., 0, 0, 0],\n       ...,\n       [0, 0, 0, ..., 0, 1, 0],\n       [0, 0, 0, ..., 0, 0, 0],\n       [0, 0, 0, ..., 0, 0, 0]]), energies=array([ 514.65576,  721.42993,  729.82166,  835.2314 , 1129.882  ,\n       1256.9155 , 1427.9844 , 1768.0961 ]), counts=array([1, 1, 1, 1, 1, 1, 1, 1]), objectives=None, run_time=[21261501312, 21066535950, 17083164215, 20800916672, 20720771790, 21546627045, 21043844223, 20654981613], preprocessing_time=557279289, postprocessing_time=[7267847061, 7253667831, ",
+   "finished_utc": "2026-09-23T00:57:32",
+   "balance_after": 1752,
+   "metered_seconds": 165,
+   "cost_source": "allocation balance before minus after"
+  },
+  {
+   "label": "probe_deep",
+   "n_variables": 60,
+   "level_budget": 840,
+   "relaxation_schedule": 2,
+   "num_samples": 8,
+   "balance_before": 1752,
+   "started_utc": "2026-09-23T01:00:08",
+   "status": "ok",
+   "response_repr": "SolutionResults(solutions=array([[ 1,  0,  0,  5,  0,  0,  7,  2,  7,  4,  0,  0,  1,  0,  3,  2,\n         3,  0,  7,  0,  3,  0,  0,  3,  1,  5,  3,  1,  0,  0,  0,  0,\n         0,  0,  0,  0,  0,  3,  4,  0,  0,  0,  0,  2,  4,  0,  3,  2,\n         0,  1,  1,  1,  1,  2,  5,  0,  0,  0,  0,  0],\n       [ 1,  0,  0,  0,  2,  6,  4,  2,  2,  7,  0,  0,  1,  1,  3,  1,\n         0,  0,  0,  0,  4,  0,  1,  7,  0,  0,  5,  0,  0,  0,  4,  0,\n         2,  0,  8,  1,  0,  0,  0,  0,  1,  0,  0,  7,  0,  0,  0,  0,\n        10,  3,  2,  0,  4,  4,  1,  0,  0,  2,  0,  0],\n       [ 0,  1,  0,  0,  0, ",
+   "finished_utc": "2026-09-23T01:01:39",
+   "balance_after": 1681,
+   "metered_seconds": 71,
+   "cost_source": "allocation balance before minus after"
   }
  ],
  "note": "F87 integer sizing probe. Cost from the allocation balance delta, per F47."

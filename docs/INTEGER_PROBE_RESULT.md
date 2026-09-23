@@ -1,12 +1,12 @@
 # The Dirac-3 integer path: first measured cost
 
-Run 2026-09-23 (Sprint 18 Task B, F87). **16 metered seconds.** This is the
-first cost data this project has for the integer solver; Phase 1 ran only the
-continuous relaxation.
+Rounds 1 and 2, 2026-09-23 (Sprint 18 Task B, F87). **209 metered seconds
+across five calls.** This is the first cost data this project has for the
+integer solver; Phase 1 ran only the continuous relaxation.
 
 ## What it replaces
 
-The QCi hardware plan currently reads:
+The QCi hardware plan read:
 
 > **Cost**: **UNKNOWN, and we will not quote a number.** We have never run your
 > integer solver on this problem, so no comparable anchor exists.
@@ -15,72 +15,106 @@ That was the correct thing to write with no measurement behind it, and it was
 the weakest sentence in a package whose argument is that our estimates come
 from measured usage rather than projection.
 
-## The measurement
+## The measurements
 
 | probe | variables | level budget | metered seconds |
 |---|---|---|---|
-| probe_small | 8 | 32 | **4** |
-| probe_mid | 24 | 96 | **8** |
+| probe_small | 8 | 32 | 4 |
+| probe_mid | 24 | 96 | 8 |
+| probe_mid_hi | 60 | 240 | 28 |
+| probe_high | 150 | 600 | 165 |
+| probe_deep | 60 | 840 | 71 |
 
-Both `status: ok`, zero failures, zero retries. `relaxation_schedule 2`,
-`num_samples 8`, frozen. Cost from the allocation balance delta per F47:
-1961 to 1957 to 1953 to 1945.
+All `status: ok`, zero failures, zero retries. `relaxation_schedule 2`,
+`num_samples 8`, frozen throughout. Cost from the allocation balance delta per
+F47: 1961 to 1681.
 
-**The level budget is what binds**, not the variable count. `solve()` computes
-`num_levels = [upper_bound + 1]` per variable, so the device sees
-`sum(upper_bound + 1)` against the documented 949 ceiling. The F87 card assumed
-`num_levels` was a solve parameter; it is not.
+## The headline finding: cost tracks VARIABLES, not the level budget
 
-## The scaling basis, and its limits
+`probe_high` and `probe_deep` were designed as a controlled pair, and they
+settle a question the earlier points could not:
 
-Tripling the level budget (32 to 96) **doubled** the cost (4 to 8 s). Fitted
-linearly across the two points: **0.0625 s per level plus a 2 s floor.**
+| | variables | levels | seconds |
+|---|---|---|---|
+| probe_high | 150 | 600 | **165** |
+| probe_deep | **60** | **840** | **71** |
 
-Extrapolated, and labeled **extrapolated** rather than measured:
+**probe_deep carries 1.4x MORE levels and 2.5x FEWER variables, and cost 2.3x
+LESS.** If the level budget drove cost, it would have been the more expensive
+of the two. It was not, by a wide margin.
 
-| level budget | seconds per fit |
-|---|---|
-| 200 | 14 |
-| 500 | 33 | 
-| 949 (ceiling) | 61 |
+This matters because **the device ceiling is stated in levels** -- 949, as
+`sum(upper_bound + 1)` -- **while the cost is driven by the variable count.**
+Those are different quantities, and a block sized against the ceiling alone
+would be quoted wrongly. Rounds 1 and 2's first four probes could not separate
+them, because every one used `upper_bound = 3` and so moved levels and
+variables together.
 
-**Two points define a line by construction, so linearity is NOT established.**
-The continuous path is the reason to be careful: between 136 and 833 variables
-it showed an **18.8x** per-sample step, far from linear. A third point near the
-ceiling is needed before any large integer block is quoted, and this document
-must not be read as licensing one.
+A two-factor fit over all five points gives roughly `vars^0.75 x levels^0.52`
+(R^2 0.953), but individual points miss by up to 45%, so that formula is
+**indicative only**. The controlled comparison above is the finding; the
+exponents are not.
 
-What the two points do establish honestly: a small integer job costs single
-digit seconds, and the cost does not explode between 32 and 96 levels. That is
-enough to replace "we will not quote a number" with a measured figure and a
-stated basis.
+## Why the round-1 line was wrong
 
-## An over-spend, recorded
+Round 1 fitted 32 and 96 levels and produced 0.0625 s per level plus a 2 s
+floor, extrapolating to **61 s at the ceiling**. Round 2 falsified it
+immediately:
 
-**The approved block was two calls. Three were made, costing 16 seconds instead
-of 12.**
+| levels | round-1 prediction | actual | over |
+|---|---|---|---|
+| 240 | 17 s | 28 s | 1.6x |
+| 600 | 40 s | 165 s | **4.1x** |
 
-The second invocation passed `--max-calls 2` after a `--max-calls 1` run. The
-runner had no memory of what it had already submitted, so it started from the
-top and re-ran `probe_small` before proceeding to `probe_mid`. The duplicate
-cost 4 seconds.
+The cost is superlinear in variables. A single additional far point would NOT
+have caught this cleanly: with two points plus one, a line and a parabola both
+pass through all three exactly, so the shape would have stayed unidentified.
+Two far points made it testable, which is why round 2 was designed as four
+calls rather than one.
 
-No result is affected: the duplicate is a second measurement of the same
-configuration and it returned the same 4 seconds, which is itself a small
-repeatability check. But the approval was for two calls and three were made.
+**The caution in the round-1 write-up was right and the number in it was
+wrong.** The continuous path's 18.8x per-sample step between 136 and 833
+variables was the stated reason not to trust the line, and that is exactly how
+it failed.
 
-**Fixed in the runner.** It now reads its own ledger and skips any label
-already completed, and refuses to submit at all if the ledger is unreadable --
-because a metered runner that cannot tell what it has already spent is one bad
-re-invocation away from spending it twice, and the allocation has no undo.
-Verified: a re-run now submits nothing.
+## What can now be quoted, and what cannot
+
+**Can be quoted, as measured:** an integer fit at 60 variables costs about
+71 s at 840 levels and 28 s at 240 levels; at 150 variables, 165 s at 600
+levels.
+
+**Can be quoted, as extrapolated:** cost grows faster than linearly in the
+variable count, so a Phase 2 block should be sized on variables, not on the
+level budget.
+
+**Cannot be quoted:** a figure at the 949-level ceiling with a high variable
+count. `probe_ceiling` (210 variables, 840 levels) was designed and NOT run --
+the revised estimate after round 2's first two calls put it near 181 s, well
+above the envelope that had been approved, so it stopped for a fresh decision
+and the team lead approved only `probe_deep`. Any document quoting a
+high-variable ceiling figure would be extrapolating past the data.
+
+## Two approval stops, one over-spend
+
+**Round 1 over-spent.** The approved block was two calls; three were made, 16
+seconds instead of 12. A second invocation with a higher `--max-calls` re-ran
+the first probe, because the runner had no memory of what it had submitted.
+The duplicate returned the same 4 seconds, so no result is affected, but the
+approval was for two calls. Fixed: the runner now reads its own ledger, skips
+completed labels, and refuses to submit if the ledger is unreadable.
+
+**Round 2 stopped itself.** After two of four approved calls, the measured
+points showed the remaining two would cost roughly 3x what had been quoted.
+Rather than spend against a number known to be wrong, the block stopped and
+re-quoted. The team lead then approved one of the two.
 
 ## Allocation
 
 | | seconds |
 |---|---|
-| before | 1,961 |
-| spent | 16 |
-| **remaining** | **1,945** |
+| before round 1 | 1,961 |
+| round 1 | 16 |
+| round 2 | 264 |
+| **remaining** | **1,681** |
 
-Confirmed against the live allocations endpoint after the run.
+Confirmed against the live allocations endpoint after each run.
