@@ -165,14 +165,18 @@ def test_the_writeup_leads_with_a_bluf():
     assert "+0.0245" in head and "+0.0001" in head
 
 
-def test_the_writeup_still_states_what_it_does_not_license():
+def test_the_writeup_still_states_what_it_does_not_support():
     """The fourth corner is [HW] while the others are proxy, so the
     interaction is implied ACROSS arms rather than measured within one. That
-    limit must survive the upgrade from bound to attribution."""
+    limit must survive the upgrade from bound to attribution.
+
+    "license" as a verb was reworded to "support" on 2026-09-23: it is legal
+    register rather than plain English, and this is a results document.
+    """
     if not WRITEUP.exists():
         pytest.skip("write-up not present")
     text = WRITEUP.read_text(encoding="utf-8")
-    assert "does NOT license" in text
+    assert "does NOT support" in text
     assert "implied" in text and "within one" in text
 
 

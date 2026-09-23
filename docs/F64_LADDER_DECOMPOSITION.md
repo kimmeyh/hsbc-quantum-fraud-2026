@@ -50,13 +50,13 @@ The k effect is not merely non-significant; it is an order of magnitude smaller
 than the MDE (0.0268) and its interval is tight. That is a positive statement
 about the size of the effect, not an absence of evidence.
 
-## What this licenses, and what it does not
+## What this result supports, and what it does not
 
-**What it licenses.** Subset order carries the gain. Feature count contributes
+**What it supports.** Subset order carries the gain. Feature count contributes
 nothing measurable at order 2, and the interaction is small enough that the two
 main effects nearly account for the whole observed difference.
 
-**What it does NOT license.** The fourth corner is the published **[HW]**
+**What it does NOT support.** The fourth corner is the published **[HW]**
 figure, while the other three are proxy. So the interaction term is *implied*
 across arms rather than measured within one. A fully within-arm 2x2 would need
 the proxy twin of k=17 at order 3 -- 833 variables, which is buildable but was
