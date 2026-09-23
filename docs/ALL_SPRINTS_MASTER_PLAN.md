@@ -185,59 +185,23 @@ sections, with the falsifier result recorded alongside it in
 FALSIFIER_RESULT.md. See SPRINT_15_SUMMARY.md and CHANGELOG.md. Removed from
 candidates per convention.)
 
-**F88. Make a false finding impossible to write, not merely caught later (~3h) Priority 3**
-- Phase: Finalize / tooling (Sprint 17 retrospective IMP-2, team lead: "better to get right the first time than fix problems after they happen")
-- Platform: `.claude/hooks/`, `scripts/`
-- **THE DEFECT CLASS, twice in one sprint.** I wrote a claim that something was broken, when the answer was already recorded in a file I had not opened:
-  - The Sprint 17 plan asserted in bold that the QPU arithmetic "DOES NOT RECONCILE". It reconciles exactly. I had counted `billed_s` and missed that 24 of 25 paid rows carry `measured_seconds` instead. **A reviewer made a version of the same error in Sprint 12** and `SPRINT_12_SUMMARY.md` records the resolution.
-  - Task D reported A31 and the appendix contradicting each other on the linear-term span. **A32 had already corrected it on the day of submission.** `device_resolution.json` carries every figure in a `per_pool` array I did not read.
-- **The rejected approach, and why.** The retrospective proposed "grep the summaries before writing any such claim". The team lead declined it as a remembered step that costs effort on every claim while preventing nothing structurally. He is right: a rule that fires on every claim is a tax, and the two instances above would both have been prevented by reading ONE file completely
-- **What to actually build, to be designed in the card's own spike**: candidates are a PreToolUse guard that recognises contradiction language ("does not reconcile", "contradicts", "disagrees with", "is wrong") in a document being written and requires a named artifact citation alongside it; a `verify_claim.py` that takes a figure and reports every file in the repo that mentions it, so "already answered" is one command rather than a memory; or a check that a claim naming an amendment (A\d+) has had the amendment log read in the same session
-- **Acceptance**: the two Sprint 17 instances are replayed and the mechanism catches both BEFORE the claim is committed. Proven by injection, not asserted
-- Depends on: nothing
+(F87 the integer-solver sizing probe, F64 the k=17 order-2 ladder cell,
+F88 the false-finding mechanism and F89 the injection helper: COMPLETED
+in Sprint 18. See SPRINT_18_SUMMARY.md and CHANGELOG.md. Removed from
+candidates per convention.
 
-**F89. Injections must assert the mutation reached what the test reads (~2h) Priority 4**
-- Phase: Finalize / tooling (Sprint 17 retrospective IMP-3)
-- Platform: `experiments/src/`, a shared injection helper
-- **FIVE INJECTIONS RETURNED GREEN IN SPRINT 17, and every one was a defect in the VERIFICATION rather than in the thing verified.** A green injection reads exactly like a passing guard:
-  - `delim in quoted` in the F82 hook was dead code: unreachable, so removing it broke nothing
-  - `test_bypass_token_allows` passed for two different wrong reasons in succession
-  - the H1b figure `0.7671` appears THREE times in the gate report; `replace(..., 1)` left two behind and the test still found it
-  - the missing-phase marker asserted a phrase `build()` supplies as a fallback anyway
-  - the frozen-clock mutation hit `main()` while the test called `build()` directly
-- **The shape of the fix**: a helper that performs the mutation, re-reads THROUGH THE SAME ACCESSOR THE TEST USES, and fails loudly if the target value is still reachable. `replace()` without a count, and an assertion that the occurrence count went to zero, are the two mechanical parts
-- **Why this is worth building rather than remembering**: the rule "assert your injection landed" already exists in CLAUDE.md, was written after Sprint 16, and was violated five times in Sprint 17 by the person who wrote it
-- **Acceptance**: all five Sprint 17 cases are replayed through the helper and each one is reported as a failed injection rather than a passing guard
-- Depends on: nothing
+Three findings outlived their cards and are recorded there:
 
-**F87. Size the integer-solver block so the QCi memo can quote a number (~3h + one metered probe) Priority 2 -- DO FIRST NEXT SPRINT**
-- Phase: Phase 2 preparation / outward commitment (team lead, Sprint 17 Manual Validation)
-- Platform: `experiments/src/` integer path, Dirac-3 integer solver, one probe block
-- **THE PROBLEM IS A DOCUMENT THAT SAYS "UNKNOWN".** `Phase 1 - Hardware Plan for Phase 2` currently tells QCi: "We are not quoting a cost for that block. We have never run your integer solver on this problem and have no comparable anchor." That is honest and it is the correct thing to write with no measurement behind it. It is also the weakest sentence in a package whose whole argument is that our estimates come from measured usage rather than projection. The team lead's instruction: run enough to estimate, do not ship "we don't know"
-- **THE RUN IS A SIZING PROBE, NOT THE EXPERIMENT.** F25 is the full cardinality-constrained investigation and stays on HOLD behind a Phase 2 preregistration. This card buys ONE number: seconds per fit on the integer path at a stated problem size, plus how that scales across two or three sizes. Scope creep into "does it beat the classical control" is F25's job and would need its own approval
-- **EVERYTHING CLASSICAL RUNS FIRST, AND THE PROBE IS LAST.** Per the team lead's revised protocol: the full path runs end to end against the simulator or a local stand-in until it completes without error; only then does a metered call happen. A probe that fails on the device because of a bug in our own submission code costs seconds and buys nothing
-- **Acceptance**: a measured seconds-per-fit figure at a named `num_levels` and variable count, traced to a results row with an evidence tag; a stated scaling basis for extrapolating a Phase 2 block; and the estimate classified as `measured` or `extrapolated` per Criterion H, never `unknown`
-- **OUTPUT IS TWO DOCUMENT UPDATES, and this card is not done until they are made**: `Phase 1 - QCi memo.txt` (the "how the remaining seconds get used" section currently lists the probe as item 1) and `Phase 1 - Hardware Plan for Phase 2.pdf` (replace the no-quote paragraph with the measured figure). Both are in the unsent QCi package, so this lands before the package goes out
-- **Metered cost of the card itself**: small and bounded by call count, not by a quoted second figure, because that figure is what the card exists to establish. Stops for per-block approval like every other metered run
-- Depends on: nothing. Blocks sending the QCi package with a defensible Phase 2 cost
-
-**F64. Decompose the B2 confound: the k=17 order-2 cell (~45m) Priority 1 -- PHASE 2 EXPERIMENT 1**
-- Phase: Experiments / correctness
-- Platform: classical proxy (`qubo_proxy.py`, `mechanism_controls.py`)
-- **THE MISSING MIDDLE OF A THREE-POINT LADDER.** B2's +0.0256 is the campaign's only positive result at scale, and two factors moved to produce it: k (13 -> 17) and subset order (2 -> 3). We hold both ends and neither middle:
-  - k=13, order 2, 91 vars -> 0.7671 **[have]**
-  - k=17, order 2, **153 vars** -> ? **[MISSING]**
-  - k=17, order 3, 833 vars -> 0.7928 **[have]**
-- Running the middle cell splits the gain into "more features" and "richer learners". Appendix B.3 currently has to say the disconfirming cell is unrun, about the one experiment that would resolve its own headline claim's confound
-- **THE PHYSICS PREDICTS AN ANSWER, which is what makes it a test rather than a data point.** A31 established the device cannot spread weight over more than about 200 learners. At 153 variables it CAN; at 833 it cannot. If the gain is attributable to k, it should appear at 153 under a faithful solve. If it needs three-feature learners, it will not. Either outcome is informative, and one of them would materially change what B.3 claims
-- **ZERO METERED SECONDS.** Classical proxy only, ten pool builds at 153 variables
-- **Why it was NOT run in Sprint 12** (team lead decision, 2026-09-12): the submission documents were final and within limits, PR #75 was merge-ready, and the deadline was 2026-09-15. A new result means new figures in a 6-of-6-page proposal and possibly another amendment. The submission is stronger finished than with one more experiment squeezed into its last days. Deferred deliberately, not overlooked
-- Acceptance: the cell runs on the same seeds and protocol as its two neighbors; B.3 states the decomposition instead of declining it; if the result changes what the +0.0256 is attributable to, that is an amendment
-- Depends on: nothing. It is the first thing Phase 2 should run
-- **SELECTED for Sprint 13 then WITHDRAWN the same day (team lead, 2026-09-12).** The reason is methodological and supersedes the Sprint 12 scheduling deferral above. F64 varies ONE axis with everything else frozen at values chosen for a different configuration (pool family, lambda, weak-learner type, the cardinality question). The gain that matters is likely a COMBINATION of these, so a one-factor-at-a-time probe measures the axis it varies and is silent about the interaction, which is where the leverage is expected to sit
-- The result could not become FALSE, but it could become UNIMPORTANT: a true fact about a formulation Phase 2 abandons. A31 already established that the device cannot spread weight over more than ~200 learners, so F64 decomposes a result inside a formulation we already have evidence is the wrong ask of the hardware
-- **Decisive**: proposal section 6 presents this cell as experiment 1 of SIX in an ordered program, each with its acceptance criterion written before it runs, and experiment 3 is the cardinality-constrained formulation A31 points to. Running experiment 1 early and reporting it alone converts an ordered program into one result plus five things we did not do. The program is the stronger artifact
-- **Pre-flight already done** (2026-09-11/12), so Phase 2 starts from a measured base rather than a cold one: (k=17, order 2) is NOT reachable today because `CONFIGS` in `qubo_proxy.py` holds only the two ladder ENDS and `--config` is bounded by `choices=list(CONFIGS)` -- one dict entry clears it. Pool build measured at **6.6-7.3 s** (WSL, seed 42), prep 21.9 s, so ten seeds is ~10 minutes. The full-pair build CANNOT run on Windows (`fork` unavailable). And a new ten-seed full-pair cell enters `score_gates.py`'s argmax over validation AP, which can silently re-key the H1b confirmatory table -- diff `Proxy cell used:` before publishing
+- **F64 answers less than its title suggests, and says so.** The cell is a
+  BOUND, not an attribution: feature count alone does not explain B2's
+  +0.0256, but no k=13 order-3 cell exists, so the interaction term is
+  unidentified. The fourth corner (377 variables) would settle it.
+- **The integer extrapolation rests on two points.** 0.0625 s per level is
+  fitted, not measured, and the continuous path showed an 18.8x per-sample
+  step between 136 and 833 variables. A third point near the ceiling is
+  needed before any large integer block is quoted.
+- **Three metered calls were made against a two-call approval.** The runner
+  had no idempotency check; it now has one.)
 
 **F90. F2b at the configuration that can actually show an effect: B5, then B4 at schedule 3 (~4h + approvals) Priority 5**
 - Phase: Experiments / Phase 2 evidence

@@ -36,7 +36,7 @@ Both `status: ok`, zero failures, zero retries. `relaxation_schedule 2`,
 Tripling the level budget (32 to 96) **doubled** the cost (4 to 8 s). Fitted
 linearly across the two points: **0.0625 s per level plus a 2 s floor.**
 
-Extrapolated, and labelled **extrapolated** rather than measured:
+Extrapolated, and labeled **extrapolated** rather than measured:
 
 | level budget | seconds per fit |
 |---|---|

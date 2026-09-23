@@ -13,9 +13,12 @@ Three properties, each of which failed in Sprint 17 before it was fixed:
 """
 from __future__ import annotations
 
+import shutil
 import subprocess
 import sys
 from pathlib import Path
+
+import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts" / "render_all.py"
@@ -133,6 +136,8 @@ def test_a_missing_source_actually_returns_nonzero(tmp_path):
         broken.unlink(missing_ok=True)
 
 
+@pytest.mark.skipif(shutil.which("xelatex") is None,
+                    reason="xelatex not installed; rendering cannot run here")
 def test_qci_package_does_not_touch_the_submitted_pdfs(tmp_path):
     """BEHAVIORAL. The source-grep version survives a revert not spelled
     exactly `docs = CORE + (QCI_PACKAGE`, and appending a second assignment
