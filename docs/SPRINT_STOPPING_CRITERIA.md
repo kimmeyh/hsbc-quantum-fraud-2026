@@ -22,16 +22,17 @@ Sprint 11's ceiling probe was approved at "0-5 seconds" and cost 10. The figure 
 2. **BLOCKED** -- external dependency (QCi grant, portal, Kaggle, team-lead-only input) or an error persisting after 2-3 genuine resolution attempts. Action: document the blocker (root cause, attempted solutions, what unblocks) in the sprint issue, notify immediately, continue any unblocked tasks.
 3. **SCOPE CHANGE** -- the team lead adds/changes requirements mid-sprint, or a task's true size is 2x+ the estimate. Action: stop, present original vs new estimate and options (reduce elsewhere / extend / defer), wait for decision. Deferring approved work is ALWAYS a Class-3 decision, never Claude's call.
 4. **DISCOVERY** -- a defect in existing work. Critical (blocks the sprint): fix now, add a regression test, document. High: fix if time allows, else backlog with an issue. Medium/Low: issue + backlog, do NOT context-switch. **Precedence: a defect that invalidates recorded results, or any leak/protocol violation, is NEVER Criterion 4 -- it is ALWAYS Criterion 7 (stop, document, wait), even inside the auto-advance window. Never silently fix and re-run evidence-bearing results.**
-   - **4b. A RED CI CHECK IS ALWAYS CRITERION 4, never the "single test
-     failure" of Criterion 10.** The distinction is where it failed. A test
-     failing in front of you is an implementation detail; a test failing only
-     on CI is a defect you cannot see, and it does not fix itself while the
-     sprint continues. Fix it before the next task. (Sprint 18 ran red from
-     its first push to its last -- the draft PR exists from Phase 3, so CI
-     runs for the whole sprint -- and the cause was three tests that could not
-     fail locally on any run. Local green was never evidence. A full review
-     round shipped under the red X because the reviews were read and the check
-     status was not.)
+   - **4b. A RED CI CHECK IS NOT A STOPPING CRITERION. It is delegated.**
+     Hand the failure to a background agent and CONTINUE the approved work;
+     a broken pipeline is not a reason to stop executing. Checked at exactly
+     two points, neither blocking: ~5 min after the draft PR exists (3.3.2)
+     and on the final HEAD before `gh pr ready` (7.0). The close-out hook is
+     the backstop -- it blocks the completion claim if CI is not green by
+     7.7, so nothing ships red and nothing waits. (Sprint 18 ran red from its
+     first push to its last, because nobody looked once. The cause was three
+     tests that could not fail locally on any run, so local green was never
+     evidence, and a full review round shipped under the red X because the
+     reviews were read and the check status was not.)
    - **4a. Team-lead-found gap in sprint theme**: extend scope WITHOUT formal change when ALL hold: same category as sprint work, cumulative fix < 2h, no new design decisions, team-lead-reported. Otherwise treat as 3 or 4.
 5. **REVIEW REQUEST** -- the team lead asks for early review. Stabilize, commit, go to Phase 7.
 6. **SPRINT REVIEW COMPLETE** -- Phase 7 done, PR ready, team lead notified. Wait for approval; on merge, execute 6.6 carry-forward immediately.
@@ -42,8 +43,8 @@ Sprint 11's ceiling probe was approved at "0-5 seconds" and cost 10. The figure 
 
 ## What should NOT cause stopping
 
-Single test failure THAT ALSO FAILS LOCALLY (fix it -- but see 4b: a failure
-seen only on CI is Criterion 4, because it is invisible from here); analysis
+Single test failure (fix it); a RED CI CHECK (see 4b: delegate it to an agent
+and keep going -- it is invisible from here, but it is not a reason to stop); analysis
 warning (fix or note); waiting on a push (background it); uncertainty (implement, test, iterate); feature seems minimal (acceptance criteria define done); minor style (fix or note); any implementation choice within scope.
 
 ## Stopping checklist (any stop)

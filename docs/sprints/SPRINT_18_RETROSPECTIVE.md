@@ -85,8 +85,8 @@ Same system, forty minutes apart, with and without the check.
 
 ## Improvements: disposition
 
-Five proposed. The team lead approved four and **held IMP-2** to see whether
-the pattern recurs before adding process around one sprint's evidence.
+Five proposed. The team lead approved four and **dropped IMP-2** (2026-09-23):
+if the pattern is found again, it gets addressed then.
 
 ### Implemented
 
@@ -124,18 +124,19 @@ The output frames each hit as a question rather than a verdict, with `--allow`
 for the ones that are fine in context -- a check that reads as a failure gets
 argued with; one that reads as a question gets answered.
 
-### Held
+### Dropped
 
 **IMP-2** (a guard asserting a fact about today's data must name its expiry).
-Four guards failed on correct behavior this sprint, which is a pattern worth
-watching but not yet a trend. Team lead: hold and see if it recurs.
+Proposed after four guards failed on correct behavior this sprint. The team
+lead held it, then **dropped it** on 2026-09-23: if the pattern is found
+again, it gets addressed then.
 
-**IT RECURRED THE SAME DAY.** The PR #139 review found three more guards that
-failed on correct behavior -- two pinning the Phase 2 ask's wording, one
-pinning a `return 1` that became a stronger `SystemExit` -- plus four more
-vacuous guards, two of which could not fail at all. The hold was the right
-call on one sprint's evidence; the evidence has since arrived. Carried to the
-next sprint's improvement list rather than reopened here.
+Recorded because the intervening evidence did not change the decision. The
+PR #139 review found three more guards failing on correct behavior and four
+more vacuous ones, and the disposition is still "drop" -- process added
+against a pattern nobody has been slowed by is process that gets worked
+around. It is carried on no list; a future sprint that hits this again starts
+the proposal fresh.
 
 ## Next sprint readiness
 

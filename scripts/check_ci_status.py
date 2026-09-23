@@ -155,9 +155,20 @@ def main(argv: list[str] | None = None) -> int:
                     help="commit to check (default: HEAD)")
     ap.add_argument("--wait", action="store_true",
                     help="poll until the runs are conclusive")
+    ap.add_argument("--after", type=int, default=0, metavar="SECONDS",
+                    help="sleep first, so a just-created PR has time to FAIL. "
+                         "A check run the instant a PR opens finds no run at "
+                         "all, which is indistinguishable from a clean one.")
     ap.add_argument("--timeout", type=int, default=1800,
                     help="seconds to wait with --wait (default 1800)")
     args = ap.parse_args(argv)
+
+    if args.after > 0:
+        # Give CI time to start AND to fail. The point of this checkpoint is
+        # an early red, so checking before the run exists is worse than not
+        # checking: "no run yet" reads like nothing is wrong.
+        print(f"waiting {args.after}s for CI to start and report ...")
+        time.sleep(args.after)
 
     try:
         sha = head_sha(args.sha)

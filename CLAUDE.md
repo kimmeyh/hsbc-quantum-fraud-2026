@@ -256,14 +256,15 @@ only in memory.
   F67, F39 and F72 shipped and stayed unticked -- and it was found a sprint
   later.)
 
-- **Don't treat a local green suite as evidence that CI is green. OPEN THE
-  CHECK.** Run `scripts/check_ci_status.py` after every push, not only before
-  handover. The draft PR exists from Phase 3, so CI runs for the whole sprint,
-  and a red check found at Phase 5 has usually been red for days. A failure
-  seen ONLY on CI is Criterion 4 (stop, fix, regression test), never the
-  "single test failure" Criterion 10 says to fix and move past -- the
-  difference is that you cannot see this one. (Sprint 18 ran red from its
-  first push to its last. Three tests sent a Stop hook a payload with no
+- **Don't treat a local green suite as evidence that CI is green, and
+  don't let a red CI stop the sprint either.** Two checkpoints, neither
+  blocking: `scripts/check_ci_status.py --after 300` about five minutes after
+  the draft PR exists (3.3.2), and `scripts/check_ci_status.py` on the final
+  HEAD before `gh pr ready` (7.0, no waiting). A red check at either point is
+  HANDED TO A BACKGROUND AGENT while the sprint continues. The close-out hook
+  is the backstop: it blocks the completion claim if CI is not green by 7.7,
+  so nothing ships red and nothing waits. (Sprint 18 ran red from its first
+  push to its last. Three tests sent a Stop hook a payload with no
   `branch_override`, so the hook read the live branch name: populated in a
   normal clone, EMPTY on the detached HEAD `actions/checkout` leaves, so the
   hook's first gate returned ALLOW before reaching any check. Those tests

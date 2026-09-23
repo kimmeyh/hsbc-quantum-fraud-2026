@@ -198,3 +198,34 @@ def test_the_hook_allows_a_closeout_when_ci_is_green():
         '    return [{"name": "CI", "status": "completed", '
         '"conclusion": "success", "headSha": sha, "url": ""}]')
     assert rc == 0, f"a green close-out was blocked: {err[-400:]}"
+
+
+def test_the_early_checkpoint_waits_before_looking(ci, monkeypatch):
+    """--after exists so a just-created PR has time to FAIL.
+
+    The 3.3.2 checkpoint runs about five minutes after the draft PR opens.
+    Checking sooner is worse than not checking: with no workflow run yet, the
+    answer is "cannot determine", which a reader skims as "nothing wrong".
+    The delay is the mechanism, not a convenience.
+    """
+    slept = []
+    monkeypatch.setattr(ci.time, "sleep", lambda s: slept.append(s))
+    monkeypatch.setattr(ci, "head_sha", lambda ref: "deadbee")
+    monkeypatch.setattr(ci, "runs_for",
+                        lambda sha: _runs("completed", "success"))
+
+    assert ci.main(["--after", "300"]) == ci.OK
+    assert slept == [300], f"it did not wait before looking: {slept}"
+
+
+def test_no_delay_is_requested_by_default(ci, monkeypatch):
+    """The 7.0 checkpoint must NOT wait -- the retrospective proceeds while
+    CI finishes, and a watcher reports later."""
+    slept = []
+    monkeypatch.setattr(ci.time, "sleep", lambda s: slept.append(s))
+    monkeypatch.setattr(ci, "head_sha", lambda ref: "deadbee")
+    monkeypatch.setattr(ci, "runs_for",
+                        lambda sha: _runs("completed", "success"))
+
+    ci.main([])
+    assert slept == [], f"the default invocation blocked for {slept}"

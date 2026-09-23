@@ -140,7 +140,7 @@ the check status was not.
 THE COMMON THREAD: presence is not correctness. A figure that appears, a test
 that runs, a path that is scanned -- each was treated as evidence of the thing
 it was supposed to prove. Six of the eight findings are that substitution.
-IMP-2 was held this sprint pending recurrence; it recurred within the day.
+IMP-2, proposed against exactly this pattern, was dropped (team lead, 2026-09-23): if it is found again, it gets addressed then.
 
 ## Defects found in this sprint's own work
 
