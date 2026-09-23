@@ -111,6 +111,21 @@ no marker. The ledger skip does not protect a design that never ran.
 **Two scripts that conflated "clean" with "could not check."** Both now fail
 closed.
 
+**CI was red on every commit of this sprint, and nobody noticed.** Not the
+sprint's work: `test_phase3_artifacts.py` sent the Stop hook a payload with no
+`branch_override`, so the hook read the live branch name. That returns a name
+in a normal clone and EMPTY on a detached HEAD, which is what
+`actions/checkout` leaves behind -- so the hook's first gate ("sprint feature
+branch only") returned ALLOW before any artifact check, and three tests
+asserting a block failed on Linux while passing on Windows. Diagnosed by
+running the committed file in a detached worktree: 3 failed, 5 passed,
+matching CI exactly.
+
+Two things about it are worth keeping. The test could not fail locally, on
+any run, so local green was never evidence. And a red check sat on the PR
+through the whole review without being opened -- the reviews were read and
+the check status was not.
+
 THE COMMON THREAD: presence is not correctness. A figure that appears, a test
 that runs, a path that is scanned -- each was treated as evidence of the thing
 it was supposed to prove. Six of the eight findings are that substitution.
