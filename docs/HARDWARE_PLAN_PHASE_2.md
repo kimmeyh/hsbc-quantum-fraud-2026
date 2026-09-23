@@ -6,8 +6,10 @@ date: "September 2026"
 
 # Phase 2 hardware plan
 
-**Content current to 2026-09-12**, the date our Phase 1 entry was filed.
-Nothing later has been added.
+**The Phase 1 campaign figures below are current to 2026-09-12**, the date
+our entry was filed. One section is NEWER and says so: the integer-solver
+cost in experiment 3 was measured on 2026-09-23, after the filing, because we
+would rather send you a measured number than a placeholder.
 
 This is the hardware half of the Phase 2 plan in section 5 of our proposal,
 extracted for QCi. It states what we would run on Dirac-3, what each block
@@ -24,7 +26,8 @@ count instead of quoting a number.
 |---|---|
 | Granted 2026-09-09 | 3,000 |
 | Drawn during the Phase 1 campaign | 1,039 |
-| **Remaining** | **1,961** |
+| Drawn by the integer sizing probe, 2026-09-23 | 16 |
+| **Remaining** | **1,945** |
 
 The campaign total reported in our submission is 1,141 metered seconds over 61
 fits. That figure and the 1,039 above differ for two reasons, both of which we
@@ -69,11 +72,29 @@ moves to the formulation where the optimizer has real work to do.
   solve, greedy selection, and simulated annealing. A win against a
   certified-optimal classical solve is a result; a win against no control is
   not.
-- **Cost**: **UNKNOWN, and we will not quote a number.** We have never run your
-  integer solver on this problem, so no comparable anchor exists. The block
-  would be bounded by call count and opened with a single probe fit to
-  establish the rate before anything larger is committed. This is the same
-  discipline we used for every Phase 1 block.
+- **Cost**: **measured, on your integer solver, in a two-point sizing probe.**
+
+  | level budget | variables | metered seconds |
+  |---|---|---|
+  | 32 | 8 | 4 |
+  | 96 | 24 | 8 |
+
+  Both `status: ok`, zero failures, `relaxation_schedule 2`, `num_samples 8`.
+  Note that the binding quantity is the LEVEL BUDGET -- `sum(upper_bound + 1)`
+  against your documented 949 ceiling -- rather than the variable count. That
+  distinction is not obvious from the documentation and cost us a corrected
+  assumption before the probe ran.
+
+  Tripling the budget doubled the cost. Fitted across the two points that is
+  about **0.0625 s per level plus a 2 s floor**, which **extrapolates** to
+  roughly 14 s at 200 levels and 61 s at the ceiling.
+
+  **We are labeling that extrapolation rather than presenting it as
+  measured, because two points define a line by construction.** Your
+  continuous path is the reason for the caution: between 136 and 833 variables
+  it showed an 18.8x per-sample step. Before committing a large integer block
+  we would take a third point near the ceiling, and we would quote that block
+  from the third point rather than from this line.
 
 ### The blocks with measured costs
 

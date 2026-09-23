@@ -172,10 +172,64 @@ def test_the_memo_states_the_submission_date_the_receipt_records():
 
 
 def test_the_memo_reports_the_allocation_position():
-    """1,039 drawn of 3,000, 1,961 remaining. The subtraction 3000-1141 is
-    wrong in both directions; see docs/QPU_RECONCILIATION.md."""
+    """1,039 drawn of 3,000 in Phase 1, plus 16 on the Sprint 18 integer
+    probe, leaving 1,945.
+
+    The subtraction 3000-1141 is wrong in both directions; see
+    docs/QPU_RECONCILIATION.md. This test asserted 1,961 until the probe ran
+    and spent against it -- a figure that was right when written and went
+    stale the moment the allocation moved.
+    """
     text = _read(MEMO)
-    assert "1,039" in text and "1,961" in text
+    assert "1,039" in text and "1,945" in text
     assert "1,859" not in text, (
         "the memo quotes 1,859, which is grant minus CAMPAIGN total -- wrong "
         "in both directions (see QPU_RECONCILIATION.md)")
+
+
+# ------------------------------- the integer cost, measured (F87, Sprint 18)
+
+def test_the_hardware_plan_no_longer_refuses_to_quote_a_cost():
+    """The sentence F87 exists to remove.
+
+    "We are not quoting a cost for that block" was correct with no measurement
+    behind it and was the weakest sentence in a package whose argument is that
+    our estimates are measured rather than projected. A two-point probe
+    replaced it on 2026-09-23.
+    """
+    text = _read(HARDWARE)
+    for phrase in ("we will not quote a number",
+                   "UNKNOWN, and we will not quote",
+                   "no comparable anchor exists"):
+        assert phrase not in text, (
+            f"the hardware plan still refuses to quote a cost: {phrase!r}")
+
+
+def test_the_hardware_plan_carries_the_measured_integer_figures():
+    text = _read(HARDWARE)
+    assert "32" in text and "96" in text, "the level budgets are not stated"
+    assert "0.0625 s per level" in text, "the fitted rate is not stated"
+
+
+def test_the_extrapolation_is_labelled_as_such():
+    """Two points define a line by construction. Presenting the ceiling figure
+    as measured would be exactly the overstatement this card exists to fix."""
+    text = _read(HARDWARE)
+    assert "extrapolat" in text.lower()
+    assert "two points define a line by construction" in text.lower()
+
+
+def test_the_level_budget_distinction_is_explained_to_qci():
+    """`sum(upper_bound + 1)`, not the variable count. Not obvious from the
+    documentation, and we got it wrong before the probe ran."""
+    text = _read(HARDWARE)
+    assert "LEVEL BUDGET" in text or "level budget" in text
+    assert "upper_bound + 1" in text
+
+
+def test_the_memo_reports_the_probe_as_done_and_the_balance_as_spent():
+    text = _read(MEMO)
+    assert "1,945" in text, "the memo does not carry the post-probe balance"
+    assert "1,961" not in text, (
+        "the memo still quotes the pre-probe balance somewhere; the figures "
+        "must be internally consistent")

@@ -194,8 +194,32 @@ def main(argv: list[str] | None = None) -> int:
         print("Re-run with --execute after per-block approval.")
         return 0
 
+    # ALREADY-RUN LABELS ARE SKIPPED. Without this, `--max-calls 2` after a
+    # `--max-calls 1` run re-submits the first probe from the top rather than
+    # resuming after it. That happened on 2026-09-23: an approved TWO-call
+    # block cost THREE calls and 16 seconds instead of 12, because the runner
+    # had no idea what it had already done.
+    #
+    # The ledger is the memory. A metered runner that cannot tell whether it
+    # has already spent a second is one bad re-invocation away from spending
+    # it twice, and the allocation has no undo.
+    done = set()
+    if LEDGER.exists():
+        try:
+            prior = json.loads(LEDGER.read_text(encoding="utf-8"))
+            done = {c["label"] for c in prior.get("calls", [])
+                    if c.get("status") == "ok"}
+        except (OSError, ValueError, KeyError, TypeError):
+            print("WARNING: the probe ledger is unreadable. REFUSING to "
+                  "submit, because a re-run could duplicate a metered call.")
+            return 1
+
     rows = []
     for spec, job in jobs[:args.max_calls]:
+        if spec["label"] in done:
+            print(f"skipping {spec['label']}: already completed "
+                  "(see the ledger). Re-running it would spend seconds twice.")
+            continue
         print(f"submitting {spec['label']} ...")
         row = run_one(spec, job)
         rows.append(row)
