@@ -176,6 +176,40 @@ Three findings outlived their cards and are recorded there:
   had no idempotency check; it now has one, and Criterion H requires it before
   any metered runner's first approval.)
 
+**F93. Reconcile the SPECTRA block: one card, one configuration, one cost (~60m, zero metered) Priority 10**
+- Phase: Experiments / Phase 2 evidence (added 2026-09-23, Sprint 18 Phase 8 refinement)
+- Platform: docs (SPECTRA, Dirac-3 planning only)
+- **Four records describe the same SPECTRA block and disagree.** F2b quotes B4 at 15 fits and ~450 s; F90 at schedule 3, 833 variables, ~1,236 s; F5 (HOLD) at 3 cells x 5 seeds; and the hardware plan sent toward QCi sizes Experiment 5, segment transfer, at 30 fits of 91-136 variables, about 270 s. F90 alone would spend 74% of the 1,681 s balance, while the draft QCi memo tells QCi the balance goes to a schedule-4 check and Experiment 5 at "a few hundred seconds"
+- This enables: any metered SPECTRA spend, and an honest F92. This prevents: spending 1,236 s on a block the vendor has been told costs 270 s
+- Acceptance: the team lead picks one configuration (schedule 2 at 91-136 variables, or schedule 3 at 833) with the reason recorded; F2b and F5 closed into the survivor; the survivor's cost labeled measured or extrapolated; the hardware plan's Experiment 5 row either matches it or is flagged for F92
+- Depends on: nothing. The configuration choice is the team lead's (Class 3)
+
+**F92. QCi memo reconciled with the hardware plan before it is sent (~45m, zero metered) Priority 12**
+- Phase: QCi/External (added 2026-09-23, Sprint 18 Phase 8 sweep, step 8.3)
+- Platform: docs (`docs/qci_package/`, gitignored, unsent)
+- **The memo contradicts the enclosed hardware plan in three places.** It says "We are not quoting a cost for that block" (the plan now quotes five measured points and a 9,000 s ask); it says the +0.0256 gain "is confounded" (F91 attributed it to subset order); and under "What we have not reached" it lists "Your integer solver", two sections after reporting five integer calls as DONE. It also says "We do not expect to need more before Phase 2 proper" without naming the ask the plan leads with
+- The PDFs in the package were rendered after the last source commit and are current; only the memo is stale
+- This prevents: a vendor reading two figures for one fact in one envelope, in a package whose case rests on every figure tracing
+- Acceptance: each stale passage shown to the team lead as before / after / recommendation, approved before the edit; `scripts/outward_readability.py` clean; no figure in the memo differs from the plan or the owning result doc
+- Depends on: F93 for the "how the remaining seconds get used" section only
+
+**F94. Experiment 3 classical controls on the proxy: greedy, simulated annealing, exact solve at small n (~4h timebox [no-history], zero metered) Priority 20**
+- Phase: Phase 2 preparation (added 2026-09-23; SPLIT from F25, which was Too Large)
+- Platform: classical proxy (`qubo_proxy.py`)
+- The hardware plan promises QCi that Experiment 3's controls are "stated before the block runs": a time-capped MIQP solve, greedy selection and simulated annealing. None exists in `experiments/src/`. F87 built the integer path; this builds what it must be compared against
+- Same H matrix and objective as the integer path, plus the cardinality constraint, at the two measured sizes (60 and 150 variables). Exact enumeration or an open-source solver where n permits; the commercial MIQP solver's availability is **unverified** and is part of the timebox
+- This enables: Experiment 3 to run the day allocation arrives, with its comparison already fixed. This prevents: a device result reported against no control, which the plan itself says is not a result
+- Acceptance: each control returns a cardinality-feasible selection and objective value on both sizes with seeds recorded; results as dated post-submission rows; no Phase 1 claim touched
+- Depends on: nothing to build. Reporting any comparison waits for a Phase 2 preregistration
+
+**F95. Relaxation schedule 4 on the residual (~1h build + approval, metered, cost unmeasured) Priority 30**
+- Phase: Experiments (added 2026-09-23; promised in the QCi memo and carded nowhere)
+- Platform: Dirac-3
+- The feedback document's open question 1, "Would relaxation schedule 4 close the residual?", is still open: every Phase 1 fit ran schedule 2, frozen before the grant. The memo names it as a use of the remaining balance
+- About five fits at 91-136 variables. Schedule-2 cost there is 4-9 s per fit, measured; **schedule-4 cost is unmeasured**, so the block opens with one fit to establish the rate (the F87 pattern)
+- Acceptance: the runner is idempotent before its first approval (Criterion H); per-fit residual against the proxy optimum reported as `[HW]` rows beside their schedule-2 twins
+- Depends on: per-block team-lead approval (Criterion H)
+
 **F90. F2b at the configuration that can actually show an effect: B5, then B4 at schedule 3 (~4h + approvals) Priority 5**
 - Phase: Experiments / Phase 2 evidence
 - Platform: SPECTRA, Dirac-3
