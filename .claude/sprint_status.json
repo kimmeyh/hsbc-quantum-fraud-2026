@@ -3,7 +3,7 @@
     "number": 18,
     "name": "The First Phase 2 Evidence, and the Cost of the Ask",
     "branch": "feature/20260922_Sprint_18",
-    "status": "phase_5_validation",
+    "status": "phase_8_delivery_cycle",
     "plan_doc": "docs/sprints/SPRINT_18_PLAN.md",
     "pr": 139,
     "plan_approved": true,
@@ -17,13 +17,14 @@
     ],
     "task_actuals": {
       "_note": "NOT RECORDED. Sprint 18 did not capture actuals at task completion, which is the gap IMP-1 closes for Sprint 19 onward. Reconstruction from commit timestamps was ATTEMPTED and DISCARDED: it produced 3 minutes for a 90-minute task, because the gap between commits measures neither the work nor the order it happened in. A fabricated actual is worse than a missing one -- it would have recalibrated future estimates against noise."
-    }
+    },
+    "note": "Sprint 18 COMPLETE. F87, F64, F88, F89 delivered, plus F91 and a second integer probe round. PR #139 to develop and PR #140 to main, both merged 2026-09-23. CI green on 5f1f286. Issues #133-#138 still OPEN at the sweep: closing them was denied by the permission classifier and is left to the team lead."
   },
   "last_completed_sprint": {
-    "number": 17,
-    "merged_pr": 122,
-    "main_merge_pr": null,
-    "docs_triad_complete": false
+    "number": 18,
+    "merged_pr": 139,
+    "main_merge_pr": 140,
+    "docs_triad_complete": true
   },
   "prereg": {
     "status": "FROZEN",

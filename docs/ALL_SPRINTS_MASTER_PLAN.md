@@ -28,13 +28,23 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 12 | docs/sprints/SPRINT_12_SUMMARY.md | [OK] Complete | ~2.5 days (Sep 10-12, 2026) |
 | 13 | docs/sprints/SPRINT_13_SUMMARY.md | [OK] Complete | ~1 day (Sep 12, 2026) |
 | 14 | docs/sprints/SPRINT_14_SUMMARY.md | [OK] Complete | ~2 days (Sep 12-14, 2026) |
+| 15 | docs/sprints/SPRINT_15_SUMMARY.md | [OK] Complete | ~1 day (Sep 16, 2026) |
+| 16 | docs/sprints/SPRINT_16_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 16-17, 2026) |
+| 17 | docs/sprints/SPRINT_17_SUMMARY.md | [OK] Complete | ~1 day (Sep 19, 2026) |
+| 18 | docs/sprints/SPRINT_18_SUMMARY.md | [OK] Complete | ~2 days (Sep 22-23, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 14: Make the Record Durable** (Sep 12-14, 2026; PR #94 to develop, PR
-#95 to main). Delivered **F68-F72** plus the four carried tooling cards **F48,
-F65, F66, F67**, and the Evidence Based DB design that followed them. Zero
-metered seconds.
+**Sprint 18: The First Phase 2 Evidence, and the Cost of the Ask** (Sep 22-23,
+2026; PR #139 to develop, PR #140 to main). Delivered **F87, F64, F88, F89**,
+plus **F91** and a second integer probe round added mid-sprint. F2b deferred to
+F90 before execution. The record is `docs/sprints/SPRINT_18_SUMMARY.md` and
+`docs/sprints/SPRINT_18_RETROSPECTIVE.md`; this section only points at it.
+
+(Rolled 2026-09-23 in the Phase 8 sweep. This section had still described
+Sprint 14 through four later sprints, because the Sprint 15, 16 and 17 sweeps
+rolled `sprint_status.json` and not this heading. The Sprint 14 narrative that
+stood here lives in SPRINT_14_SUMMARY.md.)
 
 **What this document is, and is not** (team lead, 2026-09-15). The official
 record of a sprint is five files: `SPRINT_n_PLAN.md`, the review/retrospective,
@@ -48,42 +58,6 @@ counts are never restated anywhere: run the suite.
 Why this is written down: a PR review asked for ten deleted completion stubs to
 be restored as "the surviving audit trail". They were not. The summaries are.
 Restoring them would have re-created ten copies of numbers owned elsewhere.
-
-**The finding that reordered the sprint**: BOTH Edit-matcher hooks had NEVER
-RUN. A single backslash before `block-` in `.claude/settings.json` is a JSON
-backspace escape, so the path resolved to a file that does not exist and Claude
-Code skipped it silently, since the commit that created them. The Sprint 13
-retrospective had recorded one of them as working. Every submission-document
-edit that sprint was unguarded.
-
-**Every task found something its card did not anticipate.**
-`requirements-lock.txt` was UNINSTALLABLE, so the documented reproduction
-command failed at step one for every reader. A test crashed on a clean checkout
-where twenty peers skipped. A dry run OVERWROTE the committed b3_hardware.json
-during verification, and the check that missed it had run before the background
-job finished: a mistimed verification reads exactly like a passing one.
-
-**The guard that failed its own test**: the CHANGELOG currency guard was written
-with a 14-day threshold and PASSED on the eight-day lapse it existed to catch.
-
-**Two reviews found 20 defects, all addressed.** Copilot's first was LIVE, not
-hypothetical: Windows backslashes in resolved paths meant 0 of 7 hooks resolved
-on POSIX, and CI had been red on four consecutive commits unnoticed. The
-adversarial Claude review found a merge blocker that is the sharpest comment on
-the sprint: the dry-run guard was VACUOUS and its replacement was vacuous too,
-both defeated by the same injection. **A sprint whose theme was eliminating
-guards that cannot fail shipped a flagship guard that could not fail, twice.**
-
-**The design half**: ADR-0014 and ADR-0015 both ACCEPTED with early-innovation
-status and a 20-paper checkpoint; neither authorises implementation. Four
-team-lead corrections changed the design materially -- the scope is a domain
-knowledge base rather than one project's glossary, agent economics invalidate
-the collector's-fallacy arithmetic, `applicability` collapses into contexts, and
-a paper is a SOURCE OF ASSERTIONS rather than a record. Primary-source research
-corrected two things this project had recorded as fact about Cyc.
-
-Retro: docs/sprints/SPRINT_14_RETROSPECTIVE.md (Very Good across all rated
-categories; all six improvements applied).
 
 ## Targeted roadmap (team lead, 2026-09-03; each sprint's scope is re-validated at its own refinement)
 
@@ -186,37 +160,21 @@ FALSIFIER_RESULT.md. See SPRINT_15_SUMMARY.md and CHANGELOG.md. Removed from
 candidates per convention.)
 
 (F87 the integer-solver sizing probe, F64 the k=17 order-2 ladder cell,
-F88 the false-finding mechanism and F89 the injection helper: COMPLETED
-in Sprint 18. See SPRINT_18_SUMMARY.md and CHANGELOG.md. Removed from
-candidates per convention.
+F91 the fourth ladder corner, F88 the false-finding mechanism and F89 the
+injection helper: COMPLETED in Sprint 18. See SPRINT_18_SUMMARY.md and
+CHANGELOG.md. Removed from candidates per convention.
 
 Three findings outlived their cards and are recorded there:
 
-- **F64 answers less than its title suggests, and says so.** The cell is a
-  BOUND, not an attribution: feature count alone does not explain B2's
-  +0.0256, but no k=13 order-3 cell exists, so the interaction term is
-  unidentified. The fourth corner (377 variables) would settle it.
-- **The integer extrapolation rests on two points.** 0.0625 s per level is
-  fitted, not measured, and the continuous path showed an 18.8x per-sample
-  step between 136 and 833 variables. A third point near the ceiling is
-  needed before any large integer block is quoted.
+- **B2's +0.0256 is attributed, not bounded.** F91 supplied the fourth corner:
+  subset order carries the gain and feature count contributes nothing
+  measurable. `docs/F64_LADDER_DECOMPOSITION.md` owns the figures.
+- **Integer cost tracks VARIABLES, not the level budget**, from a controlled
+  pair across five measured points. No high-variable point near the ceiling
+  was run, so none is quoted. `docs/INTEGER_PROBE_RESULT.md` owns the figures.
 - **Three metered calls were made against a two-call approval.** The runner
-  had no idempotency check; it now has one.)
-
-**F91. The fourth ladder corner: k=13 at order 3 (~1h, zero metered) Priority 1 -- IDENTIFIES THE INTERACTION**
-- Phase: Experiments / correctness
-- Platform: classical proxy (`qubo_proxy.py`)
-- **F64 LEFT THE INTERACTION TERM UNIDENTIFIED, AND SAID SO.** Sprint 18 ran the k=17 order-2 cell and found +0.00007, CI [-0.0024, +0.0026]: feature count alone does not explain B2's +0.0256. But with three corners the design cannot separate "order 3 matters" from "order 3 matters GIVEN k=17", because no k=13 order-3 cell exists. F64's write-up names this as the missing fourth corner and declines to claim more
-- **The four corners, with the missing one named**:
-  - k=13, order 2, 91 vars -> 0.7681 **[have]**
-  - k=17, order 2, 153 vars -> 0.7682 **[have, Sprint 18]**
-  - **k=13, order 3, 377 vars -> ? [THIS CARD]**
-  - k=17, order 3, 833 vars -> 0.7928 **[have, B2]**
-- With all four, the interaction is a subtraction rather than an inference: (order-3 effect at k=17) minus (order-3 effect at k=13). If those differ, the gain needs BOTH and the +0.0256 is a joint effect; if they agree, subset order carries it alone
-- **377 variables is the interesting size for a second reason.** A31 says the device cannot spread weight over more than about 200 learners. 91 and 153 are representable; 377 and 833 are not. So the fourth corner also sits on the far side of the resolution boundary, and the proxy result establishes what the CLASSICAL optimum does there, independent of any device limit
-- **ZERO METERED SECONDS.** Classical proxy only, ten seeds, same protocol as its three neighbors
-- Acceptance: ten seeds at 377 variables on seeds 42-51; the decomposition stated as an interaction rather than a bound; F64's write-up updated with a BLUF giving the overall conclusion across all four corners
-- Depends on: nothing. F64 is complete and this completes it
+  had no idempotency check; it now has one, and Criterion H requires it before
+  any metered runner's first approval.)
 
 **F90. F2b at the configuration that can actually show an effect: B5, then B4 at schedule 3 (~4h + approvals) Priority 5**
 - Phase: Experiments / Phase 2 evidence
@@ -224,14 +182,14 @@ Three findings outlived their cards and are recorded there:
 - **SUPERSEDES F2b's sizing.** F2b quotes B4 at "15 fits, ~450 s" from the original grid. That grid was proven wrong by 2.3x at 833 variables in Sprint 12 (assumed ~40 s, cost 91 s), and the schedule choice underneath it was never stated. This card carries the measured figure and names the configuration.
 - **B4 RUNS AT SCHEDULE 3, and the reason is evidence rather than preference.** In the prior SPECTRA work, schedule 2 lost overall 8 of 8 to the classical arm with only ~3 in-segment metrics won; schedule 3 -- which adds three-feature interactions -- took CVQBoost to in-segment ROC 5 of 7 and PR 6 of 7, and to an overall win on energy_steel. Schedule 3 is the accuracy lever. **A schedule-2 block would spend real seconds reproducing a configuration already known to lose, which is not a cheap experiment but a worthless one.**
 - **COST, measured rather than projected.** The schedule-3 QUBO is `n + C(n,2) + C(n,3)`. For energy_steel (17 features) that is **exactly 833 variables -- our B2 size** -- so B2's measured 82.4 s/fit is a DIRECT ANCHOR, not an extrapolation:
-  - **B4: 15 fits x 82.4 s = about 1,236 s, which is 63% of the 1,961 remaining.** Provenance: `measured` at this exact variable count.
+  - **B4: 15 fits x 82.4 s = about 1,236 s, which is 74% of the 1,681 remaining** (was 63% of 1,961 before the Sprint 18 integer probes spent 280 s). Provenance: `measured` at this exact variable count.
   - **B5 (QSVM, 12 fits): 15-62 s.** Provenance: `extrapolated` from B3's 5.2 s/fit.
   - Run B5 FIRST. It is cheap and it exercises the approval and ledger path before the expensive block.
 - **THE A31 READING THAT MUST NOT BE REPEATED.** The Sprint 18 plan first argued that A31's ~200-learner resolution limit made schedule 3 a worse experiment. That is backwards. A31 predicts the MECHANISM -- weight over more than ~200 learners is not representable, so the device returns something sparser -- not a bad OUTCOME. B2 ran at 833 variables with weight cosine 0.83 and produced the campaign's ONLY positive result at scale, +0.0256 on ten of ten seeds. The sparsified answer was better. Whether that repeats on SPECTRA is the actual experiment.
 - **Sizing note for any later cell**: telecom_churn at schedule 3 is 987 variables, over the ~940 usable ceiling. It needs one feature dropped (18 -> 17 gives 833) or it cannot run at all. energy_steel (833), oilgas (575) and maintenance (298) fit.
-- **Reconcile with F5 BEFORE B4 runs.** F5 (SPECTRA in-segment replication) is the same block from another angle and they must not both be scheduled. F5's HOLD reason names a QCi grant that "has only been acknowledged, not granted"; the grant arrived 2026-09-09 and 1,961 s remain. That gate is stale and should be corrected when F5 is next touched.
+- **Reconcile with F5 BEFORE B4 runs.** F5 (SPECTRA in-segment replication) is the same block from another angle and they must not both be scheduled. F5's HOLD reason names a QCi grant that "has only been acknowledged, not granted"; the grant arrived 2026-09-09 and 1,681 s remain. That gate was stale and is corrected on the F5 card (Phase 8 sweep, 2026-09-23).
 - **Acceptance**: B5 and B4 complete as `[HW]` rows with metered seconds from the response; the in-segment result reported against the matched random-segment control per H5(ii); the schedule-3 configuration stated with its variable count; and the weight cosine recorded, since forced sparsity is the expected mechanism rather than a defect.
-- **This is an allocation DECISION, not an estimate.** 1,236 s of 1,961 leaves about 725 s for everything else. It stops for per-block approval with the figure quoted (Criterion H).
+- **This is an allocation DECISION, not an estimate.** 1,236 s of 1,681 leaves about 445 s for everything else. It stops for per-block approval with the figure quoted (Criterion H).
 - Depends on: reconciliation with F5; per-block team-lead approval
 
 **F2b. Hardware campaign, remaining blocks B4 and B5 (~0.5 day + approvals) Priority 20**
@@ -347,7 +305,7 @@ not a sweep correction.
 - Phase: Experiments (moved to HOLD by team lead 2026-09-08 at Sprint 10 refinement)
 - Platform: SPECTRA, Dirac-3
 - 3 strongest cells x 5 seeds; random-segment negative control machinery reused for fraud transfer
-- **Why HOLD**: needs the QCi grant, which has only been acknowledged, not granted (card #40 open). Blocked by the same pending reply as F25
+- **Why HOLD**: originally, the QCi grant, then only acknowledged. **That reason is stale**: the grant arrived 2026-09-09 and 1,681 s remain. The live reason is that F90 is the same block from another angle and must be reconciled with it before either is scheduled (corrected in the Phase 8 sweep, 2026-09-23)
 - Depends on: QCi grant; F2 approval pattern
 
 **F29. Sample-size insensitivity of the CVQBoost optimum (~1h measured, zero metered) Priority HOLD**
