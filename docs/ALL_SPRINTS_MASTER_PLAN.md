@@ -184,16 +184,18 @@ Three findings outlived their cards and are recorded there:
 - Acceptance: the team lead picks one configuration (schedule 2 at 91-136 variables, or schedule 3 at 833) with the reason recorded; F2b and F5 closed into the survivor; the survivor's cost labeled measured or extrapolated; the hardware plan's Experiment 5 row either matches it or is flagged for F92
 - Depends on: nothing. The configuration choice is the team lead's (Class 3)
 
-**F92. QCi memo reconciled with the hardware plan before it is sent (~45m, zero metered) Priority 12**
+**F92. QCi memo reconciled with the hardware plan before it is sent (~138m with allowances, or ~105m without the plan-line extension; zero metered) Priority 12 -- SELECTED FOR SPRINT 19**
 - Phase: QCi/External (added 2026-09-23, Sprint 18 Phase 8 sweep, step 8.3)
 - Platform: docs (`docs/qci_package/`, gitignored, unsent)
 - **The memo contradicts the enclosed hardware plan in three places.** It says "We are not quoting a cost for that block" (the plan now quotes five measured points and a 9,000 s ask); it says the +0.0256 gain "is confounded" (F91 attributed it to subset order); and under "What we have not reached" it lists "Your integer solver", two sections after reporting five integer calls as DONE. It also says "We do not expect to need more before Phase 2 proper" without naming the ask the plan leads with
 - **Two more stale lines, found on a full read 2026-09-23**: line 4, "Everything below reflects what we knew on 2026-09-12", while the memo reports the 2026-09-23 integer probes; and line 17, "Nothing in this package asks you for anything", while the enclosed hardware plan opens with the 9,000 s ask
 - Schedule 4 stays in the memo as planned, unanswered work: F95 is held until after the memo is sent (team lead, 2026-09-23)
-- The PDFs in the package were rendered after the last source commit and are current; only the memo is stale
+- The PDFs in the package were rendered after the last source commit and are current against their sources
+- **Planning pre-flight 2026-09-24 found one stale sentence OUTSIDE the memo**: the hardware plan still lists "isolating the feature-count confound in our one positive result" as a future proxy experiment, which F64 and F91 have run. Raised as a scope question under the defined-scope rule, not planned in by inference
 - This prevents: a vendor reading two figures for one fact in one envelope, in a package whose case rests on every figure tracing
 - Acceptance: each stale passage shown to the team lead as before / after / recommendation, approved before the edit; `scripts/outward_readability.py` clean; no figure in the memo differs from the plan or the owning result doc
-- Depends on: F93 for the "how the remaining seconds get used" section only
+- **Estimate, per task (recorded before the plan, SPRINT_PLANNING.md)**: A memo wording 30m; B guards proven red 40m; C hardware-plan sentence and package re-render 25m (only if the extension is approved); D cross-document consistency review 20m. Allowances: 30% sourcing on writing (A, C) and 30% findings on verification (D). Total **138m** with C, **105m** without. Sequential: B pins A's final wording, D reads the result of A and C
+- Depends on: nothing in scope. The dependency on F93 is dropped: the memo will state only what the hardware plan states about the balance, and F93 reopening the plan would reopen the memo, which is a risk rather than a blocker
 
 **F94. Experiment 3 classical controls on the proxy: greedy, simulated annealing, exact solve at small n (~4h timebox [no-history], zero metered) Priority 20**
 - Phase: Phase 2 preparation (added 2026-09-23; SPLIT from F25, which was Too Large)
