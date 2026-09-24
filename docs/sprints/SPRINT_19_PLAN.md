@@ -5,6 +5,10 @@
 **Dates**: 2026-09-24 onward
 **Scope**: F92 (team lead selection, 2026-09-24). Defined scope: nothing else.
 **Metered Dirac-3 seconds**: ZERO. No approval stop.
+**Approved**: 2026-09-24 00:10 by the team lead. Line 17: the memo stays SILENT
+on the ask. Task C NOT approved; the hardware-plan sentence returns to the
+backlog as F96. Passages 1 and 3-6 approved as recommended. Issues #142 (A),
+#143 (B), #144 (D).
 
 ## Objective
 
@@ -104,7 +108,7 @@ Extend `test_qci_document_requirements.py`.
 - **Acceptance**: every new guard fails on the old text and passes on the new
   text; the full suite is green.
 
-### Task C: Hardware plan sentence and package re-render (F92) (~25m) -- ONLY IF THE SCOPE QUESTION IS APPROVED
+### Task C: Hardware plan sentence and package re-render (F92) (~25m) -- NOT APPROVED, moved to F96
 
 - Lines 198-201: Experiment 1 described as already run on the proxy, dated,
   with its result. The header's "one section is newer" becomes two.
@@ -135,6 +139,7 @@ does not originate it.
 - Verification portion (D) 20m: 30% findings allowance = **6m**
 - **Total: 138 minutes (2.3 hours)** with Task C; **105 minutes** without it
   (A 30 + B 40 + D 20 = 90, plus 9 + 6)
+- **APPROVED SCOPE: 105 minutes** (Task C not approved)
 
 Dependencies: B follows A (it pins A's final wording). D follows A and C (it
 reviews their result). Nothing runs in parallel.

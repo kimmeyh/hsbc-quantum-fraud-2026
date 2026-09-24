@@ -196,6 +196,15 @@ Three findings outlived their cards and are recorded there:
 - Acceptance: each stale passage shown to the team lead as before / after / recommendation, approved before the edit; `scripts/outward_readability.py` clean; no figure in the memo differs from the plan or the owning result doc
 - **Estimate, per task (recorded before the plan, SPRINT_PLANNING.md)**: A memo wording 30m; B guards proven red 40m; C hardware-plan sentence and package re-render 25m (only if the extension is approved); D cross-document consistency review 20m. Allowances: 30% sourcing on writing (A, C) and 30% findings on verification (D). Total **138m** with C, **105m** without. Sequential: B pins A's final wording, D reads the result of A and C
 - Depends on: nothing in scope. The dependency on F93 is dropped: the memo will state only what the hardware plan states about the balance, and F93 reopening the plan would reopen the memo, which is a risk rather than a blocker
+- **Approved 2026-09-24 at 105m** (Task C not approved; the plan sentence is F96). Line 17: the memo stays silent on the ask
+
+**F96. Hardware plan: Experiment 1 described as already run (~25m + package re-render, zero metered) Priority 14**
+- Phase: QCi/External (added 2026-09-24; split out of F92 at Sprint 19 approval)
+- Platform: docs (`docs/HARDWARE_PLAN_PHASE_2.md`, rendered into the QCi package)
+- Lines 198-201 list "isolating the feature-count confound in our one positive result" as a future proxy experiment. F64 and F91 ran it on 2026-09-22 and 2026-09-23: subset order carries the gain. The header's "One section is NEWER" would become two
+- This prevents: the memo (after F92) calling the confound resolved while the plan in the same envelope calls it future work. Whether that matters before sending is the team lead's call; he chose to leave the plan as it is for Sprint 19
+- Acceptance: the sentence and header updated; the package re-rendered with `render_all.py --qci-package`; the three submitted PDFs byte-identical before and after
+- Depends on: nothing
 
 **F94. Experiment 3 classical controls on the proxy: greedy, simulated annealing, exact solve at small n (~4h timebox [no-history], zero metered) Priority 20**
 - Phase: Phase 2 preparation (added 2026-09-23; SPLIT from F25, which was Too Large)
