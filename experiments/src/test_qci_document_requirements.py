@@ -401,3 +401,68 @@ def test_the_ask_is_reconciled_against_the_original_sponsorship_request():
         assert reason in text, f"the reduction is unexplained: {reason!r}"
     assert "reduction in ambition" in text, (
         "the plan does not say the shrink is evidence-driven")
+
+
+# ------------------- the memo agrees with the plan it travels with (F92, S19)
+#
+# Sprint 19, approved by the team lead 2026-09-24. The memo was written before
+# the Sprint 18 integer probes and the F91 attribution, and six passages came
+# to contradict the hardware plan in the same envelope. Each removed claim is
+# pinned below. These run only where the memo exists: it is gitignored as
+# private correspondence, so they SKIP in CI and protect this workstation only.
+
+def test_the_memo_dates_its_newer_sections():
+    """It dated everything to the filing while reporting 2026-09-23 work."""
+    text = _read(MEMO)
+    assert "Everything below reflects what we knew" not in text, (
+        "the memo dates all of its content to the filing again")
+    assert "Two sections are newer and say so" in text
+
+
+def test_the_memo_no_longer_claims_the_package_asks_nothing():
+    """The hardware plan in the same package opens with the 9,000 s ask. The
+    memo stays SILENT on it (team lead, 2026-09-24), which is different from
+    denying it."""
+    assert "Nothing in this package asks you for anything" not in _read(MEMO)
+
+
+def test_the_memo_reports_the_attribution_not_the_confound():
+    """F64 and F91 attributed the +0.0256. Every figure the memo quotes must
+    appear in the document that owns it."""
+    text = _read(MEMO)
+    assert "so the gain is confounded" not in text, (
+        "the memo calls the positive result confounded after F91 attributed it")
+    owner = _read(ROOT / "docs" / "F64_LADDER_DECOMPOSITION.md")
+    for figure in ("+0.0245", "+0.0001"):
+        assert figure in text, f"the memo does not state {figure}"
+        assert figure in owner, (
+            f"{figure} is not in F64_LADDER_DECOMPOSITION.md, so the memo "
+            "quotes a number its source does not carry")
+    assert "inferred across the two" in text, (
+        "the proxy-versus-hardware caveat on the attribution is gone")
+
+
+def test_the_memo_no_longer_refuses_to_quote_the_integer_cost():
+    """The same refusal F87 removed from the hardware plan, surviving in the
+    memo three sections before the memo reports the measured cost."""
+    text = _read(MEMO)
+    assert "We are not quoting a cost for that block" not in text
+    assert "no comparable anchor" not in text
+    owner = _read(ROOT / "docs" / "INTEGER_PROBE_RESULT.md")
+    for rate in ("71", "165"):
+        assert f"{rate} seconds" in text or f"at {rate}" in text or f" {rate}." in text
+        assert f"| {rate} |" in owner, (
+            f"{rate} s is not a measured row in INTEGER_PROBE_RESULT.md")
+
+
+def test_the_memo_does_not_list_the_integer_solver_as_unreached():
+    text = _read(MEMO)
+    assert "Your integer solver. Everything we ran was the continuous" not in text
+    assert "Your integer solver at scale" in text
+
+
+def test_the_memo_points_to_the_plan_for_phase_2_needs():
+    """"We do not expect to need more" is true of the current balance only;
+    the pointer stops it reading as a statement about Phase 2."""
+    assert "What Phase 2 itself would need is set out in the enclosed " \
+           "hardware plan" in _read(MEMO)

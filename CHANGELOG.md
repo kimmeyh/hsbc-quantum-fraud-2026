@@ -4,6 +4,11 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-09-24
+
+- **fix**: **F92: the QCi memo no longer contradicts the hardware plan it travels with.** Six passages written before the Sprint 18 probes and F91 were brought into line, in wording the team lead approved before the edit: the currency date, a line saying the package asks nothing (the plan opens with the 9,000 s ask; the memo now stays silent on it), the positive result described as confounded, a refusal to quote the integer cost, the integer solver listed as unreached, and a missing pointer to Phase 2 needs. Six guards pin the removals and carry every quoted figure back to its owning document; each proven red by injection. The memo is gitignored as private correspondence, so its guards run locally and skip in CI (#142, #143)
+- **docs**: Sprint 19 planned and approved at 105 minutes. The hardware-plan sentence that still calls the feature-count confound future work was not approved for this sprint and is carded as F96
+
 ### 2026-09-23
 
 - **docs**: **Phase 8 sweep for Sprint 18.** The master plan's "Last Completed Sprint" still described Sprint 14 through four later sprints, and its sprint table stopped at 14; both rolled. F91 pruned. F90's balance figures corrected from 1,961 to 1,681 (the 280 probe seconds), and F5's stale "grant not granted" HOLD reason corrected. SPRINT_18_SUMMARY.md was written after round 1 and never updated for round 2 or F91: it reported 16 metered seconds and a falsified line, now corrected with a dated note. CHECKLIST-Phase2-pre.md had F73 and F64 shipped and unticked

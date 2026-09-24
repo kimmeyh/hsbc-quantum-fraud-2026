@@ -12,7 +12,11 @@
       143,
       144
     ],
-    "task_actuals": {}
+    "task_actuals": {
+      "A": 2,
+      "B": 6,
+      "_note": "Wall-clock minutes at completion. A's wording was drafted and approved during planning, so A measures only the edit; B includes the 4-minute suite run."
+    }
   },
   "last_completed_sprint": {
     "number": 18,
