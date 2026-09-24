@@ -27,7 +27,7 @@ sponsorship request estimated 2,000 seconds for the preregistered runs plus
 -- both marked TBD, because at the time we had no measured cost at scale and
 said so. We now do, and three things shrank the number:
 
-- **The classical proxy absorbs four of the six experiments.** It solves the
+- **The classical proxy absorbs three of the six experiments.** It solves the
   identical Hamiltonian, so anything that does not need the device does not
   touch it. That was the single largest reduction.
 - **The null result narrowed the grid.** A full benchmark sweep made sense when
@@ -38,7 +38,7 @@ said so. We now do, and three things shrank the number:
   That estimate used 26 to 34 seconds per tuned fit from a prior campaign; our
   own fits ran 4 to 9 seconds at 91 to 136 variables.
 
-We mention it because a request that shrinks by a factor of three to five
+We mention it because a request that shrinks by a factor of 2.4 to 4.7
 deserves an explanation, and because the reason is evidence rather than a
 reduction in ambition.
 
@@ -78,8 +78,8 @@ gone cold.
 Everything below states what we would run, what each block costs, and why one
 of the six experiments is the one that actually needs the device.
 
-Every cost below is **measured on your hardware during Phase 1**, not
-projected. Where we have no measurement, we say so and bound the block by call
+Every cost below is **measured on your hardware**, during the Phase 1
+campaign or in the integer sizing calls of 2026-09-23, not projected. Where we have no measurement, we say so and bound the block by call
 count instead of quoting a number.
 
 ## Allocation position
@@ -102,7 +102,7 @@ were still spent, so they are included in the draw.
 
 ## Measured per-fit cost
 
-From 61 fits, all `status: ok`, zero failures, zero retries:
+From 61 fits, all `status: ok`, zero failures, zero retries:[^fits]
 
 | Problem size | Seconds per fit | Basis |
 |---|---|---|
@@ -110,13 +110,17 @@ From 61 fits, all `status: ok`, zero failures, zero retries:
 | 136 variables | 4 to 9 | 12 fits |
 | 91 variables | 4 to 5 | 22 fits, free tier |
 
+[^fits]: The table shows the three sizes that recur, 45 fits. The other 16
+were five one-off calibration fits and ten fits on a mixed-family pool, at 4
+to 5 seconds each, and one 105-variable ceiling probe at 10 seconds.
+
 Cost tracks problem size and is stable within a size. That is what made block
 budgeting practical for us, and it is the single most useful operational fact
 we can pass on to another customer sizing a problem.
 
 ## What we would run
 
-Six experiments, in priority order. **Four of the six cost zero device
+Six experiments, in priority order. **Three of the six cost zero device
 seconds**, because the classical proxy solves the identical Hamiltonian and
 a convex problem has nothing for a solver to win.
 

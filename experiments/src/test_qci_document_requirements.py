@@ -266,8 +266,11 @@ def test_the_level_budget_distinction_is_explained_to_qci():
 def test_the_memo_reports_the_probe_as_done_and_the_balance_as_spent():
     text = _read(MEMO)
     assert "1,681" in text, "the memo does not carry the post-probe balance"
+    # 1,961 may appear ONLY as the post-Phase-1 starting point of the
+    # subtraction (Sprint 19 M2, approved), never as the remaining balance.
+    allowed = "280 of the 1,961 that remained after Phase 1"
     for stale in ("1,961", "1,945"):
-        assert stale not in text, (
+        assert stale not in text.replace(allowed, ""), (
             f"the memo still quotes {stale}; the figures must be internally "
             "consistent")
 
@@ -446,7 +449,11 @@ def test_the_memo_no_longer_refuses_to_quote_the_integer_cost():
     """The same refusal F87 removed from the hardware plan, surviving in the
     memo three sections before the memo reports the measured cost."""
     text = _read(MEMO)
-    assert "We are not quoting a cost for that block" not in text
+    # CASE-INSENSITIVE. The first version matched "We are not quoting" with a
+    # capital W and passed while item 1 of the balance section still quoted
+    # the plan's "we are not quoting a cost" sentence in lower case -- a
+    # sentence the plan no longer contains. Found by the Task D review.
+    assert "we are not quoting a cost" not in text.lower()
     assert "no comparable anchor" not in text
     owner = _read(ROOT / "docs" / "INTEGER_PROBE_RESULT.md")
     for rate in ("71", "165"):
@@ -466,3 +473,65 @@ def test_the_memo_points_to_the_plan_for_phase_2_needs():
     the pointer stops it reading as a statement about Phase 2."""
     assert "What Phase 2 itself would need is set out in the enclosed " \
            "hardware plan" in _read(MEMO)
+
+
+# ------------------ Task D findings, team lead dispositions 2026-09-24 (F92)
+
+def test_three_experiments_cost_zero_device_seconds_everywhere():
+    """Experiments 1, 2 and 4 run on the proxy; 3, 5 and 6 are metered. The
+    plan and the memo both said FOUR, against their own list and against the
+    submitted proposal's "experiments 1, 2 and 4 (zero device seconds)"."""
+    for path in (HARDWARE, MEMO):
+        text = _read(path).lower()
+        assert "four of the six" not in text, f"{path.name} says four of six"
+        assert "four cost zero" not in text, f"{path.name} says four cost zero"
+    assert "Three of the six cost zero device seconds" in _read(HARDWARE)
+    assert "Three cost zero device seconds" in _read(MEMO)
+
+
+def test_the_memo_does_not_read_as_spending_280_out_of_1681():
+    """The heading promised 1,681 and the next line spent 280 "of them",
+    which a reader subtracts to 1,401."""
+    text = _read(MEMO)
+    assert "we have spent 280 of them" not in text
+    assert "280 of the 1,961 that remained after Phase 1, leaving 1,681" in text
+
+
+def test_the_memo_scopes_the_fidelity_figure_to_its_arm():
+    """-0.0010 is one arm (the 91-variable dct pools, ten seeds), not the
+    campaign; the gate report says so and the memo said otherwise."""
+    text = _read(MEMO)
+    assert "Measured across the campaign" not in text
+    assert "main 91-variable arm, ten seeds" in text
+
+
+def test_the_plan_states_the_shrink_it_can_compute():
+    """2,000 + 20,000..40,000 against 9,000 is 2.4x to 4.7x, not 3x to 5x.
+    Derived, so the guard fails if either end of the stated range moves."""
+    text = _read(HARDWARE)
+    assert "three to five" not in text
+    low, high = 9000, 9000
+    lo_ratio = (2000 + 20000) / low
+    hi_ratio = (2000 + 40000) / high
+    assert f"{lo_ratio:.1f} to {hi_ratio:.1f}" in text, (
+        f"the plan does not state the shrink as {lo_ratio:.1f} to {hi_ratio:.1f}")
+
+
+def test_the_plan_does_not_date_every_cost_to_phase_1():
+    """The integer costs were measured 2026-09-23, after the filing."""
+    text = _read(HARDWARE)
+    assert "measured on your hardware during Phase 1**" not in text
+    assert "integer sizing calls of 2026-09-23" in text
+
+
+def test_the_per_size_table_accounts_for_all_61_fits():
+    """The table's rows sum to 45; the footnote names the other 16. Summed
+    from the table itself, so adding a row without fixing the note fails."""
+    import re
+    text = _read(HARDWARE)
+    section = text[text.index("## Measured per-fit cost"):]
+    section = section[:section.index("Cost tracks problem size")]
+    rows = [int(n) for n in re.findall(r"\| (\d+) fits", section)]
+    assert sum(rows) == 45, f"table rows sum to {sum(rows)}, note says 45"
+    assert "three sizes that recur, 45 fits. The other 16" in section
+    assert sum(rows) + 16 == 61

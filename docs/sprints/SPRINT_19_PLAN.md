@@ -128,6 +128,42 @@ Extend `test_qci_document_requirements.py`.
 - **Acceptance**: zero disagreements, or each one fixed through Task A or C
   wording and re-approved.
 
+## Scope extension after Task D (team lead, 2026-09-24)
+
+**The premise falsifier FIRED.** The fresh-context reviewer, who had not seen
+this plan's list, reported fourteen disagreements across the four package
+documents. Each was verified against the documents and `results.json` before
+it was presented. The team lead's dispositions, recorded here because they
+extend F92 past its approved scope ("extend F92 as needed", no time limit):
+
+- **Memo, updated**: M1 three (not four) experiments cost zero device seconds;
+  M2 the 280 seconds read as spent out of 1,681; M3 a reference to a plan
+  sentence that no longer exists; M4 -0.0010 scoped to its arm rather than
+  "the campaign".
+- **Memo, left**: M5, 280 seconds against five calls summing to 276 (the
+  extra 4 s is our duplicate call; too small to explain to QCi, and
+  recorded in `docs/INTEGER_PROBE_RESULT.md`).
+- **Hardware plan, updated**: P1 three of six, twice; P3 a footnote reconciling
+  the per-size table's 45 fits with 61; P4 costs no longer all dated to Phase
+  1; P6 the shrink stated as 2.4 to 4.7, not three to five.
+- **Hardware plan, left**: P2 "the sparsified answer outperformed" and the
+  feedback's matching sentence. Verification showed the device and the exact
+  solve essentially level on the same 833-variable pools (validation AUPRC
+  -0.0003, device ahead on 3 of 10). The team lead's reading: the order-3
+  configuration outperformed, and the evidence for that is clear. Recorded as
+  his decision. P5 left (280 s is correct).
+- **Feedback, left**: F1, the 10-second fallback charge wording.
+- **G1 answered, no change**: the results document's 48 fits and 1,069 s plus
+  B3's 12 published fits (62 s) plus the 10 s ceiling probe give 61 fits and
+  1,141 s, as `docs/QPU_RECONCILIATION.md` sets out.
+- **Recommended no action, and no change made**: the 23 dB attribution, 4.1x
+  against a computed 4.18, and the sum-constraint wording. The team lead did
+  not comment on these.
+- **Still open**: the memo spends Experiment 5 from the current 1,681 s while
+  the plan budgets it inside the 9,000 s Phase 2 total. Asked as a decision.
+
+The hardware plan PDF was re-rendered; all six tracked PDFs byte-identical.
+
 ## Estimate
 
 Derived from the card and recorded there before this plan was written

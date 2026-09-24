@@ -15,7 +15,8 @@
     "task_actuals": {
       "A": 2,
       "B": 6,
-      "_note": "Wall-clock minutes at completion. A's wording was drafted and approved during planning, so A measures only the edit; B includes the 4-minute suite run."
+      "_note": "Wall-clock minutes at completion. A's wording was drafted and approved during planning, so A measures only the edit; B includes the 4-minute suite run. D is NOT RECORDED: it spanned an approval stop of several hours (00:23 to after 08:30), so wall clock does not measure the work, and an estimate of the active part would be a reconstruction.",
+      "D": null
     }
   },
   "last_completed_sprint": {
