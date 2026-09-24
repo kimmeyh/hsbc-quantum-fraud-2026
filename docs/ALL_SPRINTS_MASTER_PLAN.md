@@ -188,6 +188,8 @@ Three findings outlived their cards and are recorded there:
 - Phase: QCi/External (added 2026-09-23, Sprint 18 Phase 8 sweep, step 8.3)
 - Platform: docs (`docs/qci_package/`, gitignored, unsent)
 - **The memo contradicts the enclosed hardware plan in three places.** It says "We are not quoting a cost for that block" (the plan now quotes five measured points and a 9,000 s ask); it says the +0.0256 gain "is confounded" (F91 attributed it to subset order); and under "What we have not reached" it lists "Your integer solver", two sections after reporting five integer calls as DONE. It also says "We do not expect to need more before Phase 2 proper" without naming the ask the plan leads with
+- **Two more stale lines, found on a full read 2026-09-23**: line 4, "Everything below reflects what we knew on 2026-09-12", while the memo reports the 2026-09-23 integer probes; and line 17, "Nothing in this package asks you for anything", while the enclosed hardware plan opens with the 9,000 s ask
+- Schedule 4 stays in the memo as planned, unanswered work: F95 is held until after the memo is sent (team lead, 2026-09-23)
 - The PDFs in the package were rendered after the last source commit and are current; only the memo is stale
 - This prevents: a vendor reading two figures for one fact in one envelope, in a package whose case rests on every figure tracing
 - Acceptance: each stale passage shown to the team lead as before / after / recommendation, approved before the edit; `scripts/outward_readability.py` clean; no figure in the memo differs from the plan or the owning result doc
@@ -209,6 +211,7 @@ Three findings outlived their cards and are recorded there:
 - About five fits at 91-136 variables. Schedule-2 cost there is 4-9 s per fit, measured; **schedule-4 cost is unmeasured**, so the block opens with one fit to establish the rate (the F87 pattern)
 - Acceptance: the runner is idempotent before its first approval (Criterion H); per-fit residual against the proxy optimum reported as `[HW]` rows beside their schedule-2 twins
 - Depends on: per-block team-lead approval (Criterion H)
+- **HELD until the QCi memo (F92) is sent** (team lead, 2026-09-23). Case and cost worked out at refinement, recorded so it is not re-derived: 4 fits on frozen pools that already have schedule-2 and exact-optimum twins (B1 dct seeds 42 and 43 at 91 variables; the G0b fit with the 0.413% gap; B1 lg seed 42 at 45 variables), stopping after fit 1 to re-quote if the rate exceeds 27 s. About 60 s, range 40-110 s, cap 120 s. Extrapolated, low confidence: measured schedule-2 cost of 4-5 s per fit times the 3.4x schedule-4 ratio (range 2.3x-5.3x) in QCi's portfolio example, a problem of unstated size. The per-fit data suggests the residual is a fixed offset (all 8 samples clustered well above the optimum), which predicts schedule 4 will NOT close it; that is inference, and the run is what settles it
 
 **F90. F2b at the configuration that can actually show an effect: B5, then B4 at schedule 3 (~4h + approvals) Priority 5**
 - Phase: Experiments / Phase 2 evidence
