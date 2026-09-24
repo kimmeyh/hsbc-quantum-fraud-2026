@@ -34,6 +34,11 @@ RESULTS = SRC.parents[0] / "results" / "results.json"
 
 REQUIRED_ENV_FIELDS = ("os", "os_release", "python", "threads")
 
+# Rows written before amendment A33. Fixed by history, not by counting the
+# file: the count grows with every new row, and using len(rows) would make
+# this guard assert nothing.
+HISTORICAL_ROW_COUNT = 168
+
 
 def test_environment_returns_the_required_fields():
     env = store.environment()
@@ -158,8 +163,18 @@ def test_the_168_existing_rows_are_not_retrofitted():
     if not RESULTS.exists():
         pytest.skip("results.json not present")
     rows = json.loads(RESULTS.read_text(encoding="utf-8"))["rows"]
-    stamped = [i for i, r in enumerate(rows) if "environment" in r]
+
+    # The FIRST 168 rows are the pre-amendment ones. Rows written after A33
+    # legitimately carry the stamp -- that is the amendment working, and the
+    # first of them landed in Sprint 18 Task C.
+    #
+    # The original version asserted NO row carried the field, which was right
+    # on the day it was written and became wrong the moment A33 did its job.
+    # A guard that fails on correct behaviour gets deleted rather than fixed,
+    # so it is pinned to the boundary instead.
+    historical = rows[:HISTORICAL_ROW_COUNT]
+    stamped = [i for i, r in enumerate(historical) if "environment" in r]
     assert not stamped, (
-        f"{len(stamped)} historical row(s) carry an environment field they "
-        f"could not have observed (first at index {stamped[0]}). A33 says the "
-        "existing rows are not retrofitted.")
+        f"{len(stamped)} of the first {HISTORICAL_ROW_COUNT} row(s) carry an "
+        f"environment field they could not have observed (first at index "
+        f"{stamped[0]}). A33 says the existing rows are not retrofitted.")

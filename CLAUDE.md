@@ -256,6 +256,24 @@ only in memory.
   F67, F39 and F72 shipped and stayed unticked -- and it was found a sprint
   later.)
 
+- **Don't treat a local green suite as evidence that CI is green, and
+  don't let a red CI stop the sprint either.** Two checkpoints, neither
+  blocking: `scripts/check_ci_status.py --after 300` about five minutes after
+  the draft PR exists (3.3.2), and `scripts/check_ci_status.py` on the final
+  HEAD before `gh pr ready` (7.0, no waiting). A red check at either point is
+  HANDED TO A BACKGROUND AGENT while the sprint continues. The close-out hook
+  is the backstop: it blocks the completion claim if CI is not green by 7.7,
+  so nothing ships red and nothing waits. (Sprint 18 ran red from its first
+  push to its last. Three tests sent a Stop hook a payload with no
+  `branch_override`, so the hook read the live branch name: populated in a
+  normal clone, EMPTY on the detached HEAD `actions/checkout` leaves, so the
+  hook's first gate returned ALLOW before reaching any check. Those tests
+  could not fail locally on any run. Worse, an entire PR review round shipped
+  under the red X -- three review reports were read and the check status was
+  not. The script exits non-zero for red, for still-running AND for
+  cannot-determine, because "I could not tell" is the state that reads as
+  green and is not.)
+
 - **Don't state what an external system contains without opening it.** Reasoning
   from adjacent code or a stale note is not evidence. If it cannot be inspected
   this turn, write the claim with the word **unverified** and say what would

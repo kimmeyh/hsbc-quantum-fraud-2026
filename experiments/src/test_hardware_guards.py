@@ -89,13 +89,37 @@ def test_temporal_rows_carry_no_seed():
     assert data.Split.__dataclass_fields__["seed"].type in ("int | None", "Optional[int]")
 
 
-@pytest.mark.parametrize("msg", [
-    "Job rejected: number of variables exceeds free-tier device limit",
-    "ERROR: variable count above the free tier limit for this token",
-])
-def test_sizing_errors_are_recognized(msg):
-    """A reworded vendor sizing error must still be recognized as no-retry."""
-    m = msg.lower()
-    matched = ("number of variables" in m or ("variable" in m and "limit" in m)
-               or "free-tier" in m or "free tier" in m)
-    assert matched, f"sizing error not recognized: {msg}"
+def _load_f32():
+    spec = importlib.util.spec_from_file_location(
+        "run_hardware_f32", SRC / "run_hardware_f32.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_an_oversized_job_is_refused_before_submission():
+    """The free-tier size limit is enforced LOCALLY, by production code.
+
+    The previous version of this test re-implemented the matcher inline and
+    asserted against its own copy -- it never imported anything from the
+    runner, so no change to production code could fail it. It was cited to
+    QCi as evidence that the rejection message is pinned. Found by the PR
+    #139 review.
+
+    What actually exists is a pre-submission size check, which is the
+    stronger guarantee: the job never leaves the machine.
+    """
+    f32 = _load_f32()
+    with pytest.raises(SystemExit) as exc:
+        f32.check_free_tier_size(f32.FREE_TIER_MAX_VARS + 1)
+    msg = str(exc.value)
+    assert "REFUSING to submit" in msg
+    assert str(f32.FREE_TIER_MAX_VARS) in msg, (
+        "the refusal does not state the limit it enforced")
+
+
+def test_a_job_at_the_limit_is_allowed():
+    """The boundary. Without it, refusing everything would pass the test
+    above and no job could ever be submitted."""
+    f32 = _load_f32()
+    f32.check_free_tier_size(f32.FREE_TIER_MAX_VARS)

@@ -70,6 +70,10 @@ include allow_stop_hook_bypass, or state explicitly which item does not apply
 and why."""
 
 
+class _SkipCI(Exception):
+    """The CI checker is unavailable; its absence is already reported."""
+
+
 def _last_message(payload: dict) -> str:
     if payload.get("last_assistant_message"):
         return str(payload["last_assistant_message"])
@@ -242,6 +246,62 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
             # only: the other four still ran, and a hook that blocks every
             # close-out because GitHub is unreachable would be bypassed.
             pass
+
+    # CI on the HEAD commit.
+    #
+    # Sprint 18 ran RED on every commit from the first push to the last, and
+    # the failure was found only when a monitor was armed on the PR during a
+    # review round that had already finished. Three tests could not fail
+    # locally -- they sent a Stop hook a payload with no branch_override, so
+    # the hook read the live branch name, which is EMPTY on the detached HEAD
+    # that actions/checkout leaves behind, and returned ALLOW before reaching
+    # any check. Local green was never evidence, and nobody opened the red X.
+    #
+    # UNLIKE the issues check above, this does NOT fail open. That check asks
+    # a question whose answer is usually "nothing to do"; this one exists
+    # precisely because the answer went unread, so "I could not tell" must
+    # surface rather than pass. It names what to check instead of blocking
+    # blindly, which keeps it from being the kind of guard that gets bypassed.
+    # The import sits OUTSIDE the try that catches ci.Undetermined, because
+    # naming that exception requires the module to be bound. A failed import
+    # would have raised NameError from inside the handler.
+    ci = None
+    try:
+        sys.path.insert(0, str(root / "scripts"))
+        import check_ci_status as ci
+    except Exception as exc:                             # noqa: BLE001
+        violations.append(
+            f"The CI checker could not be imported ({type(exc).__name__}: "
+            f"{exc}). scripts/check_ci_status.py is what verifies CI before "
+            "close-out; without it nothing checked.")
+
+    try:
+        if ci is None:
+            raise _SkipCI
+        sha = ci.head_sha("HEAD")
+        rc_ci, lines = ci.evaluate(sha)
+        if rc_ci == ci.FAILED:
+            violations.append(
+                f"CI is RED on {sha[:7]}. A close-out cannot be complete over "
+                "a failing check. Open the run and fix it, or state which "
+                "failure is not applicable and why. "
+                + " ".join(ln.strip() for ln in lines if "http" in ln))
+        elif rc_ci == ci.PENDING:
+            violations.append(
+                f"CI is still RUNNING on {sha[:7]}. Wait for it before "
+                "claiming close-out; a queued run is not a passing one.")
+    except _SkipCI:
+        pass                       # already reported by the import handler
+    except Exception as exc:                             # noqa: BLE001
+        if ci is not None and isinstance(exc, ci.Undetermined):
+            violations.append(
+                f"CI status could not be determined ({exc}). That is not a "
+                "pass. Check the PR's checks tab by hand, or say explicitly "
+                "that CI was not verified and why.")
+        else:
+            violations.append(
+                f"The CI check itself failed to run ({type(exc).__name__}: "
+                f"{exc}). A guard that errors is not a guard that passed.")
 
     return violations
 

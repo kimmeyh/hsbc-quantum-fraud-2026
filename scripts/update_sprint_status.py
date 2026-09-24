@@ -122,6 +122,13 @@ def main(argv: list[str] | None = None) -> int:
             "pr": None,
             "plan_approved": False,
             "github_issues": [],
+            # IMP-1 (Sprint 18 retrospective): SPRINT_PLANNING.md has required
+            # "record actuals at task completion" since it was written, and
+            # three consecutive sprints reported an estimate with no actual to
+            # compare -- because nothing prompted it. The field exists so the
+            # omission is visible in the status file rather than discovered at
+            # the retrospective. {"A": 90, "B": 25, ...} in minutes.
+            "task_actuals": {},
         }
         changes.append(f"  rolled to sprint {args.new_sprint} "
                        f"(previous: {doc['last_completed_sprint']['number']})")
