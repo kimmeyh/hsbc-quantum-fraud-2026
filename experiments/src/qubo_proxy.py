@@ -49,6 +49,23 @@ CONFIGS = {
     # frozen starting configs (prereg 4; A2-corrected variable counts)
     "free": {"k": 13, "schedule": 2},   # 78 vars sequential / 91 full-pair
     "full": {"k": 17, "schedule": 3},   # 816 vars sequential / 833 full-pair
+    # THE MISSING MIDDLE OF THE LADDER (F64, Sprint 18 Task C). B2's +0.0256 is
+    # the campaign's only positive result at scale, and TWO factors moved to
+    # produce it: k (13 -> 17) and subset order (2 -> 3). We hold both ends and
+    # neither middle:
+    #     k=13, order 2,  91 vars -> 0.7671  [have, "free"]
+    #     k=17, order 2, 153 vars -> ?       [this config]
+    #     k=17, order 3, 833 vars -> 0.7928  [have, "full"]
+    # It is NOT a frozen starting config; it is a decomposition cell added
+    # after the submission, and its result is reported as a BOUND rather than
+    # an attribution (see the Task C write-up).
+    "mid": {"k": 17, "schedule": 2},    # 153 full-pair
+    # THE FOURTH CORNER (F91, Sprint 18). With "free", "mid" and "full"
+    # the design still cannot separate "order 3 matters" from "order 3
+    # matters GIVEN k=17", because no k=13 order-3 cell exists. This is
+    # that cell: 13 + C(13,2) + C(13,3) = 377 variables. With all four
+    # corners the interaction is a subtraction rather than an inference.
+    "deep": {"k": 13, "schedule": 3},   # 377 full-pair
 }
 FIXED = {"relaxation_schedule": 2, "num_samples": 8}   # frozen, not tuned
 LAMBDA_MULT = 2.0                                      # lambda_coef = 2 * n_train

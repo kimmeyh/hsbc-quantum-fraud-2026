@@ -1,27 +1,27 @@
 {
   "current_sprint": {
-    "number": 17,
-    "name": "Clear the Deck for Phase 2",
-    "branch": "feature/20260919_Sprint_17",
+    "number": 18,
+    "name": "The First Phase 2 Evidence, and the Cost of the Ask",
+    "branch": "feature/20260922_Sprint_18",
     "status": "phase_5_validation",
-    "plan_doc": "docs/sprints/SPRINT_17_PLAN.md",
-    "pr": 122,
+    "plan_doc": "docs/sprints/SPRINT_18_PLAN.md",
+    "pr": 139,
     "plan_approved": true,
     "github_issues": [
-      123,
-      124,
-      125,
-      126,
-      127,
-      128,
-      129,
-      130,
-      131
-    ]
+      133,
+      134,
+      135,
+      136,
+      137,
+      138
+    ],
+    "task_actuals": {
+      "_note": "NOT RECORDED. Sprint 18 did not capture actuals at task completion, which is the gap IMP-1 closes for Sprint 19 onward. Reconstruction from commit timestamps was ATTEMPTED and DISCARDED: it produced 3 minutes for a 90-minute task, because the gap between commits measures neither the work nor the order it happened in. A fabricated actual is worse than a missing one -- it would have recalibrated future estimates against noise."
+    }
   },
   "last_completed_sprint": {
-    "number": 16,
-    "merged_pr": 120,
+    "number": 17,
+    "merged_pr": 122,
     "main_merge_pr": null,
     "docs_triad_complete": false
   },
@@ -30,5 +30,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-22"
+  "updated": "2026-09-23"
 }

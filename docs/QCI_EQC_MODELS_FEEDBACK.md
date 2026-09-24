@@ -48,9 +48,11 @@ features, which is four families at 60 variables. Every scaling statement we
 could make at the time was bounded by a tier limit rather than by the device.
 
 **What we did.** Recorded the ceiling as a device constraint in
-`run_hardware_f32.py:59-64`, and added a property test pinning the rejection
-message so a future change surfaces as a test failure rather than a mystery
-(`test_hardware_guards.py:68`).
+`run_hardware_f32.py:59-64`, and refuse an oversized job locally before it is
+submitted (`check_free_tier_size`), so the limit surfaces as a sizing decision
+at planning time rather than as an HTTP error mid-campaign. The refusal states
+the limit it enforced, and a test exercises both the refusal and the boundary
+case at exactly the limit.
 
 **Suggested fix.** State the continuous-job variable ceiling in the free-tier
 documentation next to the 949 figure, and say which job class each applies to.
@@ -114,7 +116,7 @@ From 61 metered fits, all `status: ok`, zero failures, zero retries:
 
 Of the 1,141 seconds, 163 ran on the free tier across 37 fits before your
 grant and 978 drew against the allocation. The allocation itself shows 1,039
-drawn: the extra 61 seconds went to a B3 run we withdrew and re-ran the same
+drawn: the extra 61 seconds went to a run we withdrew and re-ran the same
 day, after finding its pools were built on more data than the arm it was
 quoted against. That run is excluded from the campaign total because its
 result is not ours to claim; the seconds were still spent, so they count

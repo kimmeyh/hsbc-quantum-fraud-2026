@@ -27,7 +27,10 @@ WHAT WAS CHECKED, and against what:
 
 5. The justification was tested rather than assumed. Task H measured the suite
    on Windows and Linux at the same commit: 1,031 passed / 0 failed and
-   1,018 passed / 0 failed. There is NO measured behavioral divergence, so
+   1,018 passed / 0 failed, measured at `7261e4e` (2026-09-19). Those are a
+   RECORD of that experiment, not the current counts, which is why the commit
+   is named -- the suite has grown since, and a reader must not read them as
+   today's figures. There is NO measured behavioral divergence, so
    this amendment is explicitly NOT a fix for a known difference. It is
    provenance. The amendment text says so in those words rather than implying
    a problem that was not observed.
