@@ -50,13 +50,21 @@ submitted documents.
       glossary is use case ONE, not the boundary
 - [x] **C**: F72 -- ADR-0015 written and ACCEPTED (Sprint 14). Restructured in
       review: a paper is a SOURCE OF ASSERTIONS rather than a record
-- [ ] **C**: F77 -- BUILD the Evidence Based DB. Repository created 2026-09-14
-      at `github.com/kimmeyh/EvidenceBasedDB` (private) and seeded; Sprint 1 is
-      planned there. The work happens in that repository, not this one
-- [ ] **C**: F73 -- the submission explained at an 8th-grade level. Sequenced
-      AFTER F77 so its contents can be validated against the store
-- [ ] **H+C**: F64 -- the k=17 order-2 cell is Phase 2 experiment 1. Pre-flight
-      is done and recorded; the run itself waits for acceptance
+- [x] **C**: F77 -- MOVED to `github.com/kimmeyh/EvidenceBasedDB` by the team
+      lead 2026-09-16 and tracked in that repository's own backlog. Not this
+      repository's work
+- [x] **C**: F73 -- the submission explained at an 8th-grade level. COMPLETED in
+      Sprint 15 (`docs/explainer/THE_SUBMISSION_EXPLAINED.md`), ahead of F77
+      rather than after it
+- [x] **H+C**: F64 -- the k=17 order-2 cell. RUN in Sprint 18 as post-submission
+      proxy work rather than waiting for acceptance, and completed by F91's
+      fourth corner. `docs/F64_LADDER_DECOMPOSITION.md`
+- [x] **C**: F87 -- the Dirac-3 integer path built and sized, five measured
+      points (Sprint 18). `docs/INTEGER_PROBE_RESULT.md`
+
+(Reconciled 2026-09-23 in the Phase 8 sweep. F73 and F64 had shipped and stayed
+unticked, the same lapse the Sprint 14 retrospective recorded for F67, F39 and
+F72.)
 - [ ] **H**: Optional -- gate-based groundwork on a free platform (PennyLane or
       Qiskit both port to Braket). Self-funded, `[SIM]` until it runs on
       hardware, and NOT part of the Phase 1 record

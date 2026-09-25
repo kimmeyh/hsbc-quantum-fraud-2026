@@ -3,8 +3,14 @@
 **Sprint**: 18
 **Branch**: `feature/20260922_Sprint_18`
 **Dates**: 2026-09-22 to 2026-09-23
-**Scope**: F87, F64, F88, F89. F2b deferred to F90 before execution began.
-**Metered Dirac-3 seconds**: **16** (approved as 2 calls; 3 were made -- see below).
+**Scope**: F87, F64, F88, F89, plus F91 and a second probe round added mid-sprint. F2b deferred to F90 before execution began.
+**Metered Dirac-3 seconds**: **280** across six calls in two approved rounds (round 1 was approved as 2 calls and 3 were made -- see below).
+
+(Corrected 2026-09-23 in the Phase 8 sweep. This summary was written after
+round 1 and was not updated when round 2 and F91 landed the same day: it
+reported 16 metered seconds, a two-point line that round 2 falsified, and the
+fourth ladder corner as not done. The record of those two pieces of work is
+`docs/INTEGER_PROBE_RESULT.md` and `docs/F64_LADDER_DECOMPOSITION.md`.)
 
 ## What shipped
 
@@ -13,16 +19,28 @@ All six tasks.
 **F87 -- the integer path has a measured cost.** Phase 1 ran only the
 continuous relaxation, which is convex and therefore unwinnable for any device.
 The integer solver is the formulation where the optimizer has real work to do,
-and it now has a number attached:
+and it now has five measured points:
 
 | probe | variables | level budget | metered seconds |
 |---|---|---|---|
 | probe_small | 8 | 32 | 4 |
 | probe_mid | 24 | 96 | 8 |
+| probe_mid_hi | 60 | 240 | 28 |
+| probe_high | 150 | 600 | 165 |
+| probe_deep | 60 | 840 | 71 |
 
-Tripling the budget doubled the cost: about 0.0625 s per level plus a 2 s
-floor, **labeled extrapolated rather than measured** because two points define
-a line by construction.
+**Cost tracks the VARIABLE COUNT, not the level budget.** probe_deep carries
+1.4x more levels and 2.5x fewer variables than probe_high, and cost 2.3x less.
+The device ceiling is stated in levels, so a block sized against the ceiling
+alone would be mispriced. Round 1's line (0.0625 s per level from the first two
+points) was falsified by 1.6x and 4.1x at the two far points. A two-factor fit
+is indicative only; the controlled pair is the finding.
+
+**F91 -- the fourth corner.** k=13 at order 3, 377 variables, ten seeds, zero
+metered seconds. With all four corners the attribution is a subtraction: the
+order effect is +0.0245 (CI excluding zero), the feature-count effect +0.0001
+(CI spanning zero), the interaction about +0.0001. B2's +0.0256 comes from
+three-feature learners, not from more features.
 
 **F64 -- the missing middle moves nothing.** k=17 at order 2 (153 variables)
 minus k=13 at order 2 (91 variables), ten paired seeds: **+0.00007, CI
@@ -167,11 +185,8 @@ IMP-2, proposed against exactly this pattern, was dropped (team lead, 2026-09-23
 - **F25**, the cardinality-constrained investigation. This sprint built and
   sized the integer path; it did not ask whether that path beats a classical
   control.
-- **A third probe point near the ceiling.** Needed before any large integer
-  block is quoted, and stated as such in every document carrying the
-  extrapolation.
-- **The fourth ladder corner** (k=13 at order 3, 377 variables), which would
-  identify the interaction term F64 leaves open. A separate card, not a silent
-  extension.
+- **A high-variable point near the ceiling.** probe_ceiling (210 variables,
+  840 levels, estimated near 181 s) was designed and not approved, so no
+  high-variable ceiling figure is quoted anywhere.
 - **Sending the QCi package.** Assembled for the team lead; Claude never sends.
 - No submitted document was edited; all verified byte-identical at close.

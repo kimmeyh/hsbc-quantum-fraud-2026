@@ -16,9 +16,11 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts" / "outward_readability.py"
+# The memo was REMOVED from this list on 2026-09-25, when it was sent. A sent
+# artifact is evidence, not a fixture. The two below are still editable and
+# still go to QCi.
 QCI = [ROOT / "docs" / "QCI_EQC_MODELS_FEEDBACK.md",
-       ROOT / "docs" / "HARDWARE_PLAN_PHASE_2.md",
-       ROOT / "docs" / "qci_package" / "Phase 1 - QCi memo.txt"]
+       ROOT / "docs" / "HARDWARE_PLAN_PHASE_2.md"]
 
 sys.path.insert(0, str(ROOT / "scripts"))
 
@@ -30,10 +32,15 @@ def _run(*args: str):
 
 def test_the_qci_package_is_clean():
     """The live check. These three documents are what QCi receives."""
-    present = [p for p in QCI if p.exists()]
-    if not present:
-        pytest.skip("QCi package not present")
-    r = _run(*[str(p) for p in present])
+    # NO exists() FILTER. It previously skipped whatever was absent, so a
+    # renamed or deleted document silently narrowed the scan and the test
+    # still passed -- "could not check" reading as "clean", which is the
+    # class this repository keeps paying for.
+    missing = [p for p in QCI if not p.exists()]
+    assert not missing, (
+        f"a QCi document is missing, so it was not scanned: "
+        f"{[p.name for p in missing]}")
+    r = _run(*[str(p) for p in QCI])
     assert r.returncode == 0, (
         f"internal shorthand in the QCi package:\n{r.stdout}")
 

@@ -1,34 +1,34 @@
 {
   "current_sprint": {
-    "number": 18,
-    "name": "The First Phase 2 Evidence, and the Cost of the Ask",
-    "branch": "feature/20260922_Sprint_18",
+    "number": 19,
+    "name": "Send the QCi Package Clean",
+    "branch": "feature/20260923_Sprint_19",
     "status": "phase_5_validation",
-    "plan_doc": "docs/sprints/SPRINT_18_PLAN.md",
-    "pr": 139,
+    "plan_doc": "docs/sprints/SPRINT_19_PLAN.md",
+    "pr": 141,
     "plan_approved": true,
     "github_issues": [
-      133,
-      134,
-      135,
-      136,
-      137,
-      138
+      142,
+      143,
+      144
     ],
     "task_actuals": {
-      "_note": "NOT RECORDED. Sprint 18 did not capture actuals at task completion, which is the gap IMP-1 closes for Sprint 19 onward. Reconstruction from commit timestamps was ATTEMPTED and DISCARDED: it produced 3 minutes for a 90-minute task, because the gap between commits measures neither the work nor the order it happened in. A fabricated actual is worse than a missing one -- it would have recalibrated future estimates against noise."
+      "A": 2,
+      "B": 6,
+      "_note": "Wall-clock minutes at completion. A's wording was drafted and approved during planning, so A measures only the edit; B includes the 4-minute suite run. D is NOT RECORDED: it spanned an approval stop of several hours (00:23 to after 08:30), so wall clock does not measure the work, and an estimate of the active part would be a reconstruction.",
+      "D": null
     }
   },
   "last_completed_sprint": {
-    "number": 17,
-    "merged_pr": 122,
-    "main_merge_pr": null,
-    "docs_triad_complete": false
+    "number": 18,
+    "merged_pr": 139,
+    "main_merge_pr": 140,
+    "docs_triad_complete": true
   },
   "prereg": {
     "status": "FROZEN",
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-23"
+  "updated": "2026-09-25"
 }

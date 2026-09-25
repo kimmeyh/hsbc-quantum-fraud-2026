@@ -28,7 +28,6 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 FEEDBACK = ROOT / "docs" / "QCI_EQC_MODELS_FEEDBACK.md"
 HARDWARE = ROOT / "docs" / "HARDWARE_PLAN_PHASE_2.md"
-MEMO = ROOT / "docs" / "qci_package" / "Phase 1 - QCi memo.txt"
 
 SUBMISSION_DATE = "2026-09-12"
 
@@ -58,7 +57,9 @@ def test_every_source_states_the_date_its_content_is_current_to(path: Path):
         f"{path.name} does not state the date its content is current to")
 
 
-@pytest.mark.parametrize("path", [FEEDBACK, HARDWARE, MEMO],
+# The memo was dropped from this list on 2026-09-25 when it was sent; the
+# two documents below are still editable and still go to QCi.
+@pytest.mark.parametrize("path", [FEEDBACK, HARDWARE],
                          ids=lambda p: p.name)
 def test_no_source_claims_qci_saw_an_earlier_draft(path: Path):
     """QCi never received a draft of any of these (team lead, Sprint 17).
@@ -159,39 +160,6 @@ def test_hardware_plan_closing_sentence_is_the_short_form():
 
 # ---------------------------------------------------------------------- memo
 
-def test_the_memo_asks_for_nothing_but_thoughts():
-    """The 30,000-second request was the PREVIOUS letter. Re-asking inside a
-    thank-you would undercut both."""
-    text = _read(MEMO).lower()
-    for phrase in ("30,000", "we request", "please grant", "we are asking for"):
-        assert phrase not in text, f"the memo contains an ask: {phrase!r}"
-
-
-def test_the_memo_states_the_submission_date_the_receipt_records():
-    assert SUBMISSION_DATE in _read(MEMO)
-
-
-def test_the_memo_reports_the_allocation_position():
-    """1,039 drawn of 3,000 in Phase 1, plus 280 on the Sprint 18 integer
-    probe, leaving 1,681.
-
-    The subtraction 3000-1141 is wrong in both directions; see
-    docs/QPU_RECONCILIATION.md. This test asserted 1,961 until the probe ran
-    and spent against it -- a figure that was right when written and went
-    stale the moment the allocation moved.
-
-    IT THEN WENT STALE THE SAME WAY. This docstring said "plus 16 ... leaving
-    1,945" after round 2 had spent 264 more, while the assertion below it
-    already read 1,681. A docstring carrying a number is a second copy of it,
-    and this one recorded the lesson about stale figures in the same breath as
-    repeating the mistake. Found by Copilot on PR #139.
-    """
-    text = _read(MEMO)
-    assert "1,039" in text and "1,681" in text
-    assert "1,859" not in text, (
-        "the memo quotes 1,859, which is grant minus CAMPAIGN total -- wrong "
-        "in both directions (see QPU_RECONCILIATION.md)")
-
 
 # ------------------------------- the integer cost, measured (F87, Sprint 18)
 
@@ -261,21 +229,6 @@ def test_the_level_budget_distinction_is_explained_to_qci():
     text = _read(HARDWARE)
     assert "LEVEL BUDGET" in text or "level budget" in text
     assert "upper_bound + 1" in text
-
-
-def test_the_memo_reports_the_probe_as_done_and_the_balance_as_spent():
-    text = _read(MEMO)
-    assert "1,681" in text, "the memo does not carry the post-probe balance"
-    for stale in ("1,961", "1,945"):
-        assert stale not in text, (
-            f"the memo still quotes {stale}; the figures must be internally "
-            "consistent")
-
-
-def test_the_memo_states_the_variables_not_levels_finding():
-    text = _read(MEMO)
-    assert "COST TRACKS THE VARIABLE COUNT, NOT THE LEVEL BUDGET" in text
-    assert "4.1x" in text, "the memo does not own the mispricing"
 
 
 # ------------------------------------- the Phase 2 ask (team lead, 2026-09-23)
@@ -401,3 +354,91 @@ def test_the_ask_is_reconciled_against_the_original_sponsorship_request():
         assert reason in text, f"the reduction is unexplained: {reason!r}"
     assert "reduction in ambition" in text, (
         "the plan does not say the shrink is evidence-driven")
+
+
+# ------------------- the memo agrees with the plan it travels with (F92, S19)
+#
+# Sprint 19, approved by the team lead 2026-09-24. The memo was written before
+# the Sprint 18 integer probes and the F91 attribution, and six passages came
+# to contradict the hardware plan in the same envelope. Each removed claim is
+# pinned below. These run only where the memo exists: it is gitignored as
+# private correspondence, so they SKIP in CI and protect this workstation only.
+
+
+# ------------------ Task D findings, team lead dispositions 2026-09-24 (F92)
+
+# ---------------------------------------------------------------------------
+# THE MEMO GUARDS WERE RETIRED ON 2026-09-25, WHEN THE MEMO WAS SENT.
+#
+# Thirteen guards pinned wording in `Phase 1 - QCi memo.txt`: the allocation
+# position, the attribution rather than the confound, the integer cost no
+# longer refused, the fidelity figure scoped to its arm. They did their job --
+# every one of them was written because a stale claim had survived a revision
+# round -- and they are now pointed at a draft that no longer exists.
+#
+# A sent artifact is evidence, not a test fixture. This repository already
+# applies that rule to the three SUBMITTED PDFs, which are documents of record
+# for the 2026-09-12 filing and are guarded against REBUILD rather than for
+# content. The sent email is the same class: it is preserved as
+# `Request and Results ... activities.htm` with its `_files` sidecar, and as
+# `Phase 1 - QCi memo AS SENT 2026-09-25.md` for readability.
+#
+# What remains under test is the HARDWARE PLAN, which is still editable and
+# still goes to QCi. If a future memo is drafted, it gets its own guards --
+# reusing these would pin the new draft to the old one's wording.
+# ---------------------------------------------------------------------------
+
+
+def test_three_experiments_cost_zero_device_seconds_everywhere():
+    """Experiments 1, 2 and 4 run on the proxy; 3, 5 and 6 are metered. The
+    plan and the memo both said FOUR, against their own list and against the
+    submitted proposal's "experiments 1, 2 and 4 (zero device seconds)".
+
+    The memo half was retired on 2026-09-25 when the memo was sent; only the
+    hardware plan is still editable, so only it still needs guarding."""
+    text = _read(HARDWARE).lower()
+    assert "four of the six" not in text, "the plan says four of six"
+    assert "four cost zero" not in text, "the plan says four cost zero"
+    assert "Three of the six cost zero device seconds" in _read(HARDWARE)
+
+
+def test_the_plan_states_the_shrink_it_can_compute():
+    """2,000 + 20,000..40,000 against 9,000 is 2.4x to 4.7x, not 3x to 5x.
+    Derived, so the guard fails if either end of the stated range moves."""
+    text = _read(HARDWARE)
+    assert "three to five" not in text
+    low, high = 9000, 9000
+    lo_ratio = (2000 + 20000) / low
+    hi_ratio = (2000 + 40000) / high
+    assert f"{lo_ratio:.1f} to {hi_ratio:.1f}" in text, (
+        f"the plan does not state the shrink as {lo_ratio:.1f} to {hi_ratio:.1f}")
+
+
+def test_the_plan_does_not_date_every_cost_to_phase_1():
+    """The integer costs were measured 2026-09-23, after the filing."""
+    text = _read(HARDWARE)
+    assert "measured on your hardware during Phase 1**" not in text
+    assert "integer sizing calls of 2026-09-23" in text
+
+
+def test_the_per_size_table_accounts_for_all_61_fits():
+    """The table's rows sum to 45; the footnote names the other 16. Summed
+    from the table itself, so adding a row without fixing the note fails."""
+    import re
+    text = _read(HARDWARE)
+    section = text[text.index("## Measured per-fit cost"):]
+    section = section[:section.index("Cost tracks problem size")]
+    rows = [int(n) for n in re.findall(r"\| (\d+) fits", section)]
+    assert sum(rows) == 45, f"table rows sum to {sum(rows)}, note says 45"
+    assert "three sizes that recur, 45 fits. The other 16" in section
+    assert sum(rows) + 16 == 61
+
+
+def test_the_ask_covers_now_through_phase_2():
+    """9,000 s covers everything from now to the end of Phase 2, INCLUDING
+    what the memo runs from the 1,681 s already held (team lead, 2026-09-25).
+    "For Phase 2" read as the Phase 2 period only, so experiment 5 looked
+    counted twice: once before Phase 2 in the memo, once inside the total."""
+    text = _read(HARDWARE)
+    assert "9,000 Dirac-3 seconds from now through the end of Phase 2" in text
+    assert "9,000 Dirac-3 seconds for Phase 2." not in text
