@@ -159,8 +159,12 @@ extend F92 past its approved scope ("extend F92 as needed", no time limit):
 - **Recommended no action, and no change made**: the 23 dB attribution, 4.1x
   against a computed 4.18, and the sum-constraint wording. The team lead did
   not comment on these.
-- **Still open**: the memo spends Experiment 5 from the current 1,681 s while
-  the plan budgets it inside the 9,000 s Phase 2 total. Asked as a decision.
+- **Experiment 5 is NOT counted twice** (team lead, 2026-09-25): the 9,000 s
+  covers everything from now through the end of Phase 2, including what the
+  memo runs from the 1,681 s already held, so the additional ask is 7,319
+  rounded up to 7,500. The plan's "for Phase 2" read as the Phase 2 period
+  only; its heading now says "from now through the end of Phase 2", guarded,
+  and the memo is unchanged.
 
 The hardware plan PDF was re-rendered; all six tracked PDFs byte-identical.
 

@@ -535,3 +535,13 @@ def test_the_per_size_table_accounts_for_all_61_fits():
     assert sum(rows) == 45, f"table rows sum to {sum(rows)}, note says 45"
     assert "three sizes that recur, 45 fits. The other 16" in section
     assert sum(rows) + 16 == 61
+
+
+def test_the_ask_covers_now_through_phase_2():
+    """9,000 s covers everything from now to the end of Phase 2, INCLUDING
+    what the memo runs from the 1,681 s already held (team lead, 2026-09-25).
+    "For Phase 2" read as the Phase 2 period only, so experiment 5 looked
+    counted twice: once before Phase 2 in the memo, once inside the total."""
+    text = _read(HARDWARE)
+    assert "9,000 Dirac-3 seconds from now through the end of Phase 2" in text
+    assert "9,000 Dirac-3 seconds for Phase 2." not in text

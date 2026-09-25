@@ -4,6 +4,10 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-09-25
+
+- **fix**: **The Phase 2 ask now says what period it covers.** "9,000 Dirac-3 seconds for Phase 2" read as the Phase 2 period only, so experiment 5, which the memo runs from the 1,681 s already held, looked counted twice. The team lead's intent: 9,000 covers now through the end of Phase 2, so the additional 7,500 is 7,319 rounded up. Heading reworded, guarded (proven red), hardware plan PDF re-rendered; tracked PDFs byte-identical (#144)
+
 ### 2026-09-24
 
 - **fix**: **F92: the QCi memo no longer contradicts the hardware plan it travels with.** Six passages written before the Sprint 18 probes and F91 were brought into line, in wording the team lead approved before the edit: the currency date, a line saying the package asks nothing (the plan opens with the 9,000 s ask; the memo now stays silent on it), the positive result described as confounded, a refusal to quote the integer cost, the integer solver listed as unreached, and a missing pointer to Phase 2 needs. Six guards pin the removals and carry every quoted figure back to its owning document; each proven red by injection. The memo is gitignored as private correspondence, so its guards run locally and skip in CI (#142, #143)

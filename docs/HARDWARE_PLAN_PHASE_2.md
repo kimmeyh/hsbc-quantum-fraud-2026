@@ -14,7 +14,7 @@ would rather send you a measured number than a placeholder.
 This is the hardware half of the Phase 2 plan in section 5 of our proposal,
 extracted for QCi.
 
-**The ask, up front: 9,000 Dirac-3 seconds for Phase 2.** We hold 1,681 of
+**The ask, up front: 9,000 Dirac-3 seconds from now through the end of Phase 2.** We hold 1,681 of
 those already, leaving 7,319, which we round up to an additional request of
 **7,500 seconds**. The rounding is deliberate and in your favor to grant or
 refuse plainly: a request stated to the second implies a precision the
