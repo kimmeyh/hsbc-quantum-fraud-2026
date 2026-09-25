@@ -28,7 +28,6 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 FEEDBACK = ROOT / "docs" / "QCI_EQC_MODELS_FEEDBACK.md"
 HARDWARE = ROOT / "docs" / "HARDWARE_PLAN_PHASE_2.md"
-MEMO = ROOT / "docs" / "qci_package" / "Phase 1 - QCi memo.txt"
 
 SUBMISSION_DATE = "2026-09-12"
 
@@ -58,7 +57,9 @@ def test_every_source_states_the_date_its_content_is_current_to(path: Path):
         f"{path.name} does not state the date its content is current to")
 
 
-@pytest.mark.parametrize("path", [FEEDBACK, HARDWARE, MEMO],
+# The memo was dropped from this list on 2026-09-25 when it was sent; the
+# two documents below are still editable and still go to QCi.
+@pytest.mark.parametrize("path", [FEEDBACK, HARDWARE],
                          ids=lambda p: p.name)
 def test_no_source_claims_qci_saw_an_earlier_draft(path: Path):
     """QCi never received a draft of any of these (team lead, Sprint 17).
@@ -159,39 +160,6 @@ def test_hardware_plan_closing_sentence_is_the_short_form():
 
 # ---------------------------------------------------------------------- memo
 
-def test_the_memo_asks_for_nothing_but_thoughts():
-    """The 30,000-second request was the PREVIOUS letter. Re-asking inside a
-    thank-you would undercut both."""
-    text = _read(MEMO).lower()
-    for phrase in ("30,000", "we request", "please grant", "we are asking for"):
-        assert phrase not in text, f"the memo contains an ask: {phrase!r}"
-
-
-def test_the_memo_states_the_submission_date_the_receipt_records():
-    assert SUBMISSION_DATE in _read(MEMO)
-
-
-def test_the_memo_reports_the_allocation_position():
-    """1,039 drawn of 3,000 in Phase 1, plus 280 on the Sprint 18 integer
-    probe, leaving 1,681.
-
-    The subtraction 3000-1141 is wrong in both directions; see
-    docs/QPU_RECONCILIATION.md. This test asserted 1,961 until the probe ran
-    and spent against it -- a figure that was right when written and went
-    stale the moment the allocation moved.
-
-    IT THEN WENT STALE THE SAME WAY. This docstring said "plus 16 ... leaving
-    1,945" after round 2 had spent 264 more, while the assertion below it
-    already read 1,681. A docstring carrying a number is a second copy of it,
-    and this one recorded the lesson about stale figures in the same breath as
-    repeating the mistake. Found by Copilot on PR #139.
-    """
-    text = _read(MEMO)
-    assert "1,039" in text and "1,681" in text
-    assert "1,859" not in text, (
-        "the memo quotes 1,859, which is grant minus CAMPAIGN total -- wrong "
-        "in both directions (see QPU_RECONCILIATION.md)")
-
 
 # ------------------------------- the integer cost, measured (F87, Sprint 18)
 
@@ -261,24 +229,6 @@ def test_the_level_budget_distinction_is_explained_to_qci():
     text = _read(HARDWARE)
     assert "LEVEL BUDGET" in text or "level budget" in text
     assert "upper_bound + 1" in text
-
-
-def test_the_memo_reports_the_probe_as_done_and_the_balance_as_spent():
-    text = _read(MEMO)
-    assert "1,681" in text, "the memo does not carry the post-probe balance"
-    # 1,961 may appear ONLY as the post-Phase-1 starting point of the
-    # subtraction (Sprint 19 M2, approved), never as the remaining balance.
-    allowed = "280 of the 1,961 that remained after Phase 1"
-    for stale in ("1,961", "1,945"):
-        assert stale not in text.replace(allowed, ""), (
-            f"the memo still quotes {stale}; the figures must be internally "
-            "consistent")
-
-
-def test_the_memo_states_the_variables_not_levels_finding():
-    text = _read(MEMO)
-    assert "COST TRACKS THE VARIABLE COUNT, NOT THE LEVEL BUDGET" in text
-    assert "4.1x" in text, "the memo does not own the mispricing"
 
 
 # ------------------------------------- the Phase 2 ask (team lead, 2026-09-23)
@@ -414,95 +364,42 @@ def test_the_ask_is_reconciled_against_the_original_sponsorship_request():
 # pinned below. These run only where the memo exists: it is gitignored as
 # private correspondence, so they SKIP in CI and protect this workstation only.
 
-def test_the_memo_dates_its_newer_sections():
-    """It dated everything to the filing while reporting 2026-09-23 work."""
-    text = _read(MEMO)
-    assert "Everything below reflects what we knew" not in text, (
-        "the memo dates all of its content to the filing again")
-    assert "Two sections are newer and say so" in text
-
-
-def test_the_memo_no_longer_claims_the_package_asks_nothing():
-    """The hardware plan in the same package opens with the 9,000 s ask. The
-    memo stays SILENT on it (team lead, 2026-09-24), which is different from
-    denying it."""
-    assert "Nothing in this package asks you for anything" not in _read(MEMO)
-
-
-def test_the_memo_reports_the_attribution_not_the_confound():
-    """F64 and F91 attributed the +0.0256. Every figure the memo quotes must
-    appear in the document that owns it."""
-    text = _read(MEMO)
-    assert "so the gain is confounded" not in text, (
-        "the memo calls the positive result confounded after F91 attributed it")
-    owner = _read(ROOT / "docs" / "F64_LADDER_DECOMPOSITION.md")
-    for figure in ("+0.0245", "+0.0001"):
-        assert figure in text, f"the memo does not state {figure}"
-        assert figure in owner, (
-            f"{figure} is not in F64_LADDER_DECOMPOSITION.md, so the memo "
-            "quotes a number its source does not carry")
-    assert "inferred across the two" in text, (
-        "the proxy-versus-hardware caveat on the attribution is gone")
-
-
-def test_the_memo_no_longer_refuses_to_quote_the_integer_cost():
-    """The same refusal F87 removed from the hardware plan, surviving in the
-    memo three sections before the memo reports the measured cost."""
-    text = _read(MEMO)
-    # CASE-INSENSITIVE. The first version matched "We are not quoting" with a
-    # capital W and passed while item 1 of the balance section still quoted
-    # the plan's "we are not quoting a cost" sentence in lower case -- a
-    # sentence the plan no longer contains. Found by the Task D review.
-    assert "we are not quoting a cost" not in text.lower()
-    assert "no comparable anchor" not in text
-    owner = _read(ROOT / "docs" / "INTEGER_PROBE_RESULT.md")
-    for rate in ("71", "165"):
-        assert f"{rate} seconds" in text or f"at {rate}" in text or f" {rate}." in text
-        assert f"| {rate} |" in owner, (
-            f"{rate} s is not a measured row in INTEGER_PROBE_RESULT.md")
-
-
-def test_the_memo_does_not_list_the_integer_solver_as_unreached():
-    text = _read(MEMO)
-    assert "Your integer solver. Everything we ran was the continuous" not in text
-    assert "Your integer solver at scale" in text
-
-
-def test_the_memo_points_to_the_plan_for_phase_2_needs():
-    """"We do not expect to need more" is true of the current balance only;
-    the pointer stops it reading as a statement about Phase 2."""
-    assert "What Phase 2 itself would need is set out in the enclosed " \
-           "hardware plan" in _read(MEMO)
-
 
 # ------------------ Task D findings, team lead dispositions 2026-09-24 (F92)
+
+# ---------------------------------------------------------------------------
+# THE MEMO GUARDS WERE RETIRED ON 2026-09-25, WHEN THE MEMO WAS SENT.
+#
+# Thirteen guards pinned wording in `Phase 1 - QCi memo.txt`: the allocation
+# position, the attribution rather than the confound, the integer cost no
+# longer refused, the fidelity figure scoped to its arm. They did their job --
+# every one of them was written because a stale claim had survived a revision
+# round -- and they are now pointed at a draft that no longer exists.
+#
+# A sent artifact is evidence, not a test fixture. This repository already
+# applies that rule to the three SUBMITTED PDFs, which are documents of record
+# for the 2026-09-12 filing and are guarded against REBUILD rather than for
+# content. The sent email is the same class: it is preserved as
+# `Request and Results ... activities.htm` with its `_files` sidecar, and as
+# `Phase 1 - QCi memo AS SENT 2026-09-25.md` for readability.
+#
+# What remains under test is the HARDWARE PLAN, which is still editable and
+# still goes to QCi. If a future memo is drafted, it gets its own guards --
+# reusing these would pin the new draft to the old one's wording.
+# ---------------------------------------------------------------------------
+
 
 def test_three_experiments_cost_zero_device_seconds_everywhere():
     """Experiments 1, 2 and 4 run on the proxy; 3, 5 and 6 are metered. The
     plan and the memo both said FOUR, against their own list and against the
-    submitted proposal's "experiments 1, 2 and 4 (zero device seconds)"."""
-    for path in (HARDWARE, MEMO):
-        text = _read(path).lower()
-        assert "four of the six" not in text, f"{path.name} says four of six"
-        assert "four cost zero" not in text, f"{path.name} says four cost zero"
+    submitted proposal's "experiments 1, 2 and 4 (zero device seconds)".
+
+    The memo half was retired on 2026-09-25 when the memo was sent; only the
+    hardware plan is still editable, so only it still needs guarding."""
+    text = _read(HARDWARE).lower()
+    assert "four of the six" not in text, "the plan says four of six"
+    assert "four cost zero" not in text, "the plan says four cost zero"
     assert "Three of the six cost zero device seconds" in _read(HARDWARE)
-    assert "Three cost zero device seconds" in _read(MEMO)
-
-
-def test_the_memo_does_not_read_as_spending_280_out_of_1681():
-    """The heading promised 1,681 and the next line spent 280 "of them",
-    which a reader subtracts to 1,401."""
-    text = _read(MEMO)
-    assert "we have spent 280 of them" not in text
-    assert "280 of the 1,961 that remained after Phase 1, leaving 1,681" in text
-
-
-def test_the_memo_scopes_the_fidelity_figure_to_its_arm():
-    """-0.0010 is one arm (the 91-variable dct pools, ten seeds), not the
-    campaign; the gate report says so and the memo said otherwise."""
-    text = _read(MEMO)
-    assert "Measured across the campaign" not in text
-    assert "main 91-variable arm, ten seeds" in text
 
 
 def test_the_plan_states_the_shrink_it_can_compute():
