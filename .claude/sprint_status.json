@@ -3,7 +3,7 @@
     "number": 19,
     "name": "Send the QCi Package Clean",
     "branch": "feature/20260923_Sprint_19",
-    "status": "phase_5_validation",
+    "status": "phase_6_push",
     "plan_doc": "docs/sprints/SPRINT_19_PLAN.md",
     "pr": 141,
     "plan_approved": true,
@@ -17,7 +17,8 @@
       "B": 6,
       "_note": "Wall-clock minutes at completion. A's wording was drafted and approved during planning, so A measures only the edit; B includes the 4-minute suite run. D is NOT RECORDED: it spanned an approval stop of several hours (00:23 to after 08:30), so wall clock does not measure the work, and an estimate of the active part would be a reconstruction.",
       "D": null
-    }
+    },
+    "memo_sent": "2026-09-25T12:23"
   },
   "last_completed_sprint": {
     "number": 18,
@@ -30,5 +31,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-25"
+  "updated": "2026-09-27"
 }

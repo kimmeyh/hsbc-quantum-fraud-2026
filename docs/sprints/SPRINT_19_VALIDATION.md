@@ -15,7 +15,7 @@ Four things, in the order that makes them easiest to check.
 
 ### 1. The memo says what you approved
 
-`docs/qci_package/Phase 1 - QCi memo.txt`
+`docs/qci_package/Phase 1 - QCi memo AS SENT 2026-09-25.md`
 
 This file is **git-ignored on purpose** (`.gitignore:62`), because
 `docs/qci_package/` holds private commercial correspondence. It is therefore
@@ -65,11 +65,15 @@ byte-identical.
 
 ## Verification evidence, re-run 2026-09-25
 
-- **Full suite**: 1,371 passed, 73 skipped
-- **CI**: green on `b4f0d13` (`scripts/check_ci_status.py`, exit 0)
-- **Document guards**: `test_qci_document_requirements.py`, 44 passed --
-  these pin every corrected passage so a stale claim cannot return
-- **Published artifacts**: `test_published_artifacts.py`, 12 passed
+- **Full suite**: green. The count is deliberately NOT restated here --
+  CLAUDE.md bans it, and an earlier version of this document carried a figure
+  that was stale within two days. Run the suite.
+- **CI**: green (`scripts/check_ci_status.py`, exit 0)
+- **Document guards**: `test_qci_document_requirements.py` pins the corrected
+  passages of the documents that are still editable. The MEMO guards were
+  retired on 2026-09-25 when the memo was sent; see below.
+- **Published artifacts**: `test_published_artifacts.py` green; all tracked
+  PDFs byte-identical
 - **Outward readability**: clean on the memo, the hardware plan and the
   feedback document (exit 0)
 - **Working tree**: clean
@@ -77,6 +81,36 @@ byte-identical.
   (`F64_LADDER_DECOMPOSITION.md`), 71 s and 165 s
   (`INTEGER_PROBE_RESULT.md`), 9,000 / 1,681 / 7,500
   (`HARDWARE_PLAN_PHASE_2.md`)
+
+## The memo was SENT on 2026-09-25 at 12:23 PM
+
+This changes what there is to validate. The memo is no longer a draft to be
+checked against its sources; it is a document of record, like the three
+SUBMITTED PDFs.
+
+- Preserved as `Request and Results ... activities.htm` with its `_files`
+  sidecar (the authoritative artifact, exactly as sent), and as
+  `Phase 1 - QCi memo AS SENT 2026-09-25.md` for readability and diffing.
+- `Phase 1 - QCi memo.txt`, the draft, was deleted by the team lead.
+- **13 memo guards were retired.** Each existed because a stale claim had
+  survived a revision round, and each is now pointed at a draft that no longer
+  exists. The hardware-plan half of every cross-document check was kept,
+  because that document is still editable.
+- `scripts/outlook_htm_to_md.py` was added to convert future Outlook exports;
+  `--check` refuses to write if a named figure did not survive.
+
+**One inconsistency reached QCi, and it should be recorded rather than
+quietly fixed.** The memo commits to a schedule-4 check of roughly 60 seconds
+against the remaining 1,681. The attached hardware plan does not mention it:
+read with `pypdf`, the sent PDF contains 1,681, 7,319, 7,500 and 9,000, and
+does NOT contain "schedule 4". The plan's six experiments have no
+schedule-sweep item and its allocation section treats the 1,681 purely as a
+balance to net against the 9,000.
+
+`HARDWARE_PLAN_PHASE_2.md` has deliberately NOT been edited. Its PDF was sent,
+so changing the source now would create exactly the version problem the AS
+SENT convention exists to prevent. Whether that document is now frozen like
+the memo is a decision for the team lead, not an edit to make unasked.
 
 ## What is NOT in this sprint
 
