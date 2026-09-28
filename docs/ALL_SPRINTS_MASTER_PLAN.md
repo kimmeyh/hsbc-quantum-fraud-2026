@@ -221,14 +221,17 @@ Three findings outlived their cards and are recorded there:
 - **Approved 2026-09-24 at 105m** (Task C not approved; the plan sentence is F96). Line 17: the memo stays silent on the ask
 - **Extended 2026-09-24 after Task D's reviewer found fourteen disagreements** (team lead: "extend F92 as needed", no time limit). Four more memo fixes and four hardware-plan fixes; dispositions in SPRINT_19_PLAN.md
 
-**F96. Hardware plan: Experiment 1 described as already run (~25m + package re-render, zero metered) Priority 14**
-- **NEEDS RESCOPE OR CLOSE (2026-09-27).** Both halves of this card act on
-  `docs/HARDWARE_PLAN_PHASE_2.md`, which the team lead declared FINAL on
-  2026-09-27 after its PDF was sent to QCi on 2026-09-25. Editing the source
-  now would diverge from what QCi holds, and re-rendering would replace a sent
-  artifact. The card as written cannot be executed. The team lead decides
-  whether it closes as overtaken or is rescoped to a Phase 2 successor
-  document
+**F96. Hardware plan: Experiment 1 described as already run -- CLOSED, OVERTAKEN (2026-09-27)**
+- **CLOSED as overtaken. Team lead, 2026-09-27: "already answered no and will
+  always be no."** Both halves of this card act on
+  `docs/HARDWARE_PLAN_PHASE_2.md`, which is FINAL: its PDF was sent to QCi on
+  2026-09-25, so editing the source would diverge from what QCi holds and
+  re-rendering would replace a sent artifact. The plan describes Experiment 1
+  as future proxy work while F64 and F91 have since run it; that discrepancy
+  is now a permanent property of a sent document, recorded here and in
+  `docs/sprints/SPRINT_19_VALIDATION.md` rather than corrected
+- No successor card. A Phase 2 hardware plan, when one is written, starts from
+  the current state of the evidence rather than from a patch to this one
 - Phase: QCi/External (added 2026-09-24; split out of F92 at Sprint 19 approval)
 - Platform: docs (`docs/HARDWARE_PLAN_PHASE_2.md`, rendered into the QCi package)
 - Lines 198-201 list "isolating the feature-count confound in our one positive result" as a future proxy experiment. F64 and F91 ran it on 2026-09-22 and 2026-09-23: subset order carries the gain. The header's "One section is NEWER" would become two
