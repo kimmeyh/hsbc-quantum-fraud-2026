@@ -247,6 +247,25 @@ Three findings outlived their cards and are recorded there:
 - Acceptance: the test supplies a complete, pinned status payload so it passes in every phase; proven by running it against a planning-state status file (red today, green after the fix)
 - Depends on: nothing
 
+**F98. The close-out hook's 20s budget against 160s of internal timeouts (~30m, zero metered) Priority 15**
+- Phase: Finalize / tooling (added 2026-09-28, from the PR #141 silent-failure review)
+- Platform: N/A (`.claude/settings.json`, `.claude/hooks/verify_closeout_complete.py`, `scripts/check_ci_status.py`)
+- `settings.json` gives the hook `"timeout": 20`. Inside `collect_violations` the worst case is `gh pr list` 20s + `gh issue list` 20s + `gh auth status` 60s + `gh run list` 60s = **160s**, and a single hanging `gh pr list` already exceeds the whole budget on its own
+- **The ordering is what makes it matter.** The fail-OPEN issues check (`except Exception: pass`) runs BEFORE the deliberately fail-CLOSED CI check. A hung `gh` in the fail-open check kills the hook before the fail-closed guard ever runs, so the new CI gate's careful design never executes -- exactly when GitHub is slow, which is when you want it
+- Measured happy path is 2.9s, so this bites only on a slow or unreachable GitHub
+- **UNVERIFIED and it should be settled first**: whether a killed Stop hook blocks or allows. Nothing in this repository documents Claude Code's behavior when a hook exceeds its timeout. A scratch Stop hook containing `time.sleep(25)` would settle it, or the hooks reference. The fix does not depend on the answer -- the two numbers are inconsistent either way -- but the severity does
+- Acceptance: the sum of internal timeouts is under the configured budget (or the budget is raised above the worst case), the fail-closed CI check runs BEFORE the fail-open gh checks, and the kill semantics are recorded with the evidence that settled them
+- Depends on: nothing
+
+**F99. No tracked hash for the sent QCi correspondence (~20m, zero metered) Priority 18**
+- Phase: QCi/External (added 2026-09-28, from the PR #141 test-coverage review)
+- Platform: docs (`docs/qci_package/`, `experiments/src/test_published_artifacts.py`)
+- `docs/qci_package/` is wholly gitignored (`.gitignore:62`), correctly, because it holds private commercial correspondence. The consequence: the sent `.htm`, its `_files` sidecar and `Phase 1 - QCi memo AS SENT 2026-09-25.md` exist on ONE workstation, are untracked, and have **no recorded hash in any tracked file**. A local deletion is both unrecoverable and undetectable
+- The stated rule -- "a sent artifact is evidence, not a test fixture" -- has no enforcement for this instance. Contrast `test_published_artifacts.py`'s `SUBMITTED_SHA256`, which pins the three filed PDFs by hash precisely so a rebuild is caught
+- The ignore rule must NOT change. What is missing is a tracked file recording sha256 for each sent artifact, and a guard that fails when a named artifact is present and its hash has moved (and skips, explicitly, when it is absent on this machine)
+- Acceptance: hashes recorded in a tracked file; the guard proven RED by altering a byte of a scratch copy; proven to skip rather than fail on a machine without the files
+- Depends on: nothing
+
 **F94. Experiment 3 classical controls on the proxy: greedy, simulated annealing, exact solve at small n (~4h timebox [no-history], zero metered) Priority 20**
 - Phase: Phase 2 preparation (added 2026-09-23; SPLIT from F25, which was Too Large)
 - Platform: classical proxy (`qubo_proxy.py`)

@@ -46,8 +46,13 @@ def test_the_qci_package_is_clean():
         f"a QCi document is missing, so it was not scanned: "
         f"{[p.name for p in missing]}")
     r = _run(*[str(p) for p in QCI])
+    # STDERR TOO. If the scanner itself crashes -- an unguarded read_text on a
+    # file with an unexpected encoding is the obvious route -- stdout is empty
+    # and the operator sees a failure with no cause. Found by the PR #141
+    # review.
     assert r.returncode == 0, (
-        f"internal shorthand in the QCi package:\n{r.stdout}")
+        f"internal shorthand in the QCi package, or the scanner failed:\n"
+        f"--- stdout ---\n{r.stdout}\n--- stderr ---\n{r.stderr}")
 
 
 def test_it_catches_a_block_name(tmp_path):
