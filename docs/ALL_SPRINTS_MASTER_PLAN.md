@@ -35,11 +35,33 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 
 ## Last Completed Sprint
 
-**Sprint 18: The First Phase 2 Evidence, and the Cost of the Ask** (Sep 22-23,
+**Sprint 19: Send the QCi Package Clean** (Sep 23-27, 2026; PR #141).
+Delivered **F92**. **The package was SENT 2026-09-25 at 12:23 PM** -- that was
+the objective. Task C was not approved and became F96; a fresh-context review
+found fourteen cross-document disagreements, eight fixed. Zero metered
+seconds. The record is `docs/sprints/SPRINT_19_RETROSPECTIVE.md` and
+`docs/sprints/SPRINT_19_VALIDATION.md`; the SUMMARY doc is created during
+Sprint 20 planning per the three-doc rule.
+
+**THE FOUR PACKAGE DOCUMENTS ARE NOW FINAL** (team lead, 2026-09-27) and will
+never change again. The memo is preserved as its `.htm` export with the
+`_files` sidecar and as `Phase 1 - QCi memo AS SENT 2026-09-25.md`; its
+thirteen wording guards were retired because the draft they read was deleted.
+The 28 guards on `QCI_EQC_MODELS_FEEDBACK.md` and `HARDWARE_PLAN_PHASE_2.md`
+are KEPT: both sources are present and green, and on frozen text those guards
+are the only thing that would notice an accidental edit.
+
+**Known and permanent: the schedule-4 gap.** The memo commits to a ~60 s
+schedule-4 check against the remaining 1,681 seconds; the attached hardware
+plan does not mention it. Verified with `pypdf`: the sent PDF contains 1,681,
+7,319, 7,500 and 9,000 and does not contain "schedule 4". Both documents are
+final, so this is recorded rather than fixed.
+
+Sprint 18: The First Phase 2 Evidence, and the Cost of the Ask (Sep 22-23,
 2026; PR #139 to develop, PR #140 to main). Delivered **F87, F64, F88, F89**,
 plus **F91** and a second integer probe round added mid-sprint. F2b deferred to
 F90 before execution. The record is `docs/sprints/SPRINT_18_SUMMARY.md` and
-`docs/sprints/SPRINT_18_RETROSPECTIVE.md`; this section only points at it.
+`docs/sprints/SPRINT_18_RETROSPECTIVE.md`.
 
 (Rolled 2026-09-23 in the Phase 8 sweep. This section had still described
 Sprint 14 through four later sprints, because the Sprint 15, 16 and 17 sweeps
@@ -200,6 +222,13 @@ Three findings outlived their cards and are recorded there:
 - **Extended 2026-09-24 after Task D's reviewer found fourteen disagreements** (team lead: "extend F92 as needed", no time limit). Four more memo fixes and four hardware-plan fixes; dispositions in SPRINT_19_PLAN.md
 
 **F96. Hardware plan: Experiment 1 described as already run (~25m + package re-render, zero metered) Priority 14**
+- **NEEDS RESCOPE OR CLOSE (2026-09-27).** Both halves of this card act on
+  `docs/HARDWARE_PLAN_PHASE_2.md`, which the team lead declared FINAL on
+  2026-09-27 after its PDF was sent to QCi on 2026-09-25. Editing the source
+  now would diverge from what QCi holds, and re-rendering would replace a sent
+  artifact. The card as written cannot be executed. The team lead decides
+  whether it closes as overtaken or is rescoped to a Phase 2 successor
+  document
 - Phase: QCi/External (added 2026-09-24; split out of F92 at Sprint 19 approval)
 - Platform: docs (`docs/HARDWARE_PLAN_PHASE_2.md`, rendered into the QCi package)
 - Lines 198-201 list "isolating the feature-count confound in our one positive result" as a future proxy experiment. F64 and F91 ran it on 2026-09-22 and 2026-09-23: subset order carries the gain. The header's "One section is NEWER" would become two
@@ -225,6 +254,9 @@ Three findings outlived their cards and are recorded there:
 - Depends on: nothing to build. Reporting any comparison waits for a Phase 2 preregistration
 
 **F95. Relaxation schedule 4 on the residual (~1h build + approval, metered, cost unmeasured) Priority 30**
+- **UNBLOCKED 2026-09-25**: the hold was "until the QCi memo is sent", and it
+  was sent 2026-09-25 at 12:23 PM. The sent memo commits to this check, so it
+  is now promised work rather than optional
 - Phase: Experiments (added 2026-09-23; promised in the QCi memo and carded nowhere)
 - Platform: Dirac-3
 - The feedback document's open question 1, "Would relaxation schedule 4 close the residual?", is still open: every Phase 1 fit ran schedule 2, frozen before the grant. The memo names it as a use of the remaining balance

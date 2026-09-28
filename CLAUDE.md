@@ -274,6 +274,29 @@ only in memory.
   cannot-determine, because "I could not tell" is the state that reads as
   green and is not.)
 
+- **Don't hand-roll a reader for a format the repository already reads. Grep
+  for the existing method first.** A tool you wrote in the same turn has not
+  been tested, and its wrong answer is shaped exactly like a real finding.
+  (Sprint 19: checking whether the sent hardware-plan PDF mentioned
+  "schedule 4", I wrote a zlib stream-parse that reported **"9,000 ABSENT"**
+  -- from the document whose headline is the 9,000-second ask. The extractor
+  was broken, not the PDF. `pypdf` was already a dependency and already used
+  by `test_submission_artifacts.py` and `test_published_artifacts.py`; it gave
+  the right answer immediately, including the genuine absence I was looking
+  for. A broken reader reporting ABSENT and a real finding are the same string.
+  IMP-3, Sprint 19 retrospective.)
+
+- **Don't estimate a cost the backlog has already worked out. Search it
+  first.** Card records carry the fit count, the seconds and the confidence
+  because someone derived them at refinement; re-deriving from scratch
+  discards that work and usually gets a different answer. (Sprint 19: asked
+  whether a relaxation-schedule retest needed its own line item, I estimated
+  96 metered fits at roughly 2,000 seconds from the results-row count. F95 in
+  `ALL_SPRINTS_MASTER_PLAN.md` already scoped it: **4 fits, about 60 seconds**,
+  range 40-110, cap 120, with the extrapolation basis stated. Two orders of
+  magnitude out, in a number that would have gone to a vendor. IMP-4, Sprint 19
+  retrospective.)
+
 - **Don't state what an external system contains without opening it.** Reasoning
   from adjacent code or a stale note is not evidence. If it cannot be inspected
   this turn, write the claim with the word **unverified** and say what would

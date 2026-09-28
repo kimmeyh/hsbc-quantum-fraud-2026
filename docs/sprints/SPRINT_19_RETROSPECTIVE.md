@@ -9,8 +9,8 @@ approved, moved to F96. Scope extended after Task D by team-lead direction.
 
 ## Scoring, both roles
 
-The team lead scored all sixteen categories **Very Good**. Claude scored five
-lower. Where the two disagree, both are recorded; the lower score is the one
+The team lead scored all sixteen categories **Very Good**. Claude scored
+seven lower. Where the two disagree, both are recorded; the lower score is the one
 the improvements are built from.
 
 | Category | Team lead | Claude |
@@ -239,13 +239,37 @@ before closing.
 review caught fourteen cross-document disagreements before it went rather than
 after. Zero metered seconds. No preregistration drift.
 
-**The pattern across my five lower scores is one thing: a document's lifecycle
-was not planned.** The memo was treated as editable for its whole life, so
-thirteen guards, a readability document list, and a set of cross-document
-tests were all built against a file that was frozen three days later. The
-validation document I wrote to make the handover durable went stale in two
-days for the same reason. None of this broke anything, and all of it was
-avoidable with one question at planning time.
+**I scored seven categories down, and three of those rested on a planning
+miss that was not one.** My reading was that a document's lifecycle should
+have been planned: the memo was treated as editable, so thirteen guards, a
+readability document list and a set of cross-document tests were built against
+a file frozen three days later.
+
+Team lead, 2026-09-27: **"It worked well and helped a great deal in getting to
+the final results. It is hard to plan meandering needs and requirements and
+that is what this was."** All four package documents are now final and will
+never change again.
+
+He is right, and the distinction matters for future sprints. The guards were
+not built against a known-imminent freeze -- they were built during active
+revision rounds, and they earned their cost by catching stale claims in those
+rounds. The freeze happened when the work converged, which is not a date
+anybody could have entered at planning time. A checklist item asking "which
+documents will be frozen this sprint?" would have been answered "none known"
+and changed nothing. Retiring the guards afterward is the correct end of a
+guard's life, not evidence of a planning defect.
+
+So three of the seven lower scores -- Effective/Efficient, Planning Quality
+and Documentation -- rested on that framing and do not stand.
+
+Four stand on their own, independent of it. **Communication**: I referred him
+back to scrollback for the BLUF compressions, and he had to ask twice; and I
+raised the schedule-4 inconsistency, offered to fix it, and let it go
+unresolved before an irreversible send. **Requirements Clarity** and **Process
+Issues**: two cases where I produced a confident wrong answer from a tool I
+built rather than the one the repository already had -- these became IMP-3 and
+IMP-4. **Effort Accuracy**: Task D's actual is still NOT RECORDED, which is
+honest but is not measurement.
 
 **Two smaller threads.** IMP-1 (actuals at completion) shipped last sprint and
 captured two of three tasks on its first real use, because it has no form for
@@ -253,3 +277,64 @@ a task containing a multi-hour approval wait. And twice I produced a confident
 wrong answer from a tool I had built myself rather than the one the repository
 already used -- the PDF extractor, and a cost estimate I made without
 searching the backlog first.
+
+## Improvement Decisions
+
+Five proposed. The team lead approved two and declined three
+(2026-09-27).
+
+### Implemented
+
+**IMP-3. Grep for the repository's existing reader before writing one.**
+Added to the CLAUDE.md NOT-do list. My zlib PDF stream-parse reported
+"9,000 ABSENT" from the document whose headline is the 9,000-second ask;
+`pypdf` was already a dependency, already used by two tests, and gave the
+right answer immediately. A broken reader reporting ABSENT and a real finding
+are the same string.
+
+**IMP-4. Search the backlog before estimating a cost.** Added to the CLAUDE.md
+NOT-do list. I estimated the schedule retest at 96 fits and ~2,000 seconds;
+F95 already scoped it at 4 fits and about 60 seconds, with the extrapolation
+basis recorded. Two orders of magnitude out, in a number that would have gone
+to a vendor.
+
+### Declined
+
+**IMP-1** (a plan names which documents will be frozen during the sprint).
+Declined: the freeze was emergent, not foreseeable. The requirements
+meandered because the work was converging, and a planning question would have
+been answered "none known".
+
+**IMP-2** (a form for actuals on a task containing an approval wait).
+Declined. Task D's actual stays NOT RECORDED with its reason, which is the
+honest record.
+
+**IMP-5** (a handover document states what invalidates it). Declined. The
+validation document was corrected once the memo was sent; a staleness header
+is process against a document that has now served its purpose.
+
+## The four package documents are final
+
+Team lead, 2026-09-27: the four documents sent to QCi will never be changed
+again. That closes the question raised in category 16.
+
+**The 28 guards on `QCI_EQC_MODELS_FEEDBACK.md` and `HARDWARE_PLAN_PHASE_2.md`
+are KEPT, not retired.** The memo's thirteen were retired because the file they
+read had been deleted and the suite would not collect; nothing forces that
+here. Both sources are tracked, present and green, and on frozen text those
+guards are now the only thing that would notice an accidental edit -- removing
+them would trade real protection for nothing.
+
+What a frozen source may warrant instead is a byte or hash pin, the way
+`test_published_artifacts.py` protects the three SUBMITTED PDFs against
+rebuild. That is new work with its own justification, so it is a Sprint 20
+decision rather than a step-7 apply.
+
+The schedule-4 gap between the memo and the hardware plan therefore stands as
+recorded rather than fixed. Both documents are final and the inconsistency
+reached QCi; `docs/sprints/SPRINT_19_VALIDATION.md` states what it is.
+
+**F96 needs a rescope or a close.** It holds Sprint 19's unapproved Task C:
+add a sentence to the hardware plan's Experiment 1 section and re-render the
+package. Both halves act on a document that is now final, so the card as
+written cannot be executed. Flagged for the team lead rather than closed here.
