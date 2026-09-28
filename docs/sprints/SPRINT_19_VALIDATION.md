@@ -54,8 +54,14 @@ package documents and found fourteen places where a figure or claim appears
 in two documents and they disagree. Each was verified against the documents
 and `results.json` before it reached you.
 
-Your dispositions are recorded there: eight fixed, five left with a reason,
-one answered without a change. Confirm the record matches what you decided.
+Your dispositions are recorded there: **eight fixed** (M1-M4, P1, P3, P4,
+P6), **four left with a reason** (M5, P2, P5, F1), **one answered without a
+change** (G1), and three where no action was recommended and none taken (the
+23 dB attribution, 4.1x against a computed 4.18, and the sum-constraint
+wording). Confirm the record matches what you decided.
+
+(An earlier version said "five left with a reason". The plan's own labels count
+four. Found by the PR #141 review.)
 
 ### 4. Nothing submitted was touched
 

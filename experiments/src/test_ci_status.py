@@ -229,3 +229,30 @@ def test_no_delay_is_requested_by_default(ci, monkeypatch):
 
     ci.main([])
     assert slept == [], f"the default invocation blocked for {slept}"
+
+def test_every_run_skipped_is_not_a_pass(ci, monkeypatch):
+    """A commit whose every job was skipped read no test result at all.
+
+    THE DEFECT THIS EXISTS FOR. The pass condition was the ABSENCE of
+    failures, so a lone completed/skipped run returned exit 0 and printed
+    "CI is green". Reachable in practice: a workflow gated behind a path
+    filter, or a push with paths-ignore, completes with every job skipped.
+
+    test_skipped_and_neutral_do_not_count_as_failures pairs skipped WITH a
+    success, so it could not catch this -- a companion test that made the
+    surrounding guard look covered. Found by the PR #141 review.
+    """
+    monkeypatch.setattr(ci, "runs_for",
+                        lambda sha: _runs("completed", "skipped"))
+    with pytest.raises(ci.Undetermined):
+        ci.evaluate("deadbee")
+
+
+def test_a_success_beside_a_skip_is_still_a_pass(ci, monkeypatch):
+    """The companion. Requiring EVERY run to succeed would break every
+    repository that gates a job behind a path filter."""
+    monkeypatch.setattr(ci, "runs_for", lambda sha: (
+        _runs("completed", "skipped", "optional")
+        + _runs("completed", "success", "tests")))
+    rc, _lines = ci.evaluate("deadbee")
+    assert rc == ci.OK

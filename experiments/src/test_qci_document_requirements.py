@@ -43,8 +43,23 @@ def _read(p: Path) -> str:
     keeps paying for. Collapsing whitespace matches what a READER sees rather
     than where the wrap happens to fall.
     """
-    if not p.exists():
-        pytest.skip(f"{p.name} not present")
+    # NO SKIP. Both remaining targets are TRACKED repository documents, so
+    # absence means a rename or a deletion, not an unavailable fixture.
+    #
+    # The skip was correct when MEMO was in this list: that file was gitignored
+    # private correspondence and genuinely absent in CI. With the memo retired,
+    # the skip protected nothing and hid everything -- moving
+    # HARDWARE_PLAN_PHASE_2.md aside produced "8 passed, 22 skipped" and exit
+    # 0. Twenty-two guards over the one document still under test disappeared
+    # and the suite reported success.
+    #
+    # The same commit that retired the memo guards removed this exact pattern
+    # from test_outward_readability.py, with a written rationale, and left it
+    # here. Found by the PR #141 review.
+    assert p.exists(), (
+        f"{p.name} is MISSING, so its requirements were not checked. That is "
+        "not a pass: these are tracked documents, so absence means a rename "
+        "or a deletion.")
     return " ".join(p.read_text(encoding="utf-8").split())
 
 
@@ -356,17 +371,6 @@ def test_the_ask_is_reconciled_against_the_original_sponsorship_request():
         "the plan does not say the shrink is evidence-driven")
 
 
-# ------------------- the memo agrees with the plan it travels with (F92, S19)
-#
-# Sprint 19, approved by the team lead 2026-09-24. The memo was written before
-# the Sprint 18 integer probes and the F91 attribution, and six passages came
-# to contradict the hardware plan in the same envelope. Each removed claim is
-# pinned below. These run only where the memo exists: it is gitignored as
-# private correspondence, so they SKIP in CI and protect this workstation only.
-
-
-# ------------------ Task D findings, team lead dispositions 2026-09-24 (F92)
-
 # ---------------------------------------------------------------------------
 # THE MEMO GUARDS WERE RETIRED ON 2026-09-25, WHEN THE MEMO WAS SENT.
 #
@@ -383,9 +387,17 @@ def test_the_ask_is_reconciled_against_the_original_sponsorship_request():
 # `Request and Results ... activities.htm` with its `_files` sidecar, and as
 # `Phase 1 - QCi memo AS SENT 2026-09-25.md` for readability.
 #
-# What remains under test is the HARDWARE PLAN, which is still editable and
-# still goes to QCi. If a future memo is drafted, it gets its own guards --
-# reusing these would pin the new draft to the old one's wording.
+# THE HARDWARE PLAN IS NOW FROZEN TOO (team lead, 2026-09-27: all four
+# package documents are final). Its 22 guards and the feedback document's are
+# nonetheless KEPT, on different reasoning from the memo's: the memo's guards
+# had to go because the file they read was deleted and the suite would not
+# collect. Both these sources are present and green, and on frozen text the
+# guards are the only thing that would notice an accidental edit. A byte pin
+# like test_published_artifacts.py may be the better successor; that is its own
+# work with its own justification.
+#
+# If a future memo is drafted, it gets its own guards -- reusing these would
+# pin the new draft to the old one's wording.
 # ---------------------------------------------------------------------------
 
 

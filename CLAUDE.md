@@ -280,8 +280,9 @@ only in memory.
   (Sprint 19: checking whether the sent hardware-plan PDF mentioned
   "schedule 4", I wrote a zlib stream-parse that reported **"9,000 ABSENT"**
   -- from the document whose headline is the 9,000-second ask. The extractor
-  was broken, not the PDF. `pypdf` was already a dependency and already used
-  by `test_submission_artifacts.py` and `test_published_artifacts.py`; it gave
+  was broken, not the PDF. `pypdf` was already a declared dependency
+  (`experiments/requirements.txt`) and already imported by
+  `test_submission_artifacts.py` and `test_requirements_complete.py`; it gave
   the right answer immediately, including the genuine absence I was looking
   for. A broken reader reporting ABSENT and a real finding are the same string.
   IMP-3, Sprint 19 retrospective.)

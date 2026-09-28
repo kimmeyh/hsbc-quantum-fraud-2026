@@ -31,7 +31,12 @@ def _run(*args: str):
 
 
 def test_the_qci_package_is_clean():
-    """The live check. These three documents are what QCi receives."""
+    """The live check. These documents are what QCi receives.
+
+    The memo was removed from the list on 2026-09-25 when it was sent, so
+    this says "these documents" rather than a count -- a number here would
+    have to be maintained in step with the list directly above it.
+    """
     # NO exists() FILTER. It previously skipped whatever was absent, so a
     # renamed or deleted document silently narrowed the scan and the test
     # still passed -- "could not check" reading as "clean", which is the

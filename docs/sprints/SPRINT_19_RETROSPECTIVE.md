@@ -43,10 +43,15 @@ before closing.
   105-minute cut was right: Task C was declined and became F96 rather than
   expanding the sprint. Task D's fresh-context review was the highest-value 20
   minutes, returning fourteen findings against a plan that predicted few. The
-  inefficiency: Task B built thirteen guards that were retired within about 24
-  hours. Each caught a stale claim during a revision round, so they were not
-  waste in the moment, but the plan did not anticipate that the memo would be
-  frozen inside the same sprint.
+  inefficiency: thirteen memo guards were built and retired within about 24
+  hours -- six from Task B (commit 82ade90, "six guards pin it") and the rest
+  from the Task D scope extension. Each caught a stale claim during a revision
+  round, so they were not waste in the moment, but the plan did not anticipate
+  that the memo would be frozen inside the same sprint.
+
+  (Corrected 2026-09-27: this said "Task B built thirteen guards". Task B added
+  six. The figure carries this category's downgrade, so misattributing it to one
+  40-minute task overstated that task's cost. Found by the PR #141 review.)
 
 ### 2. Testing Approach
 
@@ -241,9 +246,10 @@ after. Zero metered seconds. No preregistration drift.
 
 **I scored seven categories down, and three of those rested on a planning
 miss that was not one.** My reading was that a document's lifecycle should
-have been planned: the memo was treated as editable, so thirteen guards, a
-readability document list and a set of cross-document tests were built against
-a file frozen three days later.
+have been planned: the memo was treated as editable, so thirteen memo guards
+(six from Task B, the rest from the Task D extension), a readability document
+list and a set of cross-document tests were built against a file frozen three
+days later.
 
 Team lead, 2026-09-27: **"It worked well and helped a great deal in getting to
 the final results. It is hard to plan meandering needs and requirements and
