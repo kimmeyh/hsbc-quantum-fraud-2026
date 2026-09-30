@@ -1,29 +1,19 @@
 {
   "current_sprint": {
-    "number": 19,
-    "name": "Send the QCi Package Clean",
-    "branch": "feature/20260923_Sprint_19",
-    "status": "phase_7_retrospective",
-    "plan_doc": "docs/sprints/SPRINT_19_PLAN.md",
-    "pr": 141,
-    "plan_approved": true,
-    "github_issues": [
-      142,
-      143,
-      144
-    ],
-    "task_actuals": {
-      "A": 2,
-      "B": 6,
-      "_note": "Wall-clock minutes at completion. A's wording was drafted and approved during planning, so A measures only the edit; B includes the 4-minute suite run. D is NOT RECORDED: it spanned an approval stop of several hours (00:23 to after 08:30), so wall clock does not measure the work, and an estimate of the active part would be a reconstruction.",
-      "D": null
-    },
-    "memo_sent": "2026-09-25T12:23"
+    "number": 20,
+    "name": "TBD -- scope selection at Refinement Pass 2",
+    "branch": "feature/20260930_Sprint_20",
+    "status": "phase_1_backlog_refinement",
+    "plan_doc": null,
+    "pr": null,
+    "plan_approved": false,
+    "github_issues": [],
+    "task_actuals": {}
   },
   "last_completed_sprint": {
-    "number": 18,
-    "merged_pr": 139,
-    "main_merge_pr": 140,
+    "number": 19,
+    "merged_pr": 141,
+    "main_merge_pr": 145,
     "docs_triad_complete": true
   },
   "prereg": {
@@ -31,5 +21,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-27"
+  "updated": "2026-09-30"
 }

@@ -32,16 +32,17 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 16 | docs/sprints/SPRINT_16_SUMMARY.md | [OK] Complete | ~1.5 days (Sep 16-17, 2026) |
 | 17 | docs/sprints/SPRINT_17_SUMMARY.md | [OK] Complete | ~1 day (Sep 19, 2026) |
 | 18 | docs/sprints/SPRINT_18_SUMMARY.md | [OK] Complete | ~2 days (Sep 22-23, 2026) |
+| 19 | docs/sprints/SPRINT_19_SUMMARY.md | [OK] Complete | ~7 days (Sep 23-30, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 19: Send the QCi Package Clean** (Sep 23-27, 2026; PR #141).
-Delivered **F92**. **The package was SENT 2026-09-25 at 12:23 PM** -- that was
-the objective. Task C was not approved and became F96; a fresh-context review
-found fourteen cross-document disagreements, eight fixed. Zero metered
-seconds. The record is `docs/sprints/SPRINT_19_RETROSPECTIVE.md` and
-`docs/sprints/SPRINT_19_VALIDATION.md`; the SUMMARY doc is created during
-Sprint 20 planning per the three-doc rule.
+**Sprint 19: Send the QCi Package Clean** (Sep 23-30, 2026; PR #141 to
+develop, PR #145 to main). Delivered **F92**. **The package was SENT 2026-09-25
+at 12:23 PM** -- that was the objective. Task C was not approved and became
+F96, since closed as overtaken; a fresh-context review found fourteen
+cross-document disagreements, eight fixed. Zero metered seconds. The record is
+`docs/sprints/SPRINT_19_SUMMARY.md`, `SPRINT_19_RETROSPECTIVE.md` and
+`SPRINT_19_VALIDATION.md`; this section only points at them.
 
 **THE FOUR PACKAGE DOCUMENTS ARE NOW FINAL** (team lead, 2026-09-27) and will
 never change again. The memo is preserved as its `.htm` export with the
@@ -206,42 +207,23 @@ Three findings outlived their cards and are recorded there:
 - Acceptance: the team lead picks one configuration (schedule 2 at 91-136 variables, or schedule 3 at 833) with the reason recorded; F2b and F5 closed into the survivor; the survivor's cost labeled measured or extrapolated; the hardware plan's Experiment 5 row either matches it or is flagged for F92
 - Depends on: nothing. The configuration choice is the team lead's (Class 3)
 
-**F92. QCi memo reconciled with the hardware plan before it is sent (~138m with allowances, or ~105m without the plan-line extension; zero metered) Priority 12 -- SELECTED FOR SPRINT 19**
-- Phase: QCi/External (added 2026-09-23, Sprint 18 Phase 8 sweep, step 8.3)
-- Platform: docs (`docs/qci_package/`, gitignored, unsent)
-- **The memo contradicts the enclosed hardware plan in three places.** It says "We are not quoting a cost for that block" (the plan now quotes five measured points and a 9,000 s ask); it says the +0.0256 gain "is confounded" (F91 attributed it to subset order); and under "What we have not reached" it lists "Your integer solver", two sections after reporting five integer calls as DONE. It also says "We do not expect to need more before Phase 2 proper" without naming the ask the plan leads with
-- **Two more stale lines, found on a full read 2026-09-23**: line 4, "Everything below reflects what we knew on 2026-09-12", while the memo reports the 2026-09-23 integer probes; and line 17, "Nothing in this package asks you for anything", while the enclosed hardware plan opens with the 9,000 s ask
-- Schedule 4 stays in the memo as planned, unanswered work: F95 is held until after the memo is sent (team lead, 2026-09-23)
-- The PDFs in the package were rendered after the last source commit and are current against their sources
-- **Planning pre-flight 2026-09-24 found one stale sentence OUTSIDE the memo**: the hardware plan still lists "isolating the feature-count confound in our one positive result" as a future proxy experiment, which F64 and F91 have run. Raised as a scope question under the defined-scope rule, not planned in by inference
-- This prevents: a vendor reading two figures for one fact in one envelope, in a package whose case rests on every figure tracing
-- Acceptance: each stale passage shown to the team lead as before / after / recommendation, approved before the edit; `scripts/outward_readability.py` clean; no figure in the memo differs from the plan or the owning result doc
-- **Estimate, per task (recorded before the plan, SPRINT_PLANNING.md)**: A memo wording 30m; B guards proven red 40m; C hardware-plan sentence and package re-render 25m (only if the extension is approved); D cross-document consistency review 20m. Allowances: 30% sourcing on writing (A, C) and 30% findings on verification (D). Total **138m** with C, **105m** without. Sequential: B pins A's final wording, D reads the result of A and C
-- Depends on: nothing in scope. The dependency on F93 is dropped: the memo will state only what the hardware plan states about the balance, and F93 reopening the plan would reopen the memo, which is a risk rather than a blocker
-- **Approved 2026-09-24 at 105m** (Task C not approved; the plan sentence is F96). Line 17: the memo stays silent on the ask
-- **Extended 2026-09-24 after Task D's reviewer found fourteen disagreements** (team lead: "extend F92 as needed", no time limit). Four more memo fixes and four hardware-plan fixes; dispositions in SPRINT_19_PLAN.md
+**F92. QCi memo reconciled with the hardware plan before it is sent -- DONE (Sprint 19)**
+- Delivered Sprint 19, PR #141 to develop and PR #145 to main, both 2026-09-30.
+  **The package was SENT 2026-09-25 at 12:23 PM.** Approved at 105m (Task C not
+  approved, carded as F96, since closed as overtaken), then extended after Task
+  D's fresh-context review found fourteen cross-document disagreements: eight
+  fixed, four left with a recorded reason, one answered without a change
+- The record is `docs/sprints/SPRINT_19_SUMMARY.md` and its retrospective; this
+  line only points at them
+- **Consequence for the backlog**: the four package documents are now FINAL
+  (team lead, 2026-09-27), so any future card touching them needs a new
+  document rather than an edit
 
-**F96. Hardware plan: Experiment 1 described as already run -- CLOSED, OVERTAKEN (2026-09-27)**
-- **CLOSED as overtaken. Team lead, 2026-09-27: "already answered no and will
-  always be no."** Both halves of this card act on
-  `docs/HARDWARE_PLAN_PHASE_2.md`, which is FINAL: its PDF was sent to QCi on
-  2026-09-25, so editing the source would diverge from what QCi holds and
-  re-rendering would replace a sent artifact. The plan describes Experiment 1
-  as future proxy work while F64 and F91 have since run it; that discrepancy
-  is now a permanent property of a sent document, recorded here and in
-  `docs/sprints/SPRINT_19_VALIDATION.md` rather than corrected
-- No successor card. A Phase 2 hardware plan, when one is written, starts from
-  the current state of the evidence rather than from a patch to this one
-- Phase: QCi/External (added 2026-09-24; split out of F92 at Sprint 19 approval)
-- Platform: docs (`docs/HARDWARE_PLAN_PHASE_2.md`, rendered into the QCi package)
-- Lines 198-201 list "isolating the feature-count confound in our one positive result" as a future proxy experiment. F64 and F91 ran it on 2026-09-22 and 2026-09-23: subset order carries the gain. The header's "One section is NEWER" would become two
-- This prevents: the memo (after F92) calling the confound resolved while the plan in the same envelope calls it future work. Whether that matters before sending is the team lead's call; he chose to leave the plan as it is for Sprint 19
-- Acceptance: the sentence and header updated; the package re-rendered with `render_all.py --qci-package`; the three submitted PDFs byte-identical before and after
-- Depends on: nothing
-
-**F97. `test_the_hook_allows_a_closeout_when_ci_is_green` depends on live sprint state (~20m, zero metered) Priority 16**
-- Phase: Finalize / tooling (added 2026-09-24, team lead, from the Sprint 19 3.3.2 CI checkpoint)
-- Platform: N/A (CI, `experiments/src/test_ci_status.py`)
+**F97. FIVE tests depend on live sprint state and are RED right now (~40m, zero metered) Priority 4**
+- Phase: Finalize / tooling (added 2026-09-24, team lead, from the Sprint 19 3.3.2 CI checkpoint; **rescoped 2026-09-30, priority 16 to 4**)
+- Platform: N/A (CI, `experiments/src/test_ci_status.py`, `test_phase3_artifacts.py`, `test_sprint_documents.py`)
+- **MEASURED 2026-09-30, and the scope is five tests rather than one**: `test_the_hook_allows_a_closeout_when_ci_is_green`, `test_current_sprint_records_its_draft_pr`, `test_current_sprint_records_its_task_issues`, `test_plan_approval_is_recorded`, `test_sprint_status_points_at_a_real_sprint`. Rolling `sprint_status.json` to Sprint 20 Phase 1 turns all five red; rolling it back to the Sprint 19 record turns all 32 tests in those three files green, with no code change. They assert Phase 3 artifacts exist while the repository is in Phase 1, before a plan exists to create them
+- **This blocks a green suite for the entire planning window**, which is when the next sprint's plan is being written and reviewed. A suite that is expected to be red is a suite nobody reads, and this repository has already paid for CI that was red on every commit of a sprint
 - The test runs the real close-out hook against the live `.claude/sprint_status.json`. During every planning window, before issues and approval exist, the hook blocks on the missing Phase 3 artifacts before it reaches the CI check, and the test reads that as "a green close-out was blocked". Red on CI for PR #141 until approval; green after
 - Same class as the Sprint 18 `test_phase3_artifacts.py` finding: a test coupled to repository state rather than a pinned input
 - Acceptance: the test supplies a complete, pinned status payload so it passes in every phase; proven by running it against a planning-state status file (red today, green after the fix)
