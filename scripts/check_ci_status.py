@@ -115,7 +115,7 @@ def evaluate(sha: str) -> tuple[int, list[str]]:
             "pushed, or CI may not have started yet. That is not a pass.")
 
     lines = []
-    failed, pending = [], []
+    failed, pending, succeeded = [], [], []
     for r in runs:
         name = r.get("name") or "?"
         status = r.get("status") or "?"
@@ -123,7 +123,9 @@ def evaluate(sha: str) -> tuple[int, list[str]]:
         lines.append(f"  {name}: {status} {concl}".rstrip())
         if status != "completed":
             pending.append(name)
-        elif concl not in ("success", "skipped", "neutral"):
+        elif concl == "success":
+            succeeded.append(name)
+        elif concl not in ("skipped", "neutral"):
             failed.append(f"{name} ({concl}) {r.get('url', '')}".strip())
 
     if failed:
@@ -142,8 +144,26 @@ def evaluate(sha: str) -> tuple[int, list[str]]:
         lines.append("Not a pass. Wait for it, or re-run with --wait.")
         return PENDING, lines
 
+    # AT LEAST ONE RUN MUST HAVE ACTUALLY SUCCEEDED. The pass condition was
+    # the ABSENCE of failures, so a commit whose every job was skipped or
+    # neutral reported "CI is green" without a single test result having been
+    # read. Measured: a lone {"status":"completed","conclusion":"skipped"} run
+    # returned exit 0.
+    #
+    # That is reachable, not hypothetical: a workflow gated behind a path
+    # filter, or pushed with paths-ignore, completes with every job skipped.
+    # And it is this repository's signature defect -- "could not check" reading
+    # as "clean" -- inside the script written to prevent it. Found by the
+    # PR #141 review.
+    if not succeeded:
+        raise Undetermined(
+            f"every completed run on {sha[:7]} was skipped or neutral, so no "
+            "test result was read. A workflow gated behind a path filter looks "
+            "exactly like this. That is not a pass.")
+
     lines.append("")
-    lines.append(f"CI is green on {sha[:7]} ({len(runs)} run(s)).")
+    lines.append(f"CI is green on {sha[:7]} ({len(runs)} run(s), "
+                 f"{len(succeeded)} succeeded).")
     return OK, lines
 
 
