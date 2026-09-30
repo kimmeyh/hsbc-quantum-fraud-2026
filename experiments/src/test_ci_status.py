@@ -106,17 +106,31 @@ def test_skipped_and_neutral_do_not_count_as_failures(ci, monkeypatch):
     ("gh is not installed", "which"),
     ("gh returns unparseable json", "json"),
 ])
-def test_an_unreadable_state_exits_nonzero(ci, monkeypatch, why, patch):
+def test_an_unreadable_state_exits_nonzero(ci, monkeypatch, why, patch,
+                                           capsys):
     """Every way of NOT knowing must exit non-zero. This is the whole point:
-    a run that cannot read CI must not report it green."""
+    a run that cannot read CI must not report it green.
+
+    THE MESSAGE IS ASSERTED, not just the code. Both params previously checked
+    only `rc == UNKNOWN`, which ANY Undetermined satisfies -- so neither test
+    could tell its own path from the other's, and in the json case the stubbed
+    _run also feeds head_sha, so it could have been passing for a reason it
+    does not name. Found by the PR #141 review.
+    """
     if patch == "which":
         monkeypatch.setattr(ci.shutil, "which", lambda name: None)
+        expect = "not on PATH"
     else:
         monkeypatch.setattr(ci, "_require_gh", lambda: None)
+        monkeypatch.setattr(ci, "head_sha", lambda ref: "deadbee")
         monkeypatch.setattr(ci, "_run",
                             lambda args, timeout=60: (0, "not json", ""))
+        expect = "unparseable"
     rc = ci.main(["--sha", "HEAD"])
     assert rc == ci.UNKNOWN, f"{why} did not exit UNKNOWN"
+    out = capsys.readouterr().out
+    assert expect in out, (
+        f"{why} exited UNKNOWN but said nothing about it: {out!r}")
 
 
 def test_the_exit_codes_are_distinct(ci):
@@ -229,3 +243,30 @@ def test_no_delay_is_requested_by_default(ci, monkeypatch):
 
     ci.main([])
     assert slept == [], f"the default invocation blocked for {slept}"
+
+def test_every_run_skipped_is_not_a_pass(ci, monkeypatch):
+    """A commit whose every job was skipped read no test result at all.
+
+    THE DEFECT THIS EXISTS FOR. The pass condition was the ABSENCE of
+    failures, so a lone completed/skipped run returned exit 0 and printed
+    "CI is green". Reachable in practice: a workflow gated behind a path
+    filter, or a push with paths-ignore, completes with every job skipped.
+
+    test_skipped_and_neutral_do_not_count_as_failures pairs skipped WITH a
+    success, so it could not catch this -- a companion test that made the
+    surrounding guard look covered. Found by the PR #141 review.
+    """
+    monkeypatch.setattr(ci, "runs_for",
+                        lambda sha: _runs("completed", "skipped"))
+    with pytest.raises(ci.Undetermined):
+        ci.evaluate("deadbee")
+
+
+def test_a_success_beside_a_skip_is_still_a_pass(ci, monkeypatch):
+    """The companion. Requiring EVERY run to succeed would break every
+    repository that gates a job behind a path filter."""
+    monkeypatch.setattr(ci, "runs_for", lambda sha: (
+        _runs("completed", "skipped", "optional")
+        + _runs("completed", "success", "tests")))
+    rc, _lines = ci.evaluate("deadbee")
+    assert rc == ci.OK
