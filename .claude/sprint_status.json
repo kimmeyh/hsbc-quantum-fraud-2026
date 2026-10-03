@@ -1,14 +1,21 @@
 {
   "current_sprint": {
     "number": 20,
-    "name": "TBD -- scope selection at Refinement Pass 2",
+    "name": "Make the Suite Readable Again",
     "branch": "feature/20260930_Sprint_20",
-    "status": "phase_1_backlog_refinement",
-    "plan_doc": null,
-    "pr": null,
+    "status": "phase_3_planning",
+    "plan_doc": "docs/sprints/SPRINT_20_PLAN.md",
+    "pr": 146,
     "plan_approved": false,
-    "github_issues": [],
-    "task_actuals": {}
+    "github_issues": [
+      147,
+      148,
+      149,
+      150
+    ],
+    "task_actuals": {
+      "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective."
+    }
   },
   "last_completed_sprint": {
     "number": 19,
@@ -21,5 +28,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-30"
+  "updated": "2026-10-02"
 }
