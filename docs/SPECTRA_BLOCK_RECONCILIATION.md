@@ -33,12 +33,23 @@ came in at 91 s. The schedule underneath that estimate was never stated, which
 is why the number cannot be repaired — there is no way to tell what it was
 costing.
 
-**F90 carries the measured figure and names the configuration.** Its case for
-schedule 3 is evidence rather than preference: in the prior SPECTRA work,
-schedule 2 lost overall 8 of 8 to the classical arm with only about 3
-in-segment metrics won, while schedule 3 — which adds three-feature
-interactions — reached in-segment ROC 5 of 7, PR 6 of 7, and an overall win on
-`energy_steel`. The cost anchor is unusually strong: the schedule-3 QUBO is
+**F90 carries the measured COST and names the configuration.** Its cost
+anchor is solid. Its *accuracy* case is not: it says schedule 2 lost overall 8
+of 8 to the classical arm with only about 3 in-segment metrics won, while
+schedule 3 reached in-segment ROC 5 of 7, PR 6 of 7, and an overall win on
+`energy_steel`.
+
+**Those accuracy figures are PROXY figures, not device figures** (checked
+2026-10-03). They ARE sourced: `experiments/results/spectra_proxy_dry_run.json`
+shows 13 of 13 scored in-segment cells with a negative edge, and the
+preregistration names the origin at line 46 (FourierWall2, 2026-08-04). But
+every row carries `evidence_tag: PROJ` and `metered_seconds: 0`.
+
+So "schedule 2 lost 8 of 8" describes the CLASSICAL PROXY losing in-segment.
+It says nothing about the device, which this repository has never run on
+SPECTRA. Reading it as a device result -- which my original wording invited --
+is the same error as A31's inverted reading in Sprint 18: taking a proxy
+behavior for a device prediction. The cost anchor is unusually strong: the schedule-3 QUBO is
 `n + C(n,2) + C(n,3)`, which for `energy_steel`'s 17 features is exactly 833
 variables — our own B2 size — so B2's measured 82.4 s per fit is a direct
 anchor rather than an extrapolation.
@@ -96,13 +107,104 @@ plus Phase 2 preparation that needs no device.
 
 ## Decision
 
-**RECORDED 2026-10-02: not yet made.** This is a Class 3 allocation decision
-and the sprint reached it as the last task, as planned. Until it is made, F2b
-and F5 remain open and F90 remains unscheduled.
+**MADE 2026-10-03: proceed. Team lead, on evidence from outside this
+repository.**
 
-When the decision is made, this section records it with the reason, and:
+> "I have run this on another computer and QCi Dirac-3 on SPECTRA won in
+> almost all cases so we will proceed regardless of the current analysis."
 
-- F2b's B4 line and F5 are closed into the surviving card
-- the survivor's cost is labeled `measured` or `extrapolated`
-- where the survivor differs from the sent plan's 270 s, that difference is
-  written down here, because it is externally visible
+He also directs that **the SPECTRA analysis matching prior Dirac-3 work on
+quantum-enhanced datasets runs in the next sprint.**
+
+### This repository already held the answer, in a document I did not open
+
+**The most useful finding here is about my own process, so it goes first.**
+
+`docs/HARDWARE_REQUEST_B4.md` line 89 already states, in this repository,
+tracked, that the 13 negative proxy edges are expected and are "not a red flag
+for B4" -- because the effect being replicated is a CVQBoost hard-vote
+advantage, not a ridge-proxy advantage. It also already carries the tuned
+configuration's measured per-fit costs.
+
+I built this document's analysis without reading it. I searched
+`results.json`, found no SPECTRA rows, and reasoned from absence -- which is
+the CLAUDE.md rule about not stating what an external system contains without
+opening it, applied to my own repository. The team lead's correction was
+needed only because I had not looked.
+
+### There is no conflict. The two results are from different ARMS
+
+My first reading of this was wrong, and the correction is the useful part.
+
+I checked `results.json`, found zero SPECTRA rows, and concluded the
+repository's "schedule 2 lost" claim was an uncited recollection. **Both halves
+of that were wrong.** The evidence is in
+`experiments/results/spectra_proxy_dry_run.json` -- 15 rows carrying
+configuration hashes, seeds and evidence tags -- and the preregistration names
+the origin at line 46, a prior exploratory sweep from the FourierWall2
+campaign of 2026-08-04. I looked in one file and generalized to the whole
+repository.
+
+**The data supports the claim rather than undermining it**: 13 of 13 scored
+in-segment cells show a NEGATIVE edge, at 560 and 816 variables, across all
+three datasets tested.
+
+**But every one of those rows is `evidence_tag: PROJ`, `metered_seconds: 0`.
+They are the CLASSICAL PROXY. This repository has never run SPECTRA on
+Dirac-3.**
+
+That dissolves the conflict. The team lead ran the **device**; this repository
+ran the **proxy**. A device win where the proxy loses does not contradict our
+evidence -- it is the most interesting result this block can produce, and it
+is the same shape as B2, where the device's sparsified answer outperformed the
+exact classical solve at 833 variables.
+
+It also removes the main argument against spending here, and for a second
+reason found on 2026-10-03.
+
+**MY "SCHEDULE 2 LOST 8 OF 8" WAS THE BASELINE CONFIGURATION, NOT THE TUNED
+ONE.** Consulted for planning (a prior-campaign findings document held outside
+this repository, team lead's reference, not cited here as evidence): the 8-of-8
+overall loss is the schedule-2 baseline. The TUNED configuration -- schedule
+3, 8 samples, relaxation schedule 2, and a ridge of about twice the record
+count -- moves CVQBoost from uniformly behind to in-segment leader, winning
+in-segment ROC on 5 of 7 cells and PR on 6 of 7, and winning OVERALL on
+`energy_steel`.
+
+So Option 2's "confirmed negative" was confirmed about a configuration nobody
+proposed running. F90 already specified schedule 3, which is the configuration
+that wins. The team lead's device result is consistent with that prior work
+rather than in tension with anything.
+
+**ONE CAVEAT THE NEXT SPRINT MUST CARRY, and it is not in any card yet.** Those
+in-segment wins come with a severe generalization gap: in the prior campaign
+CVQBoost's in-segment train-to-test drop was three to eight times XGBoost's on
+every `target` cell, with one case falling from 0.98 train to 0.59 test. The
+test-set wins are real, and they are fragile. Any Phase 2 claim from this block
+reports the train-test gap beside the win, or it overstates what was found.
+
+### What is now recorded, and what is still open
+
+**Recorded**: the block proceeds. Dirac-3 won in almost all cases on SPECTRA
+in a run on another machine, 2026-10-03, reported by the team lead.
+
+**`[UNVERIFIED -- OFF-REPOSITORY]`**, and labeled that way deliberately
+until it is brought in: the configuration used (schedule and variable count),
+the fit and seed counts, the metric, and whether it ran on Dirac-3 hardware
+or a proxy. None of that is knowable from inside this repository, and a
+Phase 2 claim cannot rest on a figure nobody here can check.
+
+**Still open, and it is a sizing question rather than a go/no-go**: which
+configuration the next sprint runs, and therefore whether it costs nearer the
+sent plan's 270 s or F90's ~1,236 s. The 4.6x gap against what QCi was told
+does not disappear because the block is approved -- if the spend lands well
+above 270 s, that difference is still externally visible and still needs
+stating to QCi rather than being discovered by them.
+
+### Consequently
+
+- F2b's B4 line and F5 are closed into F90, the surviving card
+- F90 is unblocked and scheduled for the next sprint, carrying this decision
+- The next sprint's card records the off-repository result as its motivation
+  and brings the configuration into the repository as its first task, so the
+  claim stops being unverifiable
