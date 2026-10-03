@@ -19,16 +19,18 @@ you can run yourself.
 The defect was that six tests answered "where is this sprint?" rather than "is
 the code right?". They failed for days at a time during planning windows.
 
+Run the full suite (the interpreter for your OS is in
+`docs/ENVIRONMENT.md`):
+
 ```
-.venv\Scripts\python.exe -m pytest -q
+<venv python> -m pytest -q
 ```
 
 Expect **1,409 passed, 73 skipped**. Then, if you want the proof rather than
 the claim, the harness that runs the same code against nine different sprint
-states is at
-`C:\Users\kimme\AppData\Local\Temp\claude\...\scratchpad\prove_f97.py` —
-phases 1 through 8, an invented phase slug, and the live record. All nine
-green with no code change.
+states is in this session's scratchpad as `prove_f97.py` — phases 1 through 8,
+an invented phase slug, and the live record. All nine green with no code
+change.
 
 **What to look for**: it should be green now, and it should have been green
 during the planning window two days ago. That is the difference.
@@ -64,7 +66,7 @@ appears, in 0.9 seconds.
 ### 4. The sent correspondence has a recorded hash
 
 ```
-.venv\Scripts\python.exe -m pytest experiments/src/test_sent_correspondence.py -q -rs
+<venv python> -m pytest experiments/src/test_sent_correspondence.py -q -rs
 ```
 
 Expect 9 passed on your machine. On any other machine the artifact tests
