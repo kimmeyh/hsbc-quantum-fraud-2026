@@ -57,6 +57,26 @@ def _sprint_numbers() -> list[int]:
 
 
 @pytest.mark.skipif(not SPRINTS.exists(), reason="no sprint docs directory")
+def _plan_expected_yet() -> bool:
+    """Has the live sprint reached the phase that writes its plan?
+
+    Phase 3 drafts SPRINT_N_PLAN.md. Phases 1 and 2 precede it, and the sprint
+    number rolls to N+1 during the previous sprint's Phase 8 sweep, so between
+    that roll and Phase 3 the named sprint legitimately has no plan.
+
+    Unknown or missing phase returns True: a slug this does not recognize must
+    not disable the check.
+    """
+    if not STATUS.exists():
+        return True
+    try:
+        st = json.loads(STATUS.read_text(encoding="utf-8"))["current_sprint"]
+    except (OSError, ValueError, KeyError):
+        return True
+    return str(st.get("status") or "") not in (
+        "phase_1_backlog_refinement", "phase_2_pre_kickoff")
+
+
 def test_every_completed_sprint_has_all_three_documents():
     """Plan, retrospective and summary, for every sprint that has finished."""
     current = _current_sprint()
@@ -69,6 +89,24 @@ def test_every_completed_sprint_has_all_three_documents():
             # Demanding either mid-sprint fails the moment a plan is written,
             # which is how this guard first fired against Sprint 13's own plan.
             if n == current and kind in ("SUMMARY", "RETROSPECTIVE"):
+                continue
+            # AND the sprint JUST FINISHED, during a planning window. The
+            # number rolls at the Phase 8 sweep, so sprint N-1 loses the
+            # in-flight exemption above the moment N is named -- while its
+            # SUMMARY is, by the rule's own wording, "created during Sprint
+            # N+1 planning". The guard demanded a document the process says
+            # is not written yet. Part of the six-test planning-window
+            # failure (F97, measured 2026-10-02).
+            if (n == current - 1 and kind == "SUMMARY"
+                    and not _plan_expected_yet()):
+                continue
+            # AND its PLAN, before Phase 3 writes it. The sprint number rolls
+            # at the Phase 8 sweep so the status file names the sprint being
+            # planned, which by definition has no plan document yet. The
+            # exemption above covered the other two and not this one, so the
+            # guard fired on correct behavior for the whole planning window
+            # (F97, measured 2026-10-02).
+            if n == current and kind == "PLAN" and not _plan_expected_yet():
                 continue
             f = SPRINTS / f"SPRINT_{n}_{kind}.md"
             if not f.exists():
@@ -108,8 +146,20 @@ def test_sprint_status_points_at_a_real_sprint():
     """
     st = json.loads(STATUS.read_text(encoding="utf-8"))["current_sprint"]
     n = int(st["number"])
-    assert (SPRINTS / f"SPRINT_{n}_PLAN.md").exists(), (
-        f"sprint_status.json names sprint {n}, which has no plan document")
+
+    # THE PLAN DOCUMENT IS WRITTEN IN PHASE 3, so demanding it in Phase 1 or 2
+    # fails on correct behavior: the sprint number rolls at the Phase 8 sweep,
+    # before the next plan exists. Measured 2026-10-02, part of the six-test
+    # planning-window failure (F97).
+    #
+    # What still holds in EVERY phase: if plan_doc names a file, that file must
+    # exist. A named path that does not resolve is always wrong.
+    before_planning = str(st.get("status") or "") in (
+        "phase_1_backlog_refinement", "phase_2_pre_kickoff")
+    if not before_planning:
+        assert (SPRINTS / f"SPRINT_{n}_PLAN.md").exists(), (
+            f"sprint_status.json names sprint {n}, which has no plan document")
+
     plan = st.get("plan_doc")
     if plan:
         assert (ROOT / plan).exists(), f"plan_doc {plan} does not exist"

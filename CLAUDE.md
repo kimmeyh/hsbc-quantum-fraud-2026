@@ -93,6 +93,15 @@ only in memory.
   unambiguous answer form. Never write a question where "yes" maps to two
   different actions; split it or number the parts.
 
+- **Don't hand over Manual Validation by pointing at a file. LIST THE ITEMS
+  TO THE SCREEN as the last step before he starts.** The file
+  (`SPRINT_N_VALIDATION.md`) is the durable copy and it must exist; it is not
+  the handover. A pointer makes him open a document to discover what he was
+  asked to do, which is the entry below one level removed. (Team lead,
+  2026-10-03, after Sprint 20's handover did exactly that -- in the same
+  sprint whose validation document opens by saying it exists so he would not
+  have to scroll.)
+
 - **Don't refer the team lead back to instructions he would have to scroll for.
   Re-present them in full, every time.** "The plan from earlier" may be 5, 20 or
   50 screens back behind tool output and test runs. This binds hardest at Manual
