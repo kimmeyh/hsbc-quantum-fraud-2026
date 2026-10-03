@@ -33,6 +33,7 @@ Consult at EVERY phase boundary (open this file in the same turn; walk lines wit
 - [ ] Full suite green; no unamended drift from prereg-freeze in analysis code
 - [ ] Plan acceptance criteria walked line by line WITH EVIDENCE
 - [ ] OUTWARD documents pass `scripts/outward_readability.py` BEFORE handover (IMP-5: the QCi package needed a revision round purely to strip tokens a vendor reader cannot resolve, after the team lead had already reviewed it)
+- [ ] **The validation items are LISTED TO THE SCREEN as the last step before handover** (team lead, 2026-10-03). Writing them to a file and pointing at the file is not the handover; it is the same referring-back failure in another form. The file is the durable copy, the screen list is the handover
 - [ ] Handed to team lead for manual validation (questions correct from here)
 
 ## Phase 6: Push & Finalize PR
