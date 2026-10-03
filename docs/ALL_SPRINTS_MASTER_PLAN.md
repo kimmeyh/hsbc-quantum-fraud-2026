@@ -33,10 +33,39 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 17 | docs/sprints/SPRINT_17_SUMMARY.md | [OK] Complete | ~1 day (Sep 19, 2026) |
 | 18 | docs/sprints/SPRINT_18_SUMMARY.md | [OK] Complete | ~2 days (Sep 22-23, 2026) |
 | 19 | docs/sprints/SPRINT_19_SUMMARY.md | [OK] Complete | ~7 days (Sep 23-30, 2026) |
+| 20 | docs/sprints/SPRINT_20_SUMMARY.md | [OK] Complete | ~4 days (Sep 30 - Oct 3, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 19: Send the QCi Package Clean** (Sep 23-30, 2026; PR #141 to
+**Sprint 20: Make the Suite Readable Again** (Sep 30 - Oct 3, 2026; PR #146).
+Delivered **F97, F93, F98, F99**. 161 minutes against 171 estimated, zero
+metered seconds, and the first sprint with a COMPLETE set of actuals. The
+record is `docs/sprints/SPRINT_20_RETROSPECTIVE.md` and
+`SPRINT_20_VALIDATION.md`; the SUMMARY doc is created during Sprint 21
+planning per the three-doc rule.
+
+**The suite is green in a planning window for the first time.** Six tests
+asserted that Phase 3 artifacts exist while the repository sat in Phase 1,
+before the plan that creates them had been written, so they failed for days at
+a time. They now gate on the recorded phase, proven across nine sprint states
+with the same code AND proven to still go red where an artifact is genuinely
+owed.
+
+**The close-out hook can no longer be silenced by a slow network.** Measured:
+a Stop hook killed at its timeout produces no exit code, so it cannot block --
+a timeout fails OPEN. The fail-open `gh` checks ran before the fail-closed CI
+check, so one hanging call killed the hook before the guard ran. Reordered,
+and the internal budget cut from 160s to 18s against a 20s allowance.
+
+**The sent QCi correspondence has recorded hashes** in
+`docs/QCI_CORRESPONDENCE_HASHES.md`, enforced by a guard that skips VISIBLY
+where the gitignored artifacts are absent. The ignore rule did not change.
+
+**a299ad2 is part of this sprint** (team lead, confirmed 2026-10-03): the
+Phase 2 checklist merge, items 5 and 6 corrected against the filed proposal,
+and F100-F121 registered.
+
+### Sprint 19: Send the QCi Package Clean (Sep 23-30, 2026; PR #141 to
 develop, PR #145 to main). Delivered **F92**. **The package was SENT 2026-09-25
 at 12:23 PM** -- that was the objective. Task C was not approved and became
 F96, since closed as overtaken; a fresh-context review found fourteen

@@ -19,7 +19,10 @@
       "C": 34,
       "D": 28,
       "B": 47
-    }
+    },
+    "scope_additions": [
+      "a299ad2 (Phase 2 checklist merge, F100-F121 registered; team lead confirmed 2026-10-03)"
+    ]
   },
   "last_completed_sprint": {
     "number": 19,

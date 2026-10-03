@@ -323,3 +323,45 @@ enough to follow; "grep docs/" was not.
 Revised proposal awaiting disposition. Whether a troubleshooting document
 should exist at all is a separate question, deliberately not answered as a
 side effect of this one.
+
+## Scope addition confirmed: a299ad2
+
+**Team lead, 2026-10-03: this commit was incorporated into Sprint 20 and
+should be part of it. CONFIRMED, by checking rather than by agreeing.**
+
+- It is HEAD of `feature/20260930_Sprint_20` and pushed
+- `git branch -a --contains a299ad2` lists only this sprint's branch, local
+  and remote, so it is in no other branch and reaches develop through PR #146
+- It was authored in a different session (Opus 5.5) at 15:48, which is why it
+  appears in no earlier record here
+
+**What it changed**, and two items affect this sprint's close-out:
+
+`CHECKLIST-Phase2-pre.md` is merged into `CHECKLIST-Phase2.md` and deleted, so
+one live checklist now covers both the pre-notification period and the PoC
+sprint. **My Phase 7 reconciliation walked the deleted file.** That report is
+superseded: the merged checklist was walked on 2026-10-03 and stands at 12
+ticked, 30 unticked, with every unticked item gated on the mid-November
+notification, the Phase 2 preregistration, or a future sprint card. None is
+Sprint 20 work, so nothing is owed. No document still references the deleted
+path -- the commit updated the process docs that named it.
+
+Items 5 and 6 of the six experiments are corrected against the FILED proposal.
+The 2026-09-12 checklist listed 5 as the gate-based arm and 6 as B4/B5; the
+filed PDF -- hash-pinned by `test_published_artifacts.py` -- commits to 5 =
+Segment transfer (H5) and 6 = Scaling claim, in section 5. That restores the
+published commitment, and it is the right direction of correction: the filed
+document is the record, and the checklist was wrong.
+
+F100 through F121 are registered so every Phase 2 item has a card. F93 and F2b
+are closed into F90 and **kept in place**, because
+`test_spectra_reconciliation.py` requires every SPECTRA record to stay
+findable -- the guard written in Task B constrained how a later session could
+close those cards, which is the guard working as intended.
+
+F90's "three to eight times" overfit caveat is corrected to the source ratios.
+I wrote that figure into the card from the findings document; the correction
+tightens it to what the source actually reports.
+
+Markdown only, no code. Suite verified green after it: 1,417 passed, 73
+skipped.
