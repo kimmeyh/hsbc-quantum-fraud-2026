@@ -4,6 +4,12 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-10-03
+
+- **process**: **`CHECKLIST-Phase2-pre.md` merged into `CHECKLIST-Phase2.md` and deleted** (team lead). One LIVE Phase 2 checklist now covers the time before finalist notification and the PoC sprint. Open items moved across; completed items kept as a pointer list; the full text is in git history. `CHECKLIST-Phase1.md` is CLOSED and still names the old file, by the team lead's decision. Pointers updated in README.md, the master plan, PLAN.md and the four sprint-process documents
+- **docs**: **Items 5 and 6 of the six committed experiments corrected to match the filed proposal.** The checklist drafted on 2026-09-12 listed 5 = gate-based arm and 6 = hardware blocks B4 and B5, and cited "section 6". The filed proposal (section 5; checked with `pypdf` against the PDF whose hash `test_published_artifacts.py` pins) commits to 5 = Segment transfer (H5) and 6 = Scaling claim, as does the hardware plan sent to QCi. This restores the published commitment rather than departing from it, so it is recorded here as a correction. The gate-based arm stays a commitment from proposal section 7; F90 is Experiment 5's replication half
+- **docs**: **Backlog refinement: every Phase 2 item now has a card.** F100-F121 registered (experiments 2, 4 and 6, the preregistration framework, the SPECTRA complete classical bar and cross-domain screen, the ceiling methodology, the gate-based precursors, latency, calibration, the router). F93 and F2b closed into F90 and kept in place for the SPECTRA guard. Live slate re-scored; field advancement leads if it conflicts with the track outcome (team lead). Allocation corrected in the checklist from 1,961 to 1,681 s. F90's "three to eight times XGBoost's on every cell" corrected: the source table's ratios are 83, 7.6, 8.2 and 1.7
+
 ### 2026-09-30
 
 - **process**: **Sprint 19 closed.** PR #141 merged to develop, PR #145 develop to main. SPRINT_19_SUMMARY.md written per the three-doc rule. Nine sprint issues closed manually (#142-#144 for Sprint 19, and #133-#138 left open from Sprint 18's sweep -- `Closes #N` does not fire on a feature->develop merge, workflow 2.3). Sprint 20 branch carried forward from the feature branch
