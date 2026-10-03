@@ -207,46 +207,26 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
                     f"docs/sprints/SPRINT_{prev}_SUMMARY.md is missing "
                     "(three-doc rule, workflow 3.2.1).")
 
-    # Open sprint issues -- POST-MERGE precondition only.
+    # ORDER MATTERS, AND THIS ORDER IS LOAD-BEARING.
     #
-    # RESTORED 2026-09-19. The PowerShell had this fifth check and the Sprint 16
-    # conversion dropped it silently, which the PR #120 review caught. Without
-    # it, a close-out could be certified complete with every task issue still
-    # open, and nothing would object.
+    # The CI check runs BEFORE the gh-dependent issues check below. Measured
+    # 2026-10-02: a Stop hook killed at its configured timeout produces NO
+    # exit code and NO stderr. Blocking is a non-zero exit, so a killed hook
+    # CANNOT block -- a timeout fails OPEN regardless of what the hook would
+    # have decided.
     #
-    # It is post-merge ONLY because `Closes #N` does not fire on a
-    # feature->develop merge (workflow 2.3), so the issues must be closed by
-    # hand and the only moment that is checkable is after the merge lands.
-    rc, out = hooklib.git("rev-parse", "--abbrev-ref", "HEAD", cwd=root)
-    branch_now = out.strip() if rc == 0 else ""
-    if branch_now:
-        try:
-            pr = subprocess.run(
-                ["gh", "pr", "list", "--head", branch_now, "--state", "all",
-                 "--json", "state,mergedAt"],
-                cwd=str(root), capture_output=True, text=True, timeout=20)
-            merged = pr.returncode == 0 and any(
-                p.get("state") == "MERGED" or p.get("mergedAt")
-                for p in json.loads(pr.stdout or "[]"))
-            if merged:
-                iss = subprocess.run(
-                    ["gh", "issue", "list", "--label", "sprint", "--state",
-                     "open", "--json", "number"],
-                    cwd=str(root), capture_output=True, text=True, timeout=20)
-                if iss.returncode == 0 and iss.stdout:
-                    nums = [f"#{i['number']}" for i in json.loads(iss.stdout)]
-                    if nums:
-                        violations.append(
-                            "Sprint PR MERGED but sprint-labeled issues still "
-                            f"OPEN: {', '.join(nums)} ('Closes #N' does not fire "
-                            "on feature->develop merges; close manually, "
-                            "workflow 2.3).")
-        except Exception:                                # noqa: BLE001
-            # gh missing, offline, or rate-limited. Fail open on THIS check
-            # only: the other four still ran, and a hook that blocks every
-            # close-out because GitHub is unreachable would be bypassed.
-            pass
-
+    # With the fail-OPEN issues check first, a single hanging `gh pr list`
+    # could consume the whole budget and kill the hook before this
+    # deliberately fail-CLOSED check ran. The careful fail-closed design was
+    # defeated by a slow network, which is exactly when it is needed.
+    #
+    # BUDGET ARITHMETIC, against "timeout": 20 in settings.json:
+    #     gh auth status   5s  (check_ci_status._require_gh)
+    #   + gh run list      5s  (check_ci_status.runs_for)
+    #   + gh pr list       4s  (below)
+    #   + gh issue list    4s  (below)
+    #   = 18s worst case, inside the 20s budget.
+    # Previously 20 + 20 + 60 + 60 = 160s, where one call alone exceeded it.
     # CI on the HEAD commit.
     #
     # Sprint 18 ran RED on every commit from the first push to the last, and
@@ -302,6 +282,46 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
             violations.append(
                 f"The CI check itself failed to run ({type(exc).__name__}: "
                 f"{exc}). A guard that errors is not a guard that passed.")
+
+    # Open sprint issues -- POST-MERGE precondition only.
+    #
+    # RESTORED 2026-09-19. The PowerShell had this fifth check and the Sprint 16
+    # conversion dropped it silently, which the PR #120 review caught. Without
+    # it, a close-out could be certified complete with every task issue still
+    # open, and nothing would object.
+    #
+    # It is post-merge ONLY because `Closes #N` does not fire on a
+    # feature->develop merge (workflow 2.3), so the issues must be closed by
+    # hand and the only moment that is checkable is after the merge lands.
+    rc, out = hooklib.git("rev-parse", "--abbrev-ref", "HEAD", cwd=root)
+    branch_now = out.strip() if rc == 0 else ""
+    if branch_now:
+        try:
+            pr = subprocess.run(
+                ["gh", "pr", "list", "--head", branch_now, "--state", "all",
+                 "--json", "state,mergedAt"],
+                cwd=str(root), capture_output=True, text=True, timeout=4)
+            merged = pr.returncode == 0 and any(
+                p.get("state") == "MERGED" or p.get("mergedAt")
+                for p in json.loads(pr.stdout or "[]"))
+            if merged:
+                iss = subprocess.run(
+                    ["gh", "issue", "list", "--label", "sprint", "--state",
+                     "open", "--json", "number"],
+                    cwd=str(root), capture_output=True, text=True, timeout=4)
+                if iss.returncode == 0 and iss.stdout:
+                    nums = [f"#{i['number']}" for i in json.loads(iss.stdout)]
+                    if nums:
+                        violations.append(
+                            "Sprint PR MERGED but sprint-labeled issues still "
+                            f"OPEN: {', '.join(nums)} ('Closes #N' does not fire "
+                            "on feature->develop merges; close manually, "
+                            "workflow 2.3).")
+        except Exception:                                # noqa: BLE001
+            # gh missing, offline, or rate-limited. Fail open on THIS check
+            # only: the other four still ran, and a hook that blocks every
+            # close-out because GitHub is unreachable would be bypassed.
+            pass
 
     return violations
 

@@ -62,7 +62,20 @@ class Undetermined(RuntimeError):
     """
 
 
-def _run(args: list[str], timeout: int = 60) -> tuple[int, str, str]:
+def _run(args: list[str], timeout: int = 5) -> tuple[int, str, str]:
+    """Run a command, mapping every non-answer to Undetermined.
+
+    THE DEFAULT IS 5s, NOT 60s, BECAUSE THIS RUNS INSIDE A STOP HOOK. That
+    hook has a 20s budget in settings.json, and two `gh` calls from here plus
+    two from the hook itself previously totalled 160s worst case. Measured
+    2026-10-02: a hook killed at its timeout produces no exit code, so it
+    cannot block -- the timeout fails OPEN and the fail-closed CI guard never
+    runs. Keeping the sum inside the budget is what makes the guard reachable.
+
+    A 5s ceiling is generous for `gh auth status` and `gh run list` against a
+    responsive API, and a slower-than-5s API is itself a reason to report
+    UNDETERMINED rather than to wait and be killed.
+    """
     try:
         r = subprocess.run(args, cwd=str(ROOT), capture_output=True,
                            text=True, timeout=timeout)

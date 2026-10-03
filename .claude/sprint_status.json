@@ -15,7 +15,8 @@
     ],
     "task_actuals": {
       "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective.",
-      "A": 52
+      "A": 52,
+      "C": 34
     }
   },
   "last_completed_sprint": {

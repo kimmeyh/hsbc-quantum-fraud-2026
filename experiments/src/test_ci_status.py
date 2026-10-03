@@ -20,6 +20,7 @@ that reports success when it checked nothing.
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -289,3 +290,66 @@ def test_a_success_beside_a_skip_is_still_a_pass(ci, monkeypatch):
         + _runs("completed", "success", "tests")))
     rc, _lines = ci.evaluate("deadbee")
     assert rc == ci.OK
+
+# ------------------- F98: the budget, and the order the checks run in
+
+def test_the_hook_timeout_budget_covers_its_own_subprocess_calls():
+    """A Stop hook killed at its timeout produces NO exit code, so it cannot
+    BLOCK -- a timeout fails OPEN whatever the hook would have decided.
+    Measured 2026-10-02 with a hook that slept past its budget.
+
+    So the sum of internal subprocess timeouts must fit the configured
+    budget. It did not: 20 + 20 + 60 + 60 = 160s against a 20s budget, where
+    a single hanging `gh pr list` exceeded it alone.
+    """
+    import json as _json
+
+    settings = _json.loads(
+        (ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
+
+    budget = None
+    def walk(o):
+        nonlocal budget
+        if isinstance(o, dict):
+            cmd = str(o.get("command", ""))
+            if "verify_closeout_complete" in cmd and "timeout" in o:
+                budget = int(o["timeout"])
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+    walk(settings)
+    assert budget, "no timeout configured for verify_closeout_complete"
+
+    hook_src = HOOK.read_text(encoding="utf-8")
+    hook_timeouts = [int(m) for m in re.findall(r"timeout=(\d+)\)", hook_src)]
+    assert hook_timeouts, "no subprocess timeouts found in the hook"
+
+    checker_src = SCRIPT.read_text(encoding="utf-8")
+    m = re.search(r"def _run\(args: list\[str\], timeout: int = (\d+)\)",
+                  checker_src)
+    assert m, "check_ci_status._run default timeout not found"
+    ci_default = int(m.group(1))
+
+    # _require_gh and runs_for each make one call through _run.
+    worst = sum(hook_timeouts) + 2 * ci_default
+    assert worst <= budget, (
+        f"worst-case internal timeouts total {worst}s against a {budget}s "
+        f"hook budget. A killed hook cannot block, so exceeding the budget "
+        f"silently disables every check.")
+
+
+def test_the_ci_check_runs_before_the_gh_dependent_issues_check():
+    """ORDER IS LOAD-BEARING. The issues check fails OPEN (`except Exception:
+    pass`); the CI check deliberately fails CLOSED. With the fail-open check
+    first, one hanging `gh pr list` could consume the whole budget and kill
+    the hook before the fail-closed guard ran -- defeating it precisely when
+    GitHub is slow, which is when it matters.
+    """
+    src = HOOK.read_text(encoding="utf-8")
+    i_ci = src.index("# CI on the HEAD commit.")
+    i_issues = src.index("# Open sprint issues -- POST-MERGE precondition")
+    assert i_ci < i_issues, (
+        "the gh-dependent issues check runs BEFORE the CI check again; a hang "
+        "there kills the hook before the fail-closed CI guard executes")
