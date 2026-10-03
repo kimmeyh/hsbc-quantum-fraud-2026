@@ -67,6 +67,37 @@ from hooklib import ALLOW, block, command_of, read_payload  # noqa: E402
 UNQUOTED_HEREDOC = re.compile(
     r"<<-?\s*([A-Za-z_][A-Za-z0-9_]*)(?=\s|$|[>|&;])", re.MULTILINE)
 
+# A QUOTED heredoc: <<'EOF' or <<"EOF". The shell passes the body verbatim, so
+# bash is innocent -- and that is exactly why this was excluded as "already
+# correct". It is not correct for a SECOND mechanism: the body reaches PYTHON,
+# which interprets the escape itself whenever the string literal is not raw.
+# Same symptom, different layer. Sprint 20 hit this five times.
+QUOTED_HEREDOC = re.compile(
+    r"""<<-?\s*(?:'([A-Za-z_][A-Za-z0-9_]*)'|"([A-Za-z_][A-Za-z0-9_]*)")""",
+    re.MULTILINE)
+
+# A PYTHON string literal that is NOT raw, carrying an escape Python will
+# interpret. Built from chr(92) so no layer can eat the pattern itself -- the
+# same precaution the message() function below already takes, for the same
+# reason.
+#
+# The r-prefix exclusion is the whole point: r"a\nb" is safe because Python
+# leaves it alone, and blocking it would make the hook fire on correct work.
+_BS = chr(92)                          # built, so no layer can eat it
+
+# ONLY the r-prefix is safe. A BYTES literal interprets escapes exactly as a
+# str does -- b"a\x00b" puts a real NUL byte in the file, which is precisely
+# the Sprint 20 case that corrupted a test file. Excluding `b` here made the
+# hook miss its own worst instance; only `rb`/`br` are exempt.
+_NON_RAW_STRING_WITH_ESCAPE = (
+    r"(?<![rR])"                       # not raw; rb"" and br"" also end in r/R
+    r"(?<![rR][bB])"                   # ...and not br"" with the b between
+    r"['\"]"                           # opening quote
+    r"[^'\"]*"                         # content before the escape
+    + _BS + _BS + r"[ntr0x]"           # the escape Python will interpret
+)
+PY_ESCAPE_IN_NON_RAW = re.compile(_NON_RAW_STRING_WITH_ESCAPE)
+
 # WHAT BASH ACTUALLY CONSUMES in an unquoted heredoc, measured rather than
 # assumed (PR #122 review; re-measured here on Linux bash with every sequence
 # built from chr(92) so no layer could eat the test input):
@@ -124,6 +155,80 @@ def risky_heredocs(cmd: str) -> list[tuple[str, str]]:
     return found
 
 
+def risky_quoted_heredocs(cmd: str) -> list[tuple[str, str]]:
+    """Return (delimiter, offending_line) for each QUOTED heredoc whose body
+    carries a Python escape inside a non-raw string literal.
+
+    The shell will not touch it. Python will. Writing `"a{bs}nb"` in a
+    replacement string, an assertion message or a file being generated puts a
+    real newline where the two characters were intended -- and in a string
+    being matched against a file, the match then silently fails.
+
+    Deliberately NOT blocked: a raw literal (`r"a{bs}nb"`), which is the
+    correct form and must stay cheap to write; prose; and a body with no
+    escape at all. A guard that blocks correct work gets bypassed.
+    """.replace("{bs}", chr(92))
+    lines = cmd.split("\n")
+    found: list[tuple[str, str]] = []
+
+    for i, line in enumerate(lines):
+        m = QUOTED_HEREDOC.search(line)
+        if not m:
+            continue
+        delim = m.group(1) or m.group(2)
+        if not WRITES_A_FILE.search(line) and "python" not in line.lower():
+            # A quoted heredoc feeding a pager is throwaway. One feeding
+            # python is not: the escape damage lands wherever that script
+            # writes, which is how all five Sprint 20 cases happened.
+            continue
+        for body_line in lines[i + 1:]:
+            if body_line.strip() == delim:
+                break
+            if PY_ESCAPE_IN_NON_RAW.search(body_line):
+                found.append((delim, body_line.strip()))
+                break
+    return found
+
+
+def quoted_message(hits: list[tuple[str, str]]) -> str:
+    delim, sample = hits[0]
+    bs = chr(92)
+    seqs = ", ".join(f"`{bs}{c}`" for c in "ntr0x")
+    return f"""[BLOCKED] A quoted heredoc will let PYTHON eat a backslash escape.
+
+Heredoc delimiter: <<'{delim}'   (quoted, so the SHELL is innocent)
+Offending line:
+    {sample}
+
+WHY THIS IS BLOCKED EVEN THOUGH THE QUOTING IS RIGHT. Quoting stops bash from
+expanding the body, which is why this hook used to skip quoted heredocs
+entirely. It does not stop PYTHON. The body arrives verbatim, Python reads a
+NON-RAW string literal, and interprets {seqs} itself. What lands in the file is
+not what you wrote -- and when the string is a match target, the match then
+fails silently.
+
+Sprint 20 hit this FIVE times in one sprint, all in correctly quoted heredocs.
+One wrote a literal NUL byte into a test file and corrupted it. Another
+produced an unterminated string literal. Two more made a .replace() target
+that could never match, so the edit reported success and changed nothing.
+
+FIX, in order of preference:
+
+  1. Use the Edit or Write tool. No shell, no heredoc, no escape layer. This is
+     the right answer for anything non-trivial and it is what finally worked
+     every time this sprint.
+
+  2. Make the literal RAW: r"a{bs}nb" instead of "a{bs}nb". Python then leaves
+     it alone. This hook does not block raw literals.
+
+  3. BUILD the sequence: chr(92) + "n". Verbose, but no layer can eat it, and
+     it is what this hook's own message() function does for exactly this
+     reason.
+
+If the escape IS meant to be interpreted, re-run with the literal token
+allow_heredoc_escape."""
+
+
 def message(hits: list[tuple[str, str]]) -> str:
     delim, sample = hits[0]
     # The escape examples are BUILT, not typed. Writing `\x` in a non-raw
@@ -168,6 +273,13 @@ def main() -> int:
     hits = risky_heredocs(cmd)
     if hits:
         return block(message(hits))
+
+    # The quoted case, added Sprint 20 after five occurrences the unquoted
+    # check could not see.
+    quoted = risky_quoted_heredocs(cmd)
+    if quoted:
+        return block(quoted_message(quoted))
+
     return ALLOW
 
 

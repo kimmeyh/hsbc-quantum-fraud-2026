@@ -94,9 +94,30 @@ def test_blocks_an_appending_redirect():
 
 # -------------------------------------------------------------- must ALLOW
 
-def test_allows_the_quoted_form_of_the_same_body():
-    """Quoting the delimiter is the fix. The identical body must pass."""
-    assert run_hook("cat > x.py <<'PYEOF'\n" + BAD_BODY + "\nPYEOF") == ALLOW
+def test_quoting_fixes_the_shell_but_not_python():
+    """Quoting the delimiter fixes the SHELL mechanism. It is not the whole fix.
+
+    This test asserted ALLOW until Sprint 20, on the reasoning that quoting is
+    the remedy -- which is true of the layer this hook originally guarded. The
+    body arrives verbatim, bash having touched nothing.
+
+    But `BAD_BODY` holds a backslash-n inside a NON-RAW Python string, so
+    PYTHON then interprets it, and a real newline lands where the two
+    characters were meant. Sprint 20 hit that five times in correctly quoted
+    heredocs; one wrote a literal NUL byte into a test file.
+
+    So the quoted form of a body carrying a Python escape is now BLOCKED too,
+    and the genuine fixes are a raw literal, a chr(92) construction, or the
+    Edit tool. Those are covered by the allow cases below.
+    """
+    assert run_hook("cat > x.py <<'PYEOF'\n" + BAD_BODY + "\nPYEOF") == BLOCK
+
+
+def test_allows_the_quoted_form_with_a_raw_literal():
+    """The actual fix, and it must stay cheap to write. A raw literal is left
+    alone by Python, so the quoted heredoc is genuinely safe."""
+    body = 'new = r"a' + BS + 'nb"'
+    assert run_hook("cat > x.py <<'PYEOF'\n" + body + "\nPYEOF") == ALLOW
 
 
 def test_allows_a_lone_backslash_n_because_bash_does_not_eat_it():

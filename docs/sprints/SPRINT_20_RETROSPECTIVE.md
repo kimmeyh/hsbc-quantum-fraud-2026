@@ -234,3 +234,92 @@ including inside a guard written to catch it. It has now appeared in three
 consecutive sprints and is the most frequent single defect in my work on this
 repository. It also has no existing mechanism to extend, which makes it the
 one place a new check is justified.
+
+## Improvement Decisions
+
+Three proposed. The team lead approved IMP-1 and IMP-3 now, and challenged
+IMP-2's scope (2026-10-03).
+
+### Implemented
+
+**IMP-1. `block_heredoc_escape_loss.py` extended to QUOTED heredocs.**
+
+The hook was written for the escape class and could not fire on any of Sprint
+20's five occurrences, because it guards UNQUOTED heredocs and all five were
+quoted. In a quoted heredoc the shell is innocent -- the body arrives verbatim
+-- and then PYTHON interprets the escape, because the string literal is not
+raw. Same symptom, a layer lower.
+
+Extended rather than duplicated, per the standing instruction: the file
+already parses heredocs, finds delimiters, decides whether a command writes a
+file, and formats a block message. A sibling hook would have copied all four.
+
+Verified on eleven cases: all five real failures blocked, and `r""`, `rb""`,
+`br""`, `chr(92)` construction, prose, a pager heredoc, an unquoted body with
+no escape, and the bypass token all still allowed. A guard that fires on
+correct work gets bypassed, so the allow half was tested as carefully as the
+block half.
+
+**One finding worth more than the hook.** The `b` prefix was initially exempt
+alongside `r`, which made the hook miss its own worst instance -- a bytes
+literal with `\x00` that wrote a real NUL byte into a test file. Only `rb`
+and `br` are safe; `b""` interprets escapes exactly as `""` does.
+
+**And it caught its author within minutes.** Writing the IMP-3 proof script, I
+reached for a quoted heredoc containing `\n` and the hook blocked it. The
+improvement fired on the behavior it was built for, in the same session it was
+installed, against the person who installed it.
+
+### Rejected after being built: IMP-3
+
+**IMP-3 was built, tested, and REMOVED, because it caught none of the four
+failures it was written for.**
+
+The proposal was a mechanical check in `test_guard_discipline.py`: an
+unanchored presence assertion on a repeated string must be anchored to the
+line that owns it. Three attempts, each narrowed after the previous was wrong:
+
+1. **Every `assert "X" in whole_file`** flagged 23 offenders, most correct.
+   `assert "isfinite" in src` verifying a guard clause exists in code is a
+   fine presence check. A guard firing on 23 mostly-correct cases is bypassed
+   on first contact.
+2. **Occurrence counting** did not separate them: `isfinite` occurs twice and
+   is fine, `270` occurs eight times and is not.
+3. **Scoped to numeric literals against documents** -- the shape three of the
+   four shared -- reduced it to one offender, which proved to be a legitimate
+   exemption.
+
+Then the red-leg proof failed. Reverting the real Sprint 20 defect left the
+check GREEN, for a structural reason: the failing assertions were
+`assert fact in row` over a loop variable, not a string literal, and an AST
+check for `ast.Constant` on the left of `in` cannot see them.
+
+So it passed its own suite while catching zero of its four cases. That is
+precisely the vacuous guard this repository bans -- false confidence is worse
+than no check. Removed rather than shipped.
+
+**What the class actually needs**, recorded for whoever takes it next: not a
+static check. The four failures were all caught by INJECTION, by breaking the
+thing and watching the guard stay green. `injection.py` already does that and
+already found three of the four. The gap is that injection is run by choice
+rather than by default, which is a process question rather than a tooling one.
+
+### Open
+
+**IMP-2** (the capability pre-flight should inventory documents, not only
+code). The team lead challenged the scope: "isn't there a troubleshooting doc
+that would be best for this instead of all docs files?"
+
+Checked: no troubleshooting document exists, though `SPRINT_RETROSPECTIVE.md`
+category 9 explicitly calls for one ("anything that belongs in a
+troubleshooting note or hook"). So there is nothing to extend.
+
+What does exist is a small, predictable set of documents where hardware
+findings live: `HARDWARE_REQUEST_*`, `*_RESULT.md`, `*_RECONCILIATION.md`,
+`RESULTS_MEMO.md`. F93's answer was in `HARDWARE_REQUEST_B4.md`, exactly where
+a hardware-block pre-flight should look. Naming four file patterns is specific
+enough to follow; "grep docs/" was not.
+
+Revised proposal awaiting disposition. Whether a troubleshooting document
+should exist at all is a separate question, deliberately not answered as a
+side effect of this one.
