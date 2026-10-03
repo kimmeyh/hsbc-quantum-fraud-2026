@@ -249,15 +249,18 @@ Three findings outlived their cards and are recorded there:
 - Acceptance: hashes recorded in a tracked file; the guard proven RED by altering a byte of a scratch copy; proven to skip rather than fail where the files are absent, with the skip visible in the output
 - Depends on: nothing
 
-**F94. Experiment 3 classical controls on the proxy: greedy, simulated annealing, exact solve at small n (~4h timebox [no-history], zero metered) Priority 20**
-- Phase: Phase 2 preparation (added 2026-09-23; SPLIT from F25, which was Too Large)
-- Platform: classical proxy (`qubo_proxy.py`)
-- The hardware plan promises QCi that Experiment 3's controls are "stated before the block runs": a time-capped MIQP solve, greedy selection and simulated annealing. None exists in `experiments/src/`. F87 built the integer path; this builds what it must be compared against
-- Same H matrix and objective as the integer path, plus the cardinality constraint, at the two measured sizes (60 and 150 variables). Exact enumeration or an open-source solver where n permits; the commercial MIQP solver's availability is **unverified** and is part of the timebox
-- This enables: Experiment 3 to run the day allocation arrives, with its comparison already fixed. This prevents: a device result reported against no control, which the plan itself says is not a result
-- Acceptance: each control returns a cardinality-feasible selection and objective value on both sizes with seeds recorded; results as dated post-submission rows; no Phase 1 claim touched
-- Depends on: nothing to build. Reporting any comparison waits for a Phase 2 preregistration
-
+**F94. Experiment 3 classical controls on the proxy: greedy, simulated annealing, exact solve at small n (~4h, zero metered) Priority 8**
+- Phase: Phase 2 preparation (added 2026-09-23, SPLIT from F25; **taken off the preregistration gate 2026-10-02**)
+- Platform: classical proxy (`qubo_proxy.py`, `integer_path.py`)
+- The hardware plan promises QCi that Experiment 3's controls are "stated before the block runs": a time-capped MIQP solve, greedy selection and simulated annealing. **Verified absent 2026-10-02**: no greedy, annealing or MIQP code exists anywhere in `experiments/src/`
+- **BUILD NOW, DO NOT WAIT FOR THE PREREGISTRATION** (team lead, 2026-10-02: acceptance into Phase 2 is expected). The card previously deferred all work behind a Phase 2 preregistration that does not exist yet. That was over-cautious, because BUILDING a control and REPORTING a comparison are different acts. The build is reusable whatever the preregistration says, and having it ready is what lets Experiment 3 run the day an allocation arrives
+- **What reporting still waits for**: any claim comparing device to control. The controls produce dated post-submission rows and touch no Phase 1 claim. If Phase 2 acceptance does not arrive, the work is a classical result on our own pools and is reported as exactly that
+- **What already exists and is reusable, measured in Sprints 18-19**: `integer_path.py` builds and validates the cardinality-constrained integer job (`num_levels = upper_bound + 1` per variable, device budget `sum(upper_bound + 1)` against the 949 ceiling); `qubo_proxy.py` solves the identical Hamiltonian (`J = HH^T + lambda*I`, `C = -2Hy`, sum constraint 1.0, `w >= 0`); and the two measured sizes are 60 and 150 variables, at 71 s and 165 s of device time
+- **Solver availability, now verified rather than unverified**: of `mip`, `pulp`, `cvxpy` and `gurobipy`, NONE is installed; only `scipy.optimize` is present. The commercial MIQP leg therefore needs a dependency decision, and `requirements.txt` plus `test_requirements_complete.py` must be updated with whatever is chosen. Exact enumeration needs no new dependency and is the honest floor
+- Suggested order: exact enumeration at small n first, because it yields a certified optimum to measure the others against; then greedy; then simulated annealing; then the MIQP leg if a solver can be justified
+- This enables: Experiment 3 running the day allocation arrives, with its comparison already fixed. This prevents: a device result reported against no control, which the hardware plan itself tells QCi is not a result
+- Acceptance: each control returns a cardinality-feasible selection and objective value at both 60 and 150 variables with seeds recorded; the exact solve agrees with a brute-force check at a size where both run; results written as dated post-submission rows; no Phase 1 claim touched; any new dependency declared and covered by the requirements guard
+- Depends on: nothing. Reporting a device-versus-control COMPARISON waits for a Phase 2 preregistration; the build does not
 **F95. Relaxation schedule 4 on the residual (~1h build + approval, metered, cost unmeasured) Priority 30**
 - **UNBLOCKED 2026-09-25**: the hold was "until the QCi memo is sent", and it
   was sent 2026-09-25 at 12:23 PM. The sent memo commits to this check, so it
@@ -412,12 +415,16 @@ not a sweep correction.
 - Post-submission value is real; the Phase 2 plan can name it as a follow-up at zero cost
 - Depends on: nothing (reuses qubo_proxy build/solve)
 
-**F17. Dirac-3 simulator for pre-hardware test runs (~2-3h investigation, build TBD) Priority HOLD**
-- Phase: Phase 2 preparation (team lead: "prioritize for after submission")
+**F17. Dirac-3 simulator for pre-hardware test runs (~2-3h investigation, then build TBD; zero metered) Priority 14**
+- Phase: Phase 2 preparation (**OFF HOLD 2026-10-02**, team lead: "lots of time between now and February 2027 to explore")
 - Platform: Dirac-3 / local
-- Investigate quantumcomputinginc.com products, docs, papers to build a simulator-backed QBoostClassifier: same QUBO objective, classical optimizer backend (SLSQP/Hexaly precedent in Emami et al.), device-behavior modeling (sum constraint, ~23 dB dynamic-range clipping, num_samples stochasticity), miniaturized data subsets so every test run completes in <= 10 minutes
-- Preliminary feasibility: YES (Sprint 2 retro category 14, Function Updates for the Future Backlog); pre-submission value judged low because ADR-0002's proxy plus the G0b fidelity gate already fill the role and changes would require prereg amendments
-
+- **Why this is worth more now than when it was held.** The hold reasoned that ADR-0002's proxy plus the G0b fidelity gate already filled the role. Two Sprint 18-19 findings changed that. The proxy solves the CONTINUOUS relaxation, which is convex and so has nothing a device can win, while Phase 2's Experiment 3 is the INTEGER cardinality problem where the proxy is no longer an equivalent. And we now know, from measurement, what makes the device diverge from the exact optimum
+- **What the device model would encode, from our own measurements rather than the vendor figure alone**: the 200:1 (23 dB) analog resolution, against which our pools' off-diagonal coefficients differ by at most 20.0 where 2,553.5 is resolvable, so quantization collapses them to a single value; the sum constraint at 1.0, under which a diffuse optimum over 833 learners averages 0.0012 per weight against a representable step near 0.005, forcing sparsity; `num_samples` stochasticity; and that cost tracks the VARIABLE COUNT rather than the level budget (the controlled pair: 1.4x more levels, 2.3x less cost)
+- **The point is to predict the SPARSIFICATION, not the objective value.** A simulator that returns the exact optimum tells us nothing the proxy does not already give free. One that reproduces "weights below the resolvable step are zeroed, and the answer returned is sparser than the one asked for" would let us size Experiment 3's cells before spending metered seconds
+- **A falsifiable acceptance test already exists, which the original card lacked**: eleven B2 fits at 833 variables, each containing exact zeros with nonzero weights from 0.0007 to 0.0029, all below the resolution, at weight cosine 0.83. The simulator is worth building only if it reproduces that sparsity pattern on those frozen pools
+- Investigation first: QCi's published products, docs and papers, for a documented simulator or device model before building one. The SLSQP/Hexaly precedent in Emami et al. is the optimizer-backend candidate
+- Acceptance (investigation): a written finding on whether QCi publishes a usable model, and either a build plan with the sparsity-reproduction test as its gate, or a recorded decision not to build with the reason. Acceptance (build, if taken): reproduces the B2 sparsity pattern on the frozen pools; miniaturized subsets so any test run completes within 10 minutes
+- Depends on: nothing. Pairs with F94 (both prepare Experiment 3) and with F20
 **F20. Soft-vote CVQBoost exploration (multi-level weak outputs) (~3h proxy investigation) Priority HOLD**
 - Phase: Phase 2 preparation (team-lead approved 2026-09-02, "fits naturally as a post-submission/Phase 2 exploration item next to F17")
 - Platform: local proxy first; Dirac-3 only if the proxy shows signal
@@ -454,9 +461,14 @@ not a sweep correction.
 - Platform: All
 - Braket hardware validation, IEEE-CIS at scale, calibrated deployment per the routing architecture; plan built on acceptance
 
-**F6. Braket gate-based phase-active arm (~0.5 day) Priority HOLD**
-- Phase: Phase 2 (if selected)
-- Platform: Braket simulator, then hardware
-- Sandwich/entangling encoding only (Inverse Born Rule: plain Ry is provably classical); phase-complexity, Berry-connection, mode-MI diagnostics reported
-- Team lead brings near-expert AWS + hands-on Braket experience; Phase 1 covers this as a written [PROJ] plan only
-
+**F6. Braket gate-based arm: what is possible and what is worth doing in Phase 2 (~0.5 day investigation, zero metered) Priority 16**
+- Phase: Phase 2 preparation (**OFF HOLD 2026-10-02**, team lead: "we will try to analyze what is possible and valuable for Phase 2")
+- Platform: Braket simulator, then hardware only if justified
+- **Scoped as an ANALYSIS, not a build.** The deliverable is a written answer to "what is possible and what is valuable", with a recommendation. The original card jumped straight to an encoding choice; that choice is an output of this work, not its premise
+- **The one hard constraint already established**: plain Ry encoding is provably classical by the Inverse Born Rule, so any arm that could show a quantum effect needs a sandwich or entangling encoding. Stating that up front is cheaper than discovering it mid-build
+- **Verified 2026-10-02**: no gate tooling is installed (`braket`, `qiskit`, `pennylane` and `classiq` are all absent), and `HARDWARE_PLAN_PHASE_2.md` makes no Braket commitment. Nothing is promised to QCi beyond the memo naming Braket and Classiq as planned additional experiments, which is the only external statement to honor
+- **What the analysis must settle**: which encodings are not provably classical; what Braket's free simulator tier supports against what needs paid hardware time; whether any gate formulation addresses the problem Phase 1 actually hit, a convex objective with nothing to win, or merely relocates it; which diagnostics would distinguish a real effect from a reparameterization (phase complexity, Berry connection and mode mutual information are the candidates); and what the cheapest falsifiable first experiment would be
+- **The risk, stated in advance**: Phase 1's null came from choosing a formulation where the optimizer could not win. A gate-based arm chosen for novelty rather than for having real work to do would repeat that mistake on different hardware. The analysis should say so plainly if that is where the evidence points
+- The team lead brings near-expert AWS and hands-on Braket experience, so platform learning is not the cost here
+- Acceptance: a written analysis with a recommendation (pursue, pursue narrowly, or decline with the reason); any pursue recommendation names the encoding, the diagnostic, the cost and the falsifier before any code is written
+- Depends on: nothing. Informs F13 (Phase 2 PoC planning)
