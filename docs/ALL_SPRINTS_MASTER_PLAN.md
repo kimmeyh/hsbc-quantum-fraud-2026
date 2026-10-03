@@ -199,7 +199,14 @@ Three findings outlived their cards and are recorded there:
   had no idempotency check; it now has one, and Criterion H requires it before
   any metered runner's first approval.)
 
-**F93. Reconcile the SPECTRA block: one card, one configuration, one cost (~60m, zero metered) Priority 10**
+**F93. Reconcile the SPECTRA block: one card, one configuration, one cost -- EVIDENCE ASSEMBLED, DECISION OPEN (Sprint 20) Priority 10**
+- **Sprint 20 delivered the reconciliation, not the decision.** All four
+  records are now side by side in `docs/SPECTRA_BLOCK_RECONCILIATION.md` with
+  their provenance, plus the tension the card did not know about: the sent
+  hardware plan quotes 270 s while F90's configuration costs about 1,236 s,
+  which is 4.6x the figure in the vendor's hands and 74% of the remaining
+  balance. Four options are laid out. The choice is Class 3 and remains the
+  team lead's
 - Phase: Experiments / Phase 2 evidence (added 2026-09-23, Sprint 18 Phase 8 refinement)
 - Platform: docs (SPECTRA, Dirac-3 planning only)
 - **Four records describe the same SPECTRA block and disagree.** F2b quotes B4 at 15 fits and ~450 s; F90 at schedule 3, 833 variables, ~1,236 s; F5 (HOLD) at 3 cells x 5 seeds; and the hardware plan sent toward QCi sizes Experiment 5, segment transfer, at 30 fits of 91-136 variables, about 270 s. F90 alone would spend 74% of the 1,681 s balance, while the draft QCi memo tells QCi the balance goes to a schedule-4 check and Experiment 5 at "a few hundred seconds"
@@ -276,6 +283,7 @@ Three findings outlived their cards and are recorded there:
 **F90. F2b at the configuration that can actually show an effect: B5, then B4 at schedule 3 (~4h + approvals) Priority 5**
 - Phase: Experiments / Phase 2 evidence
 - Platform: SPECTRA, Dirac-3
+**The four records are reconciled in `docs/SPECTRA_BLOCK_RECONCILIATION.md` (F93, 2026-10-02), which also records that QCi was SENT 30 fits at 91-136 variables for 270 s. The configuration choice is open and is the team lead's.**
 - **SUPERSEDES F2b's sizing.** F2b quotes B4 at "15 fits, ~450 s" from the original grid. That grid was proven wrong by 2.3x at 833 variables in Sprint 12 (assumed ~40 s, cost 91 s), and the schedule choice underneath it was never stated. This card carries the measured figure and names the configuration.
 - **B4 RUNS AT SCHEDULE 3, and the reason is evidence rather than preference.** In the prior SPECTRA work, schedule 2 lost overall 8 of 8 to the classical arm with only ~3 in-segment metrics won; schedule 3 -- which adds three-feature interactions -- took CVQBoost to in-segment ROC 5 of 7 and PR 6 of 7, and to an overall win on energy_steel. Schedule 3 is the accuracy lever. **A schedule-2 block would spend real seconds reproducing a configuration already known to lose, which is not a cheap experiment but a worthless one.**
 - **COST, measured rather than projected.** The schedule-3 QUBO is `n + C(n,2) + C(n,3)`. For energy_steel (17 features) that is **exactly 833 variables -- our B2 size** -- so B2's measured 82.4 s/fit is a DIRECT ANCHOR, not an extrapolation:
@@ -295,6 +303,7 @@ Three findings outlived their cards and are recorded there:
 - **B1 + G0b DONE** (Sprint 4, 120 QPU s). **B2 DONE** (Sprint 12, 11 fits, 906 s, A24). **B3 DONE** (Sprint 12, 12 fits, 62 s, A23 after the A22 withdrawal and matched re-run). Only B4 and B5 remain
 - **B4** (SPECTRA, 15 fits, ~450 s) and **B5** (QSVM sign-augmented, 12 fits, ~15 s). B5 is cheap enough to run inside any remaining balance; B4 is the one that needs a real allocation decision
 - B4 overlaps **F5** (SPECTRA in-segment replication), which sits in HOLD. They are the same block from two angles and should be reconciled before either is scheduled
+  **The four records are reconciled in `docs/SPECTRA_BLOCK_RECONCILIATION.md` (F93, 2026-10-02), which also records that QCi was SENT 30 fits at 91-136 variables for 270 s. The configuration choice is open and is the team lead's.**
 - Neither is a submission blocker. Both are post-submission work on the current calendar
 - Depends on: per-block team-lead approval (Criterion H); allocation balance
 - **The billing rule is now validated far outside its anchors.** B2's first fit at 833 variables, degree 3 cost 91 metered seconds where the grid assumed ~40. `ceil(sum(runtime))` predicted it exactly (runtime sum 90.152 s, balance 2929 -> 2838). Per-sample cost 11.27 s against B3's ~0.6 s, an **18.8x** step. Use measured per-sample cost, not the original grid, for any B4 estimate
@@ -403,6 +412,7 @@ not a sweep correction.
 - Platform: SPECTRA, Dirac-3
 - 3 strongest cells x 5 seeds; random-segment negative control machinery reused for fraud transfer
 - **Why HOLD**: originally, the QCi grant, then only acknowledged. **That reason is stale**: the grant arrived 2026-09-09 and 1,681 s remain. The live reason is that F90 is the same block from another angle and must be reconciled with it before either is scheduled (corrected in the Phase 8 sweep, 2026-09-23)
+  **The four records are reconciled in `docs/SPECTRA_BLOCK_RECONCILIATION.md` (F93, 2026-10-02), which also records that QCi was SENT 30 fits at 91-136 variables for 270 s. The configuration choice is open and is the team lead's.**
 - Depends on: QCi grant; F2 approval pattern
 
 **F29. Sample-size insensitivity of the CVQBoost optimum (~1h measured, zero metered) Priority HOLD**

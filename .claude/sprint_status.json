@@ -3,7 +3,7 @@
     "number": 20,
     "name": "Make the Suite Readable Again",
     "branch": "feature/20260930_Sprint_20",
-    "status": "phase_4_execution",
+    "status": "phase_5_validation",
     "plan_doc": "docs/sprints/SPRINT_20_PLAN.md",
     "pr": 146,
     "plan_approved": true,
@@ -17,7 +17,8 @@
       "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective.",
       "A": 52,
       "C": 34,
-      "D": 28
+      "D": 28,
+      "B": 47
     }
   },
   "last_completed_sprint": {
