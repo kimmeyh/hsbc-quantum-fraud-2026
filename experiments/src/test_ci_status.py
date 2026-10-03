@@ -205,13 +205,32 @@ def test_the_hook_blocks_when_ci_cannot_be_determined():
     assert "could not be determined" in err
 
 
-def test_the_hook_allows_a_closeout_when_ci_is_green():
+def test_the_hook_raises_no_ci_violation_when_ci_is_green():
     """The companion. Without it, blocking unconditionally would satisfy all
-    three tests above and the gate would be useless."""
+    three tests above and the gate would be useless.
+
+    IT ASSERTS THE ABSENCE OF A CI COMPLAINT, NOT A CLEAN EXIT. The first
+    version asserted `rc == 0`, which requires EVERY other violation to be
+    empty too -- the Phase 3 artifacts, the three-doc rule, and a live
+    `gh pr list` network call. So it went red whenever the sprint was mid-flight
+    or GitHub was slow, for reasons having nothing to do with the CI gate it
+    names. Measured 2026-10-02 as one of six planning-window failures (F97).
+
+    What this test owns is one claim: a GREEN CI produces no CI violation.
+    """
     rc, err = _hook_with_ci(
         '    return [{"name": "CI", "status": "completed", '
         '"conclusion": "success", "headSha": sha, "url": ""}]')
-    assert rc == 0, f"a green close-out was blocked: {err[-400:]}"
+
+    for phrase in ("CI is RED", "still RUNNING", "could not be determined",
+                   "could not be imported", "A guard that errors"):
+        assert phrase not in err, (
+            f"green CI still produced a CI violation ({phrase!r}): "
+            f"{err[-400:]}")
+
+    # And the hook must not have crashed: rc is 0 (allow) or 2 (block on some
+    # OTHER violation), never a traceback.
+    assert rc in (0, 2), f"the hook errored rather than deciding: {err[-400:]}"
 
 
 def test_the_early_checkpoint_waits_before_looking(ci, monkeypatch):

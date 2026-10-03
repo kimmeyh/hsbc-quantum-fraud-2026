@@ -3,10 +3,10 @@
     "number": 20,
     "name": "Make the Suite Readable Again",
     "branch": "feature/20260930_Sprint_20",
-    "status": "phase_3_planning",
+    "status": "phase_4_execution",
     "plan_doc": "docs/sprints/SPRINT_20_PLAN.md",
     "pr": 146,
-    "plan_approved": false,
+    "plan_approved": true,
     "github_issues": [
       147,
       148,
@@ -14,7 +14,8 @@
       150
     ],
     "task_actuals": {
-      "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective."
+      "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective.",
+      "A": 52
     }
   },
   "last_completed_sprint": {
