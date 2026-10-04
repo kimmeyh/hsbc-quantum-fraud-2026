@@ -28,7 +28,7 @@ Adapted 2026-08-30 from spamfilter-multi's SPRINT_RETROSPECTIVE.md. The source's
 6. **Communication** -- narration, timely blocker reporting, commit/PR clarity.
 7. **Requirements Clarity** -- ambiguity encountered; hidden requirements surfaced mid-sprint.
 8. **Documentation** -- docs updated with the work; prereg amendments recorded properly; reference docs current.
-9. **Process Issues** -- errors, blockers, tooling friction, anything that belongs in a troubleshooting note or hook.
+9. **Process Issues** -- errors, blockers, tooling friction, anything that belongs in a troubleshooting note or hook. **The troubleshooting note now EXISTS: `docs/TROUBLESHOOTING.md`** (IMP-2, Sprint 20). A category-9 finding with an authoritative home gets an entry there -- one symptom line, one cause line, one pointer. This category asked for that document from Sprint 2 and nine retrospectives' findings had nowhere to go, so each was rediscovered by a later session.
 10. **Risk Management** -- risks identified vs materialized (hardware budget, leakage, deadline, grant timing); mitigation effectiveness.
 11. **Next Sprint Readiness** -- blockers for next sprint; master plan current.
 12. **Architecture Maintenance** -- for this project: protocol integrity (does anything in code diverge from the frozen preregistration; are amendments logged), pipeline structure, results.json schema adherence.

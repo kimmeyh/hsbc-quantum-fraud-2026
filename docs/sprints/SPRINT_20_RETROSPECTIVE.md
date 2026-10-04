@@ -304,10 +304,10 @@ thing and watching the guard stay green. `injection.py` already does that and
 already found three of the four. The gap is that injection is run by choice
 rather than by default, which is a process question rather than a tooling one.
 
-### Open
+### Implemented, after the team lead's challenge improved it
 
-**IMP-2** (the capability pre-flight should inventory documents, not only
-code). The team lead challenged the scope: "isn't there a troubleshooting doc
+**IMP-2, both halves (approved 2026-10-03).** The team lead challenged the
+scope: "isn't there a troubleshooting doc
 that would be best for this instead of all docs files?"
 
 Checked: no troubleshooting document exists, though `SPRINT_RETROSPECTIVE.md`
@@ -365,3 +365,43 @@ tightens it to what the source actually reports.
 
 Markdown only, no code. Suite verified green after it: 1,417 passed, 73
 skipped.
+
+**What was built.** `docs/TROUBLESHOOTING.md`, the symptom index category 9
+asked for since Sprint 2 and never got -- so nine retrospectives' findings had
+nowhere to go and each was rediscovered later. It is an INDEX, not a second
+source of truth: one symptom line, one cause line, one pointer, restating
+nothing another file owns.
+
+The capability pre-flight in `SPRINT_PLANNING.md` now names four patterns to
+read before estimating -- the troubleshooting index, `HARDWARE_REQUEST_*`,
+`*_RESULT.md` / `*_RECONCILIATION.md`, and `RESULTS_MEMO.md` -- extending the
+rule that already carried the Sprint 10 "inventory code, not only documents"
+lesson with its converse. The retrospective template's category 9 now points
+at the document that finally exists.
+
+**Two items were added from the spamfilter-multi repository's troubleshooting
+document** (team lead's direction): Windows paths in grep patterns, and Norton
+breaking `git push` over HTTPS. Both are machine-level rather than
+project-level, which is why they transfer. That repository was read only, and
+`git status` there confirmed nothing was modified.
+
+**What I deliberately did NOT import, and this is the useful part.** Its
+PowerShell guidance -- "always use PowerShell for Windows paths" -- is correct
+there and wrong here: F78 removed PowerShell from this repository because CI
+runs ubuntu-latest, and CLAUDE.md separately names the global PowerShell footer
+script as a thing not to use. Importing applicable-LOOKING advice would have
+contradicted a standing decision. Its Flutter, Android, Gmail OAuth, emulator
+and UI sections have no surface here at all.
+
+**Five guards, four proven RED.** The pointers are the index's whole value, so
+a stale one is worse than none -- and Sprint 20 itself saw a referenced file
+deleted mid-sprint by another session. One guard caught a real defect on its
+first run: I had written the spamfilter-multi path as a backtick file
+reference, which resolves on this workstation and nowhere else.
+
+**IMP-1 fired three more times while this was written**, twice correctly on a
+newline escape inside a non-raw string in a quoted heredoc, and once as a
+false positive on `rstrip` where the escape is genuinely meant. Three
+encounters in one session with a hook installed the same session. The false
+positive is worth watching: the hook offers a bypass token for it, and a guard
+that fires on correct work is the one that gets bypassed.
