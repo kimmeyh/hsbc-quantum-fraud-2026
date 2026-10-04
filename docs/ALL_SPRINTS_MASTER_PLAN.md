@@ -647,6 +647,18 @@ not a sweep correction.
 - Phase: Phase 2, Experiment 5 (added 2026-10-03). Transfer of the in-segment result to fraud segments, judged by the proposal's router criterion: at least one point of recall at the 0.5% budget above the classical champion, out of time, on prespecified segments, against a matched random-segment control
 - HOLD until F90 reports. Bounded in advance by F113
 
+**F122. Four guards that are accurate-but-weak, from the PR #146 review (~45m, zero metered) Priority 22**
+- Phase: Finalize / tooling (added 2026-10-04 from the PR #146 reviews)
+- Platform: N/A (`test_spectra_reconciliation.py`, `test_troubleshooting_index.py`, `test_ci_status.py`, `test_sent_correspondence.py`)
+- **Backlogged rather than fixed in the review round, deliberately.** The ten findings fixed there were defects: a guard that passed on a commented-out ignore rule, a budget blind to 75 of 98 seconds, figures inflatable tenfold. These four are different in kind -- each guard works, and each is narrower or more brittle than its name claims. Rushing them at the end of a review round is how a careless edit reaches a file nobody is reviewing any more
+- **(a) The ordering guard pins COMMENTS, not execution order.** `test_the_ci_check_runs_before_the_gh_dependent_issues_check` uses `src.index("# CI on the HEAD commit.")`. Renaming that comment fails the test with zero code change, and moving the code while leaving the comments in place passes it. Anchor on the calls (`ci.evaluate` against the `gh pr list` subprocess) instead
+- **(b) The decision guard goes red the day the decision is recorded.** `test_the_reconciliation_does_not_pretend_to_decide` asserts that "does not pick" or "not yet made" appears. A guard that fails on correct progress gets deleted, which is a pattern this repository has already paid for four times
+- **(c) The options guard checks no costs**, contrary to its name and docstring: it asserts only that "Option 1" through "Option 4" appear. Either assert each option carries a figure, or rename it to match what it does
+- **(d) The sidecar manifest does not descend.** `d.iterdir()` with `is_file()` means a file added inside a new subdirectory leaves the hash UNCHANGED (verified by a reviewer). The real Word export is flat, so this is latent rather than live -- but the docstring claims the manifest catches "a file ADDED", and that is true only at the top level. `d.rglob("*")` with paths relative to `d` would make the claim hold as written
+- Acceptance: each of the four rewritten so the assertion matches its name; each proven RED by a mutation the current version survives; no guard left that fails on correct progress
+- Depends on: nothing
+
+
 **F116. G2 entanglement ablation on the SV1 simulator (~3h [no-history]) Priority HOLD**
 - Phase: Phase 2, gate-based arm (added 2026-10-03). Joint entangling terms ON against OFF, all else identical, with a paired bootstrap CI on the gap
 - HOLD until F106 shows the circuit is not dequantized
