@@ -1,33 +1,22 @@
 {
   "current_sprint": {
-    "number": 20,
-    "name": "Make the Suite Readable Again",
-    "branch": "feature/20260930_Sprint_20",
-    "status": "phase_7_retrospective",
-    "plan_doc": "docs/sprints/SPRINT_20_PLAN.md",
-    "pr": 146,
-    "plan_approved": true,
-    "github_issues": [
-      147,
-      148,
-      149,
-      150
-    ],
+    "number": 21,
+    "name": "TBD -- scope selected at Phase 8.4 refinement",
+    "branch": "feature/20261004_Sprint_21",
+    "status": "phase_1_backlog_refinement",
+    "plan_doc": null,
+    "pr": null,
+    "plan_approved": false,
+    "github_issues": [],
     "task_actuals": {
-      "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective.",
-      "A": 52,
-      "C": 34,
-      "D": 28,
-      "B": 47
+      "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective."
     },
-    "scope_additions": [
-      "a299ad2 (Phase 2 checklist merge, F100-F121 registered; team lead confirmed 2026-10-03)"
-    ]
+    "scope_additions": []
   },
   "last_completed_sprint": {
-    "number": 19,
-    "merged_pr": 141,
-    "main_merge_pr": 145,
+    "number": 20,
+    "merged_pr": 146,
+    "main_merge_pr": 151,
     "docs_triad_complete": true
   },
   "prereg": {
@@ -35,5 +24,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-10-03"
+  "updated": "2026-10-04"
 }

@@ -33,16 +33,16 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 17 | docs/sprints/SPRINT_17_SUMMARY.md | [OK] Complete | ~1 day (Sep 19, 2026) |
 | 18 | docs/sprints/SPRINT_18_SUMMARY.md | [OK] Complete | ~2 days (Sep 22-23, 2026) |
 | 19 | docs/sprints/SPRINT_19_SUMMARY.md | [OK] Complete | ~7 days (Sep 23-30, 2026) |
-| 20 | docs/sprints/SPRINT_20_SUMMARY.md | [OK] Complete | ~4 days (Sep 30 - Oct 3, 2026) |
+| 20 | docs/sprints/SPRINT_20_SUMMARY.md | [OK] Complete | ~4 days (Sep 30 - Oct 4, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 20: Make the Suite Readable Again** (Sep 30 - Oct 3, 2026; PR #146).
+**Sprint 20: Make the Suite Readable Again** (Sep 30 - Oct 4, 2026; PR #146 to
+develop and PR #151 develop to main, both merged 2026-10-04).
 Delivered **F97, F93, F98, F99**. 161 minutes against 171 estimated, zero
 metered seconds, and the first sprint with a COMPLETE set of actuals. The
-record is `docs/sprints/SPRINT_20_RETROSPECTIVE.md` and
-`SPRINT_20_VALIDATION.md`; the SUMMARY doc is created during Sprint 21
-planning per the three-doc rule.
+record is `docs/sprints/SPRINT_20_SUMMARY.md`, its retrospective and
+`SPRINT_20_VALIDATION.md`.
 
 **The suite is green in a planning window for the first time.** Six tests
 asserted that Phase 3 artifacts exist while the repository sat in Phase 1,
@@ -243,48 +243,6 @@ Three findings outlived their cards and are recorded there:
 - This enables: any metered SPECTRA spend, and an honest F92. This prevents: spending 1,236 s on a block the vendor has been told costs 270 s
 - Acceptance: the team lead picks one configuration (schedule 2 at 91-136 variables, or schedule 3 at 833) with the reason recorded; F2b and F5 closed into the survivor; the survivor's cost labeled measured or extrapolated; the hardware plan's Experiment 5 row either matches it or is flagged for F92
 - Depends on: nothing. The configuration choice is the team lead's (Class 3)
-
-**F92. QCi memo reconciled with the hardware plan before it is sent -- DONE (Sprint 19)**
-- Delivered Sprint 19, PR #141 to develop and PR #145 to main, both 2026-09-30.
-  **The package was SENT 2026-09-25 at 12:23 PM.** Approved at 105m (Task C not
-  approved, carded as F96, since closed as overtaken), then extended after Task
-  D's fresh-context review found fourteen cross-document disagreements: eight
-  fixed, four left with a recorded reason, one answered without a change
-- The record is `docs/sprints/SPRINT_19_SUMMARY.md` and its retrospective; this
-  line only points at them
-- **Consequence for the backlog**: the four package documents are now FINAL
-  (team lead, 2026-09-27), so any future card touching them needs a new
-  document rather than an edit
-
-**F97. FIVE tests depend on live sprint state and are RED right now (~40m, zero metered) Priority 20**
-- Phase: Finalize / tooling (added 2026-09-24, team lead, from the Sprint 19 3.3.2 CI checkpoint; **rescoped 2026-09-30, priority 16 to 4**)
-- Platform: N/A (CI, `experiments/src/test_ci_status.py`, `test_phase3_artifacts.py`, `test_sprint_documents.py`)
-- **MEASURED 2026-09-30, and the scope is five tests rather than one**: `test_the_hook_allows_a_closeout_when_ci_is_green`, `test_current_sprint_records_its_draft_pr`, `test_current_sprint_records_its_task_issues`, `test_plan_approval_is_recorded`, `test_sprint_status_points_at_a_real_sprint`. Rolling `sprint_status.json` to Sprint 20 Phase 1 turns all five red; rolling it back to the Sprint 19 record turns all 32 tests in those three files green, with no code change. They assert Phase 3 artifacts exist while the repository is in Phase 1, before a plan exists to create them
-- **This blocks a green suite for the entire planning window**, which is when the next sprint's plan is being written and reviewed. A suite that is expected to be red is a suite nobody reads, and this repository has already paid for CI that was red on every commit of a sprint
-- The test runs the real close-out hook against the live `.claude/sprint_status.json`. During every planning window, before issues and approval exist, the hook blocks on the missing Phase 3 artifacts before it reaches the CI check, and the test reads that as "a green close-out was blocked". Red on CI for PR #141 until approval; green after
-- Same class as the Sprint 18 `test_phase3_artifacts.py` finding: a test coupled to repository state rather than a pinned input
-- Acceptance: the test supplies a complete, pinned status payload so it passes in every phase; proven by running it against a planning-state status file (red today, green after the fix)
-- Depends on: nothing
-
-**F98. The close-out hook's 20s budget against 160s of internal timeouts (~30m, zero metered) Priority 22**
-- Phase: Finalize / tooling (added 2026-09-28, from the PR #141 silent-failure review)
-- Platform: N/A (`.claude/settings.json`, `.claude/hooks/verify_closeout_complete.py`, `scripts/check_ci_status.py`)
-- `settings.json` gives the hook `"timeout": 20`. Inside `collect_violations` the worst case is `gh pr list` 20s + `gh issue list` 20s + `gh auth status` 60s + `gh run list` 60s = **160s**, and a single hanging `gh pr list` already exceeds the whole budget on its own
-- **The ordering is what makes it matter.** The fail-OPEN issues check (`except Exception: pass`) runs BEFORE the deliberately fail-CLOSED CI check. A hung `gh` in the fail-open check kills the hook before the fail-closed guard ever runs, so the new CI gate's careful design never executes -- exactly when GitHub is slow, which is when you want it
-- Measured happy path is 2.9s, so this bites only on a slow or unreachable GitHub
-- **UNVERIFIED and it should be settled first**: whether a killed Stop hook blocks or allows. Nothing in this repository documents Claude Code's behavior when a hook exceeds its timeout. A scratch Stop hook containing `time.sleep(25)` would settle it, or the hooks reference. The fix does not depend on the answer -- the two numbers are inconsistent either way -- but the severity does
-- Acceptance: the sum of internal timeouts is under the configured budget (or the budget is raised above the worst case), the fail-closed CI check runs BEFORE the fail-open gh checks, and the kill semantics are recorded with the evidence that settled them
-- Depends on: nothing
-
-**F99. No tracked hash for the sent QCi correspondence (~20m, zero metered) Priority 150**
-- Phase: QCi/External (added 2026-09-28, from the PR #141 test-coverage review; **rescoped 2026-09-29**)
-- Platform: docs (`docs/qci_package/`, `experiments/src/test_published_artifacts.py`)
-- `docs/qci_package/` is wholly gitignored (`.gitignore:62`), correctly, because it holds private commercial correspondence. The sent `.htm`, its `_files` sidecar and `Phase 1 - QCi memo AS SENT 2026-09-25.md` are therefore untracked, and **no tracked file records a hash for any of them** (verified 2026-09-29: no sha256 for these paths anywhere in `docs/`, `experiments/src/` or `scripts/`)
-- **RECOVERY IS COVERED. The team lead confirmed 2026-09-29 that laptop backups cover these files**, so the original "unrecoverable" framing was wrong and the priority drops accordingly (18 to 25). What remains is narrower and still real: **silent alteration is undetectable**. A backup restores a lost file; it does not tell you that the copy on disk stopped matching what was sent, and nothing in the repository would notice
-- The stated rule -- "a sent artifact is evidence, not a test fixture" -- has no enforcement for this instance. Contrast `test_published_artifacts.py`'s `SUBMITTED_SHA256`, which pins the three filed PDFs by hash precisely so a rebuild is caught. That guard exists because a rebuild DID happen, twice, and changed bytes that were already filed
-- The ignore rule must NOT change. What is missing is a tracked file recording sha256 for each sent artifact, and a guard that fails when a named artifact is present and its hash has moved, and skips EXPLICITLY (never silently) when it is absent on this machine
-- Acceptance: hashes recorded in a tracked file; the guard proven RED by altering a byte of a scratch copy; proven to skip rather than fail where the files are absent, with the skip visible in the output
-- Depends on: nothing
 
 **F94. Experiment 3 classical controls on the proxy: greedy, simulated annealing, exact solve at small n (~4h, zero metered) Priority 50**
 - Phase: Phase 2 preparation, Experiment 3 (added 2026-09-23, SPLIT from F25; **taken off the preregistration gate 2026-10-02**; re-scored 8 to 50 in the 2026-10-03 refinement, behind the cards that make F90 readable and the preregistration framework). Sprints with F104
