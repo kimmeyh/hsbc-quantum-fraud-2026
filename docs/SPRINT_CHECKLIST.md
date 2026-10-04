@@ -3,7 +3,7 @@
 Consult at EVERY phase boundary (open this file in the same turn; walk lines with DONE/N-A/NOT-DONE + evidence). Full detail: SPRINT_EXECUTION_WORKFLOW.md.
 
 ## Phase 1: Backlog Refinement (mandatory, every sprint)
-- [ ] Read ALL_SPRINTS_MASTER_PLAN.md + repo CHECKLIST-Phase2-pre.md
+- [ ] Read ALL_SPRINTS_MASTER_PLAN.md + repo CHECKLIST-Phase2.md
 - [ ] Read BACKLOG_REFINEMENT.md "Backlog Presentation Format" THIS TURN, then present candidates (Summary Index first, F# IDs, numeric priorities, HOLD one-liners)
 - [ ] Record team-lead selection; update master plan; commit
 
@@ -33,6 +33,7 @@ Consult at EVERY phase boundary (open this file in the same turn; walk lines wit
 - [ ] Full suite green; no unamended drift from prereg-freeze in analysis code
 - [ ] Plan acceptance criteria walked line by line WITH EVIDENCE
 - [ ] OUTWARD documents pass `scripts/outward_readability.py` BEFORE handover (IMP-5: the QCi package needed a revision round purely to strip tokens a vendor reader cannot resolve, after the team lead had already reviewed it)
+- [ ] **The validation items are LISTED TO THE SCREEN as the last step before handover** (team lead, 2026-10-03). Writing them to a file and pointing at the file is not the handover; it is the same referring-back failure in another form. The file is the durable copy, the screen list is the handover
 - [ ] Handed to team lead for manual validation (questions correct from here)
 
 ## Phase 6: Push & Finalize PR
@@ -42,7 +43,7 @@ Consult at EVERY phase boundary (open this file in the same turn; walk lines wit
 ## Phase 7: Retrospective (before ready)
 - [ ] 7-step protocol run in order (SPRINT_RETROSPECTIVE.md); 16 categories x 4 roles, verbatim, no placeholders
 - [ ] Improvements proposed + dispositioned; now-items committed; backlog-items -> master plan with F#s
-- [ ] Completion updates: master plan Last Completed Sprint; CHECKLIST-Phase2-pre.md reconciled; sprint_status updated
+- [ ] Completion updates: master plan Last Completed Sprint; CHECKLIST-Phase2.md reconciled; sprint_status updated
 - [ ] CI checked on the final HEAD (`scripts/check_ci_status.py`, no waiting). If it is still running or RED, arm the watcher and hand the result to an agent; the close-out hook blocks the completion claim until it is green
 - [ ] `gh pr ready` (ONLY here); final gate; team lead notified for approval
 

@@ -62,7 +62,26 @@ class Undetermined(RuntimeError):
     """
 
 
-def _run(args: list[str], timeout: int = 60) -> tuple[int, str, str]:
+def _run(args: list[str], timeout: int = 3) -> tuple[int, str, str]:
+    """Run a command, mapping every non-answer to Undetermined.
+
+    THE DEFAULT IS 3s, NOT 60s, BECAUSE THIS RUNS INSIDE A STOP HOOK. That
+    hook has a budget in settings.json, and THREE calls are made from here --
+    head_sha, _require_gh and runs_for -- not two. The first version of this
+    docstring said two, and so did the test enforcing the budget, so the guard
+    passed on its own undercount. Corrected 2026-10-03 after two PR #146
+    reviewers found it independently.
+
+    Measured 2026-10-02 by stubbing a hook that slept past its budget: a hook
+    killed at its timeout produces NO exit code, so it cannot block -- the
+    timeout fails OPEN and the fail-closed CI guard never runs. The method is
+    recorded in test_ci_status.py's budget test, not only here, because a
+    claim about external behavior should carry how it was established.
+
+    A 3s ceiling is generous for `git rev-parse` locally and for `gh auth
+    status` against a responsive API. An API slower than that is itself a
+    reason to report UNDETERMINED rather than wait and be killed.
+    """
     try:
         r = subprocess.run(args, cwd=str(ROOT), capture_output=True,
                            text=True, timeout=timeout)
@@ -103,6 +122,18 @@ def runs_for(sha: str) -> list[dict]:
         allruns = json.loads(out or "[]")
     except ValueError as exc:
         raise Undetermined(f"gh returned unparseable JSON: {exc}") from exc
+    # THE SHAPE, not just that it parsed. A gh error body is valid JSON --
+    # {"message": "Not Found"}, null, a list of strings -- and r.get() then
+    # raises AttributeError or TypeError. main() catches only Undetermined, so
+    # the script died with a traceback and exit 1, which its own table says
+    # means "at least one check FAILED". A wrong-shaped response is not a red
+    # CI; it is a state we could not read, and the distinction is the whole
+    # point of having four exit codes. Found by a PR #146 review agent.
+    if not isinstance(allruns, list) or not all(
+            isinstance(r, dict) for r in allruns):
+        raise Undetermined(
+            f"gh returned JSON of an unexpected shape "
+            f"({type(allruns).__name__}); an error body parses as valid JSON")
     return [r for r in allruns if r.get("headSha") == sha]
 
 

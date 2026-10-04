@@ -20,6 +20,7 @@ that reports success when it checked nothing.
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -205,13 +206,32 @@ def test_the_hook_blocks_when_ci_cannot_be_determined():
     assert "could not be determined" in err
 
 
-def test_the_hook_allows_a_closeout_when_ci_is_green():
+def test_the_hook_raises_no_ci_violation_when_ci_is_green():
     """The companion. Without it, blocking unconditionally would satisfy all
-    three tests above and the gate would be useless."""
+    three tests above and the gate would be useless.
+
+    IT ASSERTS THE ABSENCE OF A CI COMPLAINT, NOT A CLEAN EXIT. The first
+    version asserted `rc == 0`, which requires EVERY other violation to be
+    empty too -- the Phase 3 artifacts, the three-doc rule, and a live
+    `gh pr list` network call. So it went red whenever the sprint was mid-flight
+    or GitHub was slow, for reasons having nothing to do with the CI gate it
+    names. Measured 2026-10-02 as one of six planning-window failures (F97).
+
+    What this test owns is one claim: a GREEN CI produces no CI violation.
+    """
     rc, err = _hook_with_ci(
         '    return [{"name": "CI", "status": "completed", '
         '"conclusion": "success", "headSha": sha, "url": ""}]')
-    assert rc == 0, f"a green close-out was blocked: {err[-400:]}"
+
+    for phrase in ("CI is RED", "still RUNNING", "could not be determined",
+                   "could not be imported", "A guard that errors"):
+        assert phrase not in err, (
+            f"green CI still produced a CI violation ({phrase!r}): "
+            f"{err[-400:]}")
+
+    # And the hook must not have crashed: rc is 0 (allow) or 2 (block on some
+    # OTHER violation), never a traceback.
+    assert rc in (0, 2), f"the hook errored rather than deciding: {err[-400:]}"
 
 
 def test_the_early_checkpoint_waits_before_looking(ci, monkeypatch):
@@ -270,3 +290,117 @@ def test_a_success_beside_a_skip_is_still_a_pass(ci, monkeypatch):
         + _runs("completed", "success", "tests")))
     rc, _lines = ci.evaluate("deadbee")
     assert rc == ci.OK
+
+# ------------------- F98: the budget, and the order the checks run in
+
+def test_the_hook_timeout_budget_covers_its_own_subprocess_calls():
+    """A Stop hook killed at its timeout produces NO exit code, so it cannot
+    BLOCK -- a timeout fails OPEN whatever the hook would have decided.
+    Measured 2026-10-02 with a hook that slept past its budget.
+
+    So the sum of internal subprocess timeouts must fit the configured
+    budget. It did not: 20 + 20 + 60 + 60 = 160s against a 20s budget, where
+    a single hanging `gh pr list` exceeded it alone.
+    """
+    import json as _json
+
+    settings = _json.loads(
+        (ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
+
+    budget = None
+    def walk(o):
+        nonlocal budget
+        if isinstance(o, dict):
+            cmd = str(o.get("command", ""))
+            if "verify_closeout_complete" in cmd and "timeout" in o:
+                budget = int(o["timeout"])
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+    walk(settings)
+    assert budget, "no timeout configured for verify_closeout_complete"
+
+    hook_src = HOOK.read_text(encoding="utf-8")
+    hook_timeouts = [int(m) for m in re.findall(r"timeout=(\d+)\)", hook_src)]
+    assert hook_timeouts, "no subprocess timeouts found in the hook"
+
+    # EVERY subprocess call must pass an explicit timeout, because a DEFAULT
+    # is invisible to this regex -- which is exactly how 75 of 98 seconds
+    # hid from the first version of this guard. hooklib.git defaults to 15s.
+    implicit = [s for s in re.findall(r"hooklib\.git\(([^)]*)\)", hook_src)
+                if "timeout=" not in s]
+    assert not implicit, (
+        f"{len(implicit)} hooklib.git call(s) rely on the default timeout, "
+        f"which this guard cannot see and therefore cannot budget for: "
+        f"{implicit}. Pass an explicit timeout=.")
+
+    checker_src = SCRIPT.read_text(encoding="utf-8")
+    m = re.search(r"def _run\(args: list\[str\], timeout: int = (\d+)\)",
+                  checker_src)
+    assert m, "check_ci_status._run default timeout not found"
+    ci_default = int(m.group(1))
+
+    # THREE calls go through _run, not two: head_sha, _require_gh and
+    # runs_for. The first version counted two and so did the hook comment, so
+    # this guard passed on the same undercount it existed to catch. Two PR
+    # #146 reviewers found it independently.
+    worst = sum(hook_timeouts) + 3 * ci_default
+    assert worst <= budget, (
+        f"worst-case internal timeouts total {worst}s against a {budget}s "
+        f"hook budget. A killed hook cannot block, so exceeding the budget "
+        f"silently disables every check.")
+
+
+def test_the_ci_check_runs_before_the_gh_dependent_issues_check():
+    """ORDER IS LOAD-BEARING. The issues check fails OPEN (`except Exception:
+    pass`); the CI check deliberately fails CLOSED. With the fail-open check
+    first, one hanging `gh pr list` could consume the whole budget and kill
+    the hook before the fail-closed guard ran -- defeating it precisely when
+    GitHub is slow, which is when it matters.
+    """
+    src = HOOK.read_text(encoding="utf-8")
+    i_ci = src.index("# CI on the HEAD commit.")
+    i_issues = src.index("# Open sprint issues -- POST-MERGE precondition")
+    assert i_ci < i_issues, (
+        "the gh-dependent issues check runs BEFORE the CI check again; a hang "
+        "there kills the hook before the fail-closed CI guard executes")
+
+@pytest.mark.parametrize("payload,why", [
+    ('{"message": "Not Found"}', "a gh error body: a dict, not a list"),
+    ("null", "gh returned null"),
+    ('["a", "b"]', "a list of strings, not of run objects"),
+    ("5", "a bare number"),
+])
+def test_a_wrong_shaped_gh_response_is_UNDETERMINED_not_FAILED(
+        ci, monkeypatch, payload, why):
+    """json.loads succeeding does not mean the SHAPE is right.
+
+    A gh error body is valid JSON, so `r.get("headSha")` raised AttributeError
+    or TypeError -- which main() does not catch, so the script died with a
+    traceback and exit 1. By this script's own table 1 means "at least one
+    check FAILED", so "gh handed back the wrong shape" was reported as CI RED
+    and the "nothing was checked" message never printed.
+
+    It failed closed, which is why this is not critical, but with the wrong
+    code and the wrong explanation -- and the four distinct exit codes exist
+    precisely so a caller can tell red from cannot-tell. Found by a PR #146
+    review agent.
+    """
+    monkeypatch.setattr(ci, "_require_gh", lambda: None)
+    monkeypatch.setattr(ci, "_run",
+                        lambda args, timeout=3: (0, payload, ""))
+    with pytest.raises(ci.Undetermined):
+        ci.runs_for("deadbee")
+
+
+def test_a_correctly_shaped_response_still_parses(ci, monkeypatch):
+    """The companion. Rejecting every payload would satisfy the test above
+    and the checker would never read CI at all."""
+    monkeypatch.setattr(ci, "_require_gh", lambda: None)
+    monkeypatch.setattr(ci, "_run", lambda args, timeout=3: (
+        0, '[{"headSha": "deadbee", "status": "completed", '
+           '"conclusion": "success", "name": "CI", "url": ""}]', ""))
+    runs = ci.runs_for("deadbee")
+    assert len(runs) == 1 and runs[0]["conclusion"] == "success"
