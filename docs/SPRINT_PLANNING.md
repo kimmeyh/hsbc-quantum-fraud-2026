@@ -34,6 +34,30 @@ Any item that depends on an external capability (a Dirac-3/eqc-models feature, a
 
 **The pre-flight inventories CODE, not only documents (Sprint 10 improvement 6).** Grep the source tree for whatever the item is about to change, not just the docs that mention it. F40's card listed four documents referencing the path being moved and was verified against exactly those four. It missed `data.py`, which hardcoded the ULB dataset location -- so the repository that Appendix C promises "regenerates every figure" would have worked on no machine but the author's. The card was right about every document and silent about the one line that mattered.
 
+**AND IT INVENTORIES THE DOCUMENTS THAT ALREADY HOLD FINDINGS (IMP-2, Sprint
+20 retrospective).** The converse of the rule above, and it cost most of a
+task. For any item about a hardware block, a dataset or an external result,
+read these BEFORE estimating:
+
+- `docs/TROUBLESHOOTING.md` -- the symptom index; search it first, it is one
+  lookup
+- `docs/HARDWARE_REQUEST_<block>.md` -- if one exists for the block
+- any `docs/*_RESULT.md` or `docs/*_RECONCILIATION.md` for that subject
+- `docs/RESULTS_MEMO.md`
+
+Four patterns, not a directory sweep. The broad version ("grep docs/") was too
+vague to be followed reliably; these are the places findings actually land.
+
+(Sprint 20, F93: I built a four-option decision document about the SPECTRA
+block without reading `docs/HARDWARE_REQUEST_B4.md`, whose line 89 already
+stated that the 13 negative proxy edges are expected and "not a red flag for
+B4", with the reason. It also already carried the tuned configuration's
+measured per-fit costs. I searched `results.json`, found no SPECTRA rows, and
+reasoned from absence -- CLAUDE.md's "don't state what an external system
+contains without opening it", applied to my own repository. The decision I
+presented rested on a misread figure, and a decision aid built on a wrong
+premise is worse than none because it looks like diligence.)
+
 ## Defined-scope rule (team lead, 2026-08-30 -- binding)
 
 Sprint scope is DEFINED, never additive: the team lead's selection list IS the complete scope. Items previously proposed, drafted, or carded are NOT in scope unless they appear in the selection. If an unselected item looks critical-path, raise it as a question during refinement; never plan it in by inference. Cards created for unselected items are closed as premature and recreated at the sprint that selects them.

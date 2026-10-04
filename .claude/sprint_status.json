@@ -1,29 +1,33 @@
 {
   "current_sprint": {
-    "number": 19,
-    "name": "Send the QCi Package Clean",
-    "branch": "feature/20260923_Sprint_19",
+    "number": 20,
+    "name": "Make the Suite Readable Again",
+    "branch": "feature/20260930_Sprint_20",
     "status": "phase_7_retrospective",
-    "plan_doc": "docs/sprints/SPRINT_19_PLAN.md",
-    "pr": 141,
+    "plan_doc": "docs/sprints/SPRINT_20_PLAN.md",
+    "pr": 146,
     "plan_approved": true,
     "github_issues": [
-      142,
-      143,
-      144
+      147,
+      148,
+      149,
+      150
     ],
     "task_actuals": {
-      "A": 2,
-      "B": 6,
-      "_note": "Wall-clock minutes at completion. A's wording was drafted and approved during planning, so A measures only the edit; B includes the 4-minute suite run. D is NOT RECORDED: it spanned an approval stop of several hours (00:23 to after 08:30), so wall clock does not measure the work, and an estimate of the active part would be a reconstruction.",
-      "D": null
+      "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective.",
+      "A": 52,
+      "C": 34,
+      "D": 28,
+      "B": 47
     },
-    "memo_sent": "2026-09-25T12:23"
+    "scope_additions": [
+      "a299ad2 (Phase 2 checklist merge, F100-F121 registered; team lead confirmed 2026-10-03)"
+    ]
   },
   "last_completed_sprint": {
-    "number": 18,
-    "merged_pr": 139,
-    "main_merge_pr": 140,
+    "number": 19,
+    "merged_pr": 141,
+    "main_merge_pr": 145,
     "docs_triad_complete": true
   },
   "prereg": {
@@ -31,5 +35,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-09-27"
+  "updated": "2026-10-03"
 }

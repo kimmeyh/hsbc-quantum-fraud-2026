@@ -67,8 +67,7 @@ references never move**; a hook refuses force-pushes and tag moves.
 | [`docs/submission/`](docs/submission/) | Submission receipt, package manifest, compliance walk |
 | [`docs/sprints/`](docs/sprints/) | Plan, retrospective and summary for every sprint |
 | `CHECKLIST-Phase1.md` | The Phase 1 record. **CLOSED 2026-09-12 and never updated** |
-| `CHECKLIST-Phase2-pre.md` | Live work during the review window |
-| `CHECKLIST-Phase2.md` | Dormant until selection; the six committed experiments |
+| `CHECKLIST-Phase2.md` | **LIVE.** Phase 2 work, before and after finalist notification, and the six committed experiments. `CHECKLIST-Phase2-pre.md` was merged into it and deleted on 2026-10-03 |
 | [`docs/adr/`](docs/adr/) | Architecture decision records |
 | [`docs/research/`](docs/research/) | Primary-source research behind design decisions, each recording what could NOT be established alongside what could |
 

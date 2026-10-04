@@ -27,6 +27,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[2]
 HOOK = ROOT / ".claude" / "hooks" / "block_heredoc_escape_loss.py"
 
@@ -94,9 +96,107 @@ def test_blocks_an_appending_redirect():
 
 # -------------------------------------------------------------- must ALLOW
 
-def test_allows_the_quoted_form_of_the_same_body():
-    """Quoting the delimiter is the fix. The identical body must pass."""
-    assert run_hook("cat > x.py <<'PYEOF'\n" + BAD_BODY + "\nPYEOF") == ALLOW
+def test_quoting_fixes_the_shell_but_not_python():
+    """Quoting the delimiter fixes the SHELL mechanism. It is not the whole fix.
+
+    This test asserted ALLOW until Sprint 20, on the reasoning that quoting is
+    the remedy -- which is true of the layer this hook originally guarded. The
+    body arrives verbatim, bash having touched nothing.
+
+    But `BAD_BODY` holds a backslash-n inside a NON-RAW Python string, so
+    PYTHON then interprets it, and a real newline lands where the two
+    characters were meant. Sprint 20 hit that five times in correctly quoted
+    heredocs; one wrote a literal NUL byte into a test file.
+
+    So the quoted form of a body carrying a Python escape is now BLOCKED too,
+    and the genuine fixes are a raw literal, a chr(92) construction, or the
+    Edit tool. Those are covered by the allow cases below.
+    """
+    assert run_hook("cat > x.py <<'PYEOF'\n" + BAD_BODY + "\nPYEOF") == BLOCK
+
+
+def test_allows_the_quoted_form_with_a_raw_literal():
+    """The actual fix, and it must stay cheap to write. A raw literal is left
+    alone by Python, so the quoted heredoc is genuinely safe."""
+    body = 'new = r"a' + BS + 'nb"'
+    assert run_hook("cat > x.py <<'PYEOF'\n" + body + "\nPYEOF") == ALLOW
+
+
+@pytest.mark.parametrize("prefix", ["r", "R", "rb", "br", "rB", "Rb", "bR",
+                                    "BR", "rf", "fr", "Rf", "rF", "fR", "FR"])
+def test_every_raw_prefix_is_allowed(prefix):
+    """EVERY prefix containing r or R is raw, so Python leaves the escape
+    alone and blocking it is a false positive.
+
+    THE DEFECT THIS EXISTS FOR. The first version used two negative
+    lookbehinds and had a hole that only some orders exposed: `fr""` passed
+    while `rf""` was BLOCKED, because with `rf` the character before the quote
+    is `f` and neither lookbehind fired. Spot-checking `fr` made the bug look
+    absent. Found independently by Copilot and two review agents on PR #146.
+
+    The block message tells the author to "make the literal RAW" -- advice
+    that did not clear the block for `rf`. A guard whose own remedy does not
+    work is worse than one that simply fires: it costs the reader a search.
+
+    Parametrized over every case variant because the prefix letters are
+    order-free and case-free in Python, and the bug was order-dependent.
+    """
+    body = "new = " + prefix + '"a' + BS + 'nb"'
+    assert run_hook("cat > x.py <<'PYEOF'\n" + body + "\nPYEOF") == ALLOW, (
+        f"{prefix}\"...\" is a RAW literal and must not be blocked")
+
+
+@pytest.mark.parametrize("prefix", ["", "b", "B", "f", "F", "u", "bf", "fb"])
+def test_every_non_raw_prefix_is_blocked(prefix):
+    """The companion. Exempting every prefix would satisfy the test above and
+    leave the hook useless.
+
+    `b""` matters most: it interprets escapes exactly as `""` does, and
+    `b"a\\x00b"` writing a real NUL byte is the Sprint 20 case that corrupted
+    a test file. An early version exempted `b` alongside `r`, so the hook
+    missed its own worst instance.
+    """
+    body = "new = " + prefix + '"a' + BS + 'nb"'
+    assert run_hook("cat > x.py <<'PYEOF'\n" + body + "\nPYEOF") == BLOCK, (
+        f"{prefix}\"...\" is NOT raw, so Python eats the escape")
+
+
+@pytest.mark.parametrize("seq", ["n", "t", "r", "0", "x"])
+def test_every_escape_in_the_detection_class_is_caught(seq):
+    """The class is `[ntr0x]` and only `n` was ever exercised.
+
+    PROVED VACUOUS on PR #146: narrowing the hook's class to `[n]` left the
+    whole 20-test file green. Four of five sequences had no coverage at all.
+
+    The gap mattered most for the one with the worst record. The hook's own
+    comment calls `b"a\\x00b"` "precisely the Sprint 20 case that corrupted a
+    test file" -- and `x` was among the four untested.
+    """
+    body = "new = " + '"a' + BS + seq + 'b"'
+    assert run_hook("cat > x.py <<'PYEOF'\n" + body + "\nPYEOF") == BLOCK, (
+        f"{BS}{seq} is in the detection class but was not caught")
+
+
+def test_a_raw_literal_containing_an_apostrophe_is_allowed():
+    """The second hole in the lookbehind version, same review.
+
+    `['\\"]` anchored on ANY quote character rather than the literal's opening
+    quote, so an apostrophe inside the string became a fresh anchor past the
+    `r` prefix -- and `r"it's a\\nb"`, raw and safe, was blocked.
+    """
+    body = "new = r\"it's a" + BS + 'nb"'
+    assert run_hook("cat > x.py <<'PYEOF'\n" + body + "\nPYEOF") == ALLOW
+
+
+def test_a_bytes_nul_escape_is_blocked():
+    """The hook's own worst instance, and nothing pinned it until now.
+
+    The module comment calls `b"a\\x00b"` "precisely the Sprint 20 case that
+    corrupted a test file". It was blocked in practice but held there by
+    nothing, which is the gap a reviewer found.
+    """
+    body = 'data = b"a' + BS + 'x00b"'
+    assert run_hook("cat > x.py <<'PYEOF'\n" + body + "\nPYEOF") == BLOCK
 
 
 def test_allows_a_lone_backslash_n_because_bash_does_not_eat_it():

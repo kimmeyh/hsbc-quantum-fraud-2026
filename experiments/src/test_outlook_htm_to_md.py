@@ -109,7 +109,12 @@ def test_check_refuses_to_write_when_a_figure_is_absent(tmp_path):
 
 def test_check_passes_and_writes_when_the_figure_survives(tmp_path):
     """The companion. Without it, failing unconditionally would satisfy the
-    test above and the tool would never convert anything."""
+    test above and the tool would never convert anything.
+
+    Document-wide presence is the right assertion here, unlike the Sprint 20
+    cases IMP-3 guards: this fixture contains the figure exactly once, by
+    construction, so there is no prose mention it could be confused with.
+    """
     src = tmp_path / "in.htm"
     src.write_text(_html("<p>Total 1,681 seconds.</p>"), encoding="utf-8")
     dst = tmp_path / "out.md"

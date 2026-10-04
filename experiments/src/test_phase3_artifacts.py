@@ -70,6 +70,48 @@ def _status() -> dict:
     return json.loads(STATUS.read_text(encoding="utf-8"))
 
 
+# Ordered, so "has this sprint reached Phase 3?" is a comparison rather than a
+# set membership test that a new slug would silently fall out of.
+PHASE_ORDER = (
+    "phase_1_backlog_refinement",
+    "phase_2_pre_kickoff",
+    "phase_3_planning",
+    "phase_4_execution",
+    "phase_5_validation",
+    "phase_5_3_manual_validation",
+    "phase_6_push",
+    "phase_7_retrospective",
+    "phase_8_delivery_cycle",
+    "complete",
+    "closed",
+)
+
+
+def _reached_phase_3() -> bool:
+    """Has this sprint reached the phase that CREATES the Phase 3 artifacts?
+
+    THE DEFECT THIS EXISTS FOR. The three artifact tests below asserted that a
+    draft PR, task issues and a recorded approval exist -- unconditionally.
+    In a Phase 1 or Phase 2 planning window none of them exists yet, because
+    the plan being written is what creates them, so all three failed on
+    correct behavior. Measured 2026-10-02: six tests red in a planning window,
+    all green the moment Phase 3 completed, with no code change.
+
+    A suite that is expected to be red for days at a time is a suite nobody
+    reads, and this repository has already paid for CI red on every commit of
+    a sprint.
+
+    An UNKNOWN phase returns True, deliberately: a slug this list does not
+    know must not silently disable the checks. That is the failure mode these
+    tests exist to catch, and it is how Sprint 17 shipped with none of the
+    three artifacts recorded.
+    """
+    status = str(_status().get("current_sprint", {}).get("status") or "")
+    if status not in PHASE_ORDER:
+        return True
+    return PHASE_ORDER.index(status) >= PHASE_ORDER.index("phase_3_planning")
+
+
 def test_the_hook_checks_all_three_phase_3_artifacts():
     """Source-level: the checks exist and are not gated on each other."""
     src = HOOK.read_text(encoding="utf-8")
@@ -82,6 +124,8 @@ def test_the_hook_checks_all_three_phase_3_artifacts():
 
 
 def test_current_sprint_records_its_draft_pr():
+    if not _reached_phase_3():
+        pytest.skip("sprint has not reached Phase 3; the PR does not exist yet")
     cur = _status().get("current_sprint", {})
     assert cur.get("pr") is not None, (
         "current_sprint.pr is null. Phase 3 requires a DRAFT PR created before "
@@ -89,6 +133,8 @@ def test_current_sprint_records_its_draft_pr():
 
 
 def test_current_sprint_records_its_task_issues():
+    if not _reached_phase_3():
+        pytest.skip("sprint has not reached Phase 3; issues do not exist yet")
     cur = _status().get("current_sprint", {})
     assert cur.get("github_issues"), (
         "current_sprint.github_issues is empty. Phase 3 requires one issue "
@@ -96,6 +142,8 @@ def test_current_sprint_records_its_task_issues():
 
 
 def test_plan_approval_is_recorded():
+    if not _reached_phase_3():
+        pytest.skip("sprint has not reached Phase 3; no plan to approve yet")
     cur = _status().get("current_sprint", {})
     assert cur.get("plan_approved") is True, (
         "plan_approved is not true. Either the plan was not approved, or the "
@@ -211,3 +259,46 @@ def test_the_hook_tests_do_not_depend_on_the_checked_out_branch():
     assert str(number) in payload["branch_override"], (
         "the pinned branch names a different sprint than the status file, "
         "so the hook takes its stale-state path instead")
+
+def test_a_failing_git_does_not_silently_skip_the_phase_3_checks():
+    """A count we could not get is not a count of zero.
+
+    THE DEFECT THIS EXISTS FOR, found by a PR #146 review agent. hooklib.git
+    returns (1, "") on ANY exception including a timeout, so _count returned
+    None, `work_started` became False, and all three Phase 3 checks were
+    skipped WITH NO VIOLATION RECORDED -- reproducing the Sprint 17 failure
+    (nine tasks, a full retrospective, pr: null) silently.
+
+    Measured: with git healthy the Sprint 17 state gave 3 violations; with
+    rev-list stubbed to fail it gave 0 and an EMPTY list. Nothing in the
+    output said the count had failed. The explicit timeout=2 added during the
+    same review made it MORE reachable, since 2s is realistic on a cold or
+    large repository.
+
+    test_an_unresolvable_base_ref_does_not_disable_the_checks covers develop
+    not resolving. It does not cover git itself failing, which is why the
+    suite was green on this.
+    """
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("closeout_gitfail", HOOK)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    real = mod.hooklib.git
+
+    def failing_rev_list(*args, **kwargs):
+        if args and args[0] == "rev-list":
+            return 1, ""
+        return real(*args, **kwargs)
+
+    mod.hooklib.git = failing_rev_list
+    try:
+        violations = mod.collect_violations(ROOT, 20)
+    finally:
+        mod.hooklib.git = real
+
+    assert any("DID NOT RUN" in v for v in violations), (
+        "git failed and the Phase 3 checks were skipped with no violation. "
+        f"That is 'could not check' reading as 'clean'. Violations: "
+        f"{violations}")
