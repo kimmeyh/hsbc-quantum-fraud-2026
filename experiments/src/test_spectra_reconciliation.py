@@ -78,9 +78,26 @@ def test_the_reconciliation_records_what_qci_was_actually_sent():
     assert row, (
         "the comparison table has no row for the sent hardware plan, so a "
         "reader cannot see what QCi was actually told")
-    for fact in ("270", "30", "91", "136"):
-        assert fact in row, (
-            f"the sent-plan row does not record {fact!r}: {row}")
+
+    # EXACT CELLS, not substrings. Anchoring to the row was only half the fix:
+    # `"270" in "2700 s"` is true, so every figure QCi was sent could be
+    # inflated TENFOLD and this guard noticed nothing. Measured on PR #146 --
+    # 270 to 2700 and 30 to 300 both stayed green. I diagnosed the
+    # presence-is-not-correctness defect, anchored to the row, and left the
+    # same defect one level down inside it.
+    cells = [c.strip() for c in row.strip().strip("|").split("|")]
+    assert len(cells) >= 6, (
+        f"the sent-plan row has {len(cells)} cells, expected at least 6: {row}")
+
+    fits, variables, _schedule, cost = cells[2], cells[3], cells[4], cells[5]
+    assert fits == "30", (
+        f"the sent plan quotes 30 fits; the row says {fits!r}")
+    assert variables.replace("–", "-") == "91-136", (
+        f"the sent plan quotes 91 to 136 variables; the row says "
+        f"{variables!r}")
+    assert cost == "**270 s**", (
+        f"the sent plan quotes 270 seconds; the row says {cost!r}. That is "
+        "the figure QCi holds, so a change here is externally visible.")
 
     assert "SENT" in text or "was sent" in text, (
         "the reconciliation does not say the figure was SENT, which is what "

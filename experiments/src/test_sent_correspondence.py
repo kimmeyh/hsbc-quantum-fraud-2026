@@ -25,6 +25,7 @@ happens on a scratch copy.
 from __future__ import annotations
 
 import hashlib
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -182,12 +183,32 @@ def test_a_single_byte_change_is_detected(tmp_path):
 def test_the_ignore_rule_still_covers_the_package():
     """F99 does NOT change the ignore rule. The correspondence stays private;
     only its hashes are tracked. Sprint 16 IMP-2 nearly published this
-    directory by relocating it out from under its parent rule."""
-    gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
-    assert "docs/qci_package/" in gitignore, (
-        "the ignore rule on docs/qci_package/ is gone. That directory holds a "
-        "private commercial negotiation; recording its hashes was never a "
-        "reason to publish its contents.")
+    directory by relocating it out from under its parent rule.
+
+    ASKS GIT, RATHER THAN READING .gitignore. The first version asserted
+    `"docs/qci_package/" in gitignore`, and a substring match cannot tell an
+    ACTIVE rule from a COMMENTED-OUT one. Measured on PR #146: commenting the
+    rule to `# docs/qci_package/` left this test GREEN while
+    `git check-ignore` reported the file would be published. The highest-stakes
+    guard in this file could not see the one change that matters.
+
+    CLAUDE.md already names the right tool for this exact directory -- "Run
+    `git check-ignore` on the destination path BEFORE the move" -- and the
+    test did not call it. Found by a PR #146 review agent.
+    """
+    probe = "docs/qci_package/__ignore_probe__.htm"
+    r = subprocess.run(["git", "check-ignore", "-v", probe],
+                       cwd=str(ROOT), capture_output=True, text=True)
+    assert r.returncode == 0, (
+        f"git does NOT ignore {probe}, so docs/qci_package/ is no longer "
+        "protected. That directory holds a private commercial negotiation; "
+        "recording its hashes was never a reason to publish its contents.\n"
+        f"  git check-ignore said: {r.stdout.strip() or '(nothing)'}")
+    assert "qci_package" in r.stdout, (
+        "the path is ignored, but by a rule that does not name qci_package: "
+        f"{r.stdout.strip()}. A rule that happens to cover it today is not "
+        "the same as a rule written for it -- that is exactly how Sprint 16 "
+        "IMP-2 nearly published this directory.")
 
 def test_the_tracked_record_and_this_file_cannot_drift():
     """The hashes live in TWO places, so they can disagree.

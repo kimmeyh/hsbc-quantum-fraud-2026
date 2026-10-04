@@ -89,14 +89,52 @@ _BS = chr(92)                          # built, so no layer can eat it
 # str does -- b"a\x00b" puts a real NUL byte in the file, which is precisely
 # the Sprint 20 case that corrupted a test file. Excluding `b` here made the
 # hook miss its own worst instance; only `rb`/`br` are exempt.
-_NON_RAW_STRING_WITH_ESCAPE = (
-    r"(?<![rR])"                       # not raw; rb"" and br"" also end in r/R
-    r"(?<![rR][bB])"                   # ...and not br"" with the b between
-    r"['\"]"                           # opening quote
-    r"[^'\"]*"                         # content before the escape
+# MATCH THE PREFIX FORWARD, do not exclude it with lookbehinds.
+#
+# The first version used two negative lookbehinds and had two holes, both
+# found independently by Copilot and two review agents on PR #146:
+#
+#   rf"a\nb"        RAW and therefore safe, but BLOCKED -- the character
+#                   before the quote is `f`, so neither lookbehind fired.
+#                   (fr"" happened to work, which made the bug look absent.)
+#   r"it's a\nb"    RAW and safe, but BLOCKED -- `['\"]` anchored on the
+#                   apostrophe INSIDE the literal, a fresh start past the
+#                   prefix.
+#
+# Both are false positives on correct work, and the block message tells the
+# author to "make the literal RAW" -- advice that did not clear the block.
+# This hook's own docstring says a guard that blocks correct work gets
+# bypassed, so a false positive here is not cosmetic.
+#
+# Matching the prefix forward fixes both at once: capture whatever prefix
+# letters precede the quote, then decide. Any prefix containing r or R is raw
+# and exempt, whatever else it contains and in whatever order.
+_PREFIXED_STRING = re.compile(
+    r"(?<![A-Za-z0-9_])"               # prefix starts a token
+    r"([A-Za-z]{0,3})"                 # the prefix letters, if any
+    r"(['\"])"                         # the opening quote, captured
+    r"((?:(?!\2).)*?)"                 # content, up to the SAME quote
     + _BS + _BS + r"[ntr0x]"           # the escape Python will interpret
 )
-PY_ESCAPE_IN_NON_RAW = re.compile(_NON_RAW_STRING_WITH_ESCAPE)
+
+
+def has_python_escape(line: str) -> bool:
+    """Does this line hold a Python escape Python itself will interpret?
+
+    True only for a NON-RAW literal. A prefix containing r or R is raw --
+    `r`, `rb`, `br`, `rf`, `fr`, and every case variant -- and Python leaves
+    its escapes alone, so blocking it would fire on correct work.
+    """
+    for m in _PREFIXED_STRING.finditer(line):
+        if "r" not in m.group(1).lower():
+            return True
+    return False
+
+
+# Kept as a module attribute: the tests and the earlier message text refer to
+# it, and it still answers "could this line hold an interpreted escape?" for
+# the non-prefixed case.
+PY_ESCAPE_IN_NON_RAW = _PREFIXED_STRING
 
 # WHAT BASH ACTUALLY CONSUMES in an unquoted heredoc, measured rather than
 # assumed (PR #122 review; re-measured here on Linux bash with every sequence
@@ -184,7 +222,7 @@ def risky_quoted_heredocs(cmd: str) -> list[tuple[str, str]]:
         for body_line in lines[i + 1:]:
             if body_line.strip() == delim:
                 break
-            if PY_ESCAPE_IN_NON_RAW.search(body_line):
+            if has_python_escape(body_line):
                 found.append((delim, body_line.strip()))
                 break
     return found

@@ -56,7 +56,6 @@ def _sprint_numbers() -> list[int]:
     return sorted(seen)
 
 
-@pytest.mark.skipif(not SPRINTS.exists(), reason="no sprint docs directory")
 def _plan_expected_yet() -> bool:
     """Has the live sprint reached the phase that writes its plan?
 
@@ -77,8 +76,21 @@ def _plan_expected_yet() -> bool:
         "phase_1_backlog_refinement", "phase_2_pre_kickoff")
 
 
+@pytest.mark.skipif(not SPRINTS.exists(), reason="no sprint docs directory")
 def test_every_completed_sprint_has_all_three_documents():
-    """Plan, retrospective and summary, for every sprint that has finished."""
+    """Plan, retrospective and summary, for every sprint that has finished.
+
+    THE SKIPIF ABOVE WAS DISPLACED ONTO A HELPER by the Sprint 20 insertion of
+    `_plan_expected_yet` directly beneath it. The marker became inert (pytest
+    ignores it on a non-test function) and this test lost its guard entirely,
+    so with `docs/sprints` absent it PASSED vacuously -- `_sprint_numbers()`
+    globs nothing, the loop body never runs, and nothing is checked. It
+    previously skipped visibly.
+
+    That is the "could not check reads as clean" class, introduced by an edit
+    whose own purpose was to stop a guard failing on correct behavior. Found
+    independently by Copilot and two review agents on PR #146.
+    """
     current = _current_sprint()
     missing: list[str] = []
     for n in _sprint_numbers():
@@ -97,8 +109,13 @@ def test_every_completed_sprint_has_all_three_documents():
             # N+1 planning". The guard demanded a document the process says
             # is not written yet. Part of the six-test planning-window
             # failure (F97, measured 2026-10-02).
-            if (n == current - 1 and kind == "SUMMARY"
-                    and not _plan_expected_yet()):
+            # `current` is None when the status file is missing or
+            # malformed (_current_sprint catches broadly), and `current - 1`
+            # then raised TypeError before a single document was checked --
+            # loud, but the message said nothing about the status file and
+            # nothing was verified. Found by a PR #146 review agent.
+            if (current is not None and n == current - 1
+                    and kind == "SUMMARY" and not _plan_expected_yet()):
                 continue
             # AND its PLAN, before Phase 3 writes it. The sprint number rolls
             # at the Phase 8 sweep so the status file names the sprint being

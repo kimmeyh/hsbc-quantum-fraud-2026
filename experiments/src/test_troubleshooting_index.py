@@ -28,11 +28,32 @@ DOC = ROOT / "docs" / "TROUBLESHOOTING.md"
 FILE_REF = re.compile(r"`([A-Za-z0-9_./\\-]+\.(?:md|py|json))`")
 
 # Where a bare filename might legitimately live.
-SEARCH_ROOTS = (".", "docs", "experiments/src", "scripts", ".claude/hooks")
+# docs/sprints was missing, so a legitimate pointer there read as broken.
+# And a pointer containing ".." resolved outside the repository entirely.
+# Both make the guard inaccurate rather than silent. Found by a PR #146
+# review agent.
+SEARCH_ROOTS = (".", "docs", "docs/sprints", "experiments/src", "scripts",
+                ".claude/hooks")
 
 
 def _resolve(ref: str) -> bool:
-    return any((ROOT / root / ref).exists() for root in SEARCH_ROOTS)
+    """Does this pointer name a real file INSIDE the repository?
+
+    A pointer containing ".." used to resolve, escaping the repository -- so
+    `../README.md` passed. A pointer that only works from one directory is not
+    a pointer a reader can follow.
+    """
+    if ".." in Path(ref).parts:
+        return False
+    for root in SEARCH_ROOTS:
+        candidate = (ROOT / root / ref).resolve()
+        try:
+            candidate.relative_to(ROOT.resolve())
+        except ValueError:
+            continue
+        if candidate.exists():
+            return True
+    return False
 
 
 def test_the_index_exists():
@@ -73,7 +94,12 @@ def test_the_index_does_not_restate_what_it_points_at():
     for s in sections:
         title = s.splitlines()[0].strip()
         n = len([ln for ln in s.splitlines() if ln.strip()])
-        if n > 45:
+        # 80, not 45. The old threshold sat six lines above the largest
+        # section, so it was a tripwire that would fire on the next ordinary
+        # edit -- and a guard that fails on correct work gets deleted. It
+        # measures LENGTH, which is a proxy for restatement rather than a
+        # detector of it, so it earns a wide margin.
+        if n > 80:
             bloated.append(f"{title} ({n} lines)")
     assert not bloated, (
         f"these sections have grown past pointing into explaining: {bloated}. "
@@ -85,9 +111,15 @@ def test_the_retrospective_template_points_here():
     """Category 9 asked for a troubleshooting note from Sprint 2 and nothing
     existed, so nine retrospectives' findings had nowhere to go. The template
     must name the document now that it exists, or the same gap reopens."""
+    # ASSERT, do not skip. This file is TRACKED, so its absence means it was
+    # DELETED -- a defect, not an unavailable fixture. This module's own
+    # docstring cites a tracked checklist deleted mid-sprint by another
+    # session, which is exactly the drift it was written for. Found by a
+    # PR #146 review agent.
     tmpl = ROOT / "docs" / "SPRINT_RETROSPECTIVE.md"
-    if not tmpl.exists():
-        pytest.skip("SPRINT_RETROSPECTIVE.md not present")
+    assert tmpl.exists(), (
+        "docs/SPRINT_RETROSPECTIVE.md is missing. It is tracked, so this is a "
+        "deletion rather than a reason to skip.")
     assert "TROUBLESHOOTING.md" in tmpl.read_text(encoding="utf-8"), (
         "the retrospective template no longer points at "
         "docs/TROUBLESHOOTING.md, so category-9 findings have nowhere to land "
@@ -98,9 +130,11 @@ def test_the_preflight_rule_points_here():
     """IMP-2's whole mechanism is that the pre-flight names this document as
     the first thing to read. Without that reference the index is optional,
     and an optional lookup is the one that does not happen."""
+    # Same reasoning as above: tracked, so absence is a deletion.
     planning = ROOT / "docs" / "SPRINT_PLANNING.md"
-    if not planning.exists():
-        pytest.skip("SPRINT_PLANNING.md not present")
+    assert planning.exists(), (
+        "docs/SPRINT_PLANNING.md is missing. It is tracked, so this is a "
+        "deletion rather than a reason to skip.")
     text = planning.read_text(encoding="utf-8")
     assert "TROUBLESHOOTING.md" in text, (
         "the capability pre-flight no longer names docs/TROUBLESHOOTING.md")

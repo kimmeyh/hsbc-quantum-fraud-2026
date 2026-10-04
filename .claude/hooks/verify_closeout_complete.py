@@ -97,7 +97,7 @@ def _branch(payload: dict, root: Path) -> str:
     override = str(payload.get("branch_override") or "").strip()
     if override:
         return override
-    rc, out = hooklib.git("branch", "--show-current", cwd=root)
+    rc, out = hooklib.git("branch", "--show-current", cwd=root, timeout=2)
     return out.strip() if rc == 0 else ""
 
 
@@ -137,7 +137,7 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
         # exist on this branch. If work has happened, Phase 3's artifacts were
         # due before it started.
         def _count(*rev: str) -> int | None:
-            rc, out = hooklib.git("rev-list", "--count", *rev, cwd=root)
+            rc, out = hooklib.git("rev-list", "--count", *rev, cwd=root, timeout=2)
             if rc != 0 or not out.strip().isdigit():
                 return None
             return int(out.strip())
@@ -156,6 +156,33 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
         commits = _count("develop..HEAD")
         if commits is None:
             commits = _count("HEAD")
+
+        # A COUNT WE COULD NOT GET IS NOT A COUNT OF ZERO.
+        #
+        # hooklib.git returns (1, "") on ANY exception, including a timeout, so
+        # _count returns None and `work_started` became False -- skipping all
+        # three Phase 3 checks with no violation recorded. That is the Sprint 17
+        # failure (nine tasks, a full retrospective, pr: null) reproduced
+        # silently by a slow git.
+        #
+        # Measured on PR #146 in a real repository with one commit and the
+        # Sprint 17 state: real git gave 3 violations, a stubbed git failure
+        # gave 0 and an EMPTY violation list. Nothing in the output said the
+        # count had failed.
+        #
+        # Worse, the explicit timeout=2 added earlier in this same review made
+        # it MORE reachable: 2s is realistic on a cold or large repository.
+        # Found by a PR #146 review agent; the existing
+        # test_an_unresolvable_base_ref_does_not_disable_the_checks covers
+        # develop not resolving, not git itself failing.
+        if commits is None:
+            violations.append(
+                "Could not count commits on this branch, so the Phase 3 "
+                "artifact checks DID NOT RUN. That is not a pass: check "
+                "current_sprint.pr, github_issues and plan_approved by hand. "
+                "git failed or timed out (hooklib.git returns (1, '') on any "
+                "exception).")
+
         work_started = commits is not None and commits > 0
         commits_out = str(commits) if commits is not None else "?"
 
@@ -182,7 +209,7 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
                     "PR and issue checks above were silently skipped in "
                     "Sprint 17.")
 
-    rc, out = hooklib.git("status", "--porcelain", "--", "0*", cwd=root)
+    rc, out = hooklib.git("status", "--porcelain", "--", "0*", cwd=root, timeout=2)
     if rc == 0 and out.strip():
         names = ", ".join(line[2:].strip() for line in out.splitlines() if line.strip())
         violations.append(
@@ -220,12 +247,34 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
     # deliberately fail-CLOSED check ran. The careful fail-closed design was
     # defeated by a slow network, which is exactly when it is needed.
     #
-    # BUDGET ARITHMETIC, against "timeout": 20 in settings.json:
-    #     gh auth status   5s  (check_ci_status._require_gh)
-    #   + gh run list      5s  (check_ci_status.runs_for)
-    #   + gh pr list       4s  (below)
-    #   + gh issue list    4s  (below)
-    #   = 18s worst case, inside the 20s budget.
+    # BUDGET ARITHMETIC, against "timeout": 35 in settings.json.
+    #
+    # CORRECTED 2026-10-03 after two PR #146 reviewers independently found the
+    # first version undercounted, and the test enforcing it repeated the same
+    # undercount -- so the guard passed on its own defect, which is the class
+    # it was written to prevent. The figures below are DERIVED from the source
+    # rather than recalled, which is the actual lesson.
+    #
+    # What the first version missed: hooklib.git's 15s DEFAULT, invisible to a
+    # regex looking for `timeout=N)`, across four call sites (one reachable
+    # twice); and that the CI path makes THREE _run calls, not two. Real worst
+    # case was 98s against 20s, or 23s ignoring git entirely.
+    #
+    #     git rev-parse ref   3s  (check_ci_status.head_sha)
+    #   + gh auth status      3s  (check_ci_status._require_gh)
+    #   + gh run list         3s  (check_ci_status.runs_for)
+    #   + git branch          2s  (_branch, every run: no branch_override
+    #                              outside the tests)
+    #   + git rev-list       2x2s (develop..HEAD, then the HEAD fallback)
+    #   + git status          2s  (the 0* working-file check)
+    #   + git rev-parse       2s  (the post-merge issues precondition)
+    #   + gh pr list          4s
+    #   + gh issue list       4s
+    #   = 27s worst case, inside the 35s budget.
+    #
+    # Every git call now passes an EXPLICIT timeout so the guard in
+    # test_ci_status.py can see it. A default the guard cannot read is a
+    # number outside the budget it claims to enforce.
     # Previously 20 + 20 + 60 + 60 = 160s, where one call alone exceeded it.
     # CI on the HEAD commit.
     #
@@ -293,7 +342,7 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
     # It is post-merge ONLY because `Closes #N` does not fire on a
     # feature->develop merge (workflow 2.3), so the issues must be closed by
     # hand and the only moment that is checkable is after the merge lands.
-    rc, out = hooklib.git("rev-parse", "--abbrev-ref", "HEAD", cwd=root)
+    rc, out = hooklib.git("rev-parse", "--abbrev-ref", "HEAD", cwd=root, timeout=2)
     branch_now = out.strip() if rc == 0 else ""
     if branch_now:
         try:

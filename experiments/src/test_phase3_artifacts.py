@@ -259,3 +259,46 @@ def test_the_hook_tests_do_not_depend_on_the_checked_out_branch():
     assert str(number) in payload["branch_override"], (
         "the pinned branch names a different sprint than the status file, "
         "so the hook takes its stale-state path instead")
+
+def test_a_failing_git_does_not_silently_skip_the_phase_3_checks():
+    """A count we could not get is not a count of zero.
+
+    THE DEFECT THIS EXISTS FOR, found by a PR #146 review agent. hooklib.git
+    returns (1, "") on ANY exception including a timeout, so _count returned
+    None, `work_started` became False, and all three Phase 3 checks were
+    skipped WITH NO VIOLATION RECORDED -- reproducing the Sprint 17 failure
+    (nine tasks, a full retrospective, pr: null) silently.
+
+    Measured: with git healthy the Sprint 17 state gave 3 violations; with
+    rev-list stubbed to fail it gave 0 and an EMPTY list. Nothing in the
+    output said the count had failed. The explicit timeout=2 added during the
+    same review made it MORE reachable, since 2s is realistic on a cold or
+    large repository.
+
+    test_an_unresolvable_base_ref_does_not_disable_the_checks covers develop
+    not resolving. It does not cover git itself failing, which is why the
+    suite was green on this.
+    """
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("closeout_gitfail", HOOK)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    real = mod.hooklib.git
+
+    def failing_rev_list(*args, **kwargs):
+        if args and args[0] == "rev-list":
+            return 1, ""
+        return real(*args, **kwargs)
+
+    mod.hooklib.git = failing_rev_list
+    try:
+        violations = mod.collect_violations(ROOT, 20)
+    finally:
+        mod.hooklib.git = real
+
+    assert any("DID NOT RUN" in v for v in violations), (
+        "git failed and the Phase 3 checks were skipped with no violation. "
+        f"That is 'could not check' reading as 'clean'. Violations: "
+        f"{violations}")
