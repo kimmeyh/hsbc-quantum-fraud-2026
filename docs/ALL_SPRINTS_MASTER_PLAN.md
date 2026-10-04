@@ -289,7 +289,7 @@ Three findings outlived their cards and are recorded there:
 - **Acceptance, added 2026-10-03**: (a) the F100 complete classical bar reported on the same rows; (b) repeats reported as mean and standard deviation, not single runs; (c) every returned sample stored, not only the lowest-energy one, so F20's multi-sample ensembling costs no further device time; (d) the train-test gap beside every win
 - **Cost against the sent figure**: 15 fits at 833 variables is about 4.6x the 270 s the sent hardware plan states for Experiment 5 (`docs/SPECTRA_BLOCK_RECONCILIATION.md`). After F90, about 445 s of the 1,681 remain, which does not cover Experiment 3; Experiment 3 depends on the additional 7,500 s asked of QCi
 - **This is an allocation DECISION, not an estimate.** 1,236 s of 1,681 leaves about 445 s for everything else. It stops for per-block approval with the figure quoted (Criterion H).
-- Depends on: reconciliation with F5; per-block team-lead approval
+- Depends on: **the off-repository device result being brought in** -- its configuration, fits, seeds and arm. That is the card's own stated first task and it is the team lead's to supply; until it exists this card is BLOCKED under the Definition of Ready, whatever its priority. Then per-block team-lead approval (Criterion H) for B5 and again for B4. (Corrected 2026-10-04: this line said "reconciliation with F5", which F5 closing into this card on 2026-10-03 already satisfied.)
 
 **F2b. Hardware campaign, remaining blocks B4 and B5 -- CLOSED 2026-10-03 into F90**
 - **CLOSED in the 2026-10-03 refinement.** B4's line closed into F90 earlier the same day, and F90's title is "B5, then B4", so the B5 line here duplicated it. Nothing is lost: B5 runs first inside F90. The card stays in place because `test_spectra_reconciliation.py` requires every SPECTRA record to remain findable
@@ -605,8 +605,8 @@ not a sweep correction.
 - Phase: Phase 2, Experiment 5 (added 2026-10-03). Transfer of the in-segment result to fraud segments, judged by the proposal's router criterion: at least one point of recall at the 0.5% budget above the classical champion, out of time, on prespecified segments, against a matched random-segment control
 - HOLD until F90 reports. Bounded in advance by F113
 
-**F122. Four guards that are accurate-but-weak, from the PR #146 review (~45m, zero metered) Priority 22**
-- Phase: Finalize / tooling (added 2026-10-04 from the PR #146 reviews)
+**F122. Four guards that are accurate-but-weak, from the PR #146 review (~45m, zero metered) Priority 20**
+- Phase: Finalize / tooling (added 2026-10-04 from the PR #146 reviews; **re-scored 22 to 20 in the 2026-10-04 sweep** -- 22 paired it with F97 at 20, and F97 shipped, so the pair offset pointed at nothing)
 - Platform: N/A (`test_spectra_reconciliation.py`, `test_troubleshooting_index.py`, `test_ci_status.py`, `test_sent_correspondence.py`)
 - **Backlogged rather than fixed in the review round, deliberately.** The ten findings fixed there were defects: a guard that passed on a commented-out ignore rule, a budget blind to 75 of 98 seconds, figures inflatable tenfold. These four are different in kind -- each guard works, and each is narrower or more brittle than its name claims. Rushing them at the end of a review round is how a careless edit reaches a file nobody is reviewing any more
 - **(a) The ordering guard pins COMMENTS, not execution order.** `test_the_ci_check_runs_before_the_gh_dependent_issues_check` uses `src.index("# CI on the HEAD commit.")`. Renaming that comment fails the test with zero code change, and moving the code while leaving the comments in place passes it. Anchor on the calls (`ci.evaluate` against the `gh pr list` subprocess) instead

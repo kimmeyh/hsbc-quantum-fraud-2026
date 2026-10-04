@@ -111,6 +111,17 @@ of my conclusions needed correcting: "no traceable source" was wrong, the data
 is PROJ/proxy rather than device, and 8-of-8 was the baseline, not the tuned
 configuration.
 
+**The 6.6 carry-forward branch was cut late.** Workflow 6.6 requires
+`feature/<date>_Sprint_<N+1>` to be created from the current feature branch
+**on merge notification**. It was not created then; it was created at the start
+of the Phase 8 sweep, after both merges had landed. Nothing was lost, because
+the merges had carried everything and the tree was clean --- which is precisely
+what 6.6's own note warns about: "a clean result does not mean the cut was
+right. Verify the flow, not the outcome." The first attempt at the late cut was
+`git checkout -b ... origin/develop`, which `block_branch_from_develop.py`
+blocked correctly; the hook caught the wrong form of a step that should already
+have happened.
+
 **IMP-3 was built, tested and removed.** A static check for unanchored presence
 assertions caught **zero** of the four failures it was written for: they used
 `assert fact in row` over a loop variable, which an AST check for string
@@ -155,8 +166,9 @@ first calibration basis this repository has for estimating tooling work.
 ## Next sprint readiness
 
 The branch `feature/20261004_Sprint_21` is cut from the Sprint 20 branch per
-the 6.6 carry-forward rule. Four cards pruned from the master plan; F122
-registered from the review round.
+the 6.6 carry-forward rule, though late --- see the defects section. Four cards
+pruned from the master plan; F122 registered from the review round and
+re-scored to 20, since its 22 paired it with F97 and F97 shipped.
 
 **F90 is the recommended next scope** and the team lead has already said the
 SPECTRA analysis matching prior Dirac-3 against quantum-enhanced datasets runs
