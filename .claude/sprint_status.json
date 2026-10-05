@@ -3,11 +3,17 @@
     "number": 21,
     "name": "The SPECTRA Block, and a Bar That Can Read It",
     "branch": "feature/20261004_Sprint_21",
-    "status": "phase_3_planning",
+    "status": "phase_4_execution",
     "plan_doc": "docs/sprints/SPRINT_21_PLAN.md",
-    "pr": null,
+    "pr": 152,
     "plan_approved": true,
-    "github_issues": [],
+    "github_issues": [
+      153,
+      154,
+      155,
+      156,
+      157
+    ],
     "task_actuals": {
       "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective."
     },
