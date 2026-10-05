@@ -1,12 +1,12 @@
 {
   "current_sprint": {
     "number": 21,
-    "name": "TBD -- scope selected at Phase 8.4 refinement",
+    "name": "The SPECTRA Block, and a Bar That Can Read It",
     "branch": "feature/20261004_Sprint_21",
-    "status": "phase_1_backlog_refinement",
-    "plan_doc": null,
+    "status": "phase_3_planning",
+    "plan_doc": "docs/sprints/SPRINT_21_PLAN.md",
     "pr": null,
-    "plan_approved": false,
+    "plan_approved": true,
     "github_issues": [],
     "task_actuals": {
       "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective."
@@ -24,5 +24,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-10-04"
+  "updated": "2026-10-05"
 }
