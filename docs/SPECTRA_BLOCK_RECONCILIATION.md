@@ -208,3 +208,46 @@ stating to QCi rather than being discovered by them.
 - The next sprint's card records the off-repository result as its motivation
   and brings the configuration into the repository as its first task, so the
   claim stops being unverifiable
+
+## Correction, 2026-10-05: F90's variable count and per-cell sizing
+
+Found at the Sprint 21 capability pre-flight, which is where this should have
+been found. **The F90 row in the table above is wrong in two ways, both in the** 
+**expensive direction.** The row is left as written because it records what the
+card said on 2026-10-03; this section states what is true.
+
+**1. The variable count is 816, not 833.** `n + C(n,2) + C(n,3)` is the
+`full` pair-build formula. `data.qubo_vars` (amendment A2) caps pairs at
+`n(n-3)/2` for the `sequential` build, so singles+pairs total `C(n,2)`
+exactly. `HARDWARE_REQUEST_B4.md` states the sequential build is **mandatory**
+**on Windows**, and `spectra_proxy_dry_run.json` records 816 / 816 / 560 for
+the three frozen cells. The 833 figure describes a build this block will not
+use.
+
+**2. B4 is three cells at two sizes, not 15 fits at one size.** energy_steel
+and telecom_churn are 816 variables; oilgas_gasturbine is 560. Pricing all 15
+fits at the 833 rate overstated the block. At the anchor rate the range is
+**about 1,084-1,235 s (65-74% of 1,681), leaving 446-597 s**, against the
+1,236 s and 445 s the card previously carried.
+
+**3. The anchor itself is sound, and better than the card claimed.** B2's
+configuration matches B4's exactly -- `num_samples=8`,
+`relaxation_schedule=2`, `weak_cls_schedule=3` -- differing only in
+`pair_build` and dataset. 11 metered fits, 906 s, 71-92 s/fit, mean 82.4,
+`[HW]`. The 560 cell remains an extrapolation BELOW the anchor, where the
+cost curve is not linear: the metered rate runs 49-556 ms per variable below
+100 variables against 99 ms/var at 833, so a floor applies.
+
+**4. A COST CONFLICT OF 2.4x IS STILL OPEN, and it is the live risk.**
+`HARDWARE_REQUEST_B4.md` line 43 prices this block from FourierWall2's
+measured rollout at **26-34 s/fit for 560-816 variables at this exact**
+**ns/rx/schedule**, giving ~390-510 s total, and cites the preregistration
+section 10 envelope of ~450 s. Our own B2 measured 76-91 s/fit at the same
+configuration. Both are described as measured and they cannot both price B4.
+If the FourierWall2 rate holds, the block costs about 450 s and the 270 s
+told to QCi is a 1.7x gap rather than 4.6x. **B5 running first is what** 
+**settles this cheaply**, before the expensive block commits the balance.
+
+Nothing here changes the decision recorded above: the block is approved and
+F90 is the surviving card. It changes what the block is expected to cost and
+what must be verified before it runs.
