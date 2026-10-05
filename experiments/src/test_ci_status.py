@@ -291,6 +291,50 @@ def test_a_success_beside_a_skip_is_still_a_pass(ci, monkeypatch):
     rc, _lines = ci.evaluate("deadbee")
     assert rc == ci.OK
 
+
+# ------------------- a CANCELLED run is neither red nor green (Sprint 21)
+
+def test_a_cancelled_run_is_UNDETERMINED_not_FAILED(ci, monkeypatch):
+    """A cancellation read as RED sends a reader to find a failure that is
+    not there.
+
+    Found by hitting it. Two rapid pushes superseded their own in-flight runs,
+    GitHub marked both `completed/cancelled`, and this script reported "CI is
+    RED on <sha>: open the failing run BEFORE continuing" -- so I opened two
+    runs looking for a test failure that did not exist. A cancellation is
+    almost always a newer push, which is normal and carries no verdict.
+
+    It must NOT become a pass either: a manual cancel or a timeout looks
+    identical from here, and "could not determine" reading as "clean" is this
+    repository's signature defect. UNDETERMINED is the honest answer, and the
+    message says how to get a real one.
+    """
+    monkeypatch.setattr(ci, "runs_for",
+                        lambda sha: _runs("completed", "cancelled"))
+    with pytest.raises(ci.Undetermined, match="CANCELLED"):
+        ci.evaluate("deadbee")
+
+
+def test_a_cancelled_run_beside_a_success_is_still_a_pass(ci, monkeypatch):
+    """The companion, without which the guard above would be satisfied by
+    treating every cancellation as fatal -- breaking the normal case where one
+    superseded run sits beside a real green one."""
+    monkeypatch.setattr(ci, "runs_for", lambda sha: (
+        _runs("completed", "cancelled", "superseded")
+        + _runs("completed", "success", "tests")))
+    rc, _lines = ci.evaluate("deadbee")
+    assert rc == ci.OK
+
+
+def test_a_cancelled_run_beside_a_failure_is_still_RED(ci, monkeypatch):
+    """A real failure is not softened by a cancellation standing next to it."""
+    monkeypatch.setattr(ci, "runs_for", lambda sha: (
+        _runs("completed", "cancelled", "superseded")
+        + _runs("completed", "failure", "tests")))
+    rc, _lines = ci.evaluate("deadbee")
+    assert rc == ci.FAILED
+
+
 # ------------------- F98: the budget, and the order the checks run in
 
 def test_the_hook_timeout_budget_covers_its_own_subprocess_calls():
