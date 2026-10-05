@@ -18,7 +18,9 @@
       "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective.",
       "B": 58,
       "E": 34,
-      "C_pilot": 42
+      "C_pilot": 42,
+      "D_pilot": 47,
+      "C_runners": 112
     },
     "scope_additions": [],
     "decisions": {
