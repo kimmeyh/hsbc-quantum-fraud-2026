@@ -100,6 +100,11 @@ is a confirmed negative.
 variables, sized to fit a chosen fraction of the balance. Keeps the
 configuration that can show an effect while leaving room for F95 and any
 Phase 2 work. Weakens the statistical claim in proportion to the fits dropped.
+**Cost scales with the fits kept**: at the anchor rate roughly 82 s per fit at
+816–833 variables, so 9 fits is about 740 s, 6 fits about 494 s and 3 fits
+about 247 s. (Cost figures added 2026-10-05: this option was the only one of
+the four stating no spend, which `test_the_options_are_enumerated_with_their_costs`
+caught once it was rewritten to check costs rather than headings — F122 (c).)
 
 **Option 4 — defer the block entirely** until Phase 2 allocation is known, and
 spend the 1,681 on F95's schedule-4 check (~60 s, promised in the sent memo)

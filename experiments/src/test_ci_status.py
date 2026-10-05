@@ -359,13 +359,35 @@ def test_the_ci_check_runs_before_the_gh_dependent_issues_check():
     first, one hanging `gh pr list` could consume the whole budget and kill
     the hook before the fail-closed guard ran -- defeating it precisely when
     GitHub is slow, which is when it matters.
+
+    ANCHORED ON THE CALLS, NOT THE COMMENTS (F122 (a), Sprint 21). The first
+    version of this test used `src.index("# CI on the HEAD commit.")`, so
+    renaming a comment failed it with zero code change, and moving the code
+    while leaving the comments in place passed it. It asserted the order of
+    two strings nothing executes.
     """
     src = HOOK.read_text(encoding="utf-8")
-    i_ci = src.index("# CI on the HEAD commit.")
-    i_issues = src.index("# Open sprint issues -- POST-MERGE precondition")
+
+    # The fail-CLOSED CI evaluation: the call that returns a verdict.
+    i_ci = src.index("ci.evaluate(")
+
+    # The fail-OPEN issues check: the `gh pr list` subprocess that can hang.
+    i_issues = src.index('"gh", "pr", "list"')
+
     assert i_ci < i_issues, (
         "the gh-dependent issues check runs BEFORE the CI check again; a hang "
-        "there kills the hook before the fail-closed CI guard executes")
+        "there kills the hook before the fail-closed CI guard executes. "
+        f"ci.evaluate( at {i_ci}, gh pr list at {i_issues}")
+
+    # And neither anchor may silently vanish: if the code is restructured so
+    # one of these calls no longer exists, .index() raises ValueError above
+    # rather than passing, which is the fail-safe direction. Assert the counts
+    # so a SECOND call site cannot appear and make the ordering ambiguous.
+    assert src.count("ci.evaluate(") == 1, (
+        "more than one ci.evaluate( call site; the ordering assertion above "
+        "pins only the first and is no longer unambiguous")
+    assert src.count('"gh", "pr", "list"') == 1, (
+        "more than one `gh pr list` call site; same ambiguity")
 
 @pytest.mark.parametrize("payload,why", [
     ('{"message": "Not Found"}', "a gh error body: a dict, not a list"),
