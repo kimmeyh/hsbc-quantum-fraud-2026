@@ -128,28 +128,36 @@ def test_running_before_the_window_refuses_with_a_nonzero_exit():
     assert r.returncode == 3
 
 
-def test_the_dry_run_spends_nothing_and_says_so():
+@pytest.fixture(scope="module")
+def dry_run_output():
+    """One dry run, shared by every test that reads its output.
+
+    Each `--dry-run` reloads ULB and recomputes top-k features per cell, so
+    running it once per test cost nine minutes for this file alone. A guard
+    slow enough to be skipped or deselected is a guard that does not run.
+    """
     r = subprocess.run(
         [sys.executable, str(SRC / "run_hardware_b5.py"), "--dry-run"],
         capture_output=True, text=True, cwd=str(ROOT), timeout=1800)
     assert r.returncode == 0, r.stderr[-400:]
-    assert "nothing submitted, nothing spent" in r.stdout
-    assert "CALL COUNT now   : 12" in r.stdout
-    assert "EXPECTED SECONDS" in r.stdout, (
+    return r.stdout
+
+
+def test_the_dry_run_spends_nothing_and_says_so(dry_run_output):
+    assert "nothing submitted, nothing spent" in dry_run_output
+    assert "CALL COUNT now   : 12" in dry_run_output
+    assert "EXPECTED SECONDS" in dry_run_output, (
         "Criterion H requires the expected seconds stated before any run")
 
 
-def test_the_criterion_h_statement_names_every_required_field():
+def test_the_criterion_h_statement_names_every_required_field(dry_run_output):
     """Block, call count, expected seconds AND provenance -- the four things
     Sprint 11 improvement 2 requires, after a probe approved at "0-5 seconds"
     cost 10 against a figure that was never established."""
-    r = subprocess.run(
-        [sys.executable, str(SRC / "run_hardware_b5.py"), "--dry-run"],
-        capture_output=True, text=True, cwd=str(ROOT), timeout=1800)
-    out = r.stdout
     for field in ("BLOCK B5", "CALL COUNT", "EXPECTED SECONDS", "provenance",
                   "variables/fit", "approved"):
-        assert field in out, f"the Criterion H statement omits {field!r}"
+        assert field in dry_run_output, (
+            f"the Criterion H statement omits {field!r}")
 
 
 # ---- idempotency -----------------------------------------------------------

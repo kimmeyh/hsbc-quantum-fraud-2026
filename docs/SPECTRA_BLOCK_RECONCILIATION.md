@@ -41,7 +41,7 @@ schedule 3 reached in-segment ROC 5 of 7, PR 6 of 7, and an overall win on
 
 **Those accuracy figures are PROXY figures, not device figures** (checked
 2026-10-03). They ARE sourced: `experiments/results/spectra_proxy_dry_run.json`
-shows 13 of 13 scored in-segment cells with a negative edge, and the
+shows a negative edge on every scored in-segment cell, and the
 preregistration names the origin at line 46 (FourierWall2, 2026-08-04). But
 every row carries `evidence_tag: PROJ` and `metered_seconds: 0`.
 
@@ -150,9 +150,17 @@ the origin at line 46, a prior exploratory sweep from the FourierWall2
 campaign of 2026-08-04. I looked in one file and generalized to the whole
 repository.
 
-**The data supports the claim rather than undermining it**: 13 of 13 scored
-in-segment cells show a NEGATIVE edge, at 560 and 816 variables, across all
+**The data supports the claim rather than undermining it**: every scored
+in-segment cell shows a NEGATIVE edge, at 560 and 816 variables, across all
 three datasets tested.
+
+**CORRECTED 2026-10-05: that count is 8 of 13, not 13 of 13.** The five
+energy_steel rows were produced before the complement-pool correction
+(`775942b`) and report a control of 927-950 positives drawn from a complement
+holding only 832-864 — an impossible draw, so those controls overlapped the
+segment they were controlling for. energy_steel is reported `unscoreable` for
+Phase 1. The direction of the finding is unchanged: all 8 feasible cells are
+still negative. See `docs/SPECTRA_CONTROL_FEASIBILITY.md`.
 
 **But every one of those rows is `evidence_tag: PROJ`, `metered_seconds: 0`.
 They are the CLASSICAL PROXY. This repository has never run SPECTRA on
