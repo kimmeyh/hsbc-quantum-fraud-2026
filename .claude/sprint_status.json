@@ -15,7 +15,10 @@
       157
     ],
     "task_actuals": {
-      "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective."
+      "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective.",
+      "B": 58,
+      "E": 34,
+      "C_pilot": 42
     },
     "scope_additions": []
   },
