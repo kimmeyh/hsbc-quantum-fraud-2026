@@ -139,6 +139,20 @@ def dry_run_output():
     r = subprocess.run(
         [sys.executable, str(SRC / "run_hardware_b5.py"), "--dry-run"],
         capture_output=True, text=True, cwd=str(ROOT), timeout=1800)
+
+    # The ULB CSV is not redistributed with this repository, so a dry run
+    # cannot build its cells in CI. That is a legitimate skip and it is stated
+    # rather than swallowed: a skip reading as a pass is this repository's
+    # most-repeated defect, and `addopts = -rs` prints this reason.
+    #
+    # Found by CI, not locally (Sprint 21). The whole file was green on a
+    # machine that has the dataset -- which is precisely what
+    # SPRINT_EXECUTION_WORKFLOW warns about: "don't treat a local green suite
+    # as evidence that CI is green". The sibling B4 and feasibility guards
+    # already skipped correctly; this fixture asserted returncode == 0 instead.
+    if r.returncode != 0 and "not found at" in (r.stderr or ""):
+        pytest.skip("ULB creditcard.csv is absent (not redistributed); the "
+                    "B5 dry run cannot build its cells here")
     assert r.returncode == 0, r.stderr[-400:]
     return r.stdout
 
