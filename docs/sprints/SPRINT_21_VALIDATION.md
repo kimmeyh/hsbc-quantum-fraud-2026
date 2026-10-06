@@ -79,15 +79,16 @@ a real gap on its first run: Option 3 in the reconciliation had no cost.
 
 ---
 
-## Decisions for the team lead
+## Decisions (team lead, 2026-10-06)
 
 1. **The gate report omits B5's 13 s and 12 fits** from its hardware spend
    line, because `score_gates.is_metered_arm()` counts only `cvqboost_hw*`
-   arms. Fixing it changes frozen analysis code, which section 11 makes a
-   dated amendment. You have ruled out Phase 1 amendments, so it is left as is
-   unless you decide otherwise.
-2. **QCi was told Experiment 5 costs 270 s.** B4 cost 640 s for 10 of the 15
-   cells. Telling QCi is your action; nothing was sent.
+   arms. **Decision: deferred to F123's deep dive** (A.3), since whether B5's
+   rows belong in the Phase 1 report at all is that card's question.
+2. **QCi was told Experiment 5 costs 270 s; B4 cost 640 s for 10 of the 15
+   cells.** **Decision: no action needed.** QCi knew every figure in the
+   hardware plan was a best-guess estimate, not an exact commitment for each
+   experiment.
 
 ## Effort
 

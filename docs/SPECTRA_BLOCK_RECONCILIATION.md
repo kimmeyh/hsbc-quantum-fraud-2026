@@ -214,6 +214,11 @@ does not disappear because the block is approved -- if the spend lands well
 above 270 s, that difference is still externally visible and still needs
 stating to QCi rather than being discovered by them.
 
+**Resolved 2026-10-06 (team lead): no notice to QCi is needed.** B4 cost 640 s
+for 10 of the 15 cells. QCi knew every figure in the hardware plan was a
+best-guess estimate, not an exact commitment for each experiment. The paragraph
+above is kept as written because it records the open question as it stood.
+
 ### Consequently
 
 - F2b's B4 line and F5 are closed into F90, the surviving card

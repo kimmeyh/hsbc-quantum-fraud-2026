@@ -410,6 +410,7 @@ then the builds for the committed experiments. Estimates are `[no-history]`.
   - Phase 2 layout: its own results store, cost ledger, gate report and generator (e.g. under `experiments/phase2/`), and how Phase 2 code reuses Phase 1 code without editing it
   - Whether today's five changes stay, move, or are copied into a Phase 2 store with the Phase 1 files restored to their pre-Sprint-21 state, and what each option does to the tests that reconcile those files
   - The guard: a hook or test that fails when Phase 2 work writes a Phase 1 path, proven red. This repository's rule is that a prevention is a mechanism, not a reminder
+  - **Deferred here by the team lead, 2026-10-06 (decision A.3):** `score_gates.is_metered_arm()` counts only `cvqboost_hw*` arms, so the regenerated `gate_report.md` omits B5's 12 fits and 13 s from its hardware spend line, and its header names only two arms as `[HW]`. Fixing it changes frozen analysis code. Whether B5's rows belong in the Phase 1 report at all is part of this card's question, so the fix waits for its answer
 - Acceptance: a written decision document with the locked-file inventory, the target layout, the disposition of the five Sprint 21 changes, and the guard design; the team lead approves it before any file is moved. Nothing is moved by this card
 - Depends on: nothing. Should precede F20 and every later card that writes results
 
