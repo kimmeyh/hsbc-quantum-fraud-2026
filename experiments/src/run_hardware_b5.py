@@ -273,14 +273,19 @@ def main() -> int:
           f"{WINDOW_START:%Y-%m-%d %H:%M} local")
     print()
 
-    if not todo:
+    # A dry run spends nothing and exists to exercise the submission path, so
+    # it never depends on what results.json already holds. The first version
+    # returned "Nothing to do" once the real block had run, which made its
+    # guard fail the morning B5 completed -- a test depending on live repository
+    # state, the F97 class.
+    if not todo and not args.dry_run:
         print("Nothing to do: every B5 cell is already complete.")
         return 0
 
     df = data.load_ulb().drop_duplicates().reset_index(drop=True)
 
     if args.dry_run:
-        for s in todo[:args.max_calls]:
+        for s in all_specs[:args.max_calls]:
             r = _fit_one(df, s, None, dry_run=True)
             sa = r.get("solver_args_sent") or {}
             print(f"  [dry] {s['protocol']:18s} seed={str(s['seed']):4s} "

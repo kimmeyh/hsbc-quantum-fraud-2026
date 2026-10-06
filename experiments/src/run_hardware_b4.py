@@ -315,13 +315,14 @@ def main() -> int:
               f"{s['feasibility']['reason'][:88]}")
     print()
 
-    if not todo:
+    # A dry run never depends on what results.json holds (see run_hardware_b5).
+    if not todo and not args.dry_run:
         print("Nothing to do: every feasible B4 cell is already complete.")
         return 0
 
     if args.dry_run:
         seen, picks = set(), []
-        for s in todo:
+        for s in feasible:
             if s["cell"] not in seen:
                 seen.add(s["cell"])
                 picks.append(s)
