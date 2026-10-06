@@ -290,6 +290,24 @@ def main() -> int:
         print("\nDry run: nothing submitted, nothing spent.")
         return 0
 
+    # A TEST PROCESS MAY NEVER SPEND DEVICE SECONDS. On 2026-10-05 two of my
+    # own window-guard tests invoked this runner with `--max-calls 1`,
+    # checking for "REFUSING" only AFTER the subprocess returned. Before 18:00
+    # they skipped; once the window opened the guard correctly allowed the run
+    # and the tests submitted two real jobs with no Criterion H statement read
+    # by anyone. Nothing was billed only because one job body was malformed
+    # and the other hit an SSL error.
+    #
+    # The tests are fixed, but the structural answer belongs here: metered
+    # work refuses to start inside pytest, whatever the arguments say. The
+    # allocation has no undo, and a runner that can be fired by a test is one
+    # careless parametrize away from spending the balance.
+    if "PYTEST_CURRENT_TEST" in os.environ or "pytest" in sys.modules:
+        print("REFUSING: a metered run was invoked from a test process. "
+              "Tests exercise --dry-run and source-level checks only; "
+              "spending device seconds requires a human-invoked run.")
+        return 5
+
     if not (_window_open() or args.ignore_window):
         print(f"REFUSING: the team lead set the Dirac-3 window at "
               f"{WINDOW_HOUR}:00 local and it is {datetime.now():%H:%M}. "

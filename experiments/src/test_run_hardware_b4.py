@@ -204,13 +204,40 @@ def test_the_window_matches_the_instruction():
 
 
 def test_running_before_the_window_exits_nonzero():
-    r = subprocess.run(
-        [sys.executable, str(SRC / "run_hardware_b4.py"), "--max-calls", "1"],
-        capture_output=True, text=True, cwd=str(ROOT), timeout=2400)
-    if "REFUSING" not in r.stdout:
-        pytest.skip(f"the window is open now ({datetime.now():%H:%M})")
-    assert r.returncode == 3, (
-        "a guard that refuses while exiting 0 reports success to its caller")
+    """The window guard refuses and exits NONZERO.
+
+    THIS TEST MUST NEVER BE ABLE TO SUBMIT METERED WORK, and the first
+    version could. It invoked the runner with `--max-calls 1` and checked for
+    "REFUSING" afterwards, so before 18:00 it skipped -- but once the window
+    opened the guard correctly allowed the run and THE TEST SUBMITTED TWO REAL
+    JOBS at 20:57 and 21:02 local on 2026-10-05, with no Criterion H statement
+    read by anyone. Nothing was billed only because one hit a malformed job
+    body and the other an SSL error; a correct body would have spent device
+    seconds from a test run.
+
+    `pytest.skip` AFTER `subprocess.run` is the defect: the spend has already
+    happened by the time the skip is evaluated.
+
+    The guard is now tested WITHOUT a subprocess. `_window_open` is the whole
+    decision, and it is a pure function of the clock -- which
+    `test_the_window_matches_the_instruction` already pins at four times. What
+    remains to check is that `main()` returns 3 rather than 0 on that branch,
+    and that is a source-level fact.
+    """
+    src = (SRC / "run_hardware_b4.py").read_text(encoding="utf-8")
+    i = src.index("REFUSING: the team lead set the Dirac-3 window")
+    tail = src[i:i + 500]
+    assert "return 3" in tail, (
+        "the window refusal must exit 3; a guard that refuses while exiting 0 "
+        "reports success to its caller")
+
+    # And the refusal must be reached BEFORE any client is constructed, or the
+    # runner would authenticate and submit before deciding not to.
+    i_window = src.index("if not (_window_open()")
+    i_client = src.index("QciClient(")
+    assert i_window < i_client, (
+        "the window check must precede client construction, or the runner "
+        "reaches the API before it decides whether it is allowed to")
 
 
 # ---- idempotency -----------------------------------------------------------

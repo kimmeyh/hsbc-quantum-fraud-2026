@@ -115,17 +115,24 @@ def test_the_window_closes_before_six_and_opens_after():
 def test_running_before_the_window_refuses_with_a_nonzero_exit():
     """And it must EXIT NONZERO. A guard that refuses while reporting success
     is this repository's most-repeated defect: "could not check" reading as
-    "clean"."""
-    r = subprocess.run(
-        [sys.executable, str(SRC / "run_hardware_b5.py"), "--max-calls", "1"],
-        capture_output=True, text=True, cwd=str(ROOT), timeout=900)
-    if "REFUSING" not in r.stdout:
-        pytest.skip(f"the window is open now ({datetime.now():%H:%M}); this "
-                    "guard only exercises the closed-window path")
-    assert r.returncode != 0, (
-        "refusing to run must not exit 0; a caller reading the exit code would "
-        f"see success. stdout tail: {r.stdout[-200:]}")
-    assert r.returncode == 3
+    "clean".
+
+    TESTED WITHOUT A SUBPROCESS, because the first version could submit. It
+    ran the runner with `--max-calls 1` and checked for "REFUSING" afterwards,
+    so once the window opened the guard correctly allowed the run and the test
+    SUBMITTED A REAL JOB at 21:02 local on 2026-10-05. Nothing was billed only
+    because the job body was malformed. `pytest.skip` after `subprocess.run`
+    is the defect: by the time the skip runs, the spend has happened.
+    """
+    src = (SRC / "run_hardware_b5.py").read_text(encoding="utf-8")
+    i = src.index("REFUSING: the team lead set the Dirac-3 window")
+    assert "return 3" in src[i:i + 500], (
+        "the window refusal must exit 3, not 0")
+
+    i_window = src.index("if not (_window_open()")
+    i_client = src.index("QciClient(")
+    assert i_window < i_client, (
+        "the window check must precede client construction")
 
 
 @pytest.fixture(scope="module")
