@@ -3,7 +3,7 @@
     "number": 21,
     "name": "The SPECTRA Block, and a Bar That Can Read It",
     "branch": "feature/20261004_Sprint_21",
-    "status": "phase_4_execution",
+    "status": "phase_5_3_manual_validation",
     "plan_doc": "docs/sprints/SPRINT_21_PLAN.md",
     "pr": 152,
     "plan_approved": true,
@@ -22,7 +22,9 @@
       "D_pilot": 47,
       "C_runners": 112,
       "D": 86,
-      "A": 0
+      "A": 0,
+      "C_rebuild": 39,
+      "C_verification": 36
     },
     "scope_additions": [],
     "decisions": {
@@ -44,5 +46,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-10-05"
+  "updated": "2026-10-06"
 }

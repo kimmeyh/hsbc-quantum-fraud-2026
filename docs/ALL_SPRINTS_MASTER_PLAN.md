@@ -394,6 +394,25 @@ then the builds for the committed experiments. Estimates are `[no-history]`.
 - Acceptance: AUC of each predictor recorded with a one-line reading
 - Depends on: F90's first task. The SPECTRA author's construction details settle it without inference if they arrive (team lead to ask)
 
+**F123. Separate Phase 2 work from Phase 1 files: deep dive (~2h investigation [no-history], zero metered) Priority 14**
+- Phase: Phase 2 preparation (added 2026-10-06, team lead: "since we are no longer in phase 1 and now in phase 2, there should be a separate set of files (JSON, .md...) and reports for phase 2 so that we are not updating phase 1 files"). Scored 14, the slot F101 vacates at Sprint 21 close-out, so it lands BEFORE F20 (16), which is the next card that writes results
+- Platform: N/A (repository structure, `experiments/results/`, `experiments/src/`, guards)
+- **The question**: how do Phase 2 work and learning live in their own files and reports, so that nothing done in Phase 2 alters the locked Phase 1 files or the files those were built from?
+- **Already happening, measured 2026-10-06, so this is not hypothetical.** Sprint 21 left `PREREGISTRATION.md`, `docs/paper/`, `docs/submission/`, `score_gates.py` and `metrics.py` untouched, but it CHANGED five Phase 1 files:
+  - `experiments/results/results.json`: 22 B4/B5 hardware rows appended
+  - `experiments/results/gate_report.md`: regenerated with them
+  - `experiments/results/qpu_cost_ledger.json`: 22 call records
+  - `docs/HARDWARE_REQUEST_B4.md`: an additive "8 of 13" correction (the sent text left standing)
+  - `experiments/src/spectra_segment.py`: a feasibility check added to the scoring path. **This is Phase 1 analysis code, and section 11 makes later changes to it dated amendments; it was changed without one.** Recorded here rather than reverted, because the deep dive decides where it belongs
+- **Questions the deep dive must answer**:
+  - Which files are LOCKED (the frozen preregistration, the submitted documents, their hashed PDFs) and which are the files they were BUILT FROM (`results.json`, `gate_report.md`, `score_gates.py`, `metrics.py`, the loaders, `spectra_segment.py`)? Today only the first group is guarded
+  - Where do post-submission runs of FROZEN Phase 1 blocks belong? B4 and B5 are rows of the Phase 1 grid (section 10) but ran after the 2026-09-12 filing. Phase 1 evidence, Phase 2 evidence, or a third bucket
+  - Phase 2 layout: its own results store, cost ledger, gate report and generator (e.g. under `experiments/phase2/`), and how Phase 2 code reuses Phase 1 code without editing it
+  - Whether today's five changes stay, move, or are copied into a Phase 2 store with the Phase 1 files restored to their pre-Sprint-21 state, and what each option does to the tests that reconcile those files
+  - The guard: a hook or test that fails when Phase 2 work writes a Phase 1 path, proven red. This repository's rule is that a prevention is a mechanism, not a reminder
+- Acceptance: a written decision document with the locked-file inventory, the target layout, the disposition of the five Sprint 21 changes, and the guard design; the team lead approves it before any file is moved. Nothing is moved by this card
+- Depends on: nothing. Should precede F20 and every later card that writes results
+
 **F102. Phase 2 preregistration framework (~3h [no-history], zero metered) Priority 30**
 - Phase: Phase 2 preparation (the checklist's Deliverable)
 - Platform: docs

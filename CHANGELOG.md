@@ -4,6 +4,21 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-10-06
+
+- **feat**: **B5 and B4 ran on Dirac-3: 22 fits, 0 failed, 653 metered seconds, reconciled against the device balance (1,675 to 1,022 s).** B5 (sign-augmented QSVM, ULB) 12 fits, 13 s, test AUPRC mean 0.212. B4 (SPECTRA in-segment replication) 10 feasible cells, 640 s: the device tracks its proxy within 0.004 AUPRC overall, and **the in-segment edge against the matched control is negative on all 8 scoreable cells**. The cost conflict is settled: B2's 82.4 s/fit anchor was right. `docs/B4_B5_HARDWARE_RESULT.md` (#155)
+- **fix**: **The B4 and B5 runners submit through `eqc_models`, as every block since B1 has.** The first versions hand-built the job body with invented field names; QCi rejected one with a 400. New `eqc_submit.py` reuses B3's ledger discipline, and its offline solver lets a dry run exercise everything except the HTTP call. That full dry run caught a scoring bug the old one could not reach (#155)
+- **fix**: **A test was rewriting the committed gate report.** `test_report_generates_over_the_live_store` ran `score_gates.main()` without restoring the file, invisible until today's rows changed the output. It made 4 `test_gate_report_totals` failures appear on one run and vanish on the next. Now restores byte-for-byte, proven with a probe line (#155)
+- **chore**: `gate_report.md` regenerated from `results.json` (210 rows). Its hardware spend line omits B5's 13 s because `is_metered_arm()` counts only `cvqboost_hw*`; changing frozen analysis code is an amendment, so it is put to the team lead rather than fixed
+
+### 2026-10-05
+
+- **feat**: **F100's complete classical bar: HGB and GA2M beat the CVQBoost proxy on all three SPECTRA cells, 5 of 5 seeds, CIs excluding zero.** Measured 3.77 s per cell against a ~6 hour estimate (#156)
+- **feat**: **F101: `in_pocket` is predictable from the phase features at AUC 0.93-0.99**, so a router gate on those features is not independent (#157)
+- **fix**: **H5(ii)'s matched control is infeasible on energy_steel, all five seeds**; the scoring path now reports `unscoreable` instead of crashing. The five committed proxy rows predate the complement-pool correction and their controls overlapped the segment; "13 of 13" corrected to 8 of 13 in three documents. `PREREGISTRATION.md` untouched; the repaired design is specified for Phase 2 in F102 (#155)
+- **fix**: **My own window-guard tests submitted two real Dirac-3 jobs; nothing was billed, by luck.** Both runners now refuse inside any test process, before the window check (#155)
+- **fix**: F122's four accurate-but-weak guards rewritten and each proven red; a canceled CI run now reads UNDETERMINED, not RED (#154)
+
 ### 2026-10-04
 
 - **chore**: **Sprint 20 delivered and merged.** PR #146 to develop (merge `55a73e1`), PR #151 develop to main (merge `32a2ba5`). Four cards shipped -- F97, F93, F98, F99 -- at 161 wall-clock minutes against 171 estimated, the first sprint in this repository with a complete set of per-task actuals rather than a reconstructed total
