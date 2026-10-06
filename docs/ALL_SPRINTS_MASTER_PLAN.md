@@ -265,7 +265,7 @@ Three findings outlived their cards and are recorded there:
 - The feedback document's open question 1, "Would relaxation schedule 4 close the residual?", is still open: every Phase 1 fit ran schedule 2, frozen before the grant. The memo names it as a use of the remaining balance
 - **Four fits at 45-91 variables**, enumerated in the HELD note below. Schedule-2 cost there is 4-9 s per fit, measured; **schedule-4 cost is unmeasured**, so the block opens with one fit to establish the rate (the F87 pattern). (Corrected 2026-09-27: this bullet said "about five fits at 91-136 variables" while the note below enumerated four, one of them at 45 variables. IMP-4 directs future readers to trust this card's numbers rather than re-derive them, so a card contradicting itself undercuts the rule that cites it. Found by both PR #141 reviews.)
 - Acceptance: the runner is idempotent before its first approval (Criterion H); per-fit residual against the proxy optimum reported as `[HW]` rows beside their schedule-2 twins
-- Depends on: per-block team-lead approval (Criterion H)
+- Depends on: **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run); per-block team-lead approval (Criterion H)
 - **HELD until the QCi memo (F92) is sent** (team lead, 2026-09-23). Case and cost worked out at refinement, recorded so it is not re-derived: 4 fits on frozen pools that already have schedule-2 and exact-optimum twins (B1 dct seeds 42 and 43 at 91 variables; the G0b fit with the 0.413% gap; B1 lg seed 42 at 45 variables), stopping after fit 1 to re-quote if the rate exceeds 27 s. About 60 s, range 40-110 s, cap 120 s. Extrapolated, low confidence: measured schedule-2 cost of 4-5 s per fit times the 3.4x schedule-4 ratio (range 2.3x-5.3x) in QCi's portfolio example, a problem of unstated size. The per-fit data suggests the residual is a fixed offset (all 8 samples clustered well above the optimum), which predicts schedule 4 will NOT close it; that is inference, and the run is what settles it
 
 **F90. F2b at the configuration that can actually show an effect: B5, then B4 at schedule 3 (~4h + approvals) Priority 10**
@@ -394,6 +394,27 @@ then the builds for the committed experiments. Estimates are `[no-history]`.
 - Acceptance: AUC of each predictor recorded with a one-line reading
 - Depends on: F90's first task. The SPECTRA author's construction details settle it without inference if they arrive (team lead to ask)
 
+**F124. SPECTRA prediction research: what to try before the next Dirac-3 run (~4h investigation [no-history], zero metered) Priority 10**
+- Phase: Phase 2 preparation (added 2026-10-06, team lead; scheduled for Sprint 22). Scored 10, the slot F90 vacates at Sprint 21 close-out. **Every open card that can spend Dirac-3 seconds depends on it** -- F95, F110, F20, F25, F30 -- by the team lead's decision to enforce this as a card dependency rather than a code gate (2026-10-06, answer 2.2)
+- Platform: SPECTRA, Dirac-3, eqc_models, docs
+- **The question**: what could improve prediction on the SPECTRA datasets -- feature analysis, run setup, model configuration -- and which of it is worth device time?
+- **Sources to search, all of them**:
+  - This repository: results.json, the F100 classical bar, F101, the B4/B5 result, the SPECTRA feasibility analysis, A31 (resolution), B2's sparsity result, and the open cards that already propose levers (F20 soft votes, F25 non-convex selection, F104 resolution screen, F106 dequantization check, F109 domain ladder and aggregation, F113 oracle gap)
+  - The off-repository `CVQBoost_Findings.md`: planning reference only, nothing copied in as evidence (team lead, Sprint 20)
+  - **EvidenceBasedDB**: its database and the articles, repositories and references behind it. READ-ONLY: this repository never writes there (CLAUDE.md standing rule)
+  - Dirac-3 and `eqc_models`: device behavior, solver arguments, and library options not yet tried. Verified 2026-10-06 that `eqc_models.ml` ships `feature_selection`, `decomposition`, `reservoir`, `clustering` and a dual QSVM (`QSVMClassifierDual`), none of which this repository has used; `QBoostClassifier` also exposes `weak_cls_type`, `weak_cls_params` and `batched_qboost_enabled`
+  - **QCi NeuraWave**: what it is, from primary sources, and whether it can help with feature analysis or prediction. **Unverified so far**: nothing in this repository describes it; whether it relates to `eqc_models.ml.reservoir` is a question to settle, not an assumption
+- **What the evidence already says, so the search starts from it**:
+  - The device returns its classical proxy's answer (in-pocket AUPRC within 0.0072 on all 8 B4 cells; weight cosine 0.83-0.90). A better number has to come from the PROBLEM -- features, pool, regularization, formulation -- not from the solve
+  - The classical lanes that win are the ones with feature interactions (HGB, GA2M beat the proxy on every cell); additive lanes lose
+  - In-pocket, CVQBoost beat XGBoost on 2 of 8 cells (ROC) in a scratch comparison on B4's splits, against the off-repository single-seed result's clean sweep; seed-to-seed spread (~0.05) exceeds that result's margins
+  - Train-test AUPRC gap +0.15 to +0.30 on every B4 cell: overfit, so regularization and pool size are levers
+  - `in_pocket` is predictable from the phase features at AUC 0.93-0.99 (F101)
+  - B5's QSVM Hamiltonians exceed A31's ~23 dB limit on 11 of 12 cells
+  - energy_steel, the off-repository result's strongest cell, has never run here: the H5(ii) control is infeasible there, but a CVQBoost-versus-XGBoost in-pocket comparison needs no control
+- Acceptance: `docs/SPECTRA_IMPROVEMENT_RESEARCH.md` with a RANKED list of candidates; each carries its source (verified or unverified), the expected effect, how to test it on the classical proxy first at zero metered cost, and the device seconds it would need if the proxy shows signal. NeuraWave assessed from primary sources. The team lead approves the list before any Dirac-3 card starts
+- Depends on: nothing. Results it produces follow F123's Phase 2 file layout once decided
+
 **F123. Separate Phase 2 work from Phase 1 files: deep dive (~2h investigation [no-history], zero metered) Priority 14**
 - Phase: Phase 2 preparation (added 2026-10-06, team lead: "since we are no longer in phase 1 and now in phase 2, there should be a separate set of files (JSON, .md...) and reports for phase 2 so that we are not updating phase 1 files"). Scored 14, the slot F101 vacates at Sprint 21 close-out, so it lands BEFORE F20 (16), which is the next card that writes results
 - Platform: N/A (repository structure, `experiments/results/`, `experiments/src/`, guards)
@@ -483,7 +504,7 @@ then the builds for the committed experiments. Estimates are `[no-history]`.
 - Phase: Phase 2 preparation, Experiment 6
 - Platform: classical proxy first; Dirac-3 only under F102 and per-block approval
 - Time including Hamiltonian construction. `HARDWARE_PLAN_PHASE_2.md` owns the sent sizing (12 fits at 833 variables) and the pool-build-to-device-time ratio
-- Depends on: F102 for reporting; Criterion H for any metered fit
+- Depends on: **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run) before any metered fit; F102 for reporting; Criterion H for any metered fit
 
 **F111. Experiment 4 build: Loke et al. replication harness (~4h [no-history], zero metered) Priority 120**
 - Phase: Phase 2 preparation, Experiment 4
@@ -583,7 +604,7 @@ not a sweep correction.
 - Rationale: hard votes discard per-learner confidence; the weights are already continuous (CVQBoost), so the information bottleneck is the vote quantization
 - Zero-cost evaluation path: proxy side-by-side vs hard-vote pools on identical seeds (the A3 comparison machinery reused verbatim)
 - Constraints: custom H construction departs from eqc-models' builders (pool identity with the library is lost; document as its own arm); Phase 1 evidence chain untouched; any Phase 2 use enters through that phase's preregistration
-- Depends on: F17 pairs well (the simulator would evaluate both); nothing blocks the proxy investigation
+- Depends on: **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run) before any Dirac-3 fit; F17 pairs well (the simulator would evaluate both); nothing blocks the proxy investigation
 - **Expanded 2026-10-03 (Phase 2 plan W3.2): multi-sample ensembling.** Average predictions over the top-k low-energy samples instead of keeping only the best. Zero added QPU cost, because the samples are already paid for, and it attacks the variance behind the train-test gap F90 carries. Needs F90 to store every returned sample (F90 acceptance (c))
 
 **F25. Non-convex CVQBoost: cardinality-constrained weak-learner selection on Dirac-3 (~4h investigation + hardware) Priority HOLD**
@@ -593,7 +614,7 @@ not a sweep correction.
 - The Sprint 4 evidence: the continuous-weight formulation is strictly convex AND nearly degenerate (uniform weights even at lambda = 0), so an exact classical proxy always matches the hardware. The formulation where that stops being true is combinatorial selection: choose the best subset of m weak learners from a pool of n (cardinality or L0 sparsity constraint), optionally with integer weights -- NP-hard, no exact classical proxy, and the native problem class for Dirac-3's integer solver (num_levels budget against the documented 949 device limit)
 - Design sketch: same H matrix and objective, plus a cardinality constraint; classical comparators become greedy/forward selection, L1-then-threshold, and a MIP solver at small n; the honest question is solution QUALITY at fixed wall-clock, not just feasibility
 - Expected value: this is the concrete "where quantum optimization is necessary rather than optional" program the Phase 1 paper points at, and the strongest technical item for the QCi conversation
-- Depends on: Phase 2 preregistration; QCi grant for meaningful hardware time; pairs with F17 (simulator) and F20 (soft votes)
+- Depends on: **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run); Phase 2 preregistration; QCi grant for meaningful hardware time; pairs with F17 (simulator) and F20 (soft votes)
 
 **F30. Concurrent Dirac-3 submission with bounded in-flight requests (~4h build + 1h dry run) Priority HOLD**
 - Phase: Phase 2 preparation / infrastructure (team-lead request 2026-09-04)
@@ -607,7 +628,7 @@ not a sweep correction.
 - **Measured queue behavior, 2026-09-09**: the F46 probe submitted at 14:33 local was still queued 52 minutes later, having spent ~97 CPU-seconds on its local pool build. Flat CPU against growing wall clock is the signature of queue wait, not computation. The team lead reports the queue is ALMOST ALWAYS EMPTY AFTER 5PM LOCAL, so wall-clock cost is a function of WHEN a block runs, not what it computes
 - **The team lead's intent for this card**: enqueue 4 or more jobs at once so they run CONSECUTIVELY, raising the odds they execute back to back rather than each paying a fresh queue wait. That is a different and stronger value case than the throughput argument below
 - Value was judged to arrive with Phase 2 volume (81+ fit grids), and that judgment was made against a free tier with 163 spent seconds. With 3,000 granted seconds (F46) and queue wait as the binding cost rather than device seconds, the case is stronger: whenever a session needs more than one or two fits, serial submission wastes most of the wall clock. Still not recommended BEFORE submission, on calendar grounds alone
-- Depends on: nothing to build; live vetting needs team-lead approval (Criterion H)
+- Depends on: nothing to build; **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run) before live vetting; live vetting needs team-lead approval (Criterion H)
 
 **F13. Phase 2 PoC sprint planning (~unknown) Priority 180**
 - Phase: Phase 2 (Nov 17 - Feb 28, if selected)
