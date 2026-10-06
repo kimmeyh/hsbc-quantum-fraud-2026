@@ -44,6 +44,34 @@ every one of the 8 scoreable cells.**
 | telecom_churn | 45 | 0.6966 | unscoreable | unscoreable | 0.835 | +0.303 |
 | telecom_churn | 46 | 0.7025 | -0.0725 | -0.1368 | 0.836 | +0.297 |
 
+**CORRECTION 2026-10-06: the "Proxy's edge" column is NOT like-for-like.** The
+proxy rows in `spectra_proxy_dry_run.json` predate the complement-pool
+correction (`775942b`), so their controls were drawn from the full pool and
+could overlap the pocket they controlled for. The device's controls are drawn
+from the complement. The device's edges are valid; comparing them with that
+column is not. The clean device-versus-proxy comparison is inside the pocket
+itself, where both arms score the identical rows:
+
+| Cell | Seed | Device in-pocket AUPRC | Proxy in-pocket AUPRC | Difference |
+|---|---|---|---|---|
+| oilgas_gasturbine | 42 | 0.7918 | 0.7908 | +0.0010 |
+| oilgas_gasturbine | 43 | 0.7889 | 0.7884 | +0.0004 |
+| oilgas_gasturbine | 44 | 0.7571 | 0.7591 | -0.0019 |
+| oilgas_gasturbine | 45 | 0.7950 | 0.7941 | +0.0009 |
+| oilgas_gasturbine | 46 | 0.7999 | 0.8010 | -0.0011 |
+| telecom_churn | 43 | 0.7562 | 0.7591 | -0.0029 |
+| telecom_churn | 44 | 0.8101 | 0.8066 | +0.0035 |
+| telecom_churn | 46 | 0.7528 | 0.7600 | -0.0072 |
+
+The device is better on 4 of 8 cells, with a mean difference of -0.0009 and
+no difference larger than 0.0072. Inside the pocket, the device and its
+classical proxy are indistinguishable.
+
+Every B4 fit used the full QFE phase representation the SPECTRA files carry:
+all five `_phase` columns per dataset plus the raw covariates, the same
+columns the proxy used. telecom_churn drops only `age`, by the frozen cell's
+design. `in_pocket` and the two `target` columns are excluded as labels.
+
 telecom_churn seeds 42 and 45 fall below the 50-positive floor (46 and 49 test
 positives in the pocket), exactly as the B4 request predicted in advance. They
 are reported per seed and are not averaged over or backfilled.
