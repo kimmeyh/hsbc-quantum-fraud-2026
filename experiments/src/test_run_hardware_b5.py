@@ -54,10 +54,13 @@ def test_a_signed_weight_is_representable_after_augmentation():
         "the augmented non-negative model must reproduce the signed model")
 
 
-def test_variable_count_is_twice_the_feature_count():
-    assert b5.n_variables(13) == 26
-    assert b5.n_variables(b5.K_FEATURES) == 26, (
-        "26 variables is what the Criterion H statement quotes")
+def test_variable_count_is_twice_the_features_plus_the_bias():
+    """QSVMClassifier appends a bias column (`X_tilde = [X, 1]`), so 13
+    sign-augmented features are 27 variables. The first runner said 26: it
+    hand-built the job body and never read what the library actually does."""
+    assert b5.n_variables(13) == 27
+    assert b5.n_variables(b5.K_FEATURES) == 27, (
+        "27 variables is what the Criterion H statement quotes")
 
 
 # ---- the 12 fits the frozen grid specifies ---------------------------------
@@ -102,14 +105,18 @@ def test_the_block_cap_and_allocation_floor_are_set():
         "the team lead's floor; changing it is his decision, not the runner's")
 
 
-def test_the_window_closes_before_six_and_opens_after():
-    """The team lead directed all Dirac-3 calls to wait until 18:00 local on
-    2026-10-05."""
-    assert b5.WINDOW_HOUR == 18
-    assert not b5._window_open(datetime(2026, 10, 5, 15, 12))
-    assert not b5._window_open(datetime(2026, 10, 5, 17, 59))
-    assert b5._window_open(datetime(2026, 10, 5, 18, 0))
-    assert b5._window_open(datetime(2026, 10, 5, 23, 30))
+def test_the_window_opens_at_the_team_leads_start_time():
+    """The window is a start time set by the team lead."""
+    # Replaced 2026-10-06 by the team lead: "the runners' time check is
+    # artificial and can be replaced by 7:30am EST". A START TIME, not a daily
+    # hour: the first version used `hour >= 18`, which shut again at midnight
+    # -- so at 00:26 it refused a run the instruction allowed.
+    assert b5.WINDOW_START == datetime(2026, 10, 6, 7, 30)
+    assert not b5._window_open(datetime(2026, 10, 6, 0, 26))
+    assert not b5._window_open(datetime(2026, 10, 6, 7, 29))
+    assert b5._window_open(datetime(2026, 10, 6, 7, 30))
+    assert b5._window_open(datetime(2026, 10, 7, 2, 0)), (
+        "a start time stays open; it must not close again at midnight")
 
 
 def test_running_before_the_window_refuses_with_a_nonzero_exit():
@@ -143,8 +150,14 @@ def dry_run_output():
     running it once per test cost nine minutes for this file alone. A guard
     slow enough to be skipped or deselected is a guard that does not run.
     """
+    # --max-calls 1: the dry run now goes through the WHOLE library path for
+    # each cell (feature selection, fit against the stubbed solver, scoring),
+    # which is what makes it a real dry run and also what makes 12 cells take
+    # over ten minutes. One cell proves the path; the full 12 are run by hand
+    # before any metered block.
     r = subprocess.run(
-        [sys.executable, str(SRC / "run_hardware_b5.py"), "--dry-run"],
+        [sys.executable, str(SRC / "run_hardware_b5.py"), "--dry-run",
+         "--max-calls", "1"],
         capture_output=True, text=True, cwd=str(ROOT), timeout=1800)
 
     # The ULB CSV is not redistributed with this repository, so a dry run
@@ -165,8 +178,13 @@ def dry_run_output():
 
 
 def test_the_dry_run_spends_nothing_and_says_so(dry_run_output):
-    assert "nothing submitted, nothing spent" in dry_run_output
-    assert "CALL COUNT now   : 12" in dry_run_output
+    assert "nothing submitted, nothing spent" in dry_run_output.lower()
+    assert "cells total      : 12" in dry_run_output
+    assert "status=ok" in dry_run_output, (
+        "the dry run must complete fit AND scoring, not stop before the "
+        "request is built -- that gap is how a fabricated job body survived")
+    assert "vars=27" in dry_run_output, (
+        "the library must have been handed 27 variables (13 x 2 + bias)")
     assert "EXPECTED SECONDS" in dry_run_output, (
         "Criterion H requires the expected seconds stated before any run")
 

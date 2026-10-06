@@ -1,45 +1,32 @@
 """B4: the SPECTRA in-segment replication on Dirac-3, feasible cells only.
 
 Block B4 of the frozen grid (PREREGISTRATION section 10): "SPECTRA
-replication, 3 strongest in-segment cells x 5 seeds | 15 fits | ~450 QPU s |
-gated on QCi grant + SPECTRA re-download". This is the replication half of
-Experiment 5, segment transfer (H5), and F90 is its card.
+replication, 3 strongest in-segment cells x 5 seeds | 15 fits | ~450 QPU s".
+The replication half of Experiment 5, segment transfer (H5); F90 is its card.
 
-IT RUNS 10 OF THE 15 CELLS, NOT ALL 15, and that is a reported subset rather
-than a protocol change. energy_steel cannot produce the rate-matched control
-H5(ii) requires on any of its five seeds: the pocket holds 918-950 of the test
-fold's positives while the complement holds only 832-864, so a
-size-and-rate-matched draw from outside the segment is arithmetically
-impossible. Those five cells are reported `unscoreable`, which is an outcome
-the gate table already has a column for (pass / fail / null / unscoreable).
+SUBMITS THROUGH eqc-models, EXACTLY AS B2 AND B3 DID. `QBoostClassifier.fit`
+builds the weak-learner pool and the Hamiltonian and makes ONE metered call,
+with the configuration `spectra_segment.FROZEN_CELLS` encodes: schedule 3,
+8 samples, relaxation schedule 2, lambda = 2 x n_train, sequential pool build.
+B2 ran that identical configuration (only `pair_build` and dataset differ),
+which is why its 82.4 s/fit is the cost anchor. The first version of this
+runner hand-built the job body instead, with invented field names, and QCi
+rejected it; see `eqc_submit.py`.
 
-`experiments/PREREGISTRATION.md` IS NOT AMENDED. Section 11 forbids an
-amendment that changes a gate's pass/fail criterion, and H5(ii)'s control IS
-that criterion; such a change would be a reported DEVIATION. Running a subset
-of frozen cells needs no amendment. The repaired design -- a downsized matched
-pair on both sides, repeated over draws -- is specified for PHASE 2 in F102,
-where it is new specification against data that does not exist yet rather than
-a retrofit onto observed results. Full analysis:
-`docs/SPECTRA_CONTROL_FEASIBILITY.md`.
+IT RUNS 10 OF THE 15 CELLS, a reported subset needing no amendment.
+energy_steel cannot produce the rate-matched control H5(ii) requires on any of
+its five seeds (pocket 918-950 test positives, complement 832-864), so those
+five cells are `unscoreable` -- an outcome the gate table already has a column
+for. `experiments/PREREGISTRATION.md` is NOT amended (section 11).
+`docs/SPECTRA_CONTROL_FEASIBILITY.md` has the analysis.
 
-COST, and an open conflict this block settles. F90's card prices B4 from B2's
-measured 82.4 s/fit at 833 variables; `HARDWARE_REQUEST_B4.md` line 43 prices
-it from FourierWall2's rollout at 26-34 s/fit for 560-816 variables at this
-exact ns/rx/schedule, and cites the frozen envelope of ~450 s. Both are
-described as measured and they disagree by a factor of 2.4. The 10 feasible
-fits are 5 at 816 variables and 5 at 560:
+COST is quoted as a band, 250-680 s, because the two anchors disagree by 2.4x
+and both are described as measured: B2's 82.4 s/fit at 833 variables gives
+~676 s; `HARDWARE_REQUEST_B4.md` line 43's 26-34 s/fit gives ~250 s. B5 runs
+first and lands a fresh measurement.
 
-  - at the B2 anchor rate      : about 676 s
-  - at the FourierWall2 rate   : about 250 s
-
-The band is stated to the team lead as **250-680 s** rather than a single
-number, because quoting either alone would present a contested figure as
-settled -- which is the Sprint 11 defect that had a probe approved at "0-5
-seconds" cost 10. B5 runs first and lands a fresh measurement.
-
-Criterion H: the team lead approved B5 and B4 on 2026-10-05 ("both qci runs
-are approved - no need to ask again this sprint") and directed that all
-Dirac-3 calls wait until 18:00 local that day.
+WINDOW: on or after 07:30 local Eastern, 2026-10-06 (team lead). Approval for
+B5 and B4 was given 2026-10-05 for this sprint.
 """
 from __future__ import annotations
 
@@ -55,8 +42,9 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import data                                   # noqa: E402
+import eqc_submit                             # noqa: E402
 import metered_call as mc                     # noqa: E402
+import metrics                                # noqa: E402
 import qubo_proxy                             # noqa: E402
 import spectra_segment as ss                  # noqa: E402
 import store                                  # noqa: E402
@@ -66,6 +54,7 @@ log = logging.getLogger("b4")
 BLOCK = "B4"
 ARM = "cvqboost_hw_spectra"
 SEEDS = (42, 43, 44, 45, 46)
+WEAK_CLS_TYPE = "dct"            # the proxy dry run's pool type, and B3's
 
 EXPECTED_SECONDS = ("250-680 s for 10 fits: ~676 s at B2's measured 82.4 s/fit "
                     "at 833 vars, ~250 s at HARDWARE_REQUEST_B4 line 43's "
@@ -77,16 +66,17 @@ ALLOCATION_FLOOR_S = 776.0
 
 RESULTS = qubo_proxy.RESULTS
 ARTIFACT = qubo_proxy.RESULTS_DIR / "b4_hardware.json"
-WINDOW_HOUR = 18
+RESP_DIR = qubo_proxy.RESULTS_DIR / "pools" / "hw_responses"
+
+# The team lead's window: replaced 2026-10-06 ("the runners' time check is
+# artificial and can be replaced by 7:30am EST"). A START TIME, not a daily
+# hour: the first version used `hour >= 18`, which closed again at midnight.
+WINDOW_START = datetime(2026, 10, 6, 7, 30)
 
 
 def feasible_specs() -> list[dict]:
-    """The cells whose H5(ii) control can actually be drawn.
-
-    Feasibility is recomputed from the data every run, never hardcoded: if a
-    data refresh moves a cell across the line, this runner follows it and
-    `test_control_feasibility.py` fails loudly about the record being stale.
-    """
+    """The cells whose H5(ii) control can actually be drawn, recomputed from
+    the data every run -- never a hardcoded cell list (AST-guarded)."""
     out = []
     for cell in ss.FROZEN_CELLS:
         name = cell["dataset"].replace("spectra_", "")
@@ -127,138 +117,173 @@ def _spent() -> float:
 
 
 def _window_open(now: datetime | None = None) -> bool:
-    return (now or datetime.now()).hour >= WINDOW_HOUR
+    return (now or datetime.now()) >= WINDOW_START
 
 
-def _fit_one(client, spec: dict, dry_run: bool) -> dict:
-    """One SPECTRA cell on hardware. Mirrors `proxy_dry_run_cell` exactly up
-    to the solve, so the only difference between the PROJ and HW rows is where
-    the weights came from."""
+def _cfg(cell: dict, n_train: int) -> dict:
+    """The QBoostClassifier configuration, read from FROZEN_CELLS."""
+    c = cell["config"]
+    return dict(lambda_coef=c["lambda_coef_alpha"] * n_train,
+                weak_cls_schedule=c["weak_cls_schedule"],
+                weak_cls_type=WEAK_CLS_TYPE,
+                weak_cls_params=dict(c["weak_cls_params"]),
+                weak_cls_strategy=c["weak_cls_strategy"],
+                relaxation_schedule=c["relaxation_schedule"],
+                num_samples=c["num_samples"])
+
+
+def _dynamic_range(clf):
+    try:
+        return float(clf.get_dynamic_range())
+    except Exception:                                  # noqa: BLE001
+        return None
+
+
+def _fit_one(spec: dict, client, dry_run: bool) -> dict:
+    """One SPECTRA cell. Identical code for the dry and the real run, except
+    that the dry run swaps the cloud solver for `eqc_submit.offline_solver`."""
+    from eqc_models.ml.classifierqboost import QBoostClassifier
+
     name = spec["cell"]
     cell = ss.frozen_cell_by_name(name)
     split, cols = ss._prep_spectra(name, spec["seed"])
-    n_features = len(cols)
-    assert n_features == cell["config"]["n_features"], (
+    assert len(cols) == cell["config"]["n_features"], (
         f"{name}: frozen cell expects {cell['config']['n_features']} "
-        f"features, got {n_features}")
+        f"features, got {len(cols)}")
 
-    Xtr = ss.coerce_features_to_numeric(split.X_train[cols]).to_numpy(dtype="float32")
-    Xte = ss.coerce_features_to_numeric(split.X_test[cols]).to_numpy(dtype="float32")
+    def X(df):
+        return ss.coerce_features_to_numeric(df[cols]).to_numpy(dtype="float32")
+
+    Xtr, Xva, Xte = X(split.X_train), X(split.X_val), X(split.X_test)
     y_train01 = split.y_train.to_numpy()
+    y_val01 = split.y_val.to_numpy()
     y_test01 = split.y_test.to_numpy()
     in_pocket_test = split.X_test[ss.SEGMENT_FLAG].to_numpy().astype(bool)
     y_pm1 = np.where(y_train01 == 1, 1, -1)
 
-    schedule = cell["config"]["weak_cls_schedule"]
-    n_vars = data.qubo_vars(n_features, schedule, pair_build="sequential")
-    lam = cell["config"]["lambda_coef_alpha"] * len(y_pm1)
+    cfg = _cfg(cell, len(y_pm1))
+    n_vars = ss.data.qubo_vars(len(cols), cfg["weak_cls_schedule"],
+                               pair_build="sequential")
+    api = dict(api_url=os.environ.get("QCI_API_URL"),
+               api_token=os.environ.get("QCI_TOKEN"))
 
-    clf = qubo_proxy.build_pool(Xtr, y_pm1, schedule, weak_type="dct",
-                                pair_build="sequential", lambda_coef=lam)
-    H_tr = qubo_proxy.h_matrix(clf, Xtr)
-    H_te = qubo_proxy.h_matrix(clf, Xte)
+    def make_clf():
+        clf = QBoostClassifier(**api, **cfg)
+        for k, v in cfg.items():
+            assert getattr(clf, k) == v, f"constructed attr mismatch: {k}"
+        return clf
 
+    def make_record(attempt):
+        return mc.CallRecord(label=f"b4_{name}_{spec['seed']}_a{attempt + 1}",
+                             degree=2, n_variables=n_vars,
+                             n_samples=cfg["num_samples"],
+                             expected_seconds=EXPECTED_SECONDS)
+
+    sent: list = []
+    t0 = time.strftime("%Y-%m-%dT%H:%M:%S")
     if dry_run:
-        return {"arm": ARM, "block": BLOCK, "dataset": spec["dataset"],
-                "seed": spec["seed"], "config_hash": spec["config_hash"],
-                "n_vars_expected": n_vars,
-                # h_matrix is (n_vars, n_rows): the weak-learner count is
-                # shape[0]. shape[1] is the row count, which printed 22,039
-                # "weak classifiers" for a 560-variable cell in the first dry run.
-                "n_weak_classifiers": H_tr.shape[0],
-                "n_train_rows": H_tr.shape[1],
-                "evidence_tag": "SIM", "metered_seconds": 0,
-                "status": "dry_run", "features_used": list(cols)}
+        with eqc_submit.offline_solver(sent):
+            clf = make_clf()
+            resp = clf.fit(Xtr, y_pm1)
+        fit = {"clf": clf, "resp": resp, "attempts": 1, "metered_seconds": 0.0,
+               "parsed": True, "error": None, "job_id": None}
+    else:
+        fit = eqc_submit.metered_fit(make_clf, Xtr, y_pm1, make_record, client)
 
-    rec = mc.CallRecord(
-        label=f"b4_{name}_{spec['seed']}",
-        degree=2, n_variables=n_vars,
-        n_samples=cell["config"]["num_samples"],
-        expected_seconds=EXPECTED_SECONDS)
-
-    # J = HH^T + lam*I, C = -2Hy -- copied from qubo_proxy.solve_simplex_qp,
-    # which is the identical Hamiltonian eqc-models ships to Dirac-3 (ADR-0002).
-    # h_matrix returns (n_vars, n_rows), so the contraction is H @ H.T; the
-    # transposed form H.T @ H builds an (n_rows x n_rows) matrix instead, which
-    # at 22,039 rows is a 3.6 GB allocation rather than a wrong-but-small answer.
-    J = (H_tr @ H_tr.T).astype(np.float64) + lam * np.eye(n_vars)
-    C = (-2.0 * H_tr @ y_pm1).astype(np.float64)
-    body = {"job_submission": {
-        "problem_config": {
-            "quadratic_linearly_constrained_binary_optimization": None},
-        "device_config": {"dirac-3": {
-            "num_samples": cell["config"]["num_samples"],
-            "relaxation_schedule": cell["config"]["relaxation_schedule"],
-            "sum_constraint": 1.0}},
-        "job_name": f"b4_{name}_{spec['seed']}",
-        "_J": J.tolist(), "_C": C.tolist()}}
-
-    resp = mc.run_metered(client, body, rec)
-    sols = (resp.get("results", {}) or {}).get("solutions")
-    if not sols:
-        raise RuntimeError("no solutions in the Dirac-3 response")
-
-    # EVERY returned sample is stored, not only the lowest-energy one (F90
-    # acceptance (c)). That is what makes F20's multi-sample ensembling cost no
-    # further device time.
-    all_w = [np.asarray(s, dtype="float64") for s in sols]
-    w = all_w[0]
-    assert len(w) == n_vars, f"solution width {len(w)} != {n_vars}"
-
-    p_test = np.clip((w @ H_te + 1.0) / 2.0, 0.0, 1.0)
-
-    # Weight cosine against the classical solve: forced sparsity under A31's
-    # ~200-learner resolution limit is the EXPECTED mechanism here, not a
-    # defect, so it is recorded rather than checked against a threshold.
-    w_cls = qubo_proxy.solve_simplex_qp(H_tr, y_pm1, lam)
-    denom = float(np.linalg.norm(w) * np.linalg.norm(w_cls))
-    cosine = float(w @ w_cls / denom) if denom > 0 else None
-
-    seg = ss.evaluate_in_segment(y_test01, p_test, in_pocket_test,
-                                 spec["seed"], label="target")
-    from sklearn.metrics import average_precision_score, roc_auc_score
-
-    # The train-test gap beside every win (F90 acceptance, 2026-10-03): the
-    # in-segment wins in the prior work came with a gap well above XGBoost's,
-    # one case 0.98 train to 0.59 test. A win without its gap is not reportable.
-    # h_matrix returns (n_vars, n_rows), so `w @ H` is the row-wise score --
-    # the same orientation `proxy_dry_run_cell` uses for H_te. Checked, not
-    # assumed: `w @ H_tr.T` runs without error and returns n_vars values
-    # instead of n_rows, which would score the wrong axis silently.
-    p_train = np.clip((w @ H_tr + 1.0) / 2.0, 0.0, 1.0)
-    train_ap = float(average_precision_score(y_train01, p_train))
-    test_ap = float(average_precision_score(y_test01, p_test))
-
-    return {
+    row = {
         "arm": ARM, "block": BLOCK, "dataset": spec["dataset"],
         "seed": spec["seed"], "protocol": "stratified",
+        "config": f"b4_{name}", "pool_variant": WEAK_CLS_TYPE,
+        "pair_build": "sequential",
         "config_hash": spec["config_hash"],
-        "n_vars_expected": n_vars, "n_weak_classifiers": H_tr.shape[0],
-        "n_train_rows": H_tr.shape[1],
-        "evidence_tag": "HW",
-        "metered_seconds": rec.measured_seconds,
-        "metered_seconds_parsed": rec.measured_seconds is not None,
-        "job_id": rec.job_id, "status": rec.status, "retry_count": 0,
+        "hw_config": {k: (v if k != "weak_cls_params" else dict(v))
+                      for k, v in cfg.items()},
+        "n_vars_expected": n_vars,
         "features_used": list(cols),
-        "weight_cosine_vs_classical": cosine,
-        "n_samples_returned": len(all_w),
-        "all_samples": [s.tolist() for s in all_w],
-        "metrics": {"auprc": test_ap,
-                    "auc_roc": float(roc_auc_score(y_test01, p_test)),
-                    "train_auprc": train_ap,
-                    "train_test_ap_gap": round(train_ap - test_ap, 4)},
-        "in_segment": seg,
-        "timestamps": {"submitted_utc": rec.submitted_utc,
-                       "finished_utc": rec.finished_utc},
+        "evidence_tag": "SIM" if dry_run else "HW",
+        "retry_count": max(0, fit["attempts"] - 1),
+        "metered_seconds": fit["metered_seconds"],
+        "metered_seconds_parsed": fit["parsed"],
+        "job_id": fit["job_id"],
+        "timestamps": {"started": t0, "finished": None},
     }
+
+    if fit["clf"] is None:
+        row.update({"status": "failed", "error": fit["error"], "metrics": None})
+        row["timestamps"]["finished"] = time.strftime("%Y-%m-%dT%H:%M:%S")
+        return row
+
+    clf, resp = fit["clf"], fit["resp"]
+
+    # Every returned sample is kept, not only the lowest-energy one (F90
+    # acceptance (c)), so F20's multi-sample ensembling costs no further
+    # device time. The full response is the record; the row carries the count.
+    samples = (resp.get("results", {}) or {}).get("solutions", []) \
+        if isinstance(resp, dict) else []
+    if not dry_run:
+        RESP_DIR.mkdir(parents=True, exist_ok=True)
+        (RESP_DIR / f"b4_{name}_stratified_{spec['seed']}.json").write_text(
+            json.dumps(resp, default=str, indent=1), encoding="utf-8")
+
+    w_hw = np.asarray(clf.params, dtype=np.float64)
+    H_tr = qubo_proxy.h_matrix(clf, Xtr)
+    w_px = qubo_proxy.solve_simplex_qp(H_tr, y_pm1, cfg["lambda_coef"])
+    denom = float(np.linalg.norm(w_hw) * np.linalg.norm(w_px))
+    cosine = float(w_hw @ w_px / denom) if denom > 0 else None
+
+    def score(Xm):
+        return np.clip((clf.predict_raw(Xm) + 1.0) / 2.0, 0.0, 1.0)
+
+    p_val, p_test, p_train = score(Xva), score(Xte), score(Xtr)
+    m = metrics.summarize(y_test01, y_val01, p_val, p_test, seed=spec["seed"])
+    train_ap = float(metrics.average_precision_score(y_train01, p_train))
+    seg = ss.evaluate_in_segment(y_test01, p_test, in_pocket_test,
+                                 spec["seed"], label="target")
+
+    row.update({
+        "status": "ok" if fit["parsed"] else "ok_unmetered",
+        "n_weak_classifiers": len(clf.h_list),
+        "n_samples_returned": len(samples),
+        "all_samples": "full response in " + (
+            "(dry run, not written)" if dry_run else
+            f"pools/hw_responses/b4_{name}_stratified_{spec['seed']}.json"),
+        "weight_cosine_vs_classical": cosine,
+        # Measured per fit; the dry run found 8.1-8.3 dB, inside A31's ~23 dB.
+        "dynamic_range_db": _dynamic_range(clf),
+        "metrics": {**m,
+                    "train_auprc": train_ap,
+                    "train_test_ap_gap": round(train_ap - m["auprc"], 4)},
+        "in_segment": seg,
+        "solver_args_sent": sent[0] if sent else None,
+    })
+    row["timestamps"]["finished"] = time.strftime("%Y-%m-%dT%H:%M:%S")
+    return row
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="run the full library path with the cloud solver "
+                         "stubbed; one cell per dataset; spends nothing")
     ap.add_argument("--max-calls", type=int, default=10)
-    ap.add_argument("--ignore-window", action="store_true")
     args = ap.parse_args()
+
+    # Refusals come FIRST for a real run, before any data is touched. A TEST
+    # PROCESS MAY NEVER SPEND DEVICE SECONDS (Sprint 21: my own window tests
+    # submitted two real jobs on 2026-10-05; nothing was billed by luck), and
+    # in CI the SPECTRA files are absent, so a refusal placed after the data
+    # load would crash on a missing file instead of refusing.
+    if not args.dry_run:
+        if "PYTEST_CURRENT_TEST" in os.environ or "pytest" in sys.modules:
+            print("REFUSING: a metered run was invoked from a test process. "
+                  "Tests exercise --dry-run and source-level checks only; "
+                  "spending device seconds requires a human-invoked run.")
+            return 5
+        if not (_window_open()):
+            print(f"REFUSING: the team lead set the Dirac-3 window to open at "
+                  f"{WINDOW_START:%Y-%m-%d %H:%M} local and it is "
+                  f"{datetime.now():%Y-%m-%d %H:%M}.")
+            return 3
 
     print(f"BLOCK {BLOCK}: SPECTRA in-segment replication on Dirac-3")
     print("  computing cell feasibility from the data ...", flush=True)
@@ -277,11 +302,13 @@ def main() -> int:
     print(f"  already complete         : {len(done)}")
     print(f"  CALL COUNT now           : {min(len(todo), args.max_calls)}")
     print(f"  EXPECTED SECONDS         : {EXPECTED_SECONDS}")
-    print(f"  provenance               : CONTESTED, band quoted; B5 lands a "
-          f"fresh measurement first")
+    print("  provenance               : CONTESTED, band quoted; B5 lands a "
+          "fresh measurement first")
+    print(f"  submission               : eqc_models QBoostClassifier, as B2/B3")
     print(f"  block cap                : {BLOCK_CAP_S} s")
     print(f"  spent on {BLOCK} so far      : {_spent():.1f} s")
-    print(f"  approved                 : team lead 2026-10-05, window 18:00 local")
+    print(f"  approved                 : team lead 2026-10-05; window from "
+          f"{WINDOW_START:%Y-%m-%d %H:%M} local")
     print()
     for s in infeasible:
         print(f"    unscoreable: {s['cell']} seed {s['seed']} -- "
@@ -293,50 +320,42 @@ def main() -> int:
         return 0
 
     if args.dry_run:
-        for s in todo[:args.max_calls]:
-            r = _fit_one(None, s, dry_run=True)
+        seen, picks = set(), []
+        for s in todo:
+            if s["cell"] not in seen:
+                seen.add(s["cell"])
+                picks.append(s)
+        for s in picks:
+            r = _fit_one(s, None, dry_run=True)
+            sa = r.get("solver_args_sent") or {}
             print(f"  [dry] {s['cell']:18s} seed={s['seed']} "
-                  f"vars={r['n_vars_expected']} pool={r['n_weak_classifiers']}")
-        print("\nDry run: nothing submitted, nothing spent.")
+                  f"status={r['status']} sent: vars={sa.get('n_variables')} "
+                  f"samples={sa.get('num_samples')} "
+                  f"rx={sa.get('relaxation_schedule')} "
+                  f"sum={sa.get('sum_constraint')} "
+                  f"range={sa.get('dynamic_range_db') or 0:.1f} dB "
+                  f"pool={r.get('n_weak_classifiers')}")
+        print("\nDry run: the library built and handed over every request; "
+              "the cloud solver was stubbed. Nothing submitted, nothing spent.")
         return 0
-
-    # A TEST PROCESS MAY NEVER SPEND DEVICE SECONDS (Sprint 21). Two of my own
-    # window-guard tests invoked this runner with `--max-calls 1` and checked
-    # for "REFUSING" only AFTER the subprocess returned, so once the 18:00
-    # window opened the guard correctly allowed the run and the tests
-    # submitted real jobs -- 20:57 and 21:02 local on 2026-10-05, no Criterion
-    # H statement read by anyone. Nothing was billed by luck alone: a
-    # malformed job body and an SSL error.
-    #
-    # The tests are fixed; this is the structural fix. The allocation has no
-    # undo, and a runner a test can fire is one careless parametrize away from
-    # spending the balance.
-    if "PYTEST_CURRENT_TEST" in os.environ or "pytest" in sys.modules:
-        print("REFUSING: a metered run was invoked from a test process. "
-              "Tests exercise --dry-run and source-level checks only; "
-              "spending device seconds requires a human-invoked run.")
-        return 5
-
-    if not (_window_open() or args.ignore_window):
-        print(f"REFUSING: the team lead set the Dirac-3 window at "
-              f"{WINDOW_HOUR}:00 local and it is {datetime.now():%H:%M}. "
-              f"Re-run after the window, or pass --ignore-window to override "
-              f"an explicit instruction.")
-        return 3
 
     _load_env()
     from qci_client import QciClient
     client = QciClient(api_token=os.environ["QCI_TOKEN"],
                        url=os.environ["QCI_API_URL"])
 
-    bal = mc.balance(client)
-    if bal is not None and bal - EXPECTED_CEILING_S < ALLOCATION_FLOOR_S:
+    bal = eqc_submit._balance_or_none(client)
+    if bal is None:
+        print("REFUSING: the allocation balance cannot be read, so the floor "
+              "cannot be enforced.")
+        return 4
+    if bal - EXPECTED_CEILING_S < ALLOCATION_FLOOR_S:
         print(f"REFUSING: balance {bal} s minus this block's ceiling "
               f"{EXPECTED_CEILING_S} s would breach the "
               f"{ALLOCATION_FLOOR_S} s floor.")
         return 4
 
-    rows, spent = [], 0.0
+    rows, spent, failed = [], 0.0, 0
     t0 = time.perf_counter()
     for i, spec in enumerate(todo[:args.max_calls], 1):
         if spent >= BLOCK_CAP_S:
@@ -345,20 +364,23 @@ def main() -> int:
             break
         print(f"  [{i}/{min(len(todo), args.max_calls)}] {spec['cell']} "
               f"seed={spec['seed']} ...", flush=True)
-        row = _fit_one(client, spec, dry_run=False)
+        row = _fit_one(spec, client, dry_run=False)
         rows.append(row)
         spent += float(row.get("metered_seconds") or 0)
+        failed += row["status"] == "failed"
         store.append_row(row)
         _write_artifact(rows, infeasible, spent, t0, complete=False)
+        print(f"      {row['status']}  {row.get('metered_seconds')} s  "
+              f"auprc={(row.get('metrics') or {}).get('auprc')}", flush=True)
 
     _write_artifact(rows, infeasible, spent, t0, complete=True)
-    print(f"\nB4 done: {len(rows)} fits, {spent:.1f} metered seconds.")
-    return 0
+    print(f"\nB4 done: {len(rows)} fits, {failed} failed, "
+          f"{spent:.1f} metered seconds.")
+    return 1 if failed else 0
 
 
 def _write_artifact(rows, infeasible, spent, t0, complete: bool) -> None:
-    """Written after EVERY fit (F65): a runner that built its artifact once at
-    the end lost a billed B2 fit to a shell teardown."""
+    """Written after EVERY fit (F65)."""
     ARTIFACT.write_text(json.dumps({
         "note": ("B4: SPECTRA in-segment replication on Dirac-3, the 10 cells "
                  "whose H5(ii) control can be drawn. The 5 energy_steel cells "
@@ -378,7 +400,7 @@ def _write_artifact(rows, infeasible, spent, t0, complete: bool) -> None:
              "complement_positives": s["feasibility"]["complement_positives"]}
             for s in infeasible],
         "rows": rows,
-    }, indent=2), encoding="utf-8")
+    }, indent=2, default=str), encoding="utf-8")
 
 
 def _load_env() -> None:

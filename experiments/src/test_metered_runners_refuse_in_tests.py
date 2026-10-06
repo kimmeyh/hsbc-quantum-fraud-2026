@@ -62,6 +62,31 @@ def test_the_runner_refuses_when_invoked_from_a_test(runner):
 
 
 @pytest.mark.parametrize("runner", RUNNERS)
+def test_the_runner_never_hand_builds_a_job_body(runner):
+    """Submission goes through eqc-models, as every block since B1 has.
+
+    The first B4 and B5 runners hand-built the request with invented field
+    names; QCi rejected the one that reached it ("400: Must specify one and
+    only one job under the job_submission.problem_config field"). The dry run
+    of that version stopped before the request was built, so nothing checked
+    the one part the vendor reads. `run_hardware_b3._submit_via_eqc` already
+    said why this is wrong: a hand-built body "is a reimplementation that can
+    drift, which is exactly what [ADR-0002] rejects".
+    """
+    src = (SRC / runner).read_text(encoding="utf-8")
+    code = src.split('"""', 2)[-1]          # past the module docstring
+    for forbidden in ('"job_submission"', '"problem_config"',
+                      '"device_config"', "submit_job("):
+        assert forbidden not in code, (
+            f"{runner} builds part of a job body itself ({forbidden}). Submit "
+            "through the eqc-models classifier and eqc_submit.metered_fit.")
+    assert "eqc_submit.metered_fit" in code
+    assert "eqc_submit.offline_solver" in code, (
+        "the dry run must go through the library with only the cloud solver "
+        "stubbed, or it never exercises the request")
+
+
+@pytest.mark.parametrize("runner", RUNNERS)
 def test_the_test_process_check_precedes_the_window_check(runner):
     """Order matters. The window opens every evening; the test-process check
     does not. If the window check came first, an evening test run would reach

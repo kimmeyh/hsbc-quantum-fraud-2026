@@ -198,9 +198,12 @@ def test_the_block_cap_sits_at_or_below_the_stated_ceiling():
 
 
 def test_the_window_matches_the_instruction():
-    assert b4.WINDOW_HOUR == 18
-    assert not b4._window_open(datetime(2026, 10, 5, 17, 59))
-    assert b4._window_open(datetime(2026, 10, 5, 18, 0))
+    # Team lead 2026-10-06: "can be replaced by 7:30am EST". A start time;
+    # `hour >= 18` shut again at midnight.
+    assert b4.WINDOW_START == datetime(2026, 10, 6, 7, 30)
+    assert not b4._window_open(datetime(2026, 10, 6, 7, 29))
+    assert b4._window_open(datetime(2026, 10, 6, 7, 30))
+    assert b4._window_open(datetime(2026, 10, 7, 2, 0))
 
 
 def test_running_before_the_window_exits_nonzero():
