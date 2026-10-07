@@ -1,0 +1,155 @@
+# Sprint 22 Manual Validation
+
+**Sprint**: 22, Separate the Phases, Then Look for Better Numbers
+**Branch**: `feature/20261006_Sprint_22` | **PR**: #159 (draft)
+**Scope**: F123 (A), IMP-3 (B), F124 (C), F17 (D), F20 (E), F125 (F)
+**Metered Dirac-3 seconds spent: 0.** The balance read 1,022 s before and
+after the read-only sample recovery.
+
+This file is the durable copy. The same items are listed to the screen at
+handover (team lead, 2026-10-03): a pointer to a file is not a handover.
+
+---
+
+## 1. Task C (F124): the ranked list -- YOUR APPROVAL GATES EVERY DEVICE RUN
+
+Read `docs/phase2/SPECTRA_IMPROVEMENT_RESEARCH.md`, section 2.
+
+- **Rank 1: leaf regularization (`min_samples_leaf=20`).** energy_steel
+  0.902 to 0.973 AUPRC, 5 seeds; parity with HGB (+0.0085, CI includes
+  zero). Native eqc_models parameter. Proposed device test: a 1-seed
+  energy_steel pilot, about 82 s; 5 seeds about 410 s.
+- **Rank 2: Laplace soft votes.** Mostly the same lever as rank 1: +0.006 on
+  top of it.
+- **Rank 3: KNN weak learners.** The only lever positive on all three
+  datasets in the screen; matches an EvidenceBasedDB lead of low certainty.
+- **Rank 4: boosted weak learners.** Parity on energy_steel, worse elsewhere.
+  Not recommended for the device.
+- **Ranks 5-6: feature engineering, pool size.** Not yet measured; proxy
+  tests proposed.
+- **Nothing closes the gap on telecom (about -0.10) or oilgas (about
+  -0.03).** No lever beats HGB with a CI that excludes zero anywhere.
+- **NeuraWave, from QCi's own releases**: edge time-series and signal
+  hardware on a PCIe card. Not a fit for tabular SPECTRA, and not on the
+  cloud allocation.
+- **Card correction**: `batched_qboost_enabled` is not in the installed
+  eqc_models 0.21.0.
+
+Spot-check: `experiments/phase2/results/f124_lever_confirm_energy_steel.json`,
+`summary.dct_min_leaf_20`.
+
+## 2. Task A (F123): Phase 1 / Phase 2 separation -- decisions owed
+
+Read `docs/PHASE_SEPARATION.md`, section 8. Provisional at approval
+("could be adjusted during Manual Validation").
+
+- All Sprint 22 work went to the Phase 2 tree: `experiments/phase2/src/`,
+  `experiments/phase2/results/`, `docs/phase2/`. No group B file was edited
+  by Tasks C, D or E.
+- **Not yet done, waiting for you**: the MOVE of the post-filing files listed
+  in section 3 (`run_hardware_b4.py`, `run_hardware_b5.py`, `eqc_submit.py`,
+  the F100/F101 files and the B4/B5 summaries) into the Phase 2 tree.
+- **Note**: `run_hardware_b4.py`, `run_hardware_b5.py` and `eqc_submit.py`
+  were edited in place this sprint to fix the sample-storage defect (item 5).
+  They are post-filing files, so this is not a group B edit, but they still
+  sit in a Phase 1 directory until the move.
+
+## 3. Task B (IMP-3): the suite may not change committed evidence
+
+- `conftest.py` hashes every tracked and untracked non-ignored file under
+  `experiments/results/` and `experiments/phase2/results/` before and after
+  the run. Any change fails the run.
+- Hardened after a background security review flagged four issues. Three
+  were addressed from their titles: fail-open when git is missing, new files
+  unseen, and the guard bypassable without trace. **The fourth finding's
+  title was not shown to me and is not claimed as addressed.**
+- Proven red: a created file, git missing, `--noconftest`, a modify without
+  restore.
+
+## 4. Task F (F125): the close-out hook's false block
+
+- The hook now counts against `origin/develop`, then `develop`, then `HEAD`.
+- The card's diagnosis was incomplete: a correct count alone still blocked,
+  because the true count was 1. The fix is a plan-existence gate: with no plan,
+  only docs and status files may change.
+- My commit 63bc375 said the hook tests passed. One failed. Corrected in
+  c62248a.
+
+## 5. A Sprint 21 defect found this sprint: device samples were truncated
+
+- The B4 and B5 runners stored each response's PRINTED form, and numpy
+  truncates long arrays. Every B4 sample was saved as its first and last three
+  values. The B4 rows record `n_samples_returned` = 0.
+- No scored figure changed: scoring used the in-memory fit.
+- All 22 responses recovered by job id, read-only, balance unchanged, into
+  `experiments/phase2/results/device_samples/`. Root cause fixed: the offline
+  stand-in returned a dict, so dry runs never saw the real response type.
+- **Decision needed (item D2 below)**: I added a dated correction note to
+  `docs/B4_B5_HARDWARE_RESULT.md`. That file post-dates the filing, so it is
+  Phase 2 by `PHASE_SEPARATION.md`'s rule, and the note is additive like the
+  `HARDWARE_REQUEST_B4.md` precedent. But it describes Phase 1 grid blocks.
+
+## 6. Task E (F20): soft votes and ensembling
+
+Read `docs/phase2/F20_SOFT_VOTES_RESULT.md`.
+
+- Soft votes as the card specified are degenerate: raw `predict_proba` is
+  exactly 0 or 1.
+- Laplace-smoothed soft votes: better on all 15 cells. energy_steel +0.074
+  AUPRC; telecom +0.030; oilgas +0.005. Only energy_steel clears the plan's
+  0.05 falsifier.
+- Soft-vote CVQBoost against HGB: parity on energy_steel (CI includes zero),
+  clear losses on telecom and oilgas.
+- Multi-sample ensembling: not evaluable on device samples (rebuilt pools do
+  not reproduce, 0 of 10). On emulated samples +0.0014: fails the falsifier.
+
+## 7. Task D (F17): the Dirac-3 emulator
+
+Read `docs/phase2/F17_EMULATOR.md`.
+
+- One tool, two modes (`exact`, `emulate`). It imports `qubo_proxy.py`
+  unchanged. This answers your design question.
+- **The plan's falsifier is met for AUPRC**: the emulator reproduces the
+  proxy as closely as the device does. So it is no-go as an AUPRC predictor.
+  Its value is device-seconds estimates and multiple samples per fit.
+- Metric caveat: validated on overall test AUPRC, not in-pocket AUPRC as the
+  falsifier is worded.
+
+---
+
+## Decisions for the team lead
+
+D1. **Approve, amend or reject the F124 ranked list** (section 1). Nothing
+    on it reaches Dirac-3 without this, and each device block still needs its
+    own Criterion H approval.
+
+D2. **The correction note in `docs/B4_B5_HARDWARE_RESULT.md`**: keep it, or
+    move it to a Phase 2 document and revert the file.
+
+D3. **F123 section 4.1**: freeze group B in place (recommended), or
+    section 4.3, relocate all post-filing evidence.
+
+D4. **The F123 MOVE** of the post-filing files listed in section 3 of
+    `PHASE_SEPARATION.md` into the Phase 2 tree: approve, or keep them where
+    they are.
+
+D5. **The `spectra_segment.py` record**: the dated note in
+    `PHASE_SEPARATION.md` (recommended), or something else.
+
+D6. **IMP-4 and the placement check** as designed in `PHASE_SEPARATION.md`
+    section 6: approve for a later sprint, amend, or drop.
+
+## Effort
+
+Wall-clock minutes from `.claude/sprint_status.json`, recorded as each task
+finished:
+
+- Task A (F123): 30 (estimate 120)
+- Task B (IMP-3): 32, including hardening (estimate 30)
+- Task F (F125): 45 (estimate 20)
+- Tasks D (F17) and E (F20): 34 together. They ran in parallel and are not
+  separable (estimates 390 and 180)
+- Task C (F124): 75, overlapping E (estimate 240)
+- **Total recorded: 216 minutes against 980 estimated.** The overlaps mean
+  the sum exceeds elapsed time.
+- Device seconds: 0.

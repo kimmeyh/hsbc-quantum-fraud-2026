@@ -19,7 +19,10 @@
       "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective.",
       "A": 30,
       "B": 32,
-      "F": 45
+      "F": 45,
+      "D+E": 34,
+      "C": 75,
+      "_note_CDE": "D and E ran in parallel 22:56-23:30 and are not separable; C ran 23:15-00:30 (2026-10-07), overlapping E. Read from commit times and the live clock, not reconstructed later."
     },
     "scope_additions": [],
     "decisions": {
@@ -37,5 +40,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-10-06"
+  "updated": "2026-10-07"
 }
