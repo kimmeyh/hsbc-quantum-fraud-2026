@@ -224,11 +224,35 @@ moment of failure, rather than adding new rules beside them.
 
 ## Improvement Decisions
 
-Proposed 2026-10-06; awaiting the team lead's disposition.
+Team lead, 2026-10-06: "do now: imp-1, 2 - 3 and 4 are essentially carded for
+next sprint and we can do than."
 
 | # | Title | Source | Type | Effort | Decision |
 |---|---|---|---|---|---|
-| IMP-1 | Extend the capability pre-flight's read list | Cat 4, 9 | Prevention, extends Sprint 20 IMP-2 | 15m | pending |
-| IMP-2 | Footer check in the existing every-turn Stop hook | Cat 6, 9 | Prevention, extends `sprint_auto_advance.py` | 45m | pending |
-| IMP-3 | The test suite may not change committed evidence | Cat 2, 10 | Detection, extends `test_evidence_artifacts_current.py` | 30m | pending |
-| IMP-4 | Guard Phase 1 analysis code against unapproved edits | Cat 12 | Prevention, extends `block_unapproved_submission_edit.py` | in F123 | pending |
+| IMP-1 | Extend the capability pre-flight's read list | Cat 4, 9 | Prevention, extends Sprint 20 IMP-2 | 15m | **now** (applied) |
+| IMP-2 | Footer check in the existing every-turn Stop hook | Cat 6, 9 | Prevention, extends `sprint_auto_advance.py` | 45m | **now** (applied) |
+| IMP-3 | The test suite may not change committed evidence | Cat 2, 10 | Detection, extends `test_evidence_artifacts_current.py` | 30m | **backlog**, on F123 |
+| IMP-4 | Guard Phase 1 analysis code against unapproved edits | Cat 12 | Prevention, extends `block_unapproved_submission_edit.py` | in F123 | **backlog**, on F123 |
+
+**Applied.**
+
+- **IMP-1**: `SPRINT_PLANNING.md`'s pre-flight read list now includes the
+  frozen preregistration's sections 4 and 10, and, for any new runner, the
+  proven runner for the same kind of call and its submission helper. It also
+  gains an absence rule: search before declaring anything "blocked on the team
+  lead" or "not defined here". Three symptom entries in `TROUBLESHOOTING.md`.
+- **IMP-2**: `sprint_auto_advance.py`, which already runs on every turn, holds
+  back a reply that ends with a footer line no `status_footer.py` run in the
+  same turn printed. It runs ahead of every sprint gate and the branch bypass,
+  so there is no override in the commit that creates it. 9 tests in
+  `test_footer_generated.py`, including a footer carried forward from an
+  earlier turn and one echoed by another command. **Proven red** against three
+  mutations: the check never blocking, the turn boundary ignored, and any
+  command counted as the generator. It fails open on an unreadable
+  transcript, like the rest of the hook.
+
+**Completion updates.** Master plan: Sprint 21 rolled into Last Completed
+Sprint, Sprint 20 demoted, row 21 added to the summary table, IMP-3 and IMP-4
+on F123. `CHECKLIST-Phase2.md` reconciled: four items ticked, H5 progress and
+the device balance recorded, including a 6 s gap before Sprint 21 that is not
+yet explained.

@@ -34,36 +34,34 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 18 | docs/sprints/SPRINT_18_SUMMARY.md | [OK] Complete | ~2 days (Sep 22-23, 2026) |
 | 19 | docs/sprints/SPRINT_19_SUMMARY.md | [OK] Complete | ~7 days (Sep 23-30, 2026) |
 | 20 | docs/sprints/SPRINT_20_SUMMARY.md | [OK] Complete | ~4 days (Sep 30 - Oct 4, 2026) |
+| 21 | docs/sprints/SPRINT_21_SUMMARY.md | [OK] Complete | ~3 days (Oct 4 - Oct 6, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 20: Make the Suite Readable Again** (Sep 30 - Oct 4, 2026; PR #146 to
-develop and PR #151 develop to main, both merged 2026-10-04).
-Delivered **F97, F93, F98, F99**. 161 minutes against 171 estimated, zero
-metered seconds, and the first sprint with a COMPLETE set of actuals. The
-record is `docs/sprints/SPRINT_20_SUMMARY.md`, its retrospective and
-`SPRINT_20_VALIDATION.md`.
+**Sprint 21: The SPECTRA Block, and a Bar That Can Read It** (Oct 4 - Oct 6,
+2026; PR #152). Delivered **F90, F100, F101, F122**. 454 minutes against 750
+estimated, plus **653 metered seconds** (B5 13 + B4 640), reconciled against
+the device balance, 1,675 s to 1,022 s. The record is
+`docs/B4_B5_HARDWARE_RESULT.md`, `docs/sprints/SPRINT_21_RETROSPECTIVE.md`
+and `SPRINT_21_VALIDATION.md`; the SUMMARY doc is written during Sprint 22
+planning.
 
-**The suite is green in a planning window for the first time.** Six tests
-asserted that Phase 3 artifacts exist while the repository sat in Phase 1,
-before the plan that creates them had been written, so they failed for days at
-a time. They now gate on the recorded phase, proven across nine sprint states
-with the same code AND proven to still go red where an artifact is genuinely
-owed.
+**The H5 replication did not reproduce on the device.** The in-segment edge
+against the matched control is negative on all 8 scoreable cells, and the
+device matches its classical proxy within 0.0072 in-pocket AUPRC on every
+cell. energy_steel is `unscoreable`: its matched control is infeasible. HGB
+and GA2M beat the proxy on every cell (F100); `in_pocket` is predictable
+from the phase features at AUC 0.93-0.99 (F101).
 
-**The close-out hook can no longer be silenced by a slow network.** Measured:
-a Stop hook killed at its timeout produces no exit code, so it cannot block --
-a timeout fails OPEN. The fail-open `gh` checks ran before the fail-closed CI
-check, so one hanging call killed the hook before the guard ran. Reordered,
-and the internal budget cut from 160s to 18s against a 20s allowance.
+**F123 and F124 were registered by the team lead**: separating Phase 2 files
+from Phase 1's, and researching what to try before any further Dirac-3 run.
+Every open card that can spend device seconds depends on F124.
 
-**The sent QCi correspondence has recorded hashes** in
-`docs/QCI_CORRESPONDENCE_HASHES.md`, enforced by a guard that skips VISIBLY
-where the gitignored artifacts are absent. The ignore rule did not change.
-
-**a299ad2 is part of this sprint** (team lead, confirmed 2026-10-03): the
-Phase 2 checklist merge, items 5 and 6 corrected against the filed proposal,
-and F100-F121 registered.
+### Sprint 20: Make the Suite Readable Again (Sep 30 - Oct 4, 2026; PR #146
+to develop, PR #151 to main). Delivered **F97, F93, F98, F99** in 161
+minutes against 171, zero metered seconds. The suite went green in a
+planning window for the first time, and the close-out hook can no longer be
+silenced by a slow network. The record is `docs/sprints/SPRINT_20_SUMMARY.md`.
 
 ### Sprint 19: Send the QCi Package Clean (Sep 23-30, 2026; PR #141 to
 develop, PR #145 to main). Delivered **F92**. **The package was SENT 2026-09-25
@@ -432,6 +430,9 @@ then the builds for the committed experiments. Estimates are `[no-history]`.
   - Whether today's five changes stay, move, or are copied into a Phase 2 store with the Phase 1 files restored to their pre-Sprint-21 state, and what each option does to the tests that reconcile those files
   - The guard: a hook or test that fails when Phase 2 work writes a Phase 1 path, proven red. This repository's rule is that a prevention is a mechanism, not a reminder
   - **Deferred here by the team lead, 2026-10-06 (decision A.3):** `score_gates.is_metered_arm()` counts only `cvqboost_hw*` arms, so the regenerated `gate_report.md` omits B5's 12 fits and 13 s from its hardware spend line, and its header names only two arms as `[HW]`. Fixing it changes frozen analysis code. Whether B5's rows belong in the Phase 1 report at all is part of this card's question, so the fix waits for its answer
+- **From the Sprint 21 retrospective (team lead, 2026-10-06: "essentially carded for next sprint")**:
+  - IMP-3: the test suite may not change committed evidence. Hash every tracked results file at suite start and end; any change fails and names the file. Extends `test_evidence_artifacts_current.py`. A test rewrote `gate_report.md` without restoring it for several sprints, invisible until Sprint 21's rows changed its output
+  - IMP-4: guard Phase 1 analysis code against unapproved edits, extending `block_unapproved_submission_edit.py`. Waits on this card's locked-file inventory, which decides what the guard covers
 - Acceptance: a written decision document with the locked-file inventory, the target layout, the disposition of the five Sprint 21 changes, and the guard design; the team lead approves it before any file is moved. Nothing is moved by this card
 - Depends on: nothing. Should precede F20 and every later card that writes results
 

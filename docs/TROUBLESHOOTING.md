@@ -87,6 +87,15 @@ A single backslash in a JSON string is an escape. `\b` is a backspace.
 
 ## Hooks
 
+**Symptom: a reply is held back with "The closing footer line was typed, not
+generated".**
+The reply ended with a status-footer line that no `status_footer.py` run in
+the same turn printed -- typed by hand, carried forward from an earlier turn,
+or edited after generation.
+→ Run `scripts/status_footer.py` in this turn and end with its exact output.
+The check is in `.claude/hooks/sprint_auto_advance.py`; tests in
+`experiments/src/test_footer_generated.py` (IMP-2, Sprint 21).
+
 **Symptom: a Stop hook does not block when it should.**
 A hook killed at its configured timeout produces **no exit code**, so it
 cannot block — a timeout fails OPEN. Measured 2026-10-03.

@@ -161,12 +161,109 @@ def _branch(payload: dict, root: Path) -> str:
     return out.strip() if rc == 0 else ""
 
 
+# ---- the status footer must be GENERATED, not typed (IMP-2, Sprint 21) ------
+#
+# CLAUDE.md: "Generate it with the script every time. Never assemble it by
+# hand, and never carry a timestamp forward from an earlier message." A rule
+# in a document, and it failed four times in Sprint 21 (1:14am, 1:41am,
+# 3:22pm, 3:31pm, all typed; the script read otherwise). This hook already
+# runs on every turn, so the check extends it rather than adding a hook.
+#
+# The check: if the reply ENDS with a footer-shaped line, some
+# `status_footer.py` run in the SAME turn must have printed exactly that line.
+# It runs before every sprint gate, because footers end replies everywhere.
+
+FOOTER = re.compile(r"^\d{2}/\d{2}/\d{4} \d{1,2}:\d{2}[ap]m \| .+$")
+
+FOOTER_MESSAGE = (
+    "The closing footer line was typed, not generated: no status_footer.py run "
+    "in this turn printed it.\n  found: {found}\n"
+    "Run the venv interpreter on scripts/status_footer.py and end the reply "
+    "with its exact output (CLAUDE.md: generate it, never type it).")
+
+
+def _footer_line(message: str) -> str | None:
+    lines = [ln.strip() for ln in message.splitlines() if ln.strip()]
+    if lines and FOOTER.match(lines[-1]):
+        return lines[-1]
+    return None
+
+
+def _generated_this_turn(transcript_path: str, footer: str) -> bool | None:
+    """True if a status_footer.py run since the last user message printed
+    `footer`; False if none did; None if the transcript cannot be read.
+
+    Format verified against a real transcript 2026-10-06: the call is a
+    `tool_use` block in an assistant entry, its output a `tool_result` string
+    in the next user entry, linked by id.
+    """
+    try:
+        entries = [json.loads(ln) for ln in
+                   Path(transcript_path).read_text(encoding="utf-8")
+                   .splitlines()[-3000:] if ln.strip()]
+    except Exception:                                   # noqa: BLE001
+        return None
+
+    def blocks(e):
+        c = (e.get("message") or {}).get("content")
+        return c if isinstance(c, list) else []
+
+    def is_user_turn(e):
+        if e.get("type") != "user":
+            return False
+        c = (e.get("message") or {}).get("content")
+        if isinstance(c, str):
+            return True
+        return not any(isinstance(b, dict) and b.get("type") == "tool_result"
+                       for b in (c or []))
+
+    start = 0
+    for i, e in enumerate(entries):
+        if is_user_turn(e):
+            start = i
+    turn = entries[start:]
+
+    footer_ids = {b.get("id") for e in turn if e.get("type") == "assistant"
+                  for b in blocks(e)
+                  if isinstance(b, dict) and b.get("type") == "tool_use"
+                  and "status_footer" in json.dumps(b.get("input", {}))}
+    for e in turn:
+        for b in blocks(e):
+            if not (isinstance(b, dict) and b.get("type") == "tool_result"
+                    and b.get("tool_use_id") in footer_ids):
+                continue
+            c = b.get("content")
+            text = c if isinstance(c, str) else " ".join(
+                x.get("text", "") for x in (c or []) if isinstance(x, dict))
+            if footer in (ln.strip() for ln in text.splitlines()):
+                return True
+    return False
+
+
+def _check_footer(payload: dict) -> int | None:
+    """hooklib.block(...) when a typed footer is found, else None."""
+    message = str(payload.get("last_assistant_message") or "")
+    footer = _footer_line(message)
+    if footer is None:
+        return None
+    ok = _generated_this_turn(str(payload.get("transcript_path") or ""), footer)
+    if ok is False:
+        return hooklib.block(FOOTER_MESSAGE.format(found=footer))
+    # None: the transcript could not be read. Fail OPEN, like the rest of this
+    # hook -- an unreadable transcript must not block every turn.
+    return None
+
+
 def main() -> int:
     payload = hooklib.read_payload()
 
     # Never re-block an already-blocked stop; that wedges the session.
     if payload.get("stop_hook_active"):
         return hooklib.ALLOW
+
+    typed_footer = _check_footer(payload)
+    if typed_footer is not None:
+        return typed_footer
 
     root = _root(payload)
     branch = _branch(payload, root)

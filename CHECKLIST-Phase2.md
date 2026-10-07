@@ -63,10 +63,14 @@ Nothing in this stage is time-bound. Schedule on value.
 
 - [ ] **H**: Ask Javier Mancilla for the SPECTRA construction details,
       including how `in_pocket` is built (feeds F101 and F103)
-- [ ] **H+C**: Bring the off-repository SPECTRA device result into the
-      repository with its configuration, fits, seeds and arm (F90, first task)
-- [ ] **C**: F100 complete classical bar on identical SPECTRA features
-- [ ] **C**: F101 `in_pocket` provenance diagnostic
+- [x] **H+C**: Bring the off-repository SPECTRA device result into the
+      repository with its configuration, fits, seeds and arm (F90, first task).
+      **Already satisfied** (2026-10-05): the configuration was brought in
+      2026-10-03, and `FROZEN_CELLS` encodes it field by field
+- [x] **C**: F100 complete classical bar on identical SPECTRA features.
+      Sprint 21: `docs/F100_CLASSICAL_BAR.md`
+- [x] **C**: F101 `in_pocket` provenance diagnostic.
+      Sprint 21: `docs/F101_IN_POCKET_PROVENANCE.md`
 - [ ] **C**: F102 Phase 2 preregistration framework
 - [ ] **C**: F103 SPECTRA Tier 1 known-answer check on the paper's own dataset
 - [ ] **C**: F6 gate-based arm analysis, then F106 (dequantization check) and
@@ -117,6 +121,10 @@ Nothing in this stage is time-bound. Schedule on value.
       the third condition that retires the approach** (proposal section 5)
       - Backlog: F90 (replication half), F100 and F101 (make F90 readable),
         F121 (transfer half and router acceptance, HOLD)
+      - **Progress 2026-10-06**: the replication half ran on Dirac-3 (B4,
+        10 feasible cells). The in-segment edge is negative on all 8
+        scoreable cells; energy_steel is unscoreable. Transfer half not
+        started. `docs/B4_B5_HARDWARE_RESULT.md`
 - [ ] **C**: 6. Scaling claim -- end-to-end training time against sample count,
       including Hamiltonian construction
       - Backlog: F110
@@ -132,7 +140,8 @@ Nothing in this stage is time-bound. Schedule on value.
       segments, against a matched random-segment control (proposal section 5,
       Metrics)
       - Backlog: F121 (HOLD)
-- [ ] **H+C**: Hardware block B5 (QSVM sign-augmented, 12 fits, about 15 s).
+- [x] **H+C**: Hardware block B5 (QSVM sign-augmented, 12 fits, about 15 s).
+      **Ran 2026-10-06**: 12 fits, 13 s (`docs/B4_B5_HARDWARE_RESULT.md`).
       Not one of the six; it runs first inside F90 because it is cheap and
       exercises the approval and ledger path
 
@@ -145,9 +154,12 @@ Nothing in this stage is time-bound. Schedule on value.
       seconds remain**: 1,039 drawn in the Phase 1 campaign and 280 by the
       2026-09-23 integer probes. (Corrected 2026-10-03 from 1,961, which
       predated the probes. `HARDWARE_PLAN_PHASE_2.md` owns the table.)
+      **2026-10-06**: the device read 1,675 s on 2026-10-05 before any
+      Sprint 21 call -- 6 s below 1,681, not yet explained -- and 1,022 s
+      after B5 and B4 (653 s).
 - [ ] **H**: The additional 7,500 s asked of QCi in the hardware plan.
-      **Experiment 3 depends on it**: F90 at its card's cost leaves about 445 s
-      of the 1,681, and Experiment 3 is sized at 3,070 s
+      **Experiment 3 depends on it**: after B5 and B4 the device balance is
+      1,022 s (read 2026-10-06), and Experiment 3 is sized at 3,070 s
 - [ ] **H+C**: Latency benchmark (p50/p95/p99) against the 100-300 ms envelope,
       which Phase 1 states as a target rather than a measurement (D10). F118
 - [ ] **H+C**: Calibration layer fitted, which Phase 1 specifies but does not
