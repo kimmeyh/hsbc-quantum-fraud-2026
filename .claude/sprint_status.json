@@ -3,15 +3,25 @@
     "number": 22,
     "name": "Separate the Phases, Then Look for Better Numbers",
     "branch": "feature/20261006_Sprint_22",
-    "status": "phase_1_backlog_refinement",
+    "status": "phase_4_execution",
     "plan_doc": "docs/sprints/SPRINT_22_PLAN.md",
     "pr": 159,
-    "plan_approved": false,
-    "github_issues": [],
+    "plan_approved": true,
+    "github_issues": [
+      160,
+      161,
+      162,
+      163,
+      164,
+      165
+    ],
     "task_actuals": {
       "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective."
     },
-    "scope_additions": []
+    "scope_additions": [],
+    "decisions": {
+      "approval_2026-10-06": "Approved as amended: F17 built (one tool, exact+emulate, imports qubo_proxy unchanged); F123 provisional Phase 2 layout, adjustable at Manual Validation; F20 parallel after A,B feeding C; F125 added (2.1); F121 HOLD until F124 reports (3.1). Do not stop between tasks until Manual Validation."
+    }
   },
   "last_completed_sprint": {
     "number": 21,

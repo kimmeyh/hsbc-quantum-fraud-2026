@@ -1,7 +1,7 @@
 # Sprint 22 Plan: Separate the Phases, Then Look for Better Numbers
 
 **Sprint**: 22 | **Branch**: `feature/20261006_Sprint_22`
-**Planned**: 2026-10-06 | **Status**: awaiting team-lead approval
+**Planned**: 2026-10-06 | **Status**: APPROVED 2026-10-06, as amended below
 **Scope**: F123, IMP-3, F124, F17, F20 (the team lead's selection list,
 complete, in his stated order)
 **Metered Dirac-3 seconds**: **0**. Nothing in this sprint touches the device.
@@ -52,11 +52,37 @@ Mandatory per `SPRINT_PLANNING.md`. Each finding changes a task.
 | A | F123 | Phase 1 / Phase 2 separation: locked-file inventory, Phase 2 layout, disposition of Sprint 21's five Phase 1 changes, guard design | 120 | n/a | nothing |
 | B | IMP-3 | The test suite may not change committed evidence: hash tracked results files at session start and end; card updated first if A changes it | 30 | +~1 s per suite | A |
 | C | F124 | SPECTRA prediction research: ranked list of levers, each with a proxy test plan; QCi NeuraWave from primary sources | 240 | n/a | A, B |
-| D | F17 | Dirac-3 simulator investigation and go / no-go recommendation | 150 | n/a | A, B; parallel to C |
+| D | F17 | Dirac-3 emulator, BUILT (team lead: "build it anyways"): one tool with exact and emulate modes | 390 | validation over B4's 10 cells | A, B; parallel to C |
 | E | F20 | Soft votes and multi-sample ensembling on the classical proxy | 180 | see runtime | A, B; parallel to C and D |
+| F | F125 | Close-out hook counts against `origin/develop`, not a stale local ref (added at approval) | 20 | n/a | nothing |
 
-**Derived total: 720 minutes implementation, 828 with allowances**, computed
-from the card estimates above, not asserted.
+**Derived total: 980 minutes implementation, 1,088 with allowances**, computed
+from the card estimates above, not asserted. Recomputed at approval: D grew
+from 150 to 390 to include the build, and F was added.
+
+## Amendments at approval (team lead, 2026-10-06)
+
+- **F17 is built, not just investigated.** His question: can it replace the
+  proxy, can the proxy be extended into an emulator, or can it be one tool
+  with two sub-functions? **Answer: one tool with two modes, and it does not
+  replace the proxy.** `qubo_proxy.py` produced Phase 1's frozen evidence, so
+  editing or replacing it would change a Phase 1 file -- exactly what F123
+  exists to prevent. The emulator is a new Phase 2 module that IMPORTS the
+  proxy unchanged:
+  - **exact** mode delegates to `qubo_proxy.solve_simplex_qp`, untouched;
+  - **emulate** mode reproduces what the device does that the proxy does not:
+    coefficients resolved to ~200 levels (A31), `num_samples` distinct answers
+    with spread, and a cost estimate from the measured per-fit rates.
+  It implements the same `solve(model, ...)` interface as `Dirac3CloudSolver`,
+  so it plugs into the offline-solver seam `eqc_submit.py` already has, and
+  the B4/B5 runners run end to end against it. B4's stored device responses
+  validate it against the real device.
+- **F123 approved as recommended**: C, D and E write only to the Phase 2
+  location F123 proposes; nothing existing moves; adjustable at Manual
+  Validation.
+- **F20 runs after A and B, parallel to C and D, feeding C's ranked list.**
+- **F125 added** (decision 2.1).
+- **F121 stays on HOLD until F124 reports** (decision 3.1).
 
 **Allowances, named rather than absorbed** (`SPRINT_PLANNING.md`):
 - **30% sourcing allowance on Task C, 72 min, and on Task A, 36 min.** Both
