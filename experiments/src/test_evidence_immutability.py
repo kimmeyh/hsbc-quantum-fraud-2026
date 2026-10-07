@@ -47,6 +47,28 @@ def test_a_change_fails_the_session():
         "a check that cannot fail")
 
 
+def test_the_guard_actually_ran_this_session():
+    """A bypass must not be silent (security review, 2026-10-06).
+
+    `pytest --noconftest` skips the conftest entirely: no hashing, no check,
+    and nothing in the output says so. pytest_sessionstart sets GUARD_ACTIVE;
+    if this suite runs without it, this test fails.
+    """
+    import conftest
+    assert conftest.GUARD_ACTIVE, (
+        "the evidence guard did not run this session (was --noconftest "
+        "passed?). Committed evidence was not protected.")
+
+
+def test_new_files_in_evidence_dirs_are_covered():
+    """Untracked, non-ignored files are part of the snapshot, so a test that
+    CREATES a file in an evidence directory is caught, and the Phase 2
+    directory -- with no tracked files yet -- is protected by more than a
+    name."""
+    src = CONFTEST.read_text(encoding="utf-8")
+    assert '"--others", "--exclude-standard"' in src
+
+
 def test_an_unchecked_run_says_so_rather_than_passing_silently():
     src = CONFTEST.read_text(encoding="utf-8")
     assert "EVIDENCE NOT CHECKED" in src, (
