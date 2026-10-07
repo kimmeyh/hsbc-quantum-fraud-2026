@@ -66,7 +66,23 @@ def sha256_file(p: Path) -> str:
 
 
 def manifest_hash(d: Path) -> str:
-    pairs = sorted((f.name, sha256_file(f)) for f in d.iterdir() if f.is_file())
+    """One hash over every file ANYWHERE under `d`, keyed by relative path.
+
+    DESCENDS INTO SUBDIRECTORIES (F122 (d), Sprint 21). The first version used
+    `d.iterdir()` with `is_file()`, which sees only the top level: a file added
+    inside a new subdirectory left the manifest hash UNCHANGED, while the
+    docstring claimed an added file was caught. The real Word export is flat,
+    so the gap was latent rather than live -- but a guard whose claim is true
+    only at the top level is exactly the accurate-but-weak class this card was
+    written for.
+
+    Keyed by POSIX-style relative path rather than bare `.name`, so two files
+    with the same name in different subdirectories cannot collide, and the
+    hash is stable across operating systems.
+    """
+    pairs = sorted(
+        (f.relative_to(d).as_posix(), sha256_file(f))
+        for f in d.rglob("*") if f.is_file())
     blob = "\n".join(f"{n} {h}" for n, h in pairs).encode("utf-8")
     return sha256_bytes(blob)
 

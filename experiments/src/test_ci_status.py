@@ -291,6 +291,50 @@ def test_a_success_beside_a_skip_is_still_a_pass(ci, monkeypatch):
     rc, _lines = ci.evaluate("deadbee")
     assert rc == ci.OK
 
+
+# ------------------- a CANCELLED run is neither red nor green (Sprint 21)
+
+def test_a_cancelled_run_is_UNDETERMINED_not_FAILED(ci, monkeypatch):
+    """A cancellation read as RED sends a reader to find a failure that is
+    not there.
+
+    Found by hitting it. Two rapid pushes superseded their own in-flight runs,
+    GitHub marked both `completed/cancelled`, and this script reported "CI is
+    RED on <sha>: open the failing run BEFORE continuing" -- so I opened two
+    runs looking for a test failure that did not exist. A cancellation is
+    almost always a newer push, which is normal and carries no verdict.
+
+    It must NOT become a pass either: a manual cancel or a timeout looks
+    identical from here, and "could not determine" reading as "clean" is this
+    repository's signature defect. UNDETERMINED is the honest answer, and the
+    message says how to get a real one.
+    """
+    monkeypatch.setattr(ci, "runs_for",
+                        lambda sha: _runs("completed", "cancelled"))
+    with pytest.raises(ci.Undetermined, match="CANCELLED"):
+        ci.evaluate("deadbee")
+
+
+def test_a_cancelled_run_beside_a_success_is_still_a_pass(ci, monkeypatch):
+    """The companion, without which the guard above would be satisfied by
+    treating every cancellation as fatal -- breaking the normal case where one
+    superseded run sits beside a real green one."""
+    monkeypatch.setattr(ci, "runs_for", lambda sha: (
+        _runs("completed", "cancelled", "superseded")
+        + _runs("completed", "success", "tests")))
+    rc, _lines = ci.evaluate("deadbee")
+    assert rc == ci.OK
+
+
+def test_a_cancelled_run_beside_a_failure_is_still_RED(ci, monkeypatch):
+    """A real failure is not softened by a cancellation standing next to it."""
+    monkeypatch.setattr(ci, "runs_for", lambda sha: (
+        _runs("completed", "cancelled", "superseded")
+        + _runs("completed", "failure", "tests")))
+    rc, _lines = ci.evaluate("deadbee")
+    assert rc == ci.FAILED
+
+
 # ------------------- F98: the budget, and the order the checks run in
 
 def test_the_hook_timeout_budget_covers_its_own_subprocess_calls():
@@ -359,13 +403,35 @@ def test_the_ci_check_runs_before_the_gh_dependent_issues_check():
     first, one hanging `gh pr list` could consume the whole budget and kill
     the hook before the fail-closed guard ran -- defeating it precisely when
     GitHub is slow, which is when it matters.
+
+    ANCHORED ON THE CALLS, NOT THE COMMENTS (F122 (a), Sprint 21). The first
+    version of this test used `src.index("# CI on the HEAD commit.")`, so
+    renaming a comment failed it with zero code change, and moving the code
+    while leaving the comments in place passed it. It asserted the order of
+    two strings nothing executes.
     """
     src = HOOK.read_text(encoding="utf-8")
-    i_ci = src.index("# CI on the HEAD commit.")
-    i_issues = src.index("# Open sprint issues -- POST-MERGE precondition")
+
+    # The fail-CLOSED CI evaluation: the call that returns a verdict.
+    i_ci = src.index("ci.evaluate(")
+
+    # The fail-OPEN issues check: the `gh pr list` subprocess that can hang.
+    i_issues = src.index('"gh", "pr", "list"')
+
     assert i_ci < i_issues, (
         "the gh-dependent issues check runs BEFORE the CI check again; a hang "
-        "there kills the hook before the fail-closed CI guard executes")
+        "there kills the hook before the fail-closed CI guard executes. "
+        f"ci.evaluate( at {i_ci}, gh pr list at {i_issues}")
+
+    # And neither anchor may silently vanish: if the code is restructured so
+    # one of these calls no longer exists, .index() raises ValueError above
+    # rather than passing, which is the fail-safe direction. Assert the counts
+    # so a SECOND call site cannot appear and make the ordering ambiguous.
+    assert src.count("ci.evaluate(") == 1, (
+        "more than one ci.evaluate( call site; the ordering assertion above "
+        "pins only the first and is no longer unambiguous")
+    assert src.count('"gh", "pr", "list"') == 1, (
+        "more than one `gh pr list` call site; same ambiguity")
 
 @pytest.mark.parametrize("payload,why", [
     ('{"message": "Not Found"}', "a gh error body: a dict, not a list"),

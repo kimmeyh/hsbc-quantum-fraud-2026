@@ -17,6 +17,7 @@ the externally-visible figure is recorded.
 """
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import pytest
@@ -104,19 +105,87 @@ def test_the_reconciliation_records_what_qci_was_actually_sent():
         "makes it a constraint rather than one more estimate")
 
 
-def test_the_reconciliation_does_not_pretend_to_decide():
+def test_the_reconciliation_never_picks_without_attribution():
     """F93's acceptance is that the evidence is assembled and the decision
     recorded. The decision is Class 3 -- allocation spend -- so a document
-    that quietly picked would be taking the team lead's call."""
+    that quietly picked would be taking the team lead's call.
+
+    REWRITTEN (F122 (b), Sprint 21). The first version asserted that the
+    phrase "does not pick" or "not yet made" appeared, which meant it went RED
+    on 2026-10-03, the day the team lead actually made the decision and the
+    document correctly recorded it. A guard that fails on correct progress gets
+    deleted, and this repository has already paid for that four times.
+
+    What is actually load-bearing is not that the document defers forever. It
+    is that the document is in exactly ONE of two legitimate states, never a
+    third where a choice appears with nobody's name on it:
+
+      (1) OPEN      -- the choice is explicitly deferred to the team lead, or
+      (2) DECIDED   -- a choice is recorded AND attributed to the team lead
+                       with a date.
+
+    The failure this prevents is state (3): a configuration silently selected
+    by the document itself.
+    """
     text = RECON.read_text(encoding="utf-8")
     assert "## Decision" in text, "no Decision section to record the choice in"
-    assert "does not pick" in text.lower() or "not yet made" in text.lower(), (
-        "the reconciliation neither defers the choice nor records one")
+
+    # Scope the check to the Decision section's OWN opening, not the whole
+    # file. The file elsewhere discusses the team lead and carries many dates
+    # (the options, the corrections), so a file-wide search would find an
+    # attribution no matter what the Decision section said -- which is how the
+    # first attempt at this rewrite passed a mutation that stripped exactly
+    # the attribution it was supposed to require.
+    start = text.index("## Decision")
+    nxt = text.find("\n## ", start + 1)
+    section = text[start:nxt] if nxt != -1 else text[start:]
+    head = section[:800]          # the decision itself, not its commentary
+    low = head.lower()
+
+    deferred = ("does not pick" in low or "not yet made" in low
+                or "is the team lead's" in low)
+
+    # A recorded decision must carry BOTH an attribution and a date, in the
+    # Decision section's own opening, so a choice cannot be entered without
+    # saying who made it and when.
+    attributed = "team lead" in low and re.search(
+        r"\b20\d{2}-\d{2}-\d{2}\b", head) is not None
+    decided = attributed and re.search(
+        r"\b(approved|decided|selected|chose|made|proceed)\b", low) is not None
+
+    assert deferred or decided, (
+        "the reconciliation is in neither legitimate state: it does not defer "
+        "the choice to the team lead, and it does not record a decision "
+        "attributed to the team lead with a date. A configuration chosen by "
+        "the document itself is the Class 3 violation this guard exists for")
 
 
 def test_the_options_are_enumerated_with_their_costs():
     """Four options, each with what it spends. An option list without costs
-    is not a decision aid for an allocation decision."""
+    is not a decision aid for an allocation decision.
+
+    NOW ACTUALLY CHECKS THE COSTS (F122 (c), Sprint 21). The first version
+    asserted only that the strings "Option 1" through "Option 4" appeared,
+    which is not what its name or its docstring claimed. An option could lose
+    its cost figure entirely and this guard stayed green -- on a document whose
+    whole purpose is pricing an allocation decision.
+    """
     text = RECON.read_text(encoding="utf-8")
+
+    # A cost is a number of seconds: "270 s", "1,236 s", "about 450 s".
+    seconds = re.compile(r"[\d,]+(?:\.\d+)?\s*s\b")
+
     for n in range(1, 5):
-        assert f"Option {n}" in text, f"Option {n} is missing"
+        marker = f"Option {n}"
+        assert marker in text, f"{marker} is missing"
+
+        # The option's own text runs from its marker to the next option
+        # marker, or to the end of the Options section.
+        start = text.index(marker)
+        nxt = text.find(f"Option {n + 1}", start)
+        body = text[start:nxt] if nxt != -1 else text[start:start + 1200]
+
+        assert seconds.search(body), (
+            f"{marker} states no cost in seconds. This document exists to "
+            f"price an allocation decision; an option without its spend is "
+            f"not a decision aid. Option body was: {body[:200]!r}")
