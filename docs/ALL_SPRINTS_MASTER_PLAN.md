@@ -38,13 +38,23 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 
 ## Last Completed Sprint
 
-**Sprint 21: The SPECTRA Block, and a Bar That Can Read It** (Oct 4 - Oct 6,
+**Sprint 22: Separate the Phases, Then Look for Better Numbers** (Oct 6 -
+Oct 7, 2026; PR #159). Delivered **F123, IMP-3, F124, F17, F20, F125**.
+256 minutes recorded against 980 estimated, zero metered seconds. The record
+is `docs/sprints/SPRINT_22_RETROSPECTIVE.md` and `SPRINT_22_VALIDATION.md`;
+the SUMMARY doc is written during the next sprint's planning.
+
+**F124's ranked list is approved and gates every device run**: leaf
+regularization first, at parity with HGB on energy_steel only. **Phase 2
+moves to its own private repository** (team lead, Manual Validation): F127
+is first after the merge, and this repository is then restored as filed and
+archived. B2's full device samples are not recoverable (QCi 404).
+
+### Sprint 21: The SPECTRA Block, and a Bar That Can Read It (Oct 4 - Oct 6,
 2026; PR #152). Delivered **F90, F100, F101, F122**. 454 minutes against 750
 estimated, plus **653 metered seconds** (B5 13 + B4 640), reconciled against
 the device balance, 1,675 s to 1,022 s. The record is
-`docs/B4_B5_HARDWARE_RESULT.md`, `docs/sprints/SPRINT_21_RETROSPECTIVE.md`
-and `SPRINT_21_VALIDATION.md`; the SUMMARY doc is written during Sprint 22
-planning.
+`docs/sprints/SPRINT_21_SUMMARY.md`.
 
 **The H5 replication did not reproduce on the device.** The in-segment edge
 against the matched control is negative on all 8 scoreable cells, and the
@@ -597,6 +607,8 @@ not a sweep correction.
 - **Why**: the filed proposal and appendix cite this public repository's URL, so the link should show what was filed. An archived repository refuses every push. Phase 2 paths stay unchanged in the new repository
 - Steps, with the team lead's actions marked: (1) Sprint 22 closes here, team lead merges; (2) **team lead** creates the new private repository; (3) push `develop` with full history; (4) copy untracked files (`.env`, datasets, predictions, `docs/qci_package/`) with ignore rules written FIRST (CLAUDE.md, Sprint 16 IMP-2); (5) CI green in the new repository; CLAUDE.md there updated for the new boundary; (6) one restore commit here to `f35699c`, tagged `as-filed`; (7) **team lead** archives this repository
 - Restore exceptions, kept at current content: `docs/paper/qci_cover.md` stays out (private correspondence, moved out 2026-09-17); the three filed PDFs stay in; `docs/submission/PACKAGE.md` and `SUBMISSION_RECEIPT.md` keep their post-filing text describing the tracked PDFs (confirmed by the team lead 2026-10-07)
+- The pre-commit gate is tracked (`.githooks/pre-commit`, IMP-3 Sprint 22) and arrives with the history, but git runs it only after `git config core.hooksPath .githooks` in the new clone; `.secrets-patterns.txt` is gitignored and is copied by hand
+- **IMP-6 (Sprint 22 retrospective, backlog)**: in the new repository, every Phase 2 device row carries its `job_id`, enforced by extending `test_row_schema.py` to the Phase 2 store (~20m). B2's samples were lost because its rows never stored one
 - Not carried as issues: open GitHub issues do not move; the backlog travels in this document
 - Acceptance: the new repository's suite passes in CI; this repository's tree equals `f35699c` except the listed exceptions (`git diff --stat f35699c` shows only those); this repository archived
 - Depends on: Sprint 22 merged

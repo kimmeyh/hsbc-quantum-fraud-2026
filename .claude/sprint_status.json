@@ -25,6 +25,7 @@
       "D_sparsity_acceptance": 20,
       "validation_round1": 20,
       "validation_round2": 25,
+      "retrospective_and_improvements": 70,
       "_note_CDE": "D and E ran in parallel 22:56-23:30 and are not separable; C ran 23:15-00:30 (2026-10-07), overlapping E, plus 20 min of named-source review to 00:52. D_sparsity_acceptance is the F17 card-acceptance test, 00:32-00:52, overlapping C. Read from commit times and the live clock, not reconstructed later."
     },
     "scope_additions": [],

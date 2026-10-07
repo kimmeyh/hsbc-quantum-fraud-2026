@@ -71,6 +71,9 @@ Nothing in this stage is time-bound. Schedule on value.
       Sprint 21: `docs/F100_CLASSICAL_BAR.md`
 - [x] **C**: F101 `in_pocket` provenance diagnostic.
       Sprint 21: `docs/F101_IN_POCKET_PROVENANCE.md`
+- [x] **C**: F124 SPECTRA lever research before any further device run.
+      Sprint 22: `docs/phase2/SPECTRA_IMPROVEMENT_RESEARCH.md`, approved by
+      the team lead 2026-10-07; it gates every device run
 - [ ] **C**: F102 Phase 2 preregistration framework
 - [ ] **C**: F103 SPECTRA Tier 1 known-answer check on the paper's own dataset
 - [ ] **C**: F6 gate-based arm analysis, then F106 (dequantization check) and
@@ -88,8 +91,10 @@ Nothing in this stage is time-bound. Schedule on value.
       technical briefings, compute resources or other non-public material. From
       that point, treat all of it as confidential and keep it OUT of this public
       repository
-- [ ] **H+C**: Decide where Phase 2 work lives. The public repository is a
-      Phase 1 asset; Phase 2 may need a private one
+- [x] **H+C**: Decide where Phase 2 work lives. The public repository is a
+      Phase 1 asset; Phase 2 may need a private one. **Decided 2026-10-07**
+      (team lead, Sprint 22): a new private repository; this one is restored
+      as filed and archived (F127, `docs/PHASE_SEPARATION.md` section 9)
 - [ ] **H+C**: If selected, start F13 (Phase 2 PoC sprint planning). If not
       selected, the repository stands as the public record of a null reported
       honestly
@@ -111,6 +116,9 @@ Nothing in this stage is time-bound. Schedule on value.
       control is not**
       - Backlog: F94 (controls), F104 (resolution screen), F17 (simulator),
         F25 (device run, HOLD). Needs 3,070 s; see Resourcing
+      - **Progress 2026-10-07**: F17's emulator was built (Sprint 22). It
+        does not reproduce the device's sparsity, so it cannot size this
+        experiment yet; follow-up F126
 - [ ] **C**: 4. Replication under source protocol -- H1a reproduces Loke et al.
       under their split and comparator, target AUC-PR 0.80, then re-evaluates
       under ours

@@ -200,4 +200,34 @@ feedback, recorded verbatim under each of the three roles.
 
 ## Improvement Decisions
 
-Pending.
+Team lead, 2026-10-07: "1" (apply all as recommended: IMP-1, 2, 3, 4, 5 and
+7 now; IMP-6 to the backlog on F127).
+
+| # | Decision | Where |
+|---|---|---|
+| IMP-1 | **now** (applied) | `SPRINT_PLANNING.md`, capability pre-flight: a card's claims checked against files on disk and the installed package |
+| IMP-2 | **now** (applied) | `CLAUDE.md`, under the one-decision-per-question rule |
+| IMP-3 | **now** (applied) | `.githooks/pre-commit` (tracked), `.gitattributes`, `docs/ENVIRONMENT.md`, `test_pre_commit_hook.py` |
+| IMP-4 | **now** (applied) | `CLAUDE.md`, under the restated-number rule |
+| IMP-5 | **now** (applied) | `SPRINT_EXECUTION_WORKFLOW.md` Phase 5; the Task B security review re-run under it |
+| IMP-6 | **backlog**, on F127 | `ALL_SPRINTS_MASTER_PLAN.md`, F127 card |
+| IMP-7 | **now** (applied) | `VELOCITY_LOG.md` rows 15-22; `SPRINT_PLANNING.md` estimation; `SPRINT_RETROSPECTIVE.md` step 7 |
+
+**Applied.**
+
+- **IMP-3** is the only one with code. The confidentiality gate lived in
+  `.git/hooks/pre-commit`, which git does not track. It now lives in
+  `.githooks/pre-commit`, carries the same two confidentiality checks, and
+  blocks a commit that stages code under `experiments/**.py`, `scripts/`,
+  `.claude/hooks/` or `.githooks/` without `CHANGELOG.md`. Enabled with
+  `git config core.hooksPath .githooks`. `.gitattributes` pins it to LF, since
+  a CRLF checkout breaks the shebang. 8 tests run the real hook in a scratch
+  repository. **Proven red** against two mutations: the CHANGELOG check
+  emptied (4 failed) and an early `exit 0` (5 failed).
+- **IMP-7** found the velocity log had stopped at Sprint 14; per-task actuals
+  for Sprints 15-19 were never recorded and are marked so, not reconstructed.
+
+**Completion updates.** Master plan: Sprint 22 in Last Completed Sprint,
+Sprint 21 demoted; the Past Sprint Summary row is added when the SUMMARY doc
+is written. `CHECKLIST-Phase2.md` reconciled: F124 added and ticked; "Decide
+where Phase 2 work lives" ticked; experiment 3 progress for F17.

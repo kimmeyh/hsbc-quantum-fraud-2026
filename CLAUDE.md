@@ -92,6 +92,12 @@ only in memory.
 - **Don't put two decisions in one question.** Each question gets one
   unambiguous answer form. Never write a question where "yes" maps to two
   different actions; split it or number the parts.
+  - **And don't ask a dependent decision beside the one it depends on.** If
+    a question's options change with another question's answer, ask it
+    AFTER that answer, or write its options separately for each parent
+    answer. (Sprint 22 Manual Validation: D2, D4 and D5 were asked beside D3
+    although their options depended on it; D2 was answered on a premise that
+    changed one round later. IMP-2, Sprint 22 retrospective.)
 
 - **Don't hand over Manual Validation by pointing at a file. LIST THE ITEMS
   TO THE SCREEN as the last step before he starts.** The file
@@ -238,6 +244,11 @@ only in memory.
   REFERENCES those. Suite counts are never restated anywhere -- run the suite.
   (Sprint 14: `ALL_SPRINTS_MASTER_PLAN.md` said "counts are deliberately not
   restated here" and restated one two lines later, wrongly, in the same PR.)
+  - **Test outcomes are never stated in commit messages either.** A commit
+    message says what changed and why; the suite run and CI are the record
+    of whether it passes. (Sprint 22: commit 63bc375 said the hook tests
+    passed when one had failed; corrected in c62248a. IMP-4, Sprint 22
+    retrospective.)
 
 - **Don't trust a PR review finding over the team lead's stated rule.** A review
   asked for ten deleted completion stubs to be restored as "the surviving audit

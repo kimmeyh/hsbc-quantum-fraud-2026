@@ -55,6 +55,23 @@ read these BEFORE estimating:
 These are the places findings actually land. The broad version ("grep docs/")
 was too vague to be followed reliably.
 
+**AND IT CHECKS THE CARD'S OWN CLAIMS AGAINST WHAT EXISTS (IMP-1, Sprint 22
+retrospective).** Before a card is scheduled:
+
+- every acceptance test and falsifier names its input files, and each one
+  is confirmed on disk (`ls` or `git ls-files`), not assumed
+- every library option, parameter or endpoint the card names is confirmed
+  in the INSTALLED package (`inspect.signature`, or a grep of
+  `.venv/Lib/site-packages/<package>`), not in a document about it
+- a diagnosis in the card ("X fails because Y") is reproduced once, and the
+  fix is checked against the reproduction, before it is estimated
+
+(Sprint 22, three cards. F17's acceptance test named the B2 pools, which were
+never stored, and B2's samples, which were stored truncated; the test could
+not run as written. F124 named `batched_qboost_enabled`, which eqc_models
+0.21.0 does not have; it came from an off-repository document about another
+version. F125 diagnosed a stale ref; correcting the ref alone still blocked.)
+
 **And before declaring anything "blocked on the team lead" or "not defined in
 this repository", search the repository for it** -- the card's own earlier
 bullets, the preregistration, the commits that touched the subject. Absence
@@ -100,6 +117,16 @@ Inputs: sprint goal (1-2 sentences), refined candidates (BACKLOG_REFINEMENT.md f
 ## Estimation
 
 Minutes, from recorded actuals of comparable step-types; `[no-history]` + timebox where uncalibrated. Re-estimate after plan-to-branch-state verification findings (workflow 3.2.2.1/3.2.2.2). Record actuals at task completion; recompute at retro Category 3.
+
+**Read `docs/VELOCITY_LOG.md` before writing any estimate, and add the
+sprint's rows to it at the retrospective (IMP-7, Sprint 22 retrospective).**
+For a card of a type the log has rows for, start from the median ratio of the
+last three sprints for that type and say so on the card. For a research or
+analysis card marked `[no-history]`, size the first decisive measurement, not
+every branch: Sprints 21-22 ran such cards at 0.06-0.57 of their estimates
+(Sprint 22: 980 minutes estimated, 256 recorded). The log stopped at Sprint 14
+and nobody noticed for eight sprints; the retrospective step that adds the
+rows is in `SPRINT_RETROSPECTIVE.md` step 7.
 
 ### The sprint total is DERIVED from the cards, never asserted in the plan (Sprint 17 improvement 1)
 

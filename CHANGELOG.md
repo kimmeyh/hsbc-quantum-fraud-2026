@@ -6,6 +6,9 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ### 2026-10-07
 
+- **process**: **Sprint 22 retrospective improvements applied** (team lead: all as recommended). IMP-1 card claims checked against files and the installed package before scheduling; IMP-2 dependent decisions asked after their parent; IMP-4 no test outcomes in commit messages; IMP-5 background reviews write findings to a file read in full; IMP-7 velocity log restarted (Sprints 15-22) and used for estimates. IMP-6 to the backlog on F127 (PR #159)
+- **feat**: **IMP-3: the pre-commit hook is tracked and checks the CHANGELOG.** `.githooks/pre-commit` keeps the confidentiality checks and blocks a code commit without a `CHANGELOG.md` change; enable with `git config core.hooksPath .githooks`. `test_pre_commit_hook.py`, proven red against two mutations (PR #159)
+- **chore**: Sprint 22 completion updates: master plan Last Completed Sprint, `CHECKLIST-Phase2.md` reconciled (PR #159)
 - **process**: **Sprint 22 Manual Validation complete; retrospective recorded** with seven improvements proposed for the team lead's decision. `docs/sprints/SPRINT_22_RETROSPECTIVE.md` (PR #159)
 - **docs**: **Phase 2 moves to its own private repository** (team lead, Sprint 22 Manual Validation), superseding F123's in-repository layout. This repository is to be restored as filed and archived after Sprint 22 closes. `docs/PHASE_SEPARATION.md` section 9; carded as F127 (PR #159)
 - **fix**: **B2's 11 device responses are not recoverable.** Team lead decision D8 approved a read-only recovery by job id. The job ids were read from the stored responses; QCi returned 404 "Job not found" for all 11, balance unchanged at 1,022 s. Nothing reconstructed. `recover_device_samples.py --block B2` records an absent job as absent; `requests` declared in `experiments/requirements.txt` (PR #159)

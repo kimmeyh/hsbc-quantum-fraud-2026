@@ -16,7 +16,7 @@ Adapted 2026-08-30 from spamfilter-multi's SPRINT_RETROSPECTIVE.md. The source's
 4. **Combine and display** in chat, both feedback sets together per category.
 5. **Propose improvements** from the combined feedback; per proposal: Title / Source / Type / Effort / Recommendation. Display; do NOT auto-apply.
 6. **Team lead disposes each**: apply now, backlog, or skip (blanket disposition acceptable). Record in an "Improvement Decisions" section.
-7. **Apply**: now-items as commits on the sprint branch; backlog-items to ALL_SPRINTS_MASTER_PLAN.md; skips noted. Then the mandatory completion updates (master plan Last Completed Sprint, summary doc scheduling, CHECKLIST reconciliation). THEN `gh pr ready`.
+7. **Apply**: now-items as commits on the sprint branch; backlog-items to ALL_SPRINTS_MASTER_PLAN.md; skips noted. Then the mandatory completion updates (master plan Last Completed Sprint, summary doc scheduling, CHECKLIST reconciliation, **one `docs/VELOCITY_LOG.md` row per task from `sprint_status.json` `task_actuals`** (IMP-7, Sprint 22)). THEN `gh pr ready`.
 
 ## The 16 Mandatory Categories
 
