@@ -153,7 +153,17 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
         # clones and worktrees do not carry it, and a pruned local branch is
         # routine. Falling back to HEAD's own history is strictly safer: it
         # cannot prove work has NOT started, so it does not get to skip.
-        commits = _count("develop..HEAD")
+        # PREFER origin/develop (F125, Sprint 22). The LOCAL develop ref moves
+        # only when someone checks it out, and this repository's carry-forward
+        # rule (workflow 6.6) means nobody does: on 2026-10-06 local develop
+        # still sat at Sprint 16's merge (#120), so develop..HEAD counted 105
+        # commits on a fresh Sprint 22 branch whose real count against
+        # origin/develop was 1 -- and the hook demanded Phase 3 artifacts in
+        # the middle of backlog refinement. origin/develop is updated by every
+        # fetch. Local develop stays as the fallback, then HEAD.
+        commits = _count("origin/develop..HEAD")
+        if commits is None:
+            commits = _count("develop..HEAD")
         if commits is None:
             commits = _count("HEAD")
 
@@ -185,6 +195,49 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
 
         work_started = commits is not None and commits > 0
         commits_out = str(commits) if commits is not None else "?"
+
+        # A PLAN THAT DOES NOT EXIST CANNOT BE OWED ITS PHASE 3 ARTIFACTS
+        # (F125, Sprint 22). Phase 8's refinement commits land on the NEW
+        # sprint branch before its plan is written -- the carry-forward rule
+        # puts them there. On 2026-10-06 one such commit made the hook demand
+        # Sprint 22's draft PR, issues and approval in the middle of backlog
+        # refinement. Counting correctly (origin/develop, above) turned 105
+        # into 1 and still blocked, because any commit read as "work started".
+        #
+        # The plan document is the anchor that cannot go stale: Phase 3
+        # writes it, so before it exists Phase 3 cannot be owed. Sprint 17's
+        # failure -- nine tasks run under a written plan with no PR, no issues
+        # and no approval -- still trips every check below.
+        #
+        # And work with NO plan is not let through: if any commit since the
+        # base touches more than the planning and refinement records, that is
+        # task work without a plan, which is its own violation.
+        plan_exists = (root / "docs" / "sprints" /
+                       f"SPRINT_{sprint_num}_PLAN.md").exists()
+        if work_started and not plan_exists:
+            rc_d, out_d = hooklib.git(
+                "diff", "--name-only", "origin/develop...HEAD",
+                cwd=root, timeout=2)
+            planning_only = ("docs/", "CHANGELOG.md", "README.md",
+                             ".claude/sprint_status.json", "CHECKLIST")
+            touched = [p for p in out_d.splitlines() if p.strip()] \
+                if rc_d == 0 else None
+            if touched is None:
+                violations.append(
+                    f"{commits_out} commit(s) on this branch, no plan for "
+                    f"Sprint {sprint_num}, and the changed files could not be "
+                    "listed -- so whether task work started without a plan "
+                    "was NOT checked. Check by hand.")
+            else:
+                beyond = [p for p in touched
+                          if not p.startswith(planning_only)]
+                if beyond:
+                    violations.append(
+                        f"{commits_out} commit(s) change files beyond the "
+                        f"planning records ({', '.join(beyond[:5])}) but "
+                        f"docs/sprints/SPRINT_{sprint_num}_PLAN.md does not "
+                        "exist -- task work without a plan.")
+            work_started = False
 
         if work_started:
             if cur.get("pr") is None:
@@ -265,12 +318,16 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
     #   + gh run list         3s  (check_ci_status.runs_for)
     #   + git branch          2s  (_branch, every run: no branch_override
     #                              outside the tests)
-    #   + git rev-list       2x2s (develop..HEAD, then the HEAD fallback)
+    #   + git rev-list       3x2s (origin/develop..HEAD, develop..HEAD, then
+    #                              the HEAD fallback; F125)
     #   + git status          2s  (the 0* working-file check)
     #   + git rev-parse       2s  (the post-merge issues precondition)
     #   + gh pr list          4s
     #   + gh issue list       4s
-    #   = 27s worst case, inside the 35s budget.
+    #   + git diff            2s  (no-plan branch: are the commits only
+    #                              planning records? F125)
+    #   = 31s worst case, inside the 35s budget (27s before F125 added the
+    #     origin/develop attempt and the no-plan diff).
     #
     # Every git call now passes an EXPLICIT timeout so the guard in
     # test_ci_status.py can see it. A default the guard cannot read is a
