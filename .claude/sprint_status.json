@@ -24,12 +24,14 @@
       "C": 95,
       "D_sparsity_acceptance": 20,
       "validation_round1": 20,
+      "validation_round2": 25,
       "_note_CDE": "D and E ran in parallel 22:56-23:30 and are not separable; C ran 23:15-00:30 (2026-10-07), overlapping E, plus 20 min of named-source review to 00:52. D_sparsity_acceptance is the F17 card-acceptance test, 00:32-00:52, overlapping C. Read from commit times and the live clock, not reconstructed later."
     },
     "scope_additions": [],
     "decisions": {
       "approval_2026-10-06": "Approved as amended: F17 built (one tool, exact+emulate, imports qubo_proxy unchanged); F123 provisional Phase 2 layout, adjustable at Manual Validation; F20 parallel after A,B feeding C; F125 added (2.1); F121 HOLD until F124 reports (3.1). Do not stop between tasks until Manual Validation.",
-      "manual_validation_round1_2026-10-07": "D1=1 F124 list approved; D2=2; D3=2 relocate (section 4.3); D4=1; D5=2 (no alternative named); D6 more information requested; D7=1; D8=1 attempted: all 11 B2 jobs 404 Job not found, balance 1022 unchanged, not recoverable; D9=1 carded F126. D2-D6 put back with an inventory before any group B file is edited."
+      "manual_validation_round1_2026-10-07": "D1=1 F124 list approved; D2=2; D3=2 relocate (section 4.3); D4=1; D5=2 (no alternative named); D6 more information requested; D7=1; D8=1 attempted: all 11 B2 jobs 404 Job not found, balance 1022 unchanged, not recoverable; D9=1 carded F126. D2-D6 put back with an inventory before any group B file is edited.",
+      "manual_validation_round2_2026-10-07": "Phase 2 moves to its own repository (1), private (1), after Sprint 22 closes here (1). Settles D3 and D4. This repository restored to f35699c and archived later, under F127. PHASE_SEPARATION.md section 9."
     }
   },
   "last_completed_sprint": {

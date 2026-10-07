@@ -161,3 +161,35 @@ recorded here, not worked around.
 3. The `spectra_segment.py` record: the dated note in this document, as
    recommended, or something else
 4. IMP-4 and the placement check as designed in section 6
+
+## 9. Decision, 2026-10-07: Phase 2 moves to its own repository
+
+Team lead, Sprint 22 Manual Validation. **This supersedes sections 4 to 6.**
+Phase 2 continues in a new, PRIVATE repository, started from this
+repository's `develop` with full history. This repository is then restored
+to its as-filed state and archived on GitHub (read-only).
+
+Why: the filed proposal and appendix cite
+`github.com/kimmeyh/hsbc-quantum-fraud-2026`, a public repository. A reader
+following that link should see what was filed, not the post-filing work.
+An archived repository refuses every push, which is a stronger guard than
+any hook. And a separate repository keeps every Phase 2 path unchanged.
+
+Sequence (card F127): close Sprint 22 here on the current layout; the team
+lead creates the new repository; push `develop` there with history; copy
+the untracked files (`.env`, datasets, predictions, the private QCi
+package) with their ignore rules written first; CI green there; one restore
+commit here to `f35699c`, tagged `as-filed`; the team lead archives this
+repository.
+
+Exceptions to the restore, kept at their current content:
+
+- `docs/paper/qci_cover.md` stays OUT. It was in the tree at the filing and
+  was moved out on 2026-09-17 because it is private commercial
+  correspondence.
+- The three filed PDFs (`docs/paper/out/`, committed 2026-09-18) stay IN.
+  They are the filed bytes, hashes pinned.
+- `docs/submission/PACKAGE.md` and `SUBMISSION_RECEIPT.md` keep their
+  post-filing text, which says the PDFs are tracked and why. Restoring the
+  filing text would say the PDFs are not tracked, beside the tracked PDFs.
+  (Proposed; confirmed by the team lead before the restore.)

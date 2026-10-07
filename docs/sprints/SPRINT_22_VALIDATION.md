@@ -240,3 +240,17 @@ Open, put back to the team lead with an inventory:
   rule).
 - **D5 = "something else"**: no alternative was named.
 - **D6**: information requested.
+
+## Manual Validation, round 2 (2026-10-07)
+
+The team lead first proposed copying instead of moving, then a full Phase 2
+directory tree, then a separate repository. Decided:
+
+- **Phase 2 moves to its own repository** (answer 1), **private** (answer
+  2), **after Sprint 22 closes here** (answer 3). Recorded in
+  `docs/PHASE_SEPARATION.md` section 9 and carded as F127.
+- This settles **D3 and D4**: nothing is moved or relocated inside this
+  repository. It is restored to `f35699c` once, after the new repository
+  exists, with three exceptions (section 9).
+- Found while checking: the filed proposal and appendix cite this public
+  repository's URL, which now shows four weeks of post-filing work.

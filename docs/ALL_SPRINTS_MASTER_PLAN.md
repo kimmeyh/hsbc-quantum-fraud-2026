@@ -591,6 +591,16 @@ not a sweep correction.
 - Acceptance (investigation): a written finding on whether QCi publishes a usable model, and either a build plan with the sparsity-reproduction test as its gate, or a recorded decision not to build with the reason. Acceptance (build, if taken): reproduces the B2 sparsity pattern on the frozen pools; miniaturized subsets so any test run completes within 10 minutes
 - Depends on: nothing. Pairs with F94 (both prepare Experiment 3) and with F20
 
+**F127. Phase 2 moves to its own private repository; this one is restored as filed and archived (~2-4h [no-history], zero metered) Priority 1**
+- Phase: Phase 2 setup (added 2026-10-07, team lead decision at Sprint 22 Manual Validation; supersedes F123's in-repository layout). First task after Sprint 22 closes
+- Platform: GitHub, git, CI
+- **Why**: the filed proposal and appendix cite this public repository's URL, so the link should show what was filed. An archived repository refuses every push. Phase 2 paths stay unchanged in the new repository
+- Steps, with the team lead's actions marked: (1) Sprint 22 closes here, team lead merges; (2) **team lead** creates the new private repository; (3) push `develop` with full history; (4) copy untracked files (`.env`, datasets, predictions, `docs/qci_package/`) with ignore rules written FIRST (CLAUDE.md, Sprint 16 IMP-2); (5) CI green in the new repository; CLAUDE.md there updated for the new boundary; (6) one restore commit here to `f35699c`, tagged `as-filed`; (7) **team lead** archives this repository
+- Restore exceptions, kept at current content: `docs/paper/qci_cover.md` stays out (private correspondence, moved out 2026-09-17); the three filed PDFs stay in; `docs/submission/PACKAGE.md` and `SUBMISSION_RECEIPT.md` keep their post-filing text describing the tracked PDFs (to be confirmed by the team lead)
+- Not carried as issues: open GitHub issues do not move; the backlog travels in this document
+- Acceptance: the new repository's suite passes in CI; this repository's tree equals `f35699c` except the listed exceptions (`git diff --stat f35699c` shows only those); this repository archived
+- Depends on: Sprint 22 merged
+
 **F126. Model of the device's sparsity, validated on held-out fits (~3h [no-history], zero metered) Priority 101**
 - Phase: Phase 2 preparation, Experiment 3 (added 2026-10-07, team lead decision D9 at Sprint 22 Manual Validation: F17 follow-up)
 - Platform: local (`experiments/phase2/src/dirac3_emulator.py`)
