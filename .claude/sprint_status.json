@@ -1,33 +1,45 @@
 {
   "current_sprint": {
-    "number": 20,
-    "name": "Make the Suite Readable Again",
-    "branch": "feature/20260930_Sprint_20",
+    "number": 21,
+    "name": "The SPECTRA Block, and a Bar That Can Read It",
+    "branch": "feature/20261004_Sprint_21",
     "status": "phase_7_retrospective",
-    "plan_doc": "docs/sprints/SPRINT_20_PLAN.md",
-    "pr": 146,
+    "plan_doc": "docs/sprints/SPRINT_21_PLAN.md",
+    "pr": 152,
     "plan_approved": true,
     "github_issues": [
-      147,
-      148,
-      149,
-      150
+      153,
+      154,
+      155,
+      156,
+      157
     ],
     "task_actuals": {
       "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective.",
-      "A": 52,
-      "C": 34,
-      "D": 28,
-      "B": 47
+      "B": 58,
+      "E": 34,
+      "C_pilot": 42,
+      "D_pilot": 47,
+      "C_runners": 112,
+      "D": 86,
+      "A": 0,
+      "C_rebuild": 39,
+      "C_verification": 36
     },
-    "scope_additions": [
-      "a299ad2 (Phase 2 checklist merge, F100-F121 registered; team lead confirmed 2026-10-03)"
-    ]
+    "scope_additions": [],
+    "decisions": {
+      "spectra_control_2026-10-05": "Option 5 (downsized matched pair, repeated draws) goes to PHASE 2 via F102, NOT to Phase 1. The frozen PREREGISTRATION.md is not edited and carries no appended amendment: section 11 forbids an amendment that changes a gate pass/fail criterion, and H5(ii) rate-matched control IS that criterion. Phase 1 B4 runs the 10 feasible fits; energy_steel is reported unscoreable, which is an outcome the gate table already has a column for.",
+      "b5_2026-10-05": "Built this sprint (team lead Q1).",
+      "dirac3_window_2026-10-05": "ALL Dirac-3 calls wait until 18:00 local 2026-10-05, then run. Approved by the team lead. B5 and B4 both pre-approved; Criterion H recording still applies (block, call count, expected seconds, provenance stated immediately before each run).",
+      "phase2_prereg": "F102 may be drafted now and revised until its November filing; it binds only from filing. Option 5 is specification there, not an amendment.",
+      "task_a_2026-10-05": "CLOSED as already satisfied. The off-repository configuration (schedule 3, 8 samples, relaxation schedule 2, ridge 2x records) was brought in 2026-10-03 and FROZEN_CELLS encodes exactly it, verified field by field. I had turned a citation restriction into a missing input and asked the team lead for data I already held. Issue #153 closed; #155 and #156 unblocked.",
+      "pr_reviews_2026-10-06": "Team lead: no Claude or Copilot PR review on #152. \"2 reviews have already been done and comfortable we can continue and catch anything the PR reviews would have caught next time.\" PR marked ready 2026-10-06; CI green on 8487e35; merge is the team lead's action."
+    }
   },
   "last_completed_sprint": {
-    "number": 19,
-    "merged_pr": 141,
-    "main_merge_pr": 145,
+    "number": 20,
+    "merged_pr": 146,
+    "main_merge_pr": 151,
     "docs_triad_complete": true
   },
   "prereg": {
@@ -35,5 +47,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-10-03"
+  "updated": "2026-10-06"
 }

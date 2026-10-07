@@ -33,37 +33,35 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 17 | docs/sprints/SPRINT_17_SUMMARY.md | [OK] Complete | ~1 day (Sep 19, 2026) |
 | 18 | docs/sprints/SPRINT_18_SUMMARY.md | [OK] Complete | ~2 days (Sep 22-23, 2026) |
 | 19 | docs/sprints/SPRINT_19_SUMMARY.md | [OK] Complete | ~7 days (Sep 23-30, 2026) |
-| 20 | docs/sprints/SPRINT_20_SUMMARY.md | [OK] Complete | ~4 days (Sep 30 - Oct 3, 2026) |
+| 20 | docs/sprints/SPRINT_20_SUMMARY.md | [OK] Complete | ~4 days (Sep 30 - Oct 4, 2026) |
+| 21 | docs/sprints/SPRINT_21_SUMMARY.md | [OK] Complete | ~3 days (Oct 4 - Oct 6, 2026) |
 
 ## Last Completed Sprint
 
-**Sprint 20: Make the Suite Readable Again** (Sep 30 - Oct 3, 2026; PR #146).
-Delivered **F97, F93, F98, F99**. 161 minutes against 171 estimated, zero
-metered seconds, and the first sprint with a COMPLETE set of actuals. The
-record is `docs/sprints/SPRINT_20_RETROSPECTIVE.md` and
-`SPRINT_20_VALIDATION.md`; the SUMMARY doc is created during Sprint 21
-planning per the three-doc rule.
+**Sprint 21: The SPECTRA Block, and a Bar That Can Read It** (Oct 4 - Oct 6,
+2026; PR #152). Delivered **F90, F100, F101, F122**. 454 minutes against 750
+estimated, plus **653 metered seconds** (B5 13 + B4 640), reconciled against
+the device balance, 1,675 s to 1,022 s. The record is
+`docs/B4_B5_HARDWARE_RESULT.md`, `docs/sprints/SPRINT_21_RETROSPECTIVE.md`
+and `SPRINT_21_VALIDATION.md`; the SUMMARY doc is written during Sprint 22
+planning.
 
-**The suite is green in a planning window for the first time.** Six tests
-asserted that Phase 3 artifacts exist while the repository sat in Phase 1,
-before the plan that creates them had been written, so they failed for days at
-a time. They now gate on the recorded phase, proven across nine sprint states
-with the same code AND proven to still go red where an artifact is genuinely
-owed.
+**The H5 replication did not reproduce on the device.** The in-segment edge
+against the matched control is negative on all 8 scoreable cells, and the
+device matches its classical proxy within 0.0072 in-pocket AUPRC on every
+cell. energy_steel is `unscoreable`: its matched control is infeasible. HGB
+and GA2M beat the proxy on every cell (F100); `in_pocket` is predictable
+from the phase features at AUC 0.93-0.99 (F101).
 
-**The close-out hook can no longer be silenced by a slow network.** Measured:
-a Stop hook killed at its timeout produces no exit code, so it cannot block --
-a timeout fails OPEN. The fail-open `gh` checks ran before the fail-closed CI
-check, so one hanging call killed the hook before the guard ran. Reordered,
-and the internal budget cut from 160s to 18s against a 20s allowance.
+**F123 and F124 were registered by the team lead**: separating Phase 2 files
+from Phase 1's, and researching what to try before any further Dirac-3 run.
+Every open card that can spend device seconds depends on F124.
 
-**The sent QCi correspondence has recorded hashes** in
-`docs/QCI_CORRESPONDENCE_HASHES.md`, enforced by a guard that skips VISIBLY
-where the gitignored artifacts are absent. The ignore rule did not change.
-
-**a299ad2 is part of this sprint** (team lead, confirmed 2026-10-03): the
-Phase 2 checklist merge, items 5 and 6 corrected against the filed proposal,
-and F100-F121 registered.
+### Sprint 20: Make the Suite Readable Again (Sep 30 - Oct 4, 2026; PR #146
+to develop, PR #151 to main). Delivered **F97, F93, F98, F99** in 161
+minutes against 171, zero metered seconds. The suite went green in a
+planning window for the first time, and the close-out hook can no longer be
+silenced by a slow network. The record is `docs/sprints/SPRINT_20_SUMMARY.md`.
 
 ### Sprint 19: Send the QCi Package Clean (Sep 23-30, 2026; PR #141 to
 develop, PR #145 to main). Delivered **F92**. **The package was SENT 2026-09-25
@@ -244,48 +242,6 @@ Three findings outlived their cards and are recorded there:
 - Acceptance: the team lead picks one configuration (schedule 2 at 91-136 variables, or schedule 3 at 833) with the reason recorded; F2b and F5 closed into the survivor; the survivor's cost labeled measured or extrapolated; the hardware plan's Experiment 5 row either matches it or is flagged for F92
 - Depends on: nothing. The configuration choice is the team lead's (Class 3)
 
-**F92. QCi memo reconciled with the hardware plan before it is sent -- DONE (Sprint 19)**
-- Delivered Sprint 19, PR #141 to develop and PR #145 to main, both 2026-09-30.
-  **The package was SENT 2026-09-25 at 12:23 PM.** Approved at 105m (Task C not
-  approved, carded as F96, since closed as overtaken), then extended after Task
-  D's fresh-context review found fourteen cross-document disagreements: eight
-  fixed, four left with a recorded reason, one answered without a change
-- The record is `docs/sprints/SPRINT_19_SUMMARY.md` and its retrospective; this
-  line only points at them
-- **Consequence for the backlog**: the four package documents are now FINAL
-  (team lead, 2026-09-27), so any future card touching them needs a new
-  document rather than an edit
-
-**F97. FIVE tests depend on live sprint state and are RED right now (~40m, zero metered) Priority 20**
-- Phase: Finalize / tooling (added 2026-09-24, team lead, from the Sprint 19 3.3.2 CI checkpoint; **rescoped 2026-09-30, priority 16 to 4**)
-- Platform: N/A (CI, `experiments/src/test_ci_status.py`, `test_phase3_artifacts.py`, `test_sprint_documents.py`)
-- **MEASURED 2026-09-30, and the scope is five tests rather than one**: `test_the_hook_allows_a_closeout_when_ci_is_green`, `test_current_sprint_records_its_draft_pr`, `test_current_sprint_records_its_task_issues`, `test_plan_approval_is_recorded`, `test_sprint_status_points_at_a_real_sprint`. Rolling `sprint_status.json` to Sprint 20 Phase 1 turns all five red; rolling it back to the Sprint 19 record turns all 32 tests in those three files green, with no code change. They assert Phase 3 artifacts exist while the repository is in Phase 1, before a plan exists to create them
-- **This blocks a green suite for the entire planning window**, which is when the next sprint's plan is being written and reviewed. A suite that is expected to be red is a suite nobody reads, and this repository has already paid for CI that was red on every commit of a sprint
-- The test runs the real close-out hook against the live `.claude/sprint_status.json`. During every planning window, before issues and approval exist, the hook blocks on the missing Phase 3 artifacts before it reaches the CI check, and the test reads that as "a green close-out was blocked". Red on CI for PR #141 until approval; green after
-- Same class as the Sprint 18 `test_phase3_artifacts.py` finding: a test coupled to repository state rather than a pinned input
-- Acceptance: the test supplies a complete, pinned status payload so it passes in every phase; proven by running it against a planning-state status file (red today, green after the fix)
-- Depends on: nothing
-
-**F98. The close-out hook's 20s budget against 160s of internal timeouts (~30m, zero metered) Priority 22**
-- Phase: Finalize / tooling (added 2026-09-28, from the PR #141 silent-failure review)
-- Platform: N/A (`.claude/settings.json`, `.claude/hooks/verify_closeout_complete.py`, `scripts/check_ci_status.py`)
-- `settings.json` gives the hook `"timeout": 20`. Inside `collect_violations` the worst case is `gh pr list` 20s + `gh issue list` 20s + `gh auth status` 60s + `gh run list` 60s = **160s**, and a single hanging `gh pr list` already exceeds the whole budget on its own
-- **The ordering is what makes it matter.** The fail-OPEN issues check (`except Exception: pass`) runs BEFORE the deliberately fail-CLOSED CI check. A hung `gh` in the fail-open check kills the hook before the fail-closed guard ever runs, so the new CI gate's careful design never executes -- exactly when GitHub is slow, which is when you want it
-- Measured happy path is 2.9s, so this bites only on a slow or unreachable GitHub
-- **UNVERIFIED and it should be settled first**: whether a killed Stop hook blocks or allows. Nothing in this repository documents Claude Code's behavior when a hook exceeds its timeout. A scratch Stop hook containing `time.sleep(25)` would settle it, or the hooks reference. The fix does not depend on the answer -- the two numbers are inconsistent either way -- but the severity does
-- Acceptance: the sum of internal timeouts is under the configured budget (or the budget is raised above the worst case), the fail-closed CI check runs BEFORE the fail-open gh checks, and the kill semantics are recorded with the evidence that settled them
-- Depends on: nothing
-
-**F99. No tracked hash for the sent QCi correspondence (~20m, zero metered) Priority 150**
-- Phase: QCi/External (added 2026-09-28, from the PR #141 test-coverage review; **rescoped 2026-09-29**)
-- Platform: docs (`docs/qci_package/`, `experiments/src/test_published_artifacts.py`)
-- `docs/qci_package/` is wholly gitignored (`.gitignore:62`), correctly, because it holds private commercial correspondence. The sent `.htm`, its `_files` sidecar and `Phase 1 - QCi memo AS SENT 2026-09-25.md` are therefore untracked, and **no tracked file records a hash for any of them** (verified 2026-09-29: no sha256 for these paths anywhere in `docs/`, `experiments/src/` or `scripts/`)
-- **RECOVERY IS COVERED. The team lead confirmed 2026-09-29 that laptop backups cover these files**, so the original "unrecoverable" framing was wrong and the priority drops accordingly (18 to 25). What remains is narrower and still real: **silent alteration is undetectable**. A backup restores a lost file; it does not tell you that the copy on disk stopped matching what was sent, and nothing in the repository would notice
-- The stated rule -- "a sent artifact is evidence, not a test fixture" -- has no enforcement for this instance. Contrast `test_published_artifacts.py`'s `SUBMITTED_SHA256`, which pins the three filed PDFs by hash precisely so a rebuild is caught. That guard exists because a rebuild DID happen, twice, and changed bytes that were already filed
-- The ignore rule must NOT change. What is missing is a tracked file recording sha256 for each sent artifact, and a guard that fails when a named artifact is present and its hash has moved, and skips EXPLICITLY (never silently) when it is absent on this machine
-- Acceptance: hashes recorded in a tracked file; the guard proven RED by altering a byte of a scratch copy; proven to skip rather than fail where the files are absent, with the skip visible in the output
-- Depends on: nothing
-
 **F94. Experiment 3 classical controls on the proxy: greedy, simulated annealing, exact solve at small n (~4h, zero metered) Priority 50**
 - Phase: Phase 2 preparation, Experiment 3 (added 2026-09-23, SPLIT from F25; **taken off the preregistration gate 2026-10-02**; re-scored 8 to 50 in the 2026-10-03 refinement, behind the cards that make F90 readable and the preregistration framework). Sprints with F104
 - Platform: classical proxy (`qubo_proxy.py`, `integer_path.py`)
@@ -307,7 +263,7 @@ Three findings outlived their cards and are recorded there:
 - The feedback document's open question 1, "Would relaxation schedule 4 close the residual?", is still open: every Phase 1 fit ran schedule 2, frozen before the grant. The memo names it as a use of the remaining balance
 - **Four fits at 45-91 variables**, enumerated in the HELD note below. Schedule-2 cost there is 4-9 s per fit, measured; **schedule-4 cost is unmeasured**, so the block opens with one fit to establish the rate (the F87 pattern). (Corrected 2026-09-27: this bullet said "about five fits at 91-136 variables" while the note below enumerated four, one of them at 45 variables. IMP-4 directs future readers to trust this card's numbers rather than re-derive them, so a card contradicting itself undercuts the rule that cites it. Found by both PR #141 reviews.)
 - Acceptance: the runner is idempotent before its first approval (Criterion H); per-fit residual against the proxy optimum reported as `[HW]` rows beside their schedule-2 twins
-- Depends on: per-block team-lead approval (Criterion H)
+- Depends on: **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run); per-block team-lead approval (Criterion H)
 - **HELD until the QCi memo (F92) is sent** (team lead, 2026-09-23). Case and cost worked out at refinement, recorded so it is not re-derived: 4 fits on frozen pools that already have schedule-2 and exact-optimum twins (B1 dct seeds 42 and 43 at 91 variables; the G0b fit with the 0.413% gap; B1 lg seed 42 at 45 variables), stopping after fit 1 to re-quote if the rate exceeds 27 s. About 60 s, range 40-110 s, cap 120 s. Extrapolated, low confidence: measured schedule-2 cost of 4-5 s per fit times the 3.4x schedule-4 ratio (range 2.3x-5.3x) in QCi's portfolio example, a problem of unstated size. The per-fit data suggests the residual is a fixed offset (all 8 samples clustered well above the optimum), which predicts schedule 4 will NOT close it; that is inference, and the run is what settles it
 
 **F90. F2b at the configuration that can actually show an effect: B5, then B4 at schedule 3 (~4h + approvals) Priority 10**
@@ -318,10 +274,12 @@ Three findings outlived their cards and are recorded there:
 - **APPROVED 2026-10-03 and scheduled for the next sprint** (team lead): he ran SPECTRA on another computer and Dirac-3 won in almost all cases, and directs the analysis matching prior Dirac-3 quantum-enhanced datasets to run next. That result is `[UNVERIFIED -- OFF-REPOSITORY]` here until its configuration, fits, seeds and arm are brought in, which is the next sprint's first task. F2b's B4 line and F5 close into this card. See `docs/SPECTRA_BLOCK_RECONCILIATION.md`
 - **THE TUNED CONFIGURATION IS WHAT WINS, AND IT IS NOT THE ONE OUR LOSS FIGURE DESCRIBES.** Consulted for planning only (a prior-campaign findings document the team lead holds outside this repository; nothing copied in, not cited as evidence): the in-segment wins come from schedule 3 with 8 samples, relaxation schedule 2, and a ridge of about 2x the record count, which our own `qubo_proxy.py` already uses (`LAMBDA_MULT = 2.0`). Relaxation schedule 4 cost about 3.8x more per sample for no measurable accuracy gain, and shallower weak learners hurt badly -- so the Sprint 18 instinct to leave schedule at 2 was right for the RELAXATION schedule and wrong only if confused with the WEAK-CLASSIFIER schedule. Two different knobs, similar names
 - **CAVEAT TO CARRY, now in the acceptance criterion below**: those in-segment wins came with a train-to-test gap well above XGBoost's on the `target` cells, one case dropping from 0.98 train to 0.59 test. The wins are real and fragile. Any Phase 2 claim from this block must report the train-test gap beside the win. (Corrected 2026-10-03: this bullet said "three to eight times XGBoost's on every `target` cell", copying the summary line of the off-repository findings document. That document's own table gives ratios of 83, 7.6, 8.2 and 1.7, so the summary is wrong at both ends. The ratios come from the 2026-09-30 EvidenceBasedDB check of that document; they are not evidence in this repository)
-- **THE ACCURACY FIGURES BELOW ARE PROXY, NOT DEVICE.** Checked 2026-10-03: `experiments/results/spectra_proxy_dry_run.json` holds 15 rows, 13 of 13 scored in-segment cells with a NEGATIVE edge at 560 and 816 variables, and the preregistration names the origin at line 46 (FourierWall2, 2026-08-04). They are sourced -- but every row is `evidence_tag: PROJ`, `metered_seconds: 0`. **This repository has never run SPECTRA on Dirac-3.** So "schedule 2 lost 8 of 8" means the PROXY lost in-segment, and says nothing about the device. The team lead's 2026-10-03 device run does not contradict it; it tests the arm we never tested. The COST anchor in the next bullet is measured and stands
+- **THE ACCURACY FIGURES BELOW ARE PROXY, NOT DEVICE.** Checked 2026-10-03: `experiments/results/spectra_proxy_dry_run.json` holds 15 rows, and the preregistration names the origin at line 46 (FourierWall2, 2026-08-04). **CORRECTED 2026-10-05: the "13 of 13 scored cells" this bullet claimed is 8 of 13.** The five energy_steel rows report a control of 927-950 positives drawn from a complement holding only 832-864, which is impossible: they predate the complement-pool correction (`775942b`) and their controls overlapped the segment they controlled for. energy_steel is `unscoreable` for Phase 1. The 8 feasible cells are all still negative, so the direction holds and the completeness does not. See `docs/SPECTRA_CONTROL_FEASIBILITY.md`. They are sourced -- but every row is `evidence_tag: PROJ`, `metered_seconds: 0`. **This repository has never run SPECTRA on Dirac-3.** So "schedule 2 lost 8 of 8" means the PROXY lost in-segment, and says nothing about the device. The team lead's 2026-10-03 device run does not contradict it; it tests the arm we never tested. The COST anchor in the next bullet is measured and stands
 - **B4 runs at schedule 3.** In the prior SPECTRA work, schedule 2 reportedly lost overall 8 of 8 to the classical arm with only ~3 in-segment metrics won; schedule 3 -- which adds three-feature interactions -- took CVQBoost to in-segment ROC 5 of 7 and PR 6 of 7, and to an overall win on energy_steel. Schedule 3 is the accuracy lever. **A schedule-2 block would spend real seconds reproducing a configuration already known to lose, which is not a cheap experiment but a worthless one.**
-- **COST, measured rather than projected.** The schedule-3 QUBO is `n + C(n,2) + C(n,3)`. For energy_steel (17 features) that is **exactly 833 variables -- our B2 size** -- so B2's measured 82.4 s/fit is a DIRECT ANCHOR, not an extrapolation:
-  - **B4: 15 fits x 82.4 s = about 1,236 s, which is 74% of the 1,681 remaining** (was 63% of 1,961 before the Sprint 18 integer probes spent 280 s). Provenance: `measured` at this exact variable count.
+- **COST. CORRECTED 2026-10-05 at the Sprint 21 capability pre-flight; the variable count and the per-cell sizing were both wrong.** The formula `n + C(n,2) + C(n,3)` is the **`full`** pair-build. `data.qubo_vars` (amendment A2) caps pairs at `n(n-3)/2` for the **`sequential`** build, which the B4 request states is **mandatory on Windows**, so singles+pairs total `C(n,2)` exactly. The cells are therefore **816 / 816 / 560**, not 833 / 833 / 575, and `spectra_proxy_dry_run.json` records exactly those counts. B4 is also THREE cells, not one at a single size, so pricing all 15 fits at one rate was wrong in the expensive direction:
+  - **B2 is the anchor and its configuration matches B4's exactly** -- `num_samples=8`, `relaxation_schedule=2`, `weak_cls_schedule=3` -- differing only in `pair_build` (`full`, so 833 vars) and dataset. 11 metered fits, 906 s, **71-92 s/fit, mean 82.4** (`[HW]`, results.json).
+  - **B4 at the anchor rate: 10 fits at 816 + 5 at 560 = about 1,084-1,235 s, 65-74% of the 1,681 remaining**, leaving 446-597 s. The low end scales linearly from the anchor; the high end prices every fit at the anchor itself. Provenance: `measured` for the 816 cells (816 is 98% of the anchor's 833), `extrapolated` for the 560 cell, which sits BELOW the anchor where the cost curve is not linear -- the metered rate per variable runs 49-556 ms/var below 100 variables against 99 ms/var at 833, so a floor applies and 560 may cost more than a linear read suggests.
+  - **UNRESOLVED COST CONFLICT, and it is a factor of 2.4.** `HARDWARE_REQUEST_B4.md` line 43 prices this block from FourierWall2's measured rollout at **26-34 s/fit for 560-816 vars at this exact ns/rx/schedule**, giving an expected total of ~390-510 s, and cites the preregistration section 10 envelope of ~450 s. Our own B2 measured 76-91 s/fit at the same configuration. Both are described as measured; they cannot both price B4. The B4 request is the document QCi holds a plan against, so this must be settled BEFORE the block runs, not after. B5 running first is what settles it cheaply.
   - **B5 (QSVM, 12 fits): 15-62 s.** Provenance: `extrapolated` from B3's 5.2 s/fit.
   - Run B5 FIRST. It is cheap and it exercises the approval and ledger path before the expensive block.
 - **THE A31 READING THAT MUST NOT BE REPEATED.** The Sprint 18 plan first argued that A31's ~200-learner resolution limit made schedule 3 a worse experiment. That is backwards. A31 predicts the MECHANISM -- weight over more than ~200 learners is not representable, so the device returns something sparser -- not a bad OUTCOME. B2 ran at 833 variables with weight cosine 0.83 and produced the campaign's ONLY positive result at scale, +0.0256 on ten of ten seeds. The sparsified answer was better. Whether that repeats on SPECTRA is the actual experiment.
@@ -329,9 +287,9 @@ Three findings outlived their cards and are recorded there:
 - **Reconcile with F5 BEFORE B4 runs.** F5 (SPECTRA in-segment replication) is the same block from another angle and they must not both be scheduled. F5's HOLD reason names a QCi grant that "has only been acknowledged, not granted"; the grant arrived 2026-09-09 and 1,681 s remain. That gate was stale and is corrected on the F5 card (Phase 8 sweep, 2026-09-23).
 - **Acceptance**: B5 and B4 complete as `[HW]` rows with metered seconds from the response; the in-segment result reported against the matched random-segment control per H5(ii); the schedule-3 configuration stated with its variable count; and the weight cosine recorded, since forced sparsity is the expected mechanism rather than a defect.
 - **Acceptance, added 2026-10-03**: (a) the F100 complete classical bar reported on the same rows; (b) repeats reported as mean and standard deviation, not single runs; (c) every returned sample stored, not only the lowest-energy one, so F20's multi-sample ensembling costs no further device time; (d) the train-test gap beside every win
-- **Cost against the sent figure**: 15 fits at 833 variables is about 4.6x the 270 s the sent hardware plan states for Experiment 5 (`docs/SPECTRA_BLOCK_RECONCILIATION.md`). After F90, about 445 s of the 1,681 remain, which does not cover Experiment 3; Experiment 3 depends on the additional 7,500 s asked of QCi
-- **This is an allocation DECISION, not an estimate.** 1,236 s of 1,681 leaves about 445 s for everything else. It stops for per-block approval with the figure quoted (Criterion H).
-- Depends on: reconciliation with F5; per-block team-lead approval
+- **Cost against the sent figure**: at the corrected sizing the block is about 4.0-4.6x the 270 s the sent hardware plan states for Experiment 5 (`docs/SPECTRA_BLOCK_RECONCILIATION.md`). After F90, about **446-597 s** of the 1,681 remain, which does not cover Experiment 3; Experiment 3 depends on the additional 7,500 s asked of QCi
+- **This is an allocation DECISION, not an estimate.** About 1,084-1,235 s of 1,681 leaves 446-597 s for everything else. It stops for per-block approval with the figure quoted (Criterion H), B5 first and B4 separately.
+- Depends on: **nothing outstanding.** Per-block team-lead approval was given 2026-10-05 for B5 and B4 together, with all Dirac-3 calls directed to wait for the 18:00 local window. (Corrected TWICE, and the second correction was mine to make: on 2026-10-04 this line said "reconciliation with F5", which F5's closure on 2026-10-03 had already satisfied. My replacement then said the card was BLOCKED on the off-repository result being "brought in" -- but **the configuration was already brought in on 2026-10-03** and is the bullet four lines above: schedule 3, 8 samples, relaxation schedule 2, ridge 2x the record count. `spectra_segment.FROZEN_CELLS` encodes exactly that, and so does B2's `hw_config`, which is why 82.4 s/fit anchors at all. I had turned a CITATION restriction -- those AUC figures are not evidence in this repository -- into a MISSING INPUT, which is a different thing. B4 generates its own `[HW]` numbers and never needed the off-repository ones.)
 
 **F2b. Hardware campaign, remaining blocks B4 and B5 -- CLOSED 2026-10-03 into F90**
 - **CLOSED in the 2026-10-03 refinement.** B4's line closed into F90 earlier the same day, and F90's title is "B5, then B4", so the B5 line here duplicated it. Nothing is lost: B5 runs first inside F90. The card stays in place because `test_spectra_reconciliation.py` requires every SPECTRA record to remain findable
@@ -434,12 +392,60 @@ then the builds for the committed experiments. Estimates are `[no-history]`.
 - Acceptance: AUC of each predictor recorded with a one-line reading
 - Depends on: F90's first task. The SPECTRA author's construction details settle it without inference if they arrive (team lead to ask)
 
+**F124. SPECTRA prediction research: what to try before the next Dirac-3 run (~4h investigation [no-history], zero metered) Priority 10**
+- Phase: Phase 2 preparation (added 2026-10-06, team lead; scheduled for Sprint 22). Scored 10, the slot F90 vacates at Sprint 21 close-out. **Every open card that can spend Dirac-3 seconds depends on it** -- F95, F110, F20, F25, F30 -- by the team lead's decision to enforce this as a card dependency rather than a code gate (2026-10-06, answer 2.2)
+- Platform: SPECTRA, Dirac-3, eqc_models, docs
+- **The question**: what could improve prediction on the SPECTRA datasets -- feature analysis, run setup, model configuration -- and which of it is worth device time?
+- **Sources to search, all of them**:
+  - This repository: results.json, the F100 classical bar, F101, the B4/B5 result, the SPECTRA feasibility analysis, A31 (resolution), B2's sparsity result, and the open cards that already propose levers (F20 soft votes, F25 non-convex selection, F104 resolution screen, F106 dequantization check, F109 domain ladder and aggregation, F113 oracle gap)
+  - The off-repository `CVQBoost_Findings.md`: planning reference only, nothing copied in as evidence (team lead, Sprint 20)
+  - **EvidenceBasedDB**: its database and the articles, repositories and references behind it. READ-ONLY: this repository never writes there (CLAUDE.md standing rule)
+  - Dirac-3 and `eqc_models`: device behavior, solver arguments, and library options not yet tried. Verified 2026-10-06 that `eqc_models.ml` ships `feature_selection`, `decomposition`, `reservoir`, `clustering` and a dual QSVM (`QSVMClassifierDual`), none of which this repository has used; `QBoostClassifier` also exposes `weak_cls_type`, `weak_cls_params` and `batched_qboost_enabled`
+  - **QCi NeuraWave**: what it is, from primary sources, and whether it can help with feature analysis or prediction. **Unverified so far**: nothing in this repository describes it; whether it relates to `eqc_models.ml.reservoir` is a question to settle, not an assumption
+- **What the evidence already says, so the search starts from it**:
+  - The device returns its classical proxy's answer (in-pocket AUPRC within 0.0072 on all 8 B4 cells; weight cosine 0.83-0.90). A better number has to come from the PROBLEM -- features, pool, regularization, formulation -- not from the solve
+  - The classical lanes that win are the ones with feature interactions (HGB, GA2M beat the proxy on every cell); additive lanes lose
+  - In-pocket, CVQBoost beat XGBoost on 2 of 8 cells (ROC) in a scratch comparison on B4's splits, against the off-repository single-seed result's clean sweep; seed-to-seed spread (~0.05) exceeds that result's margins
+  - Train-test AUPRC gap +0.15 to +0.30 on every B4 cell: overfit, so regularization and pool size are levers
+  - `in_pocket` is predictable from the phase features at AUC 0.93-0.99 (F101)
+  - B5's QSVM Hamiltonians exceed A31's ~23 dB limit on 11 of 12 cells
+  - energy_steel, the off-repository result's strongest cell, has never run here: the H5(ii) control is infeasible there, but a CVQBoost-versus-XGBoost in-pocket comparison needs no control
+- Acceptance: `docs/SPECTRA_IMPROVEMENT_RESEARCH.md` with a RANKED list of candidates; each carries its source (verified or unverified), the expected effect, how to test it on the classical proxy first at zero metered cost, and the device seconds it would need if the proxy shows signal. NeuraWave assessed from primary sources. The team lead approves the list before any Dirac-3 card starts
+- Depends on: nothing. Results it produces follow F123's Phase 2 file layout once decided
+
+**F123. Separate Phase 2 work from Phase 1 files: deep dive (~2h investigation [no-history], zero metered) Priority 14**
+- Phase: Phase 2 preparation (added 2026-10-06, team lead: "since we are no longer in phase 1 and now in phase 2, there should be a separate set of files (JSON, .md...) and reports for phase 2 so that we are not updating phase 1 files"). Scored 14, the slot F101 vacates at Sprint 21 close-out, so it lands BEFORE F20 (16), which is the next card that writes results
+- Platform: N/A (repository structure, `experiments/results/`, `experiments/src/`, guards)
+- **The question**: how do Phase 2 work and learning live in their own files and reports, so that nothing done in Phase 2 alters the locked Phase 1 files or the files those were built from?
+- **Already happening, measured 2026-10-06, so this is not hypothetical.** Sprint 21 left `PREREGISTRATION.md`, `docs/paper/`, `docs/submission/`, `score_gates.py` and `metrics.py` untouched, but it CHANGED five Phase 1 files:
+  - `experiments/results/results.json`: 22 B4/B5 hardware rows appended
+  - `experiments/results/gate_report.md`: regenerated with them
+  - `experiments/results/qpu_cost_ledger.json`: 22 call records
+  - `docs/HARDWARE_REQUEST_B4.md`: an additive "8 of 13" correction (the sent text left standing)
+  - `experiments/src/spectra_segment.py`: a feasibility check added to the scoring path. **This is Phase 1 analysis code, and section 11 makes later changes to it dated amendments; it was changed without one.** Recorded here rather than reverted, because the deep dive decides where it belongs
+- **Questions the deep dive must answer**:
+  - Which files are LOCKED (the frozen preregistration, the submitted documents, their hashed PDFs) and which are the files they were BUILT FROM (`results.json`, `gate_report.md`, `score_gates.py`, `metrics.py`, the loaders, `spectra_segment.py`)? Today only the first group is guarded
+  - Where do post-submission runs of FROZEN Phase 1 blocks belong? B4 and B5 are rows of the Phase 1 grid (section 10) but ran after the 2026-09-12 filing. Phase 1 evidence, Phase 2 evidence, or a third bucket
+  - Phase 2 layout: its own results store, cost ledger, gate report and generator (e.g. under `experiments/phase2/`), and how Phase 2 code reuses Phase 1 code without editing it
+  - Whether today's five changes stay, move, or are copied into a Phase 2 store with the Phase 1 files restored to their pre-Sprint-21 state, and what each option does to the tests that reconcile those files
+  - The guard: a hook or test that fails when Phase 2 work writes a Phase 1 path, proven red. This repository's rule is that a prevention is a mechanism, not a reminder
+  - **Deferred here by the team lead, 2026-10-06 (decision A.3):** `score_gates.is_metered_arm()` counts only `cvqboost_hw*` arms, so the regenerated `gate_report.md` omits B5's 12 fits and 13 s from its hardware spend line, and its header names only two arms as `[HW]`. Fixing it changes frozen analysis code. Whether B5's rows belong in the Phase 1 report at all is part of this card's question, so the fix waits for its answer
+- **From the Sprint 21 retrospective (team lead, 2026-10-06: "essentially carded for next sprint")**:
+  - IMP-3: the test suite may not change committed evidence. Hash every tracked results file at suite start and end; any change fails and names the file. Extends `test_evidence_artifacts_current.py`. A test rewrote `gate_report.md` without restoring it for several sprints, invisible until Sprint 21's rows changed its output
+  - IMP-4: guard Phase 1 analysis code against unapproved edits, extending `block_unapproved_submission_edit.py`. Waits on this card's locked-file inventory, which decides what the guard covers
+- Acceptance: a written decision document with the locked-file inventory, the target layout, the disposition of the five Sprint 21 changes, and the guard design; the team lead approves it before any file is moved. Nothing is moved by this card
+- Depends on: nothing. Should precede F20 and every later card that writes results
+
 **F102. Phase 2 preregistration framework (~3h [no-history], zero metered) Priority 30**
 - Phase: Phase 2 preparation (the checklist's Deliverable)
 - Platform: docs
 - A per-experiment preregistration template and one reporting standard for every Phase 2 result: nested CV, Wilcoxon signed-rank, Bonferroni correction and multi-seed sensitivity (arXiv:2604.18837); AUPRC normalized by its closed-form floor with AUROC beside it; the F104 resolution screen as a gate before any metered block; and the two meanings of "order 3" stated (weak learners over feature triples in pool construction, against a QUBO that is quadratic on the device)
 - This enables: every Phase 2 card below reporting honestly. This prevents: results seen before the protocol is fixed
-- Acceptance: the template committed; each later experiment card names its preregistration file before it runs. `experiments/PREREGISTRATION.md` stays FROZEN; this is a new document
+- **MUST SPECIFY THE IN-SEGMENT CONTROL AS A DOWNSIZED MATCHED PAIR (team lead, 2026-10-05).** Phase 1's H5(ii) control draws a size-and-rate-matched segment from the complement, and on energy_steel that is arithmetically impossible: the pocket holds 918-950 of the test fold's positives while the complement holds 832-864, on all five seeds (`docs/SPECTRA_CONTROL_FEASIBILITY.md`). Phase 2 fixes this by **downsizing BOTH sides** to what the complement supports, keeping size and rate matched on each: 855 positives + 278 negatives per side on seed 42, retaining 88-94% of the pocket's positives, with the AUC interval widening by only about 4%. Verified feasible on all five seeds.
+  - **Both sides then become random draws, so the comparison is REPEATED** (about 20 draws) and reported as a mean with its spread. Phase 1 draws the control once against a fixed segment, which cannot distinguish a real in-segment effect from one that depends on which rows were drawn. Repeating costs nothing: it is classical computation over device output already paid for.
+  - **Why this is specification and not a retrofit.** `experiments/PREREGISTRATION.md` stays FROZEN and is NOT amended: section 11 forbids an amendment that changes a gate's pass/fail criterion, and H5(ii)'s control IS that criterion, so the change would be a reported DEVIATION. Phase 1 reports energy_steel `unscoreable` instead, which the gate table already has a column for. The design is motivated by a STRUCTURAL property of the dataset (the pocket's share of positives), not tuned against any result, and Phase 2's SPECTRA data does not exist yet. This paragraph exists so a reviewer sees the distinction was made deliberately rather than discovered later.
+  - A Phase 2 preregistration binds only from its filing (a November date, to be set), so this file may be revised freely until then.
+- Acceptance: the template committed; each later experiment card names its preregistration file before it runs. `experiments/PREREGISTRATION.md` stays FROZEN; this is a new document. The downsized-matched-pair control and the repeated-draw reporting are both written into it, with the feasibility arithmetic and the reason it is not a Phase 1 amendment
 - Depends on: nothing
 
 **F112. Experiment 1 interval on the k=17 decomposition (~1h [no-history], zero metered) Priority 32**
@@ -499,7 +505,7 @@ then the builds for the committed experiments. Estimates are `[no-history]`.
 - Phase: Phase 2 preparation, Experiment 6
 - Platform: classical proxy first; Dirac-3 only under F102 and per-block approval
 - Time including Hamiltonian construction. `HARDWARE_PLAN_PHASE_2.md` owns the sent sizing (12 fits at 833 variables) and the pool-build-to-device-time ratio
-- Depends on: F102 for reporting; Criterion H for any metered fit
+- Depends on: **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run) before any metered fit; F102 for reporting; Criterion H for any metered fit
 
 **F111. Experiment 4 build: Loke et al. replication harness (~4h [no-history], zero metered) Priority 120**
 - Phase: Phase 2 preparation, Experiment 4
@@ -571,8 +577,8 @@ not a sweep correction.
   **The four records are reconciled in `docs/SPECTRA_BLOCK_RECONCILIATION.md` (F93, 2026-10-02), which also records that QCi was SENT 30 fits at 91-136 variables for 270 s. The configuration choice is open and is the team lead's.**
 - Depends on: QCi grant; F2 approval pattern
 
-**F29. Sample-size insensitivity of the CVQBoost optimum (~1h measured, zero metered) Priority HOLD**
-- Phase: Experiments (moved to HOLD by team lead 2026-09-08 at Sprint 10 refinement)
+**F29. Sample-size insensitivity of the CVQBoost optimum (~1h measured, zero metered) Priority 112**
+- Phase: Experiments (moved to HOLD by team lead 2026-09-08 at Sprint 10 refinement). **OFF HOLD 2026-10-05 (team lead), to be addressed and CLOSED.** Scored 112 to pair with F110 at 110, which measures training TIME against sample count while this card measures whether the OPTIMUM moves. **Every HOLD reason below was submission-era and is now spent**: the rubric-scoring argument, the A20 amendment four days from the evidence freeze, and the page space in two documents then over limit. The submission was filed 2026-09-12. What remains is a ~1h measured run and a recorded answer
 - Platform: ULB proxy
 - **Effort re-measured 2026-09-08, and the old ~2h was wrong in the cheap direction**: pool build scales O(n^1.4) -- 8.8s at 50k rows, 25.9s at 100k, 82.2s at 250k. The ULB train fold is 170,236 rows after dedup and the 60/20/20 split, so the full 3-seed x 4-size grid is 8-10 minutes of build plus solve and scoring. It could have run in parallel with anything
 - **Why HOLD anyway, and this is the deciding reason**: it scores against no rubric criterion. The weights are Problem Relevance & Impact 25%, Technical Approach & Innovation 25%, Feasibility 20%, Validation Plan 15%, Team Capability 10%, Hybrid 5%. A stability property of our own optimizer is not a fraud-detection result, a validation-protocol improvement, or a hybrid-integration argument
@@ -592,14 +598,14 @@ not a sweep correction.
 - Investigation first: QCi's published products, docs and papers, for a documented simulator or device model before building one. The SLSQP/Hexaly precedent in Emami et al. is the optimizer-backend candidate
 - Acceptance (investigation): a written finding on whether QCi publishes a usable model, and either a build plan with the sparsity-reproduction test as its gate, or a recorded decision not to build with the reason. Acceptance (build, if taken): reproduces the B2 sparsity pattern on the frozen pools; miniaturized subsets so any test run completes within 10 minutes
 - Depends on: nothing. Pairs with F94 (both prepare Experiment 3) and with F20
-**F20. Soft-vote CVQBoost exploration (multi-level weak outputs) (~3h proxy investigation) Priority HOLD**
-- Phase: Phase 2 preparation (team-lead approved 2026-09-02, "fits naturally as a post-submission/Phase 2 exploration item next to F17")
+**F20. Soft-vote CVQBoost exploration (multi-level weak outputs) (~3h proxy investigation) Priority 16**
+- Phase: Phase 2 preparation (team-lead approved 2026-09-02, "fits naturally as a post-submission/Phase 2 exploration item next to F17"). **OFF HOLD 2026-10-05 (team lead): waiting is no longer a HOLD reason for Phase 2 work.** Scored 16 to sit immediately after F90/F100/F101 and NOT inside Sprint 21, at the team lead's direction ("after this sprint"), because F90 acceptance (c) must first store every returned sample --- which makes the multi-sample half of this card cost zero further device time
 - Platform: local proxy first; Dirac-3 only if the proxy shows signal
 - Replace hard +/-1 weak-classifier votes in the H matrix with confidence scores (predict_proba mapped to [-1,1], optionally discretized to the device's ~200-level dynamic range); same Hamiltonian shape (J=HH^T+lambda*I, C=-2Hy), same simplex solve -- a model variant, not a protocol change
 - Rationale: hard votes discard per-learner confidence; the weights are already continuous (CVQBoost), so the information bottleneck is the vote quantization
 - Zero-cost evaluation path: proxy side-by-side vs hard-vote pools on identical seeds (the A3 comparison machinery reused verbatim)
 - Constraints: custom H construction departs from eqc-models' builders (pool identity with the library is lost; document as its own arm); Phase 1 evidence chain untouched; any Phase 2 use enters through that phase's preregistration
-- Depends on: F17 pairs well (the simulator would evaluate both); nothing blocks the proxy investigation
+- Depends on: **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run) before any Dirac-3 fit; F17 pairs well (the simulator would evaluate both); nothing blocks the proxy investigation
 - **Expanded 2026-10-03 (Phase 2 plan W3.2): multi-sample ensembling.** Average predictions over the top-k low-energy samples instead of keeping only the best. Zero added QPU cost, because the samples are already paid for, and it attacks the variance behind the train-test gap F90 carries. Needs F90 to store every returned sample (F90 acceptance (c))
 
 **F25. Non-convex CVQBoost: cardinality-constrained weak-learner selection on Dirac-3 (~4h investigation + hardware) Priority HOLD**
@@ -609,7 +615,7 @@ not a sweep correction.
 - The Sprint 4 evidence: the continuous-weight formulation is strictly convex AND nearly degenerate (uniform weights even at lambda = 0), so an exact classical proxy always matches the hardware. The formulation where that stops being true is combinatorial selection: choose the best subset of m weak learners from a pool of n (cardinality or L0 sparsity constraint), optionally with integer weights -- NP-hard, no exact classical proxy, and the native problem class for Dirac-3's integer solver (num_levels budget against the documented 949 device limit)
 - Design sketch: same H matrix and objective, plus a cardinality constraint; classical comparators become greedy/forward selection, L1-then-threshold, and a MIP solver at small n; the honest question is solution QUALITY at fixed wall-clock, not just feasibility
 - Expected value: this is the concrete "where quantum optimization is necessary rather than optional" program the Phase 1 paper points at, and the strongest technical item for the QCi conversation
-- Depends on: Phase 2 preregistration; QCi grant for meaningful hardware time; pairs with F17 (simulator) and F20 (soft votes)
+- Depends on: **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run); Phase 2 preregistration; QCi grant for meaningful hardware time; pairs with F17 (simulator) and F20 (soft votes)
 
 **F30. Concurrent Dirac-3 submission with bounded in-flight requests (~4h build + 1h dry run) Priority HOLD**
 - Phase: Phase 2 preparation / infrastructure (team-lead request 2026-09-04)
@@ -623,12 +629,14 @@ not a sweep correction.
 - **Measured queue behavior, 2026-09-09**: the F46 probe submitted at 14:33 local was still queued 52 minutes later, having spent ~97 CPU-seconds on its local pool build. Flat CPU against growing wall clock is the signature of queue wait, not computation. The team lead reports the queue is ALMOST ALWAYS EMPTY AFTER 5PM LOCAL, so wall-clock cost is a function of WHEN a block runs, not what it computes
 - **The team lead's intent for this card**: enqueue 4 or more jobs at once so they run CONSECUTIVELY, raising the odds they execute back to back rather than each paying a fresh queue wait. That is a different and stronger value case than the throughput argument below
 - Value was judged to arrive with Phase 2 volume (81+ fit grids), and that judgment was made against a free tier with 163 spent seconds. With 3,000 granted seconds (F46) and queue wait as the binding cost rather than device seconds, the case is stronger: whenever a session needs more than one or two fits, serial submission wastes most of the wall clock. Still not recommended BEFORE submission, on calendar grounds alone
-- Depends on: nothing to build; live vetting needs team-lead approval (Criterion H)
+- Depends on: nothing to build; **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run) before live vetting; live vetting needs team-lead approval (Criterion H)
 
-**F13. Phase 2 PoC sprint planning (~unknown) Priority HOLD**
+**F13. Phase 2 PoC sprint planning (~unknown) Priority 180**
 - Phase: Phase 2 (Nov 17 - Feb 28, if selected)
 - Platform: All
 - Braket hardware validation, IEEE-CIS at scale, calibrated deployment per the routing architecture; plan built on acceptance
+- **OFF HOLD 2026-10-05 (team lead): waiting is no longer a HOLD reason for Phase 2 work.** Scored 180, last in the numeric set, because the *content* of the plan still depends on finalist notification --- but the card is now schedulable rather than parked, and much of the preparation it names is already carded (F102 preregistration framework, F6 Braket, F105 IEEE-CIS at scale, F118-F120 deployment)
+- Depends on: nothing to start the skeleton; the dataset-specific content needs finalist notification
 
 **F6. Braket gate-based arm: what is possible and what is worth doing in Phase 2 (~0.5 day investigation, zero metered) Priority 70**
 - Phase: Phase 2 preparation (**OFF HOLD 2026-10-02**, team lead: "we will try to analyze what is possible and valuable for Phase 2"; re-scored 16 to 70 in the 2026-10-03 refinement)
@@ -647,8 +655,8 @@ not a sweep correction.
 - Phase: Phase 2, Experiment 5 (added 2026-10-03). Transfer of the in-segment result to fraud segments, judged by the proposal's router criterion: at least one point of recall at the 0.5% budget above the classical champion, out of time, on prespecified segments, against a matched random-segment control
 - HOLD until F90 reports. Bounded in advance by F113
 
-**F122. Four guards that are accurate-but-weak, from the PR #146 review (~45m, zero metered) Priority 22**
-- Phase: Finalize / tooling (added 2026-10-04 from the PR #146 reviews)
+**F122. Four guards that are accurate-but-weak, from the PR #146 review (~45m, zero metered) Priority 20**
+- Phase: Finalize / tooling (added 2026-10-04 from the PR #146 reviews; **re-scored 22 to 20 in the 2026-10-04 sweep** -- 22 paired it with F97 at 20, and F97 shipped, so the pair offset pointed at nothing)
 - Platform: N/A (`test_spectra_reconciliation.py`, `test_troubleshooting_index.py`, `test_ci_status.py`, `test_sent_correspondence.py`)
 - **Backlogged rather than fixed in the review round, deliberately.** The ten findings fixed there were defects: a guard that passed on a commented-out ignore rule, a budget blind to 75 of 98 seconds, figures inflatable tenfold. These four are different in kind -- each guard works, and each is narrower or more brittle than its name claims. Rushing them at the end of a review round is how a careless edit reaches a file nobody is reviewing any more
 - **(a) The ordering guard pins COMMENTS, not execution order.** `test_the_ci_check_runs_before_the_gh_dependent_issues_check` uses `src.index("# CI on the HEAD commit.")`. Renaming that comment fails the test with zero code change, and moving the code while leaving the comments in place passes it. Anchor on the calls (`ci.evaluate` against the `gh pr list` subprocess) instead

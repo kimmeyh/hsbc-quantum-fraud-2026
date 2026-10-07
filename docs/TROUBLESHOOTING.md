@@ -87,6 +87,15 @@ A single backslash in a JSON string is an escape. `\b` is a backspace.
 
 ## Hooks
 
+**Symptom: a reply is held back with "The closing footer line was typed, not
+generated".**
+The reply ended with a status-footer line that no `status_footer.py` run in
+the same turn printed -- typed by hand, carried forward from an earlier turn,
+or edited after generation.
+→ Run `scripts/status_footer.py` in this turn and end with its exact output.
+The check is in `.claude/hooks/sprint_auto_advance.py`; tests in
+`experiments/src/test_footer_generated.py` (IMP-2, Sprint 21).
+
 **Symptom: a Stop hook does not block when it should.**
 A hook killed at its configured timeout produces **no exit code**, so it
 cannot block — a timeout fails OPEN. Measured 2026-10-03.
@@ -108,9 +117,30 @@ before reaching any check.
 **Symptom: a cost estimate disagrees with another record of the same block.**
 Estimates were written at different times against different knowledge, and
 none was retired when the next arrived.
-→ The four file patterns in the capability pre-flight: `HARDWARE_REQUEST_*`,
-`*_RESULT.md`, `*_RECONCILIATION.md`, `RESULTS_MEMO.md`. For SPECTRA
-specifically, `docs/SPECTRA_BLOCK_RECONCILIATION.md`.
+→ The read list in the capability pre-flight (`docs/SPRINT_PLANNING.md`):
+`HARDWARE_REQUEST_*`, `*_RESULT.md`, `*_RECONCILIATION.md`, `RESULTS_MEMO.md`,
+and the frozen preregistration's sections 4 and 10. For SPECTRA specifically,
+`docs/SPECTRA_BLOCK_RECONCILIATION.md`.
+
+**Symptom: QCi rejects a job with "400 ... Must specify one and only one job
+under the job_submission.problem_config field".**
+The request was built by hand instead of by the library. Every block since B1
+submits through `eqc_models`.
+→ `experiments/src/eqc_submit.py` (`metered_fit`; `offline_solver` for a dry
+run that reaches the request). The capability pre-flight lists the proven
+runner to copy.
+
+**Symptom: the cost ledger shows Dirac-3 calls nobody launched.**
+A test invoked a metered runner and checked for a refusal only after the
+subprocess returned; once the window opened, the run went ahead.
+→ Runners refuse inside any pytest process;
+`experiments/src/test_metered_runners_refuse_in_tests.py`.
+
+**Symptom: something is reported "not defined here" or "blocked on the team
+lead", and it exists.**
+Absence was asserted without a search.
+→ The absence rule in the capability pre-flight: search the card's earlier
+bullets, the frozen preregistration, and the commits on the subject first.
 
 **Symptom: a proxy result is read as a device result.**
 The classical proxy solves the identical Hamiltonian, so it is easy to treat

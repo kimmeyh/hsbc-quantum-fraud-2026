@@ -142,6 +142,51 @@ def matched_random_segment(in_pocket_mask: np.ndarray, rng: np.random.Generator,
     return control_mask
 
 
+def control_feasibility(in_pocket_mask: np.ndarray, y: np.ndarray) -> dict:
+    """Can a rate-matched control be drawn from the complement of the segment?
+
+    Returns the counts either way, so an infeasible cell reports WHY rather
+    than only that it failed. `matched_random_segment` asserts the same two
+    conditions; this reports them without raising, for the scoring path.
+
+    The function's docstring used to claim the match "always holds in practice"
+    because "SPECTRA's pockets are a small fraction of each split". That is
+    true of telecom_churn and oilgas_gasturbine and FALSE of energy_steel,
+    whose pocket holds roughly three quarters of the test fold's positives.
+    """
+    in_pocket_mask = np.asarray(in_pocket_mask, dtype=bool)
+    y = np.asarray(y)
+    outside = ~in_pocket_mask
+
+    n_pos = int(y[in_pocket_mask].sum())
+    n_neg = int(in_pocket_mask.sum()) - n_pos
+    out_pos = int(((y == 1) & outside).sum())
+    out_neg = int(((y == 0) & outside).sum())
+
+    short_pos = max(0, n_pos - out_pos)
+    short_neg = max(0, n_neg - out_neg)
+    feasible = short_pos == 0 and short_neg == 0
+
+    out = {
+        "feasible": feasible,
+        "segment_positives": n_pos,
+        "segment_negatives": n_neg,
+        "complement_positives": out_pos,
+        "complement_negatives": out_neg,
+    }
+    if not feasible:
+        parts = []
+        if short_pos:
+            parts.append(f"{n_pos} positives needed, {out_pos} available "
+                         f"outside the segment (short {short_pos})")
+        if short_neg:
+            parts.append(f"{n_neg} negatives needed, {out_neg} available "
+                         f"outside the segment (short {short_neg})")
+        out["reason"] = ("a rate-matched control cannot be drawn from the "
+                         "complement: " + "; ".join(parts))
+    return out
+
+
 # ------------------------------------------------------------- >=50 rule
 
 def _scoreable(y_segment: np.ndarray) -> tuple[bool, int]:
@@ -190,6 +235,30 @@ def evaluate_in_segment(y_test: np.ndarray, p_test: np.ndarray,
 
     result["in_segment"] = {"status": "scored",
                             **_segment_metrics(y_test[seg_mask], p_test[seg_mask])}
+
+    # FEASIBILITY, checked before drawing (Sprint 21). A rate-matched control
+    # drawn from the COMPLEMENT needs at least as many positives and negatives
+    # outside the segment as the segment itself holds. On energy_steel the
+    # pocket holds 918-950 of the test fold's positives while the complement
+    # holds only 832-864, so the draw is impossible on all five seeds.
+    #
+    # matched_random_segment asserts this and raises, which is correct for a
+    # library contract but wrong for a scoring path: an infeasible cell is an
+    # OUTCOME the gate table already has a column for (pass / fail / null /
+    # unscoreable), not a crash. Reporting it as unscoreable, with the counts
+    # that make it unscoreable, is what section 11 asks for -- and it means the
+    # 10 feasible cells still score in the same run.
+    #
+    # This does NOT change H5(ii)'s control definition, which is a frozen
+    # pass/fail criterion and may not be amended (prereg section 11). It
+    # reports a cell the definition cannot serve. A downsized matched pair with
+    # repeated draws is specified for PHASE 2 in F102, where it is new
+    # specification rather than a retrofit onto observed data.
+    feas = control_feasibility(seg_mask, y_test)
+    if not feas["feasible"]:
+        result["random_control"] = {"status": "unscoreable", **feas}
+        result["edge"] = None
+        return result
 
     rng = np.random.default_rng(seed)
     ctrl_mask = matched_random_segment(seg_mask, rng, y_test)

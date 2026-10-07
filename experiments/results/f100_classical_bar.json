@@ -1,0 +1,1048 @@
+{
+  "note": "F100: the complete classical bar on identical SPECTRA features. Five lanes x 3 frozen cells x 5 seeds. The comparator is the CVQBoost classical PROXY, evidence tag PROJ -- NOT a Dirac-3 result. Overall metrics, not in-segment: H5 is F90's claim, not this card's.",
+  "generator": "experiments/src/run_f100_classical_bar.py",
+  "evidence_tag": "SIM",
+  "metered_seconds": 0,
+  "comparator": "cvqboost classical proxy [PROJ]",
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "n_cells": 15,
+  "summary": {
+    "spectra_telecom_churn": {
+      "lanes": {
+        "logreg": {
+          "mean_auprc": 0.6433,
+          "sd_auprc": 0.0225,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": -0.0893,
+          "delta_ci95": [
+            -0.1041,
+            -0.0707
+          ],
+          "seeds_favoring_lane": 0,
+          "n_paired": 5
+        },
+        "gam_additive": {
+          "mean_auprc": 0.7076,
+          "sd_auprc": 0.0165,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": -0.0249,
+          "delta_ci95": [
+            -0.0434,
+            -0.0104
+          ],
+          "seeds_favoring_lane": 0,
+          "n_paired": 5
+        },
+        "ga2m": {
+          "mean_auprc": 0.7988,
+          "sd_auprc": 0.0155,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": 0.0663,
+          "delta_ci95": [
+            0.0453,
+            0.0925
+          ],
+          "seeds_favoring_lane": 5,
+          "n_paired": 5
+        },
+        "hgb": {
+          "mean_auprc": 0.8669,
+          "sd_auprc": 0.0195,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": 0.1344,
+          "delta_ci95": [
+            0.115,
+            0.1558
+          ],
+          "seeds_favoring_lane": 5,
+          "n_paired": 5
+        },
+        "joint_twin": {
+          "mean_auprc": 0.7092,
+          "sd_auprc": 0.0179,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": -0.0234,
+          "delta_ci95": [
+            -0.0394,
+            -0.0028
+          ],
+          "seeds_favoring_lane": 1,
+          "n_paired": 5
+        }
+      },
+      "lanes_beating_proxy": [
+        "ga2m",
+        "hgb"
+      ]
+    },
+    "spectra_energy_steel": {
+      "lanes": {
+        "logreg": {
+          "mean_auprc": 0.601,
+          "sd_auprc": 0.1943,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": -0.3013,
+          "delta_ci95": [
+            -0.4812,
+            -0.2054
+          ],
+          "seeds_favoring_lane": 0,
+          "n_paired": 5
+        },
+        "gam_additive": {
+          "mean_auprc": 0.8771,
+          "sd_auprc": 0.0053,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": -0.0251,
+          "delta_ci95": [
+            -0.0318,
+            -0.0173
+          ],
+          "seeds_favoring_lane": 0,
+          "n_paired": 5
+        },
+        "ga2m": {
+          "mean_auprc": 0.9589,
+          "sd_auprc": 0.023,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": 0.0566,
+          "delta_ci95": [
+            0.0391,
+            0.0709
+          ],
+          "seeds_favoring_lane": 5,
+          "n_paired": 5
+        },
+        "hgb": {
+          "mean_auprc": 0.9649,
+          "sd_auprc": 0.0255,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": 0.0626,
+          "delta_ci95": [
+            0.0392,
+            0.0823
+          ],
+          "seeds_favoring_lane": 5,
+          "n_paired": 5
+        },
+        "joint_twin": {
+          "mean_auprc": 0.6761,
+          "sd_auprc": 0.236,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": -0.2262,
+          "delta_ci95": [
+            -0.4455,
+            -0.1084
+          ],
+          "seeds_favoring_lane": 0,
+          "n_paired": 5
+        }
+      },
+      "lanes_beating_proxy": [
+        "ga2m",
+        "hgb"
+      ]
+    },
+    "spectra_oilgas_gasturbine": {
+      "lanes": {
+        "logreg": {
+          "mean_auprc": 0.7807,
+          "sd_auprc": 0.0049,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": -0.0581,
+          "delta_ci95": [
+            -0.0626,
+            -0.0531
+          ],
+          "seeds_favoring_lane": 0,
+          "n_paired": 5
+        },
+        "gam_additive": {
+          "mean_auprc": 0.803,
+          "sd_auprc": 0.0101,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": -0.0358,
+          "delta_ci95": [
+            -0.0375,
+            -0.0343
+          ],
+          "seeds_favoring_lane": 0,
+          "n_paired": 5
+        },
+        "ga2m": {
+          "mean_auprc": 0.8556,
+          "sd_auprc": 0.0106,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": 0.0167,
+          "delta_ci95": [
+            0.0155,
+            0.0176
+          ],
+          "seeds_favoring_lane": 5,
+          "n_paired": 5
+        },
+        "hgb": {
+          "mean_auprc": 0.8739,
+          "sd_auprc": 0.0102,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": 0.035,
+          "delta_ci95": [
+            0.0343,
+            0.0358
+          ],
+          "seeds_favoring_lane": 5,
+          "n_paired": 5
+        },
+        "joint_twin": {
+          "mean_auprc": 0.8035,
+          "sd_auprc": 0.0053,
+          "n_seeds": 5,
+          "mean_delta_vs_cvqboost_proxy": -0.0354,
+          "delta_ci95": [
+            -0.0397,
+            -0.0305
+          ],
+          "seeds_favoring_lane": 0,
+          "n_paired": 5
+        }
+      },
+      "lanes_beating_proxy": [
+        "ga2m",
+        "hgb"
+      ]
+    }
+  },
+  "cells": [
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "telecom_churn",
+      "seed": 42,
+      "n_features": 17,
+      "n_train": 1890,
+      "n_test": 630,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.05,
+          "auprc": 0.6529,
+          "auc_roc": 0.8529
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 3.57,
+          "auprc": 0.8853,
+          "auc_roc": 0.9513
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.35,
+          "auprc": 0.813,
+          "auc_roc": 0.9175
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.24,
+          "auprc": 0.7265,
+          "auc_roc": 0.8843
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.16,
+          "auprc": 0.7156,
+          "auc_roc": 0.8754
+        }
+      ],
+      "dominant_lane": "hgb",
+      "dominant_seconds": 3.57,
+      "total_seconds_one_cell": 4.37,
+      "projection_15_cells_sec": 65.5,
+      "projection_15_cells_min": 1.1,
+      "dataset": "spectra_telecom_churn",
+      "config_hash": "fa22671e965a8b46"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "telecom_churn",
+      "seed": 43,
+      "n_features": 17,
+      "n_train": 1890,
+      "n_test": 630,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.03,
+          "auprc": 0.6273,
+          "auc_roc": 0.8404
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.33,
+          "auprc": 0.8724,
+          "auc_roc": 0.9496
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.34,
+          "auprc": 0.7894,
+          "auc_roc": 0.9128
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.23,
+          "auprc": 0.7222,
+          "auc_roc": 0.8798
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.15,
+          "auprc": 0.6968,
+          "auc_roc": 0.8662
+        }
+      ],
+      "dominant_lane": "ga2m",
+      "dominant_seconds": 0.34,
+      "total_seconds_one_cell": 1.08,
+      "projection_15_cells_sec": 16.2,
+      "projection_15_cells_min": 0.3,
+      "dataset": "spectra_telecom_churn",
+      "config_hash": "fa22671e965a8b46"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "telecom_churn",
+      "seed": 44,
+      "n_features": 17,
+      "n_train": 1890,
+      "n_test": 630,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.03,
+          "auprc": 0.6749,
+          "auc_roc": 0.8687
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.31,
+          "auprc": 0.8644,
+          "auc_roc": 0.9471
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.34,
+          "auprc": 0.7975,
+          "auc_roc": 0.9172
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.24,
+          "auprc": 0.7054,
+          "auc_roc": 0.8721
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.13,
+          "auprc": 0.7337,
+          "auc_roc": 0.8891
+        }
+      ],
+      "dominant_lane": "ga2m",
+      "dominant_seconds": 0.34,
+      "total_seconds_one_cell": 1.05,
+      "projection_15_cells_sec": 15.8,
+      "projection_15_cells_min": 0.3,
+      "dataset": "spectra_telecom_churn",
+      "config_hash": "fa22671e965a8b46"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "telecom_churn",
+      "seed": 45,
+      "n_features": 17,
+      "n_train": 1890,
+      "n_test": 630,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.03,
+          "auprc": 0.644,
+          "auc_roc": 0.8372
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.31,
+          "auprc": 0.8349,
+          "auc_roc": 0.9266
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.36,
+          "auprc": 0.7789,
+          "auc_roc": 0.8996
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.23,
+          "auprc": 0.6881,
+          "auc_roc": 0.8562
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.14,
+          "auprc": 0.7123,
+          "auc_roc": 0.8689
+        }
+      ],
+      "dominant_lane": "ga2m",
+      "dominant_seconds": 0.36,
+      "total_seconds_one_cell": 1.07,
+      "projection_15_cells_sec": 16.1,
+      "projection_15_cells_min": 0.3,
+      "dataset": "spectra_telecom_churn",
+      "config_hash": "fa22671e965a8b46"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "telecom_churn",
+      "seed": 46,
+      "n_features": 17,
+      "n_train": 1890,
+      "n_test": 630,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.03,
+          "auprc": 0.6172,
+          "auc_roc": 0.8347
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.31,
+          "auprc": 0.8776,
+          "auc_roc": 0.9473
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.34,
+          "auprc": 0.8152,
+          "auc_roc": 0.9255
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.22,
+          "auprc": 0.6959,
+          "auc_roc": 0.8752
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.12,
+          "auprc": 0.6875,
+          "auc_roc": 0.8645
+        }
+      ],
+      "dominant_lane": "ga2m",
+      "dominant_seconds": 0.34,
+      "total_seconds_one_cell": 1.02,
+      "projection_15_cells_sec": 15.3,
+      "projection_15_cells_min": 0.3,
+      "dataset": "spectra_telecom_churn",
+      "config_hash": "fa22671e965a8b46"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "energy_steel",
+      "seed": 42,
+      "n_features": 17,
+      "n_train": 21024,
+      "n_test": 7008,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.06,
+          "auprc": 0.6812,
+          "auc_roc": 0.9072
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.41,
+          "auprc": 0.9819,
+          "auc_roc": 0.9931
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.46,
+          "auprc": 0.9628,
+          "auc_roc": 0.9861
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.43,
+          "auprc": 0.8719,
+          "auc_roc": 0.9563
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.25,
+          "auprc": 0.7724,
+          "auc_roc": 0.9324
+        }
+      ],
+      "dominant_lane": "ga2m",
+      "dominant_seconds": 0.46,
+      "total_seconds_one_cell": 1.61,
+      "projection_15_cells_sec": 24.2,
+      "projection_15_cells_min": 0.4,
+      "dataset": "spectra_energy_steel",
+      "config_hash": "d82b1280000c175d"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "energy_steel",
+      "seed": 43,
+      "n_features": 17,
+      "n_train": 21024,
+      "n_test": 7008,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.09,
+          "auprc": 0.6894,
+          "auc_roc": 0.909
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.45,
+          "auprc": 0.9846,
+          "auc_roc": 0.9941
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.48,
+          "auprc": 0.9722,
+          "auc_roc": 0.9894
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.42,
+          "auprc": 0.882,
+          "auc_roc": 0.9595
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.25,
+          "auprc": 0.7975,
+          "auc_roc": 0.9355
+        }
+      ],
+      "dominant_lane": "ga2m",
+      "dominant_seconds": 0.48,
+      "total_seconds_one_cell": 1.69,
+      "projection_15_cells_sec": 25.3,
+      "projection_15_cells_min": 0.4,
+      "dataset": "spectra_energy_steel",
+      "config_hash": "d82b1280000c175d"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "energy_steel",
+      "seed": 44,
+      "n_features": 17,
+      "n_train": 21024,
+      "n_test": 7008,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.06,
+          "auprc": 0.6715,
+          "auc_roc": 0.9033
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.41,
+          "auprc": 0.9459,
+          "auc_roc": 0.9786
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.43,
+          "auprc": 0.9183,
+          "auc_roc": 0.9709
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.47,
+          "auprc": 0.8711,
+          "auc_roc": 0.9563
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.23,
+          "auprc": 0.7739,
+          "auc_roc": 0.9317
+        }
+      ],
+      "dominant_lane": "gam_additive",
+      "dominant_seconds": 0.47,
+      "total_seconds_one_cell": 1.6,
+      "projection_15_cells_sec": 24.0,
+      "projection_15_cells_min": 0.4,
+      "dataset": "spectra_energy_steel",
+      "config_hash": "d82b1280000c175d"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "energy_steel",
+      "seed": 45,
+      "n_features": 17,
+      "n_train": 21024,
+      "n_test": 7008,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.08,
+          "auprc": 0.7084,
+          "auc_roc": 0.9137
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.41,
+          "auprc": 0.9296,
+          "auc_roc": 0.9748
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.44,
+          "auprc": 0.9688,
+          "auc_roc": 0.9877
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.41,
+          "auprc": 0.8817,
+          "auc_roc": 0.9599
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.23,
+          "auprc": 0.7825,
+          "auc_roc": 0.936
+        }
+      ],
+      "dominant_lane": "ga2m",
+      "dominant_seconds": 0.44,
+      "total_seconds_one_cell": 1.57,
+      "projection_15_cells_sec": 23.6,
+      "projection_15_cells_min": 0.4,
+      "dataset": "spectra_energy_steel",
+      "config_hash": "d82b1280000c175d"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "energy_steel",
+      "seed": 46,
+      "n_features": 17,
+      "n_train": 21024,
+      "n_test": 7008,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.08,
+          "auprc": 0.2543,
+          "auc_roc": 0.5
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.42,
+          "auprc": 0.9825,
+          "auc_roc": 0.9934
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.43,
+          "auprc": 0.9723,
+          "auc_roc": 0.9891
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.42,
+          "auprc": 0.879,
+          "auc_roc": 0.9586
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.25,
+          "auprc": 0.2543,
+          "auc_roc": 0.5
+        }
+      ],
+      "dominant_lane": "ga2m",
+      "dominant_seconds": 0.43,
+      "total_seconds_one_cell": 1.6,
+      "projection_15_cells_sec": 24.0,
+      "projection_15_cells_min": 0.4,
+      "dataset": "spectra_energy_steel",
+      "config_hash": "d82b1280000c175d"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "oilgas_gasturbine",
+      "seed": 42,
+      "n_features": 15,
+      "n_train": 22039,
+      "n_test": 7347,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.13,
+          "auprc": 0.7869,
+          "auc_roc": 0.8691
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.47,
+          "auprc": 0.8871,
+          "auc_roc": 0.9394
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.44,
+          "auprc": 0.8699,
+          "auc_roc": 0.9275
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.44,
+          "auprc": 0.8161,
+          "auc_roc": 0.8911
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.29,
+          "auprc": 0.8104,
+          "auc_roc": 0.8897
+        }
+      ],
+      "dominant_lane": "hgb",
+      "dominant_seconds": 0.47,
+      "total_seconds_one_cell": 1.77,
+      "projection_15_cells_sec": 26.6,
+      "projection_15_cells_min": 0.4,
+      "dataset": "spectra_oilgas_gasturbine",
+      "config_hash": "3f963271f7dbeb08"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "oilgas_gasturbine",
+      "seed": 43,
+      "n_features": 15,
+      "n_train": 22039,
+      "n_test": 7347,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.11,
+          "auprc": 0.7797,
+          "auc_roc": 0.8668
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.42,
+          "auprc": 0.8765,
+          "auc_roc": 0.9327
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.44,
+          "auprc": 0.8579,
+          "auc_roc": 0.9206
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.39,
+          "auprc": 0.8025,
+          "auc_roc": 0.884
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.22,
+          "auprc": 0.8017,
+          "auc_roc": 0.8871
+        }
+      ],
+      "dominant_lane": "ga2m",
+      "dominant_seconds": 0.44,
+      "total_seconds_one_cell": 1.58,
+      "projection_15_cells_sec": 23.7,
+      "projection_15_cells_min": 0.4,
+      "dataset": "spectra_oilgas_gasturbine",
+      "config_hash": "3f963271f7dbeb08"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "oilgas_gasturbine",
+      "seed": 44,
+      "n_features": 15,
+      "n_train": 22039,
+      "n_test": 7347,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.12,
+          "auprc": 0.7742,
+          "auc_roc": 0.8664
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.41,
+          "auprc": 0.8606,
+          "auc_roc": 0.9232
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.44,
+          "auprc": 0.841,
+          "auc_roc": 0.9124
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.44,
+          "auprc": 0.7905,
+          "auc_roc": 0.8807
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.26,
+          "auprc": 0.797,
+          "auc_roc": 0.8855
+        }
+      ],
+      "dominant_lane": "ga2m",
+      "dominant_seconds": 0.44,
+      "total_seconds_one_cell": 1.67,
+      "projection_15_cells_sec": 25.0,
+      "projection_15_cells_min": 0.4,
+      "dataset": "spectra_oilgas_gasturbine",
+      "config_hash": "3f963271f7dbeb08"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "oilgas_gasturbine",
+      "seed": 45,
+      "n_features": 15,
+      "n_train": 22039,
+      "n_test": 7347,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.12,
+          "auprc": 0.7788,
+          "auc_roc": 0.8692
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.4,
+          "auprc": 0.8673,
+          "auc_roc": 0.9315
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.42,
+          "auprc": 0.8509,
+          "auc_roc": 0.9202
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.4,
+          "auprc": 0.7968,
+          "auc_roc": 0.8815
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.29,
+          "auprc": 0.8014,
+          "auc_roc": 0.8895
+        }
+      ],
+      "dominant_lane": "ga2m",
+      "dominant_seconds": 0.42,
+      "total_seconds_one_cell": 1.63,
+      "projection_15_cells_sec": 24.4,
+      "projection_15_cells_min": 0.4,
+      "dataset": "spectra_oilgas_gasturbine",
+      "config_hash": "3f963271f7dbeb08"
+    },
+    {
+      "note": "F100 lane pilot: one real SPECTRA cell, every classical lane timed separately so the dominant term is NAMED with its measurement (Sprint 9 improvement 2).",
+      "generator": "experiments/src/f100_lane_pilot.py",
+      "evidence_tag": "SIM",
+      "metered_seconds": 0,
+      "cell": "oilgas_gasturbine",
+      "seed": 46,
+      "n_features": 15,
+      "n_train": 22039,
+      "n_test": 7347,
+      "lanes": [
+        {
+          "lane": "logreg",
+          "status": "ok",
+          "elapsed_s": 0.13,
+          "auprc": 0.7841,
+          "auc_roc": 0.8696
+        },
+        {
+          "lane": "hgb",
+          "status": "ok",
+          "elapsed_s": 0.44,
+          "auprc": 0.878,
+          "auc_roc": 0.934
+        },
+        {
+          "lane": "ga2m",
+          "status": "ok",
+          "elapsed_s": 0.43,
+          "auprc": 0.8583,
+          "auc_roc": 0.9206
+        },
+        {
+          "lane": "gam_additive",
+          "status": "ok",
+          "elapsed_s": 0.42,
+          "auprc": 0.8093,
+          "auc_roc": 0.8876
+        },
+        {
+          "lane": "joint_twin",
+          "status": "ok",
+          "elapsed_s": 0.42,
+          "auprc": 0.8071,
+          "auc_roc": 0.8904
+        }
+      ],
+      "dominant_lane": "hgb",
+      "dominant_seconds": 0.44,
+      "total_seconds_one_cell": 1.84,
+      "projection_15_cells_sec": 27.6,
+      "projection_15_cells_min": 0.5,
+      "dataset": "spectra_oilgas_gasturbine",
+      "config_hash": "3f963271f7dbeb08"
+    }
+  ]
+}

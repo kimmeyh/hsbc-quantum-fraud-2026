@@ -1,0 +1,245 @@
+"""B5's runner is safe to approve BEFORE its first call, not after.
+
+Sprint 18 IMP-3: "the runner must be IDEMPOTENT before its first approval, not
+after its first over-spend." Sprint 18 spent three calls against a two-call
+approval because a second invocation with a higher --max-calls restarted from
+the top. The allocation has no undo, so every one of these properties is
+checked without submitting anything.
+"""
+from __future__ import annotations
+
+import json
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
+
+import numpy as np
+import pytest
+
+SRC = Path(__file__).resolve().parent
+ROOT = SRC.parents[1]
+sys.path.insert(0, str(SRC))
+
+import run_hardware_b5 as b5  # noqa: E402
+
+
+# ---- the sign augmentation, which is the arm's whole reason to exist --------
+
+def test_sign_augmentation_doubles_the_width_and_negates_the_copy():
+    X = np.array([[1.0, -2.0], [3.0, 4.0]])
+    A = b5.sign_augment(X)
+    assert A.shape == (2, 4)
+    assert np.allclose(A[:, :2], X)
+    assert np.allclose(A[:, 2:], -X)
+
+
+def test_a_signed_weight_is_representable_after_augmentation():
+    """The point of `[X, -X]`: a NON-NEGATIVE w over the augmented space can
+    express a signed w over the original one.
+
+    Without this, Dirac-3's non-negative continuous variables cannot represent
+    an anti-correlated feature at all -- which is what scored 0.18 AUC in the
+    evidence inventory.
+    """
+    rng = np.random.default_rng(0)
+    X = rng.normal(size=(50, 3))
+    w_signed = np.array([1.5, -2.0, 0.5])
+
+    # The augmented, non-negative encoding of that same hypothesis.
+    w_aug = np.concatenate([np.maximum(w_signed, 0), np.maximum(-w_signed, 0)])
+    assert (w_aug >= 0).all(), "the encoding must be non-negative to be legal"
+
+    assert np.allclose(b5.sign_augment(X) @ w_aug, X @ w_signed), (
+        "the augmented non-negative model must reproduce the signed model")
+
+
+def test_variable_count_is_twice_the_features_plus_the_bias():
+    """QSVMClassifier appends a bias column (`X_tilde = [X, 1]`), so 13
+    sign-augmented features are 27 variables. The first runner said 26: it
+    hand-built the job body and never read what the library actually does."""
+    assert b5.n_variables(13) == 27
+    assert b5.n_variables(b5.K_FEATURES) == 27, (
+        "27 variables is what the Criterion H statement quotes")
+
+
+# ---- the 12 fits the frozen grid specifies ---------------------------------
+
+def test_there_are_exactly_twelve_cells():
+    """PREREGISTRATION section 10: "B5: QSVM arms | 12 fits | ~15 [s]"."""
+    assert len(list(b5.specs())) == 12
+
+
+def test_ten_stratified_seeds_one_temporal_one_repeat():
+    s = list(b5.specs())
+    strat = [c for c in s if c["protocol"] == "stratified"]
+    temporal = [c for c in s if c["protocol"] == "temporal"]
+    repeat = [c for c in s if c["protocol"] == "stratified_repeat"]
+    assert len(strat) == 10 and len(temporal) == 1 and len(repeat) == 1
+    assert sorted(c["seed"] for c in strat) == list(range(42, 52))
+
+
+def test_the_temporal_cell_records_no_seed():
+    """A8, Sprint 4 review: `temporal_split` ignores the seed, so recording 42
+    would misrepresent provenance AND let a second temporal row slip past the
+    done-set."""
+    temporal = [c for c in b5.specs() if c["protocol"] == "temporal"]
+    assert temporal[0]["seed"] is None
+
+
+# ---- Criterion H and the spend guards --------------------------------------
+
+def test_the_expected_seconds_come_from_the_frozen_grid():
+    """F90's card said "15-62 s" by extrapolating B3's 5.2 s/fit -- a CVQBoost
+    rate at a different variable count, and the wrong anchor for a QSVM. The
+    frozen grid's own figure is ~15 s for 12 fits."""
+    assert "15" in b5.EXPECTED_SECONDS
+    assert "frozen grid" in b5.EXPECTED_SECONDS.lower()
+    assert b5.EXPECTED_CEILING_S <= b5.BLOCK_CAP_S, (
+        "the conservative ceiling must sit inside the block cap")
+
+
+def test_the_block_cap_and_allocation_floor_are_set():
+    assert b5.BLOCK_CAP_S > 0
+    assert b5.ALLOCATION_FLOOR_S == 776.0, (
+        "the team lead's floor; changing it is his decision, not the runner's")
+
+
+def test_the_window_opens_at_the_team_leads_start_time():
+    """The window is a start time set by the team lead."""
+    # Replaced 2026-10-06 by the team lead: "the runners' time check is
+    # artificial and can be replaced by 7:30am EST". A START TIME, not a daily
+    # hour: the first version used `hour >= 18`, which shut again at midnight
+    # -- so at 00:26 it refused a run the instruction allowed.
+    assert b5.WINDOW_START == datetime(2026, 10, 6, 7, 30)
+    assert not b5._window_open(datetime(2026, 10, 6, 0, 26))
+    assert not b5._window_open(datetime(2026, 10, 6, 7, 29))
+    assert b5._window_open(datetime(2026, 10, 6, 7, 30))
+    assert b5._window_open(datetime(2026, 10, 7, 2, 0)), (
+        "a start time stays open; it must not close again at midnight")
+
+
+def test_running_before_the_window_refuses_with_a_nonzero_exit():
+    """And it must EXIT NONZERO. A guard that refuses while reporting success
+    is this repository's most-repeated defect: "could not check" reading as
+    "clean".
+
+    TESTED WITHOUT A SUBPROCESS, because the first version could submit. It
+    ran the runner with `--max-calls 1` and checked for "REFUSING" afterwards,
+    so once the window opened the guard correctly allowed the run and the test
+    SUBMITTED A REAL JOB at 21:02 local on 2026-10-05. Nothing was billed only
+    because the job body was malformed. `pytest.skip` after `subprocess.run`
+    is the defect: by the time the skip runs, the spend has happened.
+    """
+    src = (SRC / "run_hardware_b5.py").read_text(encoding="utf-8")
+    i = src.index("REFUSING: the team lead set the Dirac-3 window")
+    assert "return 3" in src[i:i + 500], (
+        "the window refusal must exit 3, not 0")
+
+    i_window = src.index("if not (_window_open()")
+    i_client = src.index("QciClient(")
+    assert i_window < i_client, (
+        "the window check must precede client construction")
+
+
+@pytest.fixture(scope="module")
+def dry_run_output():
+    """One dry run, shared by every test that reads its output.
+
+    Each `--dry-run` reloads ULB and recomputes top-k features per cell, so
+    running it once per test cost nine minutes for this file alone. A guard
+    slow enough to be skipped or deselected is a guard that does not run.
+    """
+    # --max-calls 1: the dry run now goes through the WHOLE library path for
+    # each cell (feature selection, fit against the stubbed solver, scoring),
+    # which is what makes it a real dry run and also what makes 12 cells take
+    # over ten minutes. One cell proves the path; the full 12 are run by hand
+    # before any metered block.
+    r = subprocess.run(
+        [sys.executable, str(SRC / "run_hardware_b5.py"), "--dry-run",
+         "--max-calls", "1"],
+        capture_output=True, text=True, cwd=str(ROOT), timeout=1800)
+
+    # The ULB CSV is not redistributed with this repository, so a dry run
+    # cannot build its cells in CI. That is a legitimate skip and it is stated
+    # rather than swallowed: a skip reading as a pass is this repository's
+    # most-repeated defect, and `addopts = -rs` prints this reason.
+    #
+    # Found by CI, not locally (Sprint 21). The whole file was green on a
+    # machine that has the dataset -- which is precisely what
+    # SPRINT_EXECUTION_WORKFLOW warns about: "don't treat a local green suite
+    # as evidence that CI is green". The sibling B4 and feasibility guards
+    # already skipped correctly; this fixture asserted returncode == 0 instead.
+    if r.returncode != 0 and "not found at" in (r.stderr or ""):
+        pytest.skip("ULB creditcard.csv is absent (not redistributed); the "
+                    "B5 dry run cannot build its cells here")
+    assert r.returncode == 0, r.stderr[-400:]
+    return r.stdout
+
+
+def test_the_dry_run_spends_nothing_and_says_so(dry_run_output):
+    assert "nothing submitted, nothing spent" in dry_run_output.lower()
+    assert "cells total      : 12" in dry_run_output
+    assert "status=ok" in dry_run_output, (
+        "the dry run must complete fit AND scoring, not stop before the "
+        "request is built -- that gap is how a fabricated job body survived")
+    assert "vars=27" in dry_run_output, (
+        "the library must have been handed 27 variables (13 x 2 + bias)")
+    assert "EXPECTED SECONDS" in dry_run_output, (
+        "Criterion H requires the expected seconds stated before any run")
+
+
+def test_the_criterion_h_statement_names_every_required_field(dry_run_output):
+    """Block, call count, expected seconds AND provenance -- the four things
+    Sprint 11 improvement 2 requires, after a probe approved at "0-5 seconds"
+    cost 10 against a figure that was never established."""
+    for field in ("BLOCK B5", "CALL COUNT", "EXPECTED SECONDS", "provenance",
+                  "variables/fit", "approved"):
+        assert field in dry_run_output, (
+            f"the Criterion H statement omits {field!r}")
+
+
+# ---- idempotency -----------------------------------------------------------
+
+def test_a_failed_row_does_not_count_as_done(tmp_path, monkeypatch):
+    """Section 11 requires a failed cell to be retried up to twice and then
+    reported failed -- never silently skipped forever, which is what happened
+    before the status filter existed."""
+    results = tmp_path / "results.json"
+    results.write_text(json.dumps({"rows": [
+        {"arm": b5.ARM, "block": "B5", "seed": 42, "protocol": "stratified",
+         "status": "ok"},
+        {"arm": b5.ARM, "block": "B5", "seed": 43, "protocol": "stratified",
+         "status": "failed"},
+    ]}), encoding="utf-8")
+    monkeypatch.setattr(b5, "RESULTS", results)
+
+    done = b5._done()
+    assert (b5.ARM, 42, "stratified") in done, "the successful cell is done"
+    assert (b5.ARM, 43, "stratified") not in done, (
+        "a FAILED cell must remain to be retried")
+
+
+def test_rows_from_other_blocks_are_not_counted_as_b5(tmp_path, monkeypatch):
+    results = tmp_path / "results.json"
+    results.write_text(json.dumps({"rows": [
+        {"arm": "cvqboost_hw", "block": "B2", "seed": 42,
+         "protocol": "stratified", "status": "ok", "metered_seconds": 91},
+    ]}), encoding="utf-8")
+    monkeypatch.setattr(b5, "RESULTS", results)
+    assert b5._done() == set()
+    assert b5._spent() == 0.0, "B2's 91 seconds are not B5's spend"
+
+
+def test_an_unreadable_ledger_refuses_rather_than_assuming_nothing_is_done(
+        tmp_path, monkeypatch):
+    """"Refuses to submit at all if it cannot read its own ledger" (IMP-3).
+
+    Returning an empty done-set on a parse error is the dangerous failure: the
+    runner would re-pay for every completed cell.
+    """
+    bad = tmp_path / "results.json"
+    bad.write_text("{not json", encoding="utf-8")
+    monkeypatch.setattr(b5, "RESULTS", bad)
+    with pytest.raises(SystemExit, match="cannot read its own ledger"):
+        b5._done()

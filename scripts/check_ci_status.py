@@ -146,7 +146,7 @@ def evaluate(sha: str) -> tuple[int, list[str]]:
             "pushed, or CI may not have started yet. That is not a pass.")
 
     lines = []
-    failed, pending, succeeded = [], [], []
+    failed, pending, succeeded, cancelled = [], [], [], []
     for r in runs:
         name = r.get("name") or "?"
         status = r.get("status") or "?"
@@ -156,6 +156,16 @@ def evaluate(sha: str) -> tuple[int, list[str]]:
             pending.append(name)
         elif concl == "success":
             succeeded.append(name)
+        elif concl == "cancelled":
+            # A CANCELLED run is not a failure and not a pass. It is almost
+            # always a newer push superseding an in-flight run, which is
+            # normal, but it can also be a manual cancel or a timeout -- so it
+            # cannot count toward `succeeded` either. Treated as UNDETERMINED
+            # below rather than FAILED, because reporting "CI is RED, open the
+            # failing run" for a cancellation sends a reader to look for a test
+            # failure that does not exist. (Sprint 21: that is exactly what it
+            # did to me, twice, after two rapid pushes.)
+            cancelled.append(name)
         elif concl not in ("skipped", "neutral"):
             failed.append(f"{name} ({concl}) {r.get('url', '')}".strip())
 
@@ -186,6 +196,14 @@ def evaluate(sha: str) -> tuple[int, list[str]]:
     # And it is this repository's signature defect -- "could not check" reading
     # as "clean" -- inside the script written to prevent it. Found by the
     # PR #141 review.
+    if not succeeded and cancelled:
+        raise Undetermined(
+            f"every completed run on {sha[:7]} was CANCELLED "
+            f"({', '.join(cancelled)}), so no test result was read. That is "
+            "not a pass and not a failure: a cancellation is usually a newer "
+            "push superseding an in-flight run. Re-run it (`gh run rerun "
+            "<id>`) or push again to get a verdict on THIS commit.")
+
     if not succeeded:
         raise Undetermined(
             f"every completed run on {sha[:7]} was skipped or neutral, so no "
