@@ -108,9 +108,30 @@ before reaching any check.
 **Symptom: a cost estimate disagrees with another record of the same block.**
 Estimates were written at different times against different knowledge, and
 none was retired when the next arrived.
-→ The four file patterns in the capability pre-flight: `HARDWARE_REQUEST_*`,
-`*_RESULT.md`, `*_RECONCILIATION.md`, `RESULTS_MEMO.md`. For SPECTRA
-specifically, `docs/SPECTRA_BLOCK_RECONCILIATION.md`.
+→ The read list in the capability pre-flight (`docs/SPRINT_PLANNING.md`):
+`HARDWARE_REQUEST_*`, `*_RESULT.md`, `*_RECONCILIATION.md`, `RESULTS_MEMO.md`,
+and the frozen preregistration's sections 4 and 10. For SPECTRA specifically,
+`docs/SPECTRA_BLOCK_RECONCILIATION.md`.
+
+**Symptom: QCi rejects a job with "400 ... Must specify one and only one job
+under the job_submission.problem_config field".**
+The request was built by hand instead of by the library. Every block since B1
+submits through `eqc_models`.
+→ `experiments/src/eqc_submit.py` (`metered_fit`; `offline_solver` for a dry
+run that reaches the request). The capability pre-flight lists the proven
+runner to copy.
+
+**Symptom: the cost ledger shows Dirac-3 calls nobody launched.**
+A test invoked a metered runner and checked for a refusal only after the
+subprocess returned; once the window opened, the run went ahead.
+→ Runners refuse inside any pytest process;
+`experiments/src/test_metered_runners_refuse_in_tests.py`.
+
+**Symptom: something is reported "not defined here" or "blocked on the team
+lead", and it exists.**
+Absence was asserted without a search.
+→ The absence rule in the capability pre-flight: search the card's earlier
+bullets, the frozen preregistration, and the commits on the subject first.
 
 **Symptom: a proxy result is read as a device result.**
 The classical proxy solves the identical Hamiltonian, so it is easy to treat

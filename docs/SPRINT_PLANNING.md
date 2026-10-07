@@ -44,9 +44,33 @@ read these BEFORE estimating:
 - `docs/HARDWARE_REQUEST_<block>.md` -- if one exists for the block
 - any `docs/*_RESULT.md` or `docs/*_RECONCILIATION.md` for that subject
 - `docs/RESULTS_MEMO.md`
+- **the FROZEN `experiments/PREREGISTRATION.md`, sections 4 and 10**, for any
+  block, arm or cell -- section 10 is the hardware grid, section 4 the model
+  arms (IMP-1, Sprint 21)
+- **for any NEW RUNNER: the proven runner for the same kind of call and its
+  submission helper** (`run_hardware*.py`; `run_hardware_b3._submit_via_eqc`,
+  `eqc_submit.metered_fit`). Copy its path; do not write a new one (IMP-1,
+  Sprint 21)
 
-Four patterns, not a directory sweep. The broad version ("grep docs/") was too
-vague to be followed reliably; these are the places findings actually land.
+These are the places findings actually land. The broad version ("grep docs/")
+was too vague to be followed reliably.
+
+**And before declaring anything "blocked on the team lead" or "not defined in
+this repository", search the repository for it** -- the card's own earlier
+bullets, the preregistration, the commits that touched the subject. Absence
+is a claim, and it needs the same evidence as presence (IMP-1, Sprint 21).
+
+(Sprint 21, three times in one sprint. Task A was declared blocked on the team
+lead for a configuration the F90 card had recorded on 2026-10-03, two bullets
+above the dependency line. B5 was reported as having "no definition in this
+repository" when PREREGISTRATION section 10 lists it. And the B4 and B5
+runners hand-built the request sent to QCi with invented field names, while
+three proven runners submitted through `eqc_models` and
+`run_hardware_b3._submit_via_eqc`'s docstring said why not to; QCi rejected the
+one that reached it. CLAUDE.md already carried the rule -- "grep for the
+existing method first" -- and it did not reach the moment the runner was
+written. Putting the proven runner on this list puts it in front of the
+pre-flight that precedes the writing.)
 
 (Sprint 20, F93: I built a four-option decision document about the SPECTRA
 block without reading `docs/HARDWARE_REQUEST_B4.md`, whose line 89 already
