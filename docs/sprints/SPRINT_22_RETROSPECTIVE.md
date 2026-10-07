@@ -227,6 +227,46 @@ Team lead, 2026-10-07: "1" (apply all as recommended: IMP-1, 2, 3, 4, 5 and
 - **IMP-7** found the velocity log had stopped at Sprint 14; per-task actuals
   for Sprints 15-19 were never recorded and are marked so, not reconstructed.
 
+**IMP-5's rerun of the Task B security review: 12 findings, all addressed
+now** (team lead, 2026-10-07: no technical debt into the next sprint;
+address now unless a full card would be more effective). The agent wrote
+`FINDINGS: 12` to a file; all 12 entries were read. None high; four medium.
+The guard moved from `experiments/src/conftest.py` to the root `conftest.py`.
+
+- **1 (medium) the guard did nothing for `pytest experiments -k x`**: fixed.
+  At the root it is an initial conftest for every invocation, and a session
+  with no snapshot fails. Proven end to end: a probe that rewrote
+  `gate_report.md` under `pytest experiments -k probe` and `pytest . -k probe`
+  exits 1 and names the file.
+- **2 (medium) a bypass is traced only when the liveness test is selected**:
+  covered by CI's existing "Test run must leave the tree clean" step, which
+  no pytest flag skips. The local limit is documented in the docstring.
+- **3 (medium) a test that could not fail**: every source-text test replaced
+  by behavioral tests that drive the hooks with a stand-in session and
+  scratch git repositories (18 tests).
+- **4 (medium) the baseline is the disk, not the commit**: evidence already
+  modified at session start is named in a warning banner; CI's clean-tree
+  step fails it.
+- **5** names git would quote: `-z`, decoded as UTF-8. **6** wrong tree or
+  index: inherited `GIT_*` variables removed, and a listing without
+  `results.json` fails. **7** writes after the session: CI's clean-tree step;
+  documented. **8** nested `.gitignore`: only the root `.gitignore` decides
+  scope; ignored files documented as out of scope. **9** symlinks hashed as
+  their target path. **10** case-only renames are a change. **11** the
+  failure is also written to stderr. **12** docstrings corrected.
+- **Proven red**: ten mutations of the guard, each with the bytes checked
+  before the run; every one turned at least one test red. One of my
+  mutations was malformed on the first pass (a syntax error, not a test
+  result) and was rerun correctly. The repository already has a mutation
+  helper (`experiments/src/injection.py`); I wrote a scratch script instead,
+  which is the hand-rolled-tool pattern CLAUDE.md warns about. It checked the
+  bytes of every mutation, so the result stands, but the helper was the
+  right tool.
+- **Found while fixing**: IMP-3's CHANGELOG check matched `experiments/**.py`
+  but not the new root `conftest.py`; it now matches any `.py` file. A sed
+  mutation meant to prove that test red silently failed to apply; a byte
+  check caught it, and the rerun went red.
+
 **Completion updates.** Master plan: Sprint 22 in Last Completed Sprint,
 Sprint 21 demoted; the Past Sprint Summary row is added when the SUMMARY doc
 is written. `CHECKLIST-Phase2.md` reconciled: F124 added and ticked; "Decide

@@ -57,6 +57,14 @@ fixture is genuinely unavailable, and the message must say nothing was checked.
 copy. Sprint 20 measured a case where moving one document aside turned 22
 guards into silent skips with exit 0.
 
+**Symptom: a test rewrote evidence and `pytest <dir> -k <name>` still
+exited 0.** A session hook in a conftest below the command-line path never
+gets `pytest_sessionstart` (it is not an "initial" conftest), so the evidence
+guard took no snapshot and returned silently.
+→ The guard is the ROOT `conftest.py`, beside `pytest.ini`, and a session with
+no snapshot fails. Its scope limits, and the CI clean-tree step that covers
+them, are in its docstring.
+
 **Symptom: a test fails for days during planning, then passes.**
 It is reading live sprint state rather than a pinned payload.
 → `experiments/src/test_phase3_artifacts.py` and its `PHASE_ORDER` gate.

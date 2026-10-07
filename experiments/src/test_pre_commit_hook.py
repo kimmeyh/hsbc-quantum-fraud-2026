@@ -71,7 +71,9 @@ def test_code_without_changelog_is_blocked(repo):
 
 @pytest.mark.parametrize("path", ["experiments/src/mod.py",
                                   "experiments/phase2/src/mod.py",
-                                  ".claude/hooks/h.py"])
+                                  ".claude/hooks/h.py",
+                                  "conftest.py",
+                                  "scripts/run.sh"])
 def test_every_code_area_is_covered(repo, path):
     assert _commit(repo, {path: "x = 1\n"}).returncode != 0
 

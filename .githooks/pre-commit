@@ -30,7 +30,9 @@ if [ -f .secrets-patterns.txt ]; then
   fi
 fi
 
-code=$(echo "$staged" | grep -E '^(experiments/.*\.py|scripts/|\.claude/hooks/|\.githooks/)')
+# Any Python file anywhere (the evidence guard is the ROOT conftest.py), plus
+# scripts, Claude hooks and these git hooks.
+code=$(echo "$staged" | grep -E '(\.py$|^scripts/|^\.claude/hooks/|^\.githooks/)')
 if [ -n "$code" ] && ! echo "$staged" | grep -qx 'CHANGELOG.md'; then
   echo "BLOCKED: this commit changes code but not CHANGELOG.md."
   echo "The CHANGELOG policy is: an entry in the SAME commit as the change."

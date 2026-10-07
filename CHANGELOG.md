@@ -6,6 +6,8 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ### 2026-10-07
 
+- **fix**: **The evidence guard (IMP-3) ran for every invocation only from the repository root.** Moved from `experiments/src/conftest.py` to the root `conftest.py`: in its old place `pytest experiments -k x` took no snapshot and passed a test that rewrote evidence. All 12 findings of a second security review addressed (no-snapshot fails, `-z` names, `GIT_*` scrubbed, anchor check, root-only ignores, symlinks, case renames, stderr, dirty-at-start warning, docstrings); source-text tests replaced by 18 behavioral tests, proven red against ten mutations (PR #159)
+- **fix**: The pre-commit CHANGELOG check now matches any `.py` file, including the root `conftest.py` (PR #159)
 - **process**: **Sprint 22 retrospective improvements applied** (team lead: all as recommended). IMP-1 card claims checked against files and the installed package before scheduling; IMP-2 dependent decisions asked after their parent; IMP-4 no test outcomes in commit messages; IMP-5 background reviews write findings to a file read in full; IMP-7 velocity log restarted (Sprints 15-22) and used for estimates. IMP-6 to the backlog on F127 (PR #159)
 - **feat**: **IMP-3: the pre-commit hook is tracked and checks the CHANGELOG.** `.githooks/pre-commit` keeps the confidentiality checks and blocks a code commit without a `CHANGELOG.md` change; enable with `git config core.hooksPath .githooks`. `test_pre_commit_hook.py`, proven red against two mutations (PR #159)
 - **chore**: Sprint 22 completion updates: master plan Last Completed Sprint, `CHECKLIST-Phase2.md` reconciled (PR #159)
