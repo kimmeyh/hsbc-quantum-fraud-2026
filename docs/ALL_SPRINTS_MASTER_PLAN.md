@@ -377,6 +377,13 @@ with the track outcome: F90 and the cards that make it readable first, then the
 preregistration framework that gates all reporting, then the zero-cost screens,
 then the builds for the committed experiments. Estimates are `[no-history]`.
 
+**F125. The close-out hook counts commits against a stale local `develop` (~20m, zero metered) Priority 12**
+- Phase: Finalize / tooling (added 2026-10-06, Pass 2 of the Sprint 22 refinement)
+- Platform: N/A (`.claude/hooks/verify_closeout_complete.py`)
+- **Measured**: the hook counts `develop..HEAD`, and the LOCAL `develop` ref was last updated at Sprint 16's merge (#120). On the fresh Sprint 22 branch it reported **105** commits where `origin/develop..HEAD` is **1** (the Pass 1 refinement commit), then demanded Sprint 22's Phase 3 artifacts during backlog refinement. A false block at every planning window, the same class as F97 (a check reading state that can go stale)
+- Fix: count against `origin/develop`, falling back to local `develop`; a test with a stale local ref proven red against the current code
+- Depends on: nothing
+
 **F124. SPECTRA prediction research: what to try before the next Dirac-3 run (~4h investigation [no-history], zero metered) Priority 10**
 - Phase: Phase 2 preparation (added 2026-10-06, team lead; scheduled for Sprint 22). Scored 10, the slot F90 vacates at Sprint 21 close-out. **Every open card that can spend Dirac-3 seconds depends on it** -- F95, F110, F20, F25, F30 -- by the team lead's decision to enforce this as a card dependency rather than a code gate (2026-10-06, answer 2.2)
 - Platform: SPECTRA, Dirac-3, eqc_models, docs
