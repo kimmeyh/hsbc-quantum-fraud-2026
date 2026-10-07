@@ -1,0 +1,208 @@
+{
+  "generator": "experiments/phase2/src/soft_votes.py",
+  "card": "F20",
+  "sprint": 22,
+  "phase": 2,
+  "evidence_tag": "SIM",
+  "metered_seconds": 0,
+  "eqc_models_version": "0.21.0",
+  "rows": [
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 42,
+      "soft_test_auprc": 0.7799592276511399,
+      "hgb_test_auprc": 0.8852953717438481,
+      "delta_soft_minus_hgb": -0.1053361440927082,
+      "ga2m_test_auprc": 0.8130364999978382,
+      "delta_soft_minus_ga2m": -0.03307727234669833
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 43,
+      "soft_test_auprc": 0.7730260619814278,
+      "hgb_test_auprc": 0.8723804101515175,
+      "delta_soft_minus_hgb": -0.0993543481700897,
+      "ga2m_test_auprc": 0.7893702159477698,
+      "delta_soft_minus_ga2m": -0.016344153966342034
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 44,
+      "soft_test_auprc": 0.7884923326639323,
+      "hgb_test_auprc": 0.8643645718022572,
+      "delta_soft_minus_hgb": -0.07587223913832497,
+      "ga2m_test_auprc": 0.7975218857047445,
+      "delta_soft_minus_ga2m": -0.00902955304081221
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 45,
+      "soft_test_auprc": 0.7163864016006546,
+      "hgb_test_auprc": 0.8348689318506672,
+      "delta_soft_minus_hgb": -0.11848253025001265,
+      "ga2m_test_auprc": 0.778855128058853,
+      "delta_soft_minus_ga2m": -0.062468726458198454
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 46,
+      "soft_test_auprc": 0.7491637340844305,
+      "hgb_test_auprc": 0.8776200606344595,
+      "delta_soft_minus_hgb": -0.12845632655002903,
+      "ga2m_test_auprc": 0.8152055704476675,
+      "delta_soft_minus_ga2m": -0.06604183636323702
+    },
+    {
+      "dataset": "spectra_energy_steel",
+      "seed": 42,
+      "soft_test_auprc": 0.9742120191977203,
+      "hgb_test_auprc": 0.9819375172945388,
+      "delta_soft_minus_hgb": -0.0077254980968185505,
+      "ga2m_test_auprc": 0.9627788031228778,
+      "delta_soft_minus_ga2m": 0.01143321607484249
+    },
+    {
+      "dataset": "spectra_energy_steel",
+      "seed": 43,
+      "soft_test_auprc": 0.9757387198426829,
+      "hgb_test_auprc": 0.9845765445185701,
+      "delta_soft_minus_hgb": -0.00883782467588723,
+      "ga2m_test_auprc": 0.972168558137646,
+      "delta_soft_minus_ga2m": 0.0035701617050368784
+    },
+    {
+      "dataset": "spectra_energy_steel",
+      "seed": 44,
+      "soft_test_auprc": 0.9747479500938258,
+      "hgb_test_auprc": 0.9459481081986424,
+      "delta_soft_minus_hgb": 0.028799841895183365,
+      "ga2m_test_auprc": 0.9183346511469931,
+      "delta_soft_minus_ga2m": 0.05641329894683267
+    },
+    {
+      "dataset": "spectra_energy_steel",
+      "seed": 45,
+      "soft_test_auprc": 0.9784886662997268,
+      "hgb_test_auprc": 0.9295787540743237,
+      "delta_soft_minus_hgb": 0.048909912225403085,
+      "ga2m_test_auprc": 0.9688452123868593,
+      "delta_soft_minus_ga2m": 0.009643453912867472
+    },
+    {
+      "dataset": "spectra_energy_steel",
+      "seed": 46,
+      "soft_test_auprc": 0.978160918414954,
+      "hgb_test_auprc": 0.9824979334315977,
+      "delta_soft_minus_hgb": -0.0043370150166437416,
+      "ga2m_test_auprc": 0.9722771409552589,
+      "delta_soft_minus_ga2m": 0.00588377745969515
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 42,
+      "soft_test_auprc": 0.8564413027113259,
+      "hgb_test_auprc": 0.8870788239947391,
+      "delta_soft_minus_hgb": -0.030637521283413238,
+      "ga2m_test_auprc": 0.8698785240412851,
+      "delta_soft_minus_ga2m": -0.01343722132995917
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 43,
+      "soft_test_auprc": 0.8472798357793447,
+      "hgb_test_auprc": 0.8765389076348347,
+      "delta_soft_minus_hgb": -0.029259071855489927,
+      "ga2m_test_auprc": 0.8579060649995099,
+      "delta_soft_minus_ga2m": -0.010626229220165206
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 44,
+      "soft_test_auprc": 0.8278619591244819,
+      "hgb_test_auprc": 0.8606276174965295,
+      "delta_soft_minus_hgb": -0.03276565837204759,
+      "ga2m_test_auprc": 0.8409822959986685,
+      "delta_soft_minus_ga2m": -0.013120336874186567
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 45,
+      "soft_test_auprc": 0.8380097207405898,
+      "hgb_test_auprc": 0.8673224827648002,
+      "delta_soft_minus_hgb": -0.029312762024210404,
+      "ga2m_test_auprc": 0.8509409079480715,
+      "delta_soft_minus_ga2m": -0.012931187207481765
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 46,
+      "soft_test_auprc": 0.8496484025626831,
+      "hgb_test_auprc": 0.8780058618101715,
+      "delta_soft_minus_hgb": -0.028357459247488337,
+      "ga2m_test_auprc": 0.858316336354832,
+      "delta_soft_minus_ga2m": -0.008667933792148808
+    }
+  ],
+  "summary": {
+    "spectra_energy_steel": {
+      "hgb": {
+        "mean_lane_auprc": 0.9649,
+        "mean_delta_soft_minus_lane": 0.0114,
+        "delta_ci95": [
+          -0.0073,
+          0.0336
+        ],
+        "seeds_soft_better": 2
+      },
+      "ga2m": {
+        "mean_lane_auprc": 0.9589,
+        "mean_delta_soft_minus_lane": 0.0174,
+        "delta_ci95": [
+          0.0057,
+          0.0373
+        ],
+        "seeds_soft_better": 5
+      }
+    },
+    "spectra_oilgas_gasturbine": {
+      "hgb": {
+        "mean_lane_auprc": 0.8739,
+        "mean_delta_soft_minus_lane": -0.0301,
+        "delta_ci95": [
+          -0.0315,
+          -0.0289
+        ],
+        "seeds_soft_better": 0
+      },
+      "ga2m": {
+        "mean_lane_auprc": 0.8556,
+        "mean_delta_soft_minus_lane": -0.0118,
+        "delta_ci95": [
+          -0.0132,
+          -0.01
+        ],
+        "seeds_soft_better": 0
+      }
+    },
+    "spectra_telecom_churn": {
+      "hgb": {
+        "mean_lane_auprc": 0.8669,
+        "mean_delta_soft_minus_lane": -0.1055,
+        "delta_ci95": [
+          -0.1205,
+          -0.09
+        ],
+        "seeds_soft_better": 0
+      },
+      "ga2m": {
+        "mean_lane_auprc": 0.7988,
+        "mean_delta_soft_minus_lane": -0.0374,
+        "delta_ci95": [
+          -0.058,
+          -0.0168
+        ],
+        "seeds_soft_better": 0
+      }
+    }
+  }
+}
