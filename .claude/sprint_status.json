@@ -3,7 +3,7 @@
     "number": 22,
     "name": "Separate the Phases, Then Look for Better Numbers",
     "branch": "feature/20261006_Sprint_22",
-    "status": "phase_4_execution",
+    "status": "phase_5_3_manual_validation",
     "plan_doc": "docs/sprints/SPRINT_22_PLAN.md",
     "pr": 159,
     "plan_approved": true,
@@ -21,8 +21,9 @@
       "B": 32,
       "F": 45,
       "D+E": 34,
-      "C": 75,
-      "_note_CDE": "D and E ran in parallel 22:56-23:30 and are not separable; C ran 23:15-00:30 (2026-10-07), overlapping E. Read from commit times and the live clock, not reconstructed later."
+      "C": 95,
+      "D_sparsity_acceptance": 20,
+      "_note_CDE": "D and E ran in parallel 22:56-23:30 and are not separable; C ran 23:15-00:30 (2026-10-07), overlapping E, plus 20 min of named-source review to 00:52. D_sparsity_acceptance is the F17 card-acceptance test, 00:32-00:52, overlapping C. Read from commit times and the live clock, not reconstructed later."
     },
     "scope_additions": [],
     "decisions": {

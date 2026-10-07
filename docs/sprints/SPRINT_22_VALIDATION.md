@@ -84,6 +84,12 @@ Read `docs/PHASE_SEPARATION.md`, section 8. Provisional at approval
 - All 22 responses recovered by job id, read-only, balance unchanged, into
   `experiments/phase2/results/device_samples/`. Root cause fixed: the offline
   stand-in returned a dict, so dry runs never saw the real response type.
+- **It is older than Sprint 21: all 11 stored B2 responses are truncated
+  too.** B2 has 833 variables, so its print crossed numpy's 1,000-element
+  limit. B1, G0b, f32 and B5 are intact (small arrays print in full). The
+  B2 sparsity figures in the QCi feedback document ("printed nonzero weights
+  from 0.0007 to 0.0029") were read from about 6 visible values per sample.
+  That document is locked and was not touched (D8).
 - **Decision needed (item D2 below)**: I added a dated correction note to
   `docs/B4_B5_HARDWARE_RESULT.md`. That file post-dates the filing, so it is
   Phase 2 by `PHASE_SEPARATION.md`'s rule, and the note is additive like the
@@ -114,6 +120,17 @@ Read `docs/phase2/F17_EMULATOR.md`.
   Its value is device-seconds estimates and multiple samples per fit.
 - Metric caveat: validated on overall test AUPRC, not in-pocket AUPRC as the
   falsifier is worded.
+- **The card's own acceptance test FAILS: the emulator does not reproduce the
+  device's sparsity.** Device exact-zero fraction 0.14-0.16 (oilgas) and
+  0.35-0.38 (telecom); emulator 0.002-0.004 and 0.14-0.17. Tested on B4,
+  because the card's B2 test cannot run (pools not stored, B2 samples
+  truncated).
+- The device's smallest nonzero weights are about 0.00001, far below the
+  ~0.005 resolvable step. "Weights below the step are zeroed" is not what the
+  device does.
+- Recommendation: keep the emulator for cost estimates and samples; do not
+  use it to size Experiment 3 until a sparsity model is built and validated
+  on held-out data (D9).
 
 ---
 
@@ -148,6 +165,16 @@ D7. **Phase 2 results format.** The layout says Phase 2 evidence goes in its
     `results.json` from the first run under the Phase 2 preregistration
     (F102) or the first device run, whichever comes first.
 
+D8. **Recover B2's 11 device responses by job id**, read-only, as was done
+    for B4 (zero spend, balance checked before and after), into
+    `experiments/phase2/results/device_samples/`. It would give the full
+    B2 samples and test the sparsity figures sent to QCi. It is a read of
+    filed Phase 1 evidence from QCi's servers, so it waits for you.
+
+D9. **F17 sparsity model**: card it as follow-up work (build and validate a
+    model of the device's zeroing on held-out data), or stop F17 at cost
+    estimates.
+
 ## Definition of Done, walked
 
 - **Acceptance met with evidence**: each task's document names its result
@@ -179,7 +206,8 @@ finished:
 - Task F (F125): 45 (estimate 20)
 - Tasks D (F17) and E (F20): 34 together. They ran in parallel and are not
   separable (estimates 390 and 180)
-- Task C (F124): 75, overlapping E (estimate 240)
-- **Total recorded: 216 minutes against 980 estimated.** The overlaps mean
+- Task C (F124): 95, overlapping E (estimate 240)
+- Task D follow-up, the card's sparsity acceptance test: 20, overlapping C
+- **Total recorded: 256 minutes against 980 estimated.** The overlaps mean
   the sum exceeds elapsed time.
 - Device seconds: 0.

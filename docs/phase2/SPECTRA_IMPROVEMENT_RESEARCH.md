@@ -89,10 +89,17 @@ proxy test; device seconds if the proxy shows signal.
   In-pocket: 0.955-0.965 against HGB's 0.939-0.967.
 - **Effect elsewhere (2-seed screen)**: oilgas +0.004, telecom -0.009. No
   signal there.
-- **Side effect worth knowing**: the solution becomes sparse. About 300 of
-  816 weights are nonzero, against about 720 for the default pool. A sparser
-  optimum is a harder target for the device's ~23 dB resolution (A31) than
-  the near-uniform default.
+- **Side effect worth knowing**: the proxy optimum becomes sparse. About 300
+  of 816 weights are nonzero, against about 720 for the default pool. A31
+  predicts the device returns something sparser than a diffuse optimum, and
+  on B2 that sparser answer scored better (+0.0256, 10 of 10 seeds;
+  `ALL_SPRINTS_MASTER_PLAN.md`, the A31 note under F90). When the optimum is
+  already sparse, whether the device's sparsification still helps is open.
+  That is an inference, not a measurement, and it is what a device run here
+  would test.
+- **Substitution, named**: the card asks for an energy_steel in-pocket
+  comparison of CVQBoost against XGBoost. The figures here are against HGB,
+  the F100 bar's strongest lane. XGBoost was not run as a separate lane.
 - **Next proxy test (zero cost)**: a `min_samples_leaf` sweep (5, 10, 20,
   50) on all three datasets, 5 seeds, with HGB on the same splits.
 - **Device test if approved**: B4's energy_steel cell with
@@ -188,7 +195,11 @@ proxy test; device seconds if the proxy shows signal.
 - **`batched_qboost_enabled`**: the F124 card lists it as verified on
   2026-10-06. **It is not in the installed eqc_models 0.21.0**: not in the
   `QBoostClassifier` signature and not anywhere in the package source. The
-  card's claim is corrected here; where it came from is unverified.
+  likely origin is the off-repository `CVQBoost_Findings.md` (section 3),
+  which describes a library whose weak learners default to XGBoost and which
+  has the flag. The installed library defaults to logistic regression and
+  this repository passes `dct`. So that document's library version differs
+  from ours (inference; its version is not stated in the sections read).
 - **eqc_models `feature_selection` and `decomposition` modules**: present,
   not tested. They solve their own optimization problems, so on the device
   they add metered calls before the classifier runs. Not ranked until a proxy
@@ -200,6 +211,41 @@ proxy test; device seconds if the proxy shows signal.
   `dirac3-fidelity-test-is-near-trivial-on-convex-formulation`, certainty
   high). It is a different question (does the device add anything?) from
   this list's (what improves the number?). It stays on its own card.
+
+### Every source the card named, disposed
+
+- **results.json, the F100 bar, F101, the B4/B5 result**: used, section 1
+  and the HGB comparisons.
+- **SPECTRA feasibility analysis** (`docs/SPECTRA_CONTROL_FEASIBILITY.md`):
+  the matched control is infeasible on energy_steel. Every comparison here is
+  against classical lanes on the same splits, which needs no control.
+- **A31 (resolution)**: used in rank 1's sparsity note and the F17 emulator.
+- **B2's sparsity result**: used in rank 1. **New caveat**: the B2 responses
+  on disk carry the same truncated print as B4's (all 11 files), so the
+  sparsity figures quoted from them were read from about 6 visible values per
+  sample, not all 833. The figures are not wrong on what they saw; they are
+  not a full count. Recovering B2's samples by job id would settle it.
+- **F20 soft votes**: measured, rank 2.
+- **F25 non-convex selection**: section 3; stays on its own card.
+- **F104 resolution screen**: a pre-run check, not a lever. It belongs in
+  front of any device run from this list, and rank 1's sparse optimum is the
+  case it should be run on first.
+- **F106 dequantization check**: about the gate-based circuit arm. Not
+  relevant to CVQBoost levers.
+- **F109 domain ladder and aggregation**: a cross-domain study on other
+  datasets. Out of scope for improving these three cells.
+- **F113 oracle gap**: bounds whether a router could help. Rank 1 brings
+  CVQBoost to parity on energy_steel, which is the case where an oracle-gap
+  test becomes informative. Not run here.
+- **Off-repository `CVQBoost_Findings.md`** (planning reference only;
+  nothing in it is cited as evidence). Read sections 1, 3, 8 and 11. It
+  agrees with this list where they overlap: shallower learners hurt badly
+  (our `max_depth=4` result), soft votes are named as a gap ("hard labels
+  discard the confidence"), and CVQBoost overfits in-segment by 3-8x
+  XGBoost's gap. It suggested more lambda or a smaller pool; more lambda
+  showed nothing here (alpha 20). Leaf size is not in it.
+- **EvidenceBasedDB**: cited per record above, with its certainty.
+- **Dirac-3 and eqc_models**: installed 0.21.0 source, read directly.
 
 ## 4. QCi NeuraWave
 

@@ -4,7 +4,21 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-10-07
+
+- **feat**: **F124 ranked list of SPECTRA levers.** Rank 1 is leaf regularization of the weak trees (`min_samples_leaf=20`): energy_steel CVQBoost reaches parity with HGB on the proxy. Nothing found closes the gap on telecom or oilgas. NeuraWave assessed from QCi's own releases: not a fit. `docs/phase2/SPECTRA_IMPROVEMENT_RESEARCH.md` (Issue #162 / PR #159)
+- **feat**: **F20 soft votes and ensembling.** The specified soft vote is degenerate; a Laplace-smoothed vote improves all 15 cells. Multi-sample ensembling fails its falsifier. `docs/phase2/F20_SOFT_VOTES_RESULT.md` (Issue #164 / PR #159)
+- **feat**: **F17 Dirac-3 emulator**, one tool with exact and emulate modes, importing the proxy unchanged. Its AUPRC falsifier is met, and the card's own sparsity acceptance test fails (device 14-38% exact zeros, emulator 0.2-17%), so it is kept for cost estimates and samples only. `docs/phase2/F17_EMULATOR.md` (Issue #163 / PR #159)
+- **fix**: **The sample-storage defect also covers B2**: all 11 stored B2 responses are truncated prints. Recorded; recovery waits for the team lead (PR #159)
+- **fix**: **Sprint 21 device samples were stored truncated.** All 22 responses recovered read-only by job id, balance unchanged; runners and the offline stand-in fixed; dated correction added to `docs/B4_B5_HARDWARE_RESULT.md` (PR #159)
+- **test**: `test_requirements_complete.py` treats `experiments/phase2/src/` as first-party code and scans it (PR #159)
+- **process**: These Sprint 22 entries were added at Manual Validation, not in the same commit as each change as this file's policy requires (PR #159)
+
 ### 2026-10-06
+
+- **feat**: **F123 Phase 1 / Phase 2 separation.** Decision document `docs/PHASE_SEPARATION.md`; Phase 2 tree `experiments/phase2/` and `docs/phase2/` (Issue #160 / PR #159)
+- **test**: **IMP-3: the test suite fails if it changes committed evidence**, hardened after a security review (Issue #161 / PR #159)
+- **fix**: **F125: the close-out hook counts against `origin/develop`** and owes no Phase 3 artifacts before a plan exists (Issue #165 / PR #159)
 
 - **chore**: **Sprint 21 delivered and merged.** PR #152 to develop, PR #158 develop to main. F90, F100, F101, F122 delivered; 454 minutes against 750 estimated, 653 metered seconds. The team lead waived the PR reviews for this sprint; the decision is recorded in `.claude/sprint_status.json`
 - **process**: **Sprint 21 retrospective: IMP-1 and IMP-2 applied, IMP-3 and IMP-4 carded on F123.** IMP-1 extends the capability pre-flight's read list with the frozen preregistration's sections 4 and 10 and the proven runner for any new runner, plus a rule to search before declaring anything absent. IMP-2 extends the every-turn Stop hook: a reply ending with a footer no `status_footer.py` run printed in the same turn is held back. Proven red against three mutations

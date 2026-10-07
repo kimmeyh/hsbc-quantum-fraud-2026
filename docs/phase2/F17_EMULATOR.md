@@ -13,6 +13,9 @@ Sprint 22, Task D (#163). Phase 2. Zero metered seconds. Evidence tag SIM.
 - **The plan's falsifier is met for AUPRC**: it reproduces the exact proxy as
   closely as the device does, so it predicts no AUPRC the proxy does not.
   Its value is cost estimates and multiple samples, not AUPRC.
+- **The card's own acceptance test fails**: the device returns 14-38% exact
+  zeros, and the emulator returns 0.2-17%. It does not reproduce the device's
+  sparsity, which is what the card built it for.
 - It does **not** match the device's solution shape on oilgas: weight cosine
   0.83 emulated against 0.89-0.90 on the device. Use it to rank ideas and to
   size runs. Do not use it as a substitute for device evidence.
@@ -104,6 +107,49 @@ sampling-aware simulator reproduces the proxy as closely as the device did
   - several distinct samples per fit, so ideas that use samples can be tested
     (F20's top-k ensembling, `docs/phase2/F20_SOFT_VOTES_RESULT.md`);
   - an end-to-end code path through a real eqc_models fit.
+
+## The card's own acceptance test: sparsity -- FAILED
+
+The F17 card says the simulator is worth building only if it reproduces the
+device's sparsity: "weights below the resolvable step are zeroed, and the
+answer returned is sparser than the one asked for". Its test names the frozen
+B2 pools. That test cannot run as written:
+
+- the 833-variable B2 pools were never stored; and
+- the 11 stored B2 responses carry the same truncated print as B4's, so B2's
+  samples are not on disk either.
+
+The same mechanism was tested on B4, where every device sample is recovered
+(`experiments/phase2/src/emulator_sparsity.py`, results in
+`experiments/phase2/results/f17_emulator_sparsity.json`). Fraction of
+weights exactly zero, lowest-energy sample:
+
+- oilgas_gasturbine: device **0.14-0.16**; exact proxy 0.004-0.005;
+  emulated 0.002-0.004.
+- telecom_churn: device **0.35-0.38**; exact proxy 0.12-0.13; emulated
+  0.14-0.17.
+
+**The emulator does not reproduce the device's sparsity.** It is about as
+sparse as the exact proxy. It gets the direction right (telecom sparser than
+oilgas) and misses the size by 2.5 to 40 times.
+
+**The card's mechanism is also not what the device shows.** The device's
+smallest nonzero weights are about 0.00001, far below the ~0.005 step that
+"weights below the resolvable step are zeroed" would allow. Its largest
+weights (about 0.004) are about twice the exact proxy's. So the device
+concentrates weight and zeroes a block of learners, but not by rounding
+small weights away. What it does instead is unknown.
+
+**Why the emulator misses it**: it quantizes the problem's coefficients (J
+and C), not the returned weights, and its samples stop early from random
+starts. Neither produces exact zeros at the device's rate.
+
+**Recommendation**: keep `emulate` mode for cost estimates and as a source of
+several samples. Do not use it to size sparsity-dependent experiments
+(Experiment 3, the card's stated purpose) until a sparsity model is built and
+validated on data that was not used to fit it. That is follow-up work. It is
+not done here, because fitting a second free knob to the same 10 cells would
+fit them and predict nothing.
 
 ## Limits
 

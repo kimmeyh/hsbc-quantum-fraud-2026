@@ -96,3 +96,14 @@ def test_the_emulator_never_writes_phase_1_files():
         .read_text(encoding="utf-8")
     assert "write_text" not in src and "open(" not in src.replace(
         "read_text", ""), "the emulator reads Phase 1 evidence, never writes"
+
+
+def test_sparsity_counts_only_exact_zeros():
+    """The device returns exact zeros; a tolerance would blur the pattern the
+    F17 acceptance test compares (emulator_sparsity.py)."""
+    import emulator_sparsity as es
+    s = es.sparsity([0.0, 0.0, 1e-12, 0.5, 0.5])
+    assert s["zero_fraction"] == pytest.approx(0.4)
+    assert s["nonzero_min"] == pytest.approx(1e-12)
+    assert s["nonzero_max"] == pytest.approx(0.5)
+    assert es.sparsity([0.0, 0.0])["nonzero_min"] is None
