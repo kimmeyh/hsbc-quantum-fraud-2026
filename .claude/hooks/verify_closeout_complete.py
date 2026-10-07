@@ -161,10 +161,18 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
         # origin/develop was 1 -- and the hook demanded Phase 3 artifacts in
         # the middle of backlog refinement. origin/develop is updated by every
         # fetch. Local develop stays as the fallback, then HEAD.
+        # `base` records which ref the count resolved against, so the no-plan
+        # file list below diffs against the SAME ref. It used to diff
+        # origin/develop unconditionally: in a clone with only a local
+        # develop the count succeeded, the diff failed, and the hook raised
+        # a false "could not be listed" block (PR #159 review).
+        base = "origin/develop"
         commits = _count("origin/develop..HEAD")
         if commits is None:
+            base = "develop"
             commits = _count("develop..HEAD")
         if commits is None:
+            base = None
             commits = _count("HEAD")
 
         # A COUNT WE COULD NOT GET IS NOT A COUNT OF ZERO.
@@ -215,9 +223,11 @@ def collect_violations(root: Path, sprint_num: int) -> list[str]:
         plan_exists = (root / "docs" / "sprints" /
                        f"SPRINT_{sprint_num}_PLAN.md").exists()
         if work_started and not plan_exists:
+            # No base ref resolved (the count fell back to HEAD): there is
+            # nothing to diff against, so the list is reported as unlistable.
             rc_d, out_d = hooklib.git(
-                "diff", "--name-only", "origin/develop...HEAD",
-                cwd=root, timeout=2)
+                "diff", "--name-only", f"{base}...HEAD",
+                cwd=root, timeout=2) if base else (1, "")
             planning_only = ("docs/", "CHANGELOG.md", "README.md",
                              ".claude/sprint_status.json", "CHECKLIST")
             touched = [p for p in out_d.splitlines() if p.strip()] \

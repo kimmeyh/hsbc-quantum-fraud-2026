@@ -398,7 +398,12 @@ def test_the_hook_timeout_budget_covers_its_own_subprocess_calls():
     # undercount again, in a different shape.
     m_count = re.search(r"def _count\(.*?timeout=(\d+)\)", hook_src, re.S)
     assert m_count, "the _count helper or its timeout was not found"
-    count_calls = len(re.findall(r"_count\(\"", hook_src))
+    # Every `_count(` call, whatever its argument: a call written
+    # `_count(base_ref)` or `_count(f"...")` must count too (PR #159 review;
+    # the first version matched only a quoted literal). The definition is the
+    # one match that is not a call.
+    count_calls = (len(re.findall(r"\b_count\(", hook_src))
+                   - len(re.findall(r"\bdef _count\(", hook_src)))
     assert count_calls >= 1, "no _count call sites found"
     extra_count_calls = (count_calls - 1) * int(m_count.group(1))
 

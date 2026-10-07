@@ -91,11 +91,29 @@ def test_cost_scales_with_samples_and_relaxation():
     assert em.estimate_cost_s(800, 8, 4, c=c) == pytest.approx(3.8 * base, abs=0.1)
 
 
-def test_the_emulator_never_writes_phase_1_files():
-    src = (ROOT / "experiments" / "phase2" / "src" / "dirac3_emulator.py") \
-        .read_text(encoding="utf-8")
-    assert "write_text" not in src and "open(" not in src.replace(
-        "read_text", ""), "the emulator reads Phase 1 evidence, never writes"
+def _evidence_snapshot() -> dict[str, str]:
+    """Hashes of both evidence directories, by the root guard's own code."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("_guard_snap",
+                                                  ROOT / "conftest.py")
+    g = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(g)
+    files = g._evidence_files()
+    assert files, "the evidence listing is empty; nothing would be compared"
+    return g._hashes(files)
+
+
+def test_the_emulator_never_writes_evidence(problem):
+    """BEHAVIOR, not source text (PR #159 review: the source check missed
+    write_bytes, np.save, json.dump and Path.open). Every public path runs --
+    both solve modes, the cost fit that reads results.json, the estimate --
+    and neither evidence directory may change."""
+    *_, J, C = problem
+    before = _evidence_snapshot()
+    em.Dirac3Emulator("exact").solve(_Model(J, C), num_samples=1)
+    em.Dirac3Emulator("emulate", seed=2).solve(_Model(J, C), num_samples=4)
+    em.estimate_cost_s(500, 8, 2, c=em.fit_cost_coefficient())
+    assert _evidence_snapshot() == before
 
 
 def test_sparsity_counts_only_exact_zeros():

@@ -81,13 +81,33 @@ def test_laplace_votes_shrink_with_leaf_size(pool):
     assert np.isclose(np.abs(S).min(), 1.0 / 3.0, atol=1e-9)
 
 
-def test_the_module_never_writes_phase_1_results():
-    """Phase 2 code writes only under experiments/phase2/results
-    (docs/PHASE_SEPARATION.md)."""
-    src = (ROOT / "experiments" / "phase2" / "src" / "soft_votes.py") \
-        .read_text(encoding="utf-8")
-    assert 'OUT_DIR = ROOT / "experiments" / "phase2" / "results"' in src
-    assert ".write_text(" in src
-    for line in src.splitlines():
-        if ".write_text(" in line and "results.json" in line:
-            raise AssertionError(f"writes a Phase 1 results file: {line}")
+def _evidence_snapshot() -> dict[str, str]:
+    """Hashes of both evidence directories, by the root guard's own code."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("_guard_snap",
+                                                  ROOT / "conftest.py")
+    g = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(g)
+    files = g._evidence_files()
+    assert files, "the evidence listing is empty; nothing would be compared"
+    return g._hashes(files)
+
+
+@pytest.mark.parametrize("part", ["soft", "ensemble", "classical",
+                                  "ensemble-emulated"])
+def test_every_part_writes_only_its_own_output(part, tmp_path, monkeypatch):
+    """BEHAVIOR, not source text (PR #159 review: the source check flagged a
+    write only when `.write_text(` and `results.json` shared a line, and
+    every write here goes through a variable). The real `main()` runs with
+    the expensive fits stubbed and OUT_DIR pointed at a scratch directory:
+    exactly one file may appear there, and no evidence file may change."""
+    stub = {"rows": [], "summary": {"stub": True}}
+    monkeypatch.setattr(sv, "run_soft", lambda heartbeat: stub)
+    for name in ("run_ensemble", "run_classical", "run_ensemble_emulated"):
+        monkeypatch.setattr(sv, name, lambda: stub)
+    monkeypatch.setattr(sv, "OUT_DIR", tmp_path)
+    monkeypatch.setattr(sys, "argv", ["soft_votes.py", part])
+    before = _evidence_snapshot()
+    assert sv.main() == 0
+    assert len(list(tmp_path.iterdir())) == 1
+    assert _evidence_snapshot() == before

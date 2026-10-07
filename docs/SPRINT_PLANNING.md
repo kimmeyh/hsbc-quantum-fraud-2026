@@ -123,7 +123,7 @@ sprint's rows to it at the retrospective (IMP-7, Sprint 22 retrospective).**
 For a card of a type the log has rows for, start from the median ratio of the
 last three sprints for that type and say so on the card. For a research or
 analysis card marked `[no-history]`, size the first decisive measurement, not
-every branch: Sprints 21-22 ran such cards at 0.06-0.57 of their estimates
+every branch: Sprints 21-22 ran such cards far below their estimates (see the log)
 (Sprint 22: 980 minutes estimated, 256 recorded). The log stopped at Sprint 14
 and nobody noticed for eight sprints; the retrospective step that adds the
 rows is in `SPRINT_RETROSPECTIVE.md` step 7.

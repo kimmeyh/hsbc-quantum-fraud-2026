@@ -63,19 +63,29 @@ def test_hook_is_tracked_with_lf_endings():
     assert tracked.returncode == 0, "the hook must be tracked by git"
 
 
+CHANGELOG_MSG = "changes code but not CHANGELOG.md"
+
+
 def test_code_without_changelog_is_blocked(repo):
     r = _commit(repo, {"scripts/tool.py": "x = 1\n"})
     assert r.returncode != 0
-    assert "CHANGELOG.md" in (r.stdout + r.stderr)
+    assert CHANGELOG_MSG in (r.stdout + r.stderr)
 
 
+# Each path matches exactly ONE alternative of the hook's pattern, so dropping
+# any alternative turns its case red (PR #159 review: every case used to end
+# in .py, so the other alternatives were untested). The message is asserted,
+# so a hook that fails for another reason does not pass.
 @pytest.mark.parametrize("path", ["experiments/src/mod.py",
-                                  "experiments/phase2/src/mod.py",
-                                  ".claude/hooks/h.py",
                                   "conftest.py",
-                                  "scripts/run.sh"])
+                                  "scripts/run.sh",
+                                  ".claude/hooks/h.sh",
+                                  ".githooks/post-merge"])
 def test_every_code_area_is_covered(repo, path):
-    assert _commit(repo, {path: "x = 1\n"}).returncode != 0
+    r = _commit(repo, {path: "x = 1\n"})
+    assert r.returncode != 0
+    assert CHANGELOG_MSG in (r.stdout + r.stderr), (
+        "blocked, but not by the CHANGELOG check")
 
 
 def test_code_with_changelog_passes(repo):
@@ -92,3 +102,50 @@ def test_staged_env_file_is_blocked(repo):
     r = _commit(repo, {".env": "TOKEN=x\n", "CHANGELOG.md": "- entry\n"})
     assert r.returncode != 0
     assert ".env" in (r.stdout + r.stderr)
+
+
+# ---- confidentiality: the whole staged diff is scanned ---------------------
+
+SECRET = "ZZQSECRETWORDZZQ"
+# Enough lines that one added line keeps git's rename similarity above 50%.
+BODY = "".join(f"plain line {i}\n" for i in range(20))
+
+
+@pytest.fixture
+def secret_repo(repo):
+    """The pattern file is local and untracked, as in a real clone."""
+    (repo / ".secrets-patterns.txt").write_text(SECRET + "\n",
+                                                encoding="utf-8")
+    assert _commit(repo, {"notes.md": BODY}).returncode == 0
+    return repo
+
+
+def _blocked_for_secret(r) -> bool:
+    return (r.returncode != 0
+            and "confidential patterns" in (r.stdout + r.stderr))
+
+
+def test_a_new_file_with_a_secret_is_blocked(secret_repo):
+    assert _blocked_for_secret(_commit(secret_repo, {"new.md": SECRET + "\n"}))
+
+
+def test_a_renamed_and_edited_file_with_a_secret_is_blocked(secret_repo):
+    """A file list built with --diff-filter=ACM omitted renames (PR #159
+    review, reproduced: R075 notes.md -> moved.md committed a secret)."""
+    _git(secret_repo, "mv", "notes.md", "moved.md")
+    (secret_repo / "moved.md").write_text(BODY + SECRET + "\n",
+                                          encoding="utf-8")
+    _git(secret_repo, "add", "moved.md")
+    status = _git(secret_repo, "diff", "--cached", "--name-status").stdout
+    assert status.startswith("R"), f"not staged as a rename: {status!r}"
+    assert _blocked_for_secret(_git(secret_repo, "commit", "-q", "-m", "x"))
+
+
+def test_a_file_name_with_a_space_is_scanned(secret_repo):
+    """xargs split the name, and 2>/dev/null hid the miss (PR #159 review)."""
+    assert _blocked_for_secret(_commit(secret_repo,
+                                       {"my notes.md": SECRET + "\n"}))
+
+
+def test_clean_text_passes_the_secret_scan(secret_repo):
+    assert _commit(secret_repo, {"more.md": "nothing here\n"}).returncode == 0

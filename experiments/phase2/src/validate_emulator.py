@@ -8,8 +8,10 @@ mode at several iteration budgets, with no rebuild.
 
 Compared against what the DEVICE did on that cell (results.json, block B4):
   - weight cosine against the exact solve: device 0.83-0.90
-  - within-fit energy spread across the 8 samples: device responses stored in
-    experiments/results/pools/hw_responses/
+  - within-fit energy spread across the 8 samples: the device responses
+    recovered in full by job id into experiments/phase2/results/device_samples/
+    (recover_device_samples.py). The copies in
+    experiments/results/pools/hw_responses/ hold only numpy's truncated print.
 
 The iteration budget is the emulator's one free knob. The budget that best
 matches the device's cosine is reported as CALIBRATED, not predicted.

@@ -53,13 +53,16 @@
 | 22 | Task A (F123) phase separation document | design+docs | 120m | 30m | 0.25 | later superseded at validation (F127) |
 | 22 | Task B (IMP-3) suite may not change evidence | tooling | 30m | 32m | 1.1 | includes hardening after a security review |
 | 22 | Task F (F125) close-out hook ref | tooling | 20m | 45m | 2.25 | the card's diagnosis was incomplete |
-| 22 | Tasks D+E (F17 emulator, F20 soft votes) | research+code | 570m | 34m | 0.06 | run in parallel, not separable; D's acceptance test added 20m |
+| 22 | Tasks D+E (F17 emulator, F20 soft votes) | research+code | 570m | 54m | 0.09 | run in parallel, not separable; includes D's 20m acceptance test (corrected in PR #159 review from 34m, 0.06) |
 | 22 | Task C (F124) SPECTRA lever research | research | 240m | 95m | 0.4 | `[no-history]` |
 | 22 | UNPLANNED: Manual Validation rounds 1-3 | docs+decisions | 0m | 45m | n/a | B2 recovery attempt, F126/F127 carded |
+| 22 | UNPLANNED: retrospective and improvements IMP-1 to IMP-7 | process+tooling | 0m | 70m | n/a | IMP-3's tracked pre-commit hook was the code item |
+| 22 | UNPLANNED: second security review, 12 findings fixed | fix | 0m | 55m | n/a | evidence guard moved to the root conftest |
+| 22 | UNPLANNED: PR #159 code review, 15 findings fixed | fix | 0m | 85m | n/a | 1 critical: the confidentiality scan missed renamed files |
 
 **Pattern, recomputed at the Sprint 22 retrospective.** Tooling cards land
 near their estimate (ratio 0.95-1.4 in Sprints 20-22; a wrong diagnosis
 doubles one). Research and analysis cards marked `[no-history]` ran at
-0.06-0.57 of their estimate in Sprints 21-22: they were sized as if every
+0.09-0.57 of their estimate in Sprints 21-22: they were sized as if every
 branch would be explored, and the evidence cut most branches early. The
 estimation rule in `SPRINT_PLANNING.md` now applies this.

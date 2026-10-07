@@ -267,6 +267,50 @@ The guard moved from `experiments/src/conftest.py` to the root `conftest.py`.
   mutation meant to prove that test red silently failed to apply; a byte
   check caught it, and the rerun went red.
 
+**PR #159 reviews.** Copilot: no findings, no inline comments; it flagged
+the PR for final human review because it touches safety infrastructure. A
+code review agent wrote `FINDINGS: 15` to a file; all 15 entries were read,
+and all 15 were addressed now (team lead's PR review instructions: no
+technical debt into the next sprint).
+
+- **1 (critical) and 2 (important): the confidentiality scan in the new
+  tracked pre-commit hook missed a renamed-and-edited file and a file name
+  with a space.** Both were reproduced by the reviewer. The hook now scans
+  the whole staged diff, never a list of names, and blocks if git cannot
+  produce the diff. This was a defect in IMP-3, applied this sprint.
+- **3**: hook tests now cover rename, space, and one path per pattern
+  alternative, and assert the CHANGELOG message itself.
+- **4 (important)**: the F125 test passed on a crashing hook; it now asserts
+  the hook ran to completion (exit 0 or 2, no traceback).
+- **5 (important)**: F20 compared overall test-AUPRC gains with the plan's
+  in-pocket oilgas spread (0.05). Now compared with the measured overall
+  seed SD from the same result file; "35 times" became "7 to 22 times" in
+  both documents. Conclusions unchanged; telecom's gain now reads as about
+  equal to its spread.
+- **6 (important)**: F17's "2.5 to 40 times" corrected to about 2.4 and 47
+  times on the means (2.2 to 85 per seed).
+- **7-10, 14, 15**: Phase 2 READMEs updated for D7 and section 9; the
+  validator's docstring names the recovered samples; the cost floor's count
+  is 27 (filter stated); the emulator's dict return is documented and the
+  claim that it tests response-handling code is withdrawn; the velocity row
+  includes D's 20 minutes (0.09) and three missing unplanned rows are added;
+  the CHANGELOG test count is removed.
+- **11-13**: the two source-text "never writes" tests are behavioral (the
+  module's real write path runs, and the evidence directories are hashed
+  before and after); the `_count` call count matches any argument; the
+  no-plan diff uses the ref the commit count resolved against.
+- **Proven red**, with the repository's own helper `injection.assert_can_fail`
+  this time (green before, red under mutation, green after): six hook
+  mutations, two close-out hook mutations, one call-count mutation, two
+  write-path mutations.
+- **Found while doing it: `injection.py` itself rewrote LF files as CRLF on
+  Windows** and passed its own restore check, because `read_text` folds the
+  CRLF back. It now reads and writes with `newline=""`; a byte-level test
+  fails on the old helper. Two of my own mutations were also wrong on the
+  first attempt (one reproduced a skip the old hook did not have; one kept
+  the target inside its replacement). The helper refused the second; the
+  first was caught by asking why the test stayed green.
+
 **Completion updates.** Master plan: Sprint 22 in Last Completed Sprint,
 Sprint 21 demoted; the Past Sprint Summary row is added when the SUMMARY doc
 is written. `CHECKLIST-Phase2.md` reconciled: F124 added and ticked; "Decide

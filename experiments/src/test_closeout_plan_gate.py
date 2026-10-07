@@ -104,8 +104,34 @@ def test_refinement_commits_before_a_plan_owe_no_phase_3_artifacts(tmp_path):
     _status(repo)
     _commit(repo, "docs/ALL_SPRINTS_MASTER_PLAN.md", "refinement sweep")
     r = _hook(repo)
+    _ran_to_completion(r)
     assert "current_sprint.pr is null" not in r.stderr
     assert "plan_approved is not true" not in r.stderr
+    assert "without a plan" not in r.stderr
+    assert "could not be listed" not in r.stderr
+
+
+def _ran_to_completion(r) -> None:
+    """Absence assertions alone pass on a hook that CRASHED: a traceback
+    contains none of the strings they look for (PR #159 review). A finished
+    hook exits ALLOW (0) or BLOCK (2); an uncaught exception exits 1."""
+    assert r.returncode in (0, 2), (
+        f"the hook did not finish (exit {r.returncode}):\n{r.stderr[-800:]}")
+    assert "Traceback" not in r.stderr, r.stderr[-800:]
+
+
+def test_a_local_develop_without_origin_is_diffed_not_blocked(tmp_path):
+    """The count falls back to local `develop`; the no-plan file list must
+    use the same ref. It used to diff origin/develop unconditionally, fail,
+    and raise a false "could not be listed" block (PR #159 review)."""
+    repo = _repo(tmp_path, stale_local_develop=False)
+    _git(repo, "remote", "remove", "origin")
+    assert _git(repo, "rev-parse", "--verify", "origin/develop").returncode != 0
+    _status(repo)
+    _commit(repo, "docs/ALL_SPRINTS_MASTER_PLAN.md", "refinement sweep")
+    r = _hook(repo)
+    _ran_to_completion(r)
+    assert "could not be listed" not in r.stderr, r.stderr[-800:]
     assert "without a plan" not in r.stderr
 
 

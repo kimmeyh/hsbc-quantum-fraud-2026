@@ -59,6 +59,14 @@ It implements the `solve(model, ...)` interface of eqc_models'
 the one network object. This is the same seam that `eqc_submit.offline_solver`
 uses for dry runs.
 
+**It returns a plain dict, not the device's `SolutionResults`.** The fit
+consumes either, so a fit runs end to end. But code that SAVES or COUNTS a
+response takes a different branch on a dict, and a dict hid the Sprint 21
+sample-storage defect, which is why `offline_solver` now returns a real
+`SolutionResults`. Test response-handling code with `offline_solver`, not
+with this emulator. (Corrected in PR #159 review: this document first
+recommended the emulator for those code paths.)
+
 ## Calibration: the iteration budget
 
 The budget sets how far each sample gets from its random start. The budget
@@ -133,7 +141,10 @@ weights exactly zero, lowest-energy sample:
 
 **The emulator does not reproduce the device's sparsity.** It is about as
 sparse as the exact proxy. It gets the direction right (telecom sparser than
-oilgas) and misses the size by 2.5 to 40 times.
+oilgas) and misses the size: the device's zero fraction is about 2.4 times
+the emulator's on telecom and about 47 times on oilgas (ratio of the means;
+per seed, 2.2 to 85). (Corrected in PR #159 review from "2.5 to 40 times",
+which matched neither statistic.)
 
 **The card's mechanism is also not what the device shows.** The device's
 smallest nonzero weights are about 0.00001, far below the ~0.005 step that
@@ -173,5 +184,6 @@ fit them and predict nothing.
 - To rank candidate levers before any device run (F124).
 - To size a run: `estimate_cost_s(n_vars, num_samples, relaxation_schedule)`.
   This gives the number that a Criterion H approval statement needs.
-- To test code paths that a real response exercises, together with
-  `eqc_submit.offline_solver`.
+- NOT to test code that handles a device response (saving, counting
+  samples): it returns a dict, and the device a `SolutionResults`. Use
+  `eqc_submit.offline_solver` for that.

@@ -24,7 +24,7 @@ gates F95, F110, F20, F25 and F30, decision 2026-10-06).
 - **Parity, not advantage.** No lever beats HGB with a CI that excludes zero
   on any dataset.
 - **Two levers are measured and rejected**: multi-sample ensembling (+0.0014
-  AUPRC, 35 times below the seed spread) and an emulator as an AUPRC
+  AUPRC, 7 to 22 times below the measured seed SD) and an emulator as an AUPRC
   predictor (it returns the proxy's answer, as the device does).
 - **NeuraWave does not fit this problem**, from QCi's own press releases: it
   is edge hardware for time series and signals, sold as a PCIe card, with no

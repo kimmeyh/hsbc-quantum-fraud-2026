@@ -18,15 +18,23 @@ if echo "$staged" | grep -qE '(^|/)\.env$'; then
   exit 1
 fi
 
+# The WHOLE staged diff is scanned, never a list of file names. A name list
+# missed renamed files (--diff-filter=ACM has no R) and split names with a
+# space through xargs, with 2>/dev/null hiding the miss (PR #159 review). An
+# added line starts with "+"; the "+++ b/<path>" file headers are dropped.
+# If git cannot produce the diff, the commit is blocked, not waved through.
 if [ -f .secrets-patterns.txt ]; then
-  files=$(git diff --cached --name-only --diff-filter=ACM)
-  if [ -n "$files" ]; then
-    hits=$(echo "$files" | xargs git diff --cached -- 2>/dev/null | grep '^+' | grep -nEf .secrets-patterns.txt)
-    if [ -n "$hits" ]; then
-      echo "BLOCKED: staged changes match confidential patterns in .secrets-patterns.txt:"
-      echo "$hits" | head -5
-      exit 1
-    fi
+  if ! diff=$(git diff --cached --no-color --no-ext-diff --unified=0); then
+    echo "BLOCKED: git could not produce the staged diff, so it was NOT"
+    echo "scanned for confidential patterns. That is not a pass."
+    exit 1
+  fi
+  hits=$(printf '%s\n' "$diff" | grep '^+' | grep -vE '^\+\+\+ (b/|/dev/null)' \
+    | grep -nEf .secrets-patterns.txt)
+  if [ -n "$hits" ]; then
+    echo "BLOCKED: staged changes match confidential patterns in .secrets-patterns.txt:"
+    echo "$hits" | head -5
+    exit 1
   fi
 fi
 

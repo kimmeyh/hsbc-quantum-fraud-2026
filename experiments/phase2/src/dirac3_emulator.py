@@ -31,6 +31,9 @@ num_samples=)` interface of `eqc_models`' `Dirac3CloudSolver`, so
 `emulated_solver()` swaps it in for the one network object and a real
 QBoostClassifier / QSVMClassifier fit runs end to end against it, spending
 nothing -- the same seam `eqc_submit.offline_solver` uses for dry runs.
+It returns a plain dict, NOT the device's `SolutionResults`, so code that
+saves or counts a response must be tested with `offline_solver`, which does
+return the real type (PR #159 review).
 
 What it is NOT: a model of the device's physics. It reproduces the
 observable behavior this repository has measured (resolution, sample spread,
@@ -51,7 +54,10 @@ sys.path.insert(0, str(ROOT / "experiments" / "src"))
 import qubo_proxy as qp                               # noqa: E402  (Phase 1, read-only)
 
 LEVELS = 200                 # A31: ~200:1 resolvable dynamic range (~23 dB)
-COST_FLOOR_S = 4.4           # mean of the 26 fits at <= 91 variables
+# Mean metered seconds (4.44) of the 27 [HW] cvqboost rows in results.json
+# with metered_seconds > 0 and n_vars_expected <= 91 (B1 22, G0b 5).
+# Corrected in PR #159 review from "26 fits", which no filter reproduces.
+COST_FLOOR_S = 4.4
 RX4_FACTOR = 3.8             # relaxation 2 -> 4 cost ratio (F18 notes)
 MAX_ITER_EXACT = 5000        # qubo_proxy.solve_simplex_qp's default
 TOL_EXACT = 1e-10

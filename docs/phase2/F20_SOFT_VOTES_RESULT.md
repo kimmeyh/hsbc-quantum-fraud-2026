@@ -10,9 +10,13 @@ All solves use the exact classical proxy unless stated.
 - **A Laplace-smoothed soft vote improves CVQBoost on all 15 cells** (3
   datasets, 5 seeds). The gain is large on energy_steel (+0.074 AUPRC), and
   small on telecom (+0.030) and oilgas (+0.005).
-- **Only energy_steel passes the plan's falsifier** (a gain larger than the
-  seed-to-seed spread, about 0.05). On the other two the gain is consistent
-  (5 of 5 seeds) but smaller than that spread.
+- **Only energy_steel passes the plan's falsifier.** The plan's bar is the
+  seed-to-seed spread, "about 0.05 in-pocket on oilgas". The gains here are
+  OVERALL test AUPRC, whose measured seed SD in the same result file is
+  0.010 (energy_steel), 0.011 (oilgas) and 0.031 (telecom). energy_steel's
+  gain is about 7 times its SD. telecom's (+0.030) is about equal to its
+  SD, and oilgas's (+0.005) about half of it. On both, the gain is
+  consistent (5 of 5 seeds) but not larger than the spread.
 - **With soft votes, CVQBoost reaches parity with HGB on energy_steel only**
   (+0.011, CI includes zero). It still loses to HGB clearly on telecom and
   oilgas.
@@ -65,8 +69,13 @@ Soft votes reduce overfitting most where they help most. The large gap on
 telecom and oilgas remains: soft votes are not the regularization fix.
 
 **The plan's falsifier** was a change smaller than the seed-to-seed spread,
-about 0.05 in-pocket. energy_steel clears it. oilgas and telecom do not, even
-though every seed moved the same way. Read those two as real but small.
+given in the plan as about 0.05 in-pocket on oilgas. These deltas are
+overall test AUPRC, so the fair bar is the overall seed SD from
+`f20_soft_votes.json` (`summary.*.seed_sd_hard`): 0.010, 0.011 and 0.031.
+energy_steel clears it by about 7 times. telecom's gain about equals it and
+oilgas's is about half of it, even though every seed moved the same way.
+Read those two as real but small. (Corrected in PR #159 review: this
+section first compared overall deltas with the in-pocket 0.05.)
 
 ## 3. Soft-vote CVQBoost against the classical lanes
 
@@ -111,9 +120,9 @@ cells, hard votes. From `f20_multisample_ensemble_emulated.json`:
 - Mean of the top 8 samples minus the lowest-energy sample: **+0.0014**
   AUPRC, CI [0.0003, 0.0025]. Top 8 better on 7 of 10 cells. Range -0.0008
   to +0.0047.
-- That is real but about 35 times smaller than the seed-to-seed spread
-  (about 0.05). By the plan's falsifier, **ensembling fails**: it is not a
-  lever worth device time.
+- That is real but about 7 to 22 times smaller than the measured overall
+  seed SD (0.010 to 0.031, `f20_soft_votes.json`). By the plan's falsifier,
+  **ensembling fails**: it is not a lever worth device time.
 - Caveat: the emulator's samples are its own, not the device's. The device's
   samples are closer to the exact answer on oilgas (F17), so their spread,
   and any ensembling gain, is likely smaller still. That is an inference.
