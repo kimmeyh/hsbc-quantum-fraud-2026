@@ -32,7 +32,8 @@
       "b5_2026-10-05": "Built this sprint (team lead Q1).",
       "dirac3_window_2026-10-05": "ALL Dirac-3 calls wait until 18:00 local 2026-10-05, then run. Approved by the team lead. B5 and B4 both pre-approved; Criterion H recording still applies (block, call count, expected seconds, provenance stated immediately before each run).",
       "phase2_prereg": "F102 may be drafted now and revised until its November filing; it binds only from filing. Option 5 is specification there, not an amendment.",
-      "task_a_2026-10-05": "CLOSED as already satisfied. The off-repository configuration (schedule 3, 8 samples, relaxation schedule 2, ridge 2x records) was brought in 2026-10-03 and FROZEN_CELLS encodes exactly it, verified field by field. I had turned a citation restriction into a missing input and asked the team lead for data I already held. Issue #153 closed; #155 and #156 unblocked."
+      "task_a_2026-10-05": "CLOSED as already satisfied. The off-repository configuration (schedule 3, 8 samples, relaxation schedule 2, ridge 2x records) was brought in 2026-10-03 and FROZEN_CELLS encodes exactly it, verified field by field. I had turned a citation restriction into a missing input and asked the team lead for data I already held. Issue #153 closed; #155 and #156 unblocked.",
+      "pr_reviews_2026-10-06": "Team lead: no Claude or Copilot PR review on #152. \"2 reviews have already been done and comfortable we can continue and catch anything the PR reviews would have caught next time.\" PR marked ready 2026-10-06; CI green on 8487e35; merge is the team lead's action."
     }
   },
   "last_completed_sprint": {
