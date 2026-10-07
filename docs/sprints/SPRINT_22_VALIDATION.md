@@ -139,6 +139,36 @@ D5. **The `spectra_segment.py` record**: the dated note in
 D6. **IMP-4 and the placement check** as designed in `PHASE_SEPARATION.md`
     section 6: approve for a later sprint, amend, or drop.
 
+D7. **Phase 2 results format.** The layout says Phase 2 evidence goes in its
+    own `results.json` with the section-11 row schema. This sprint wrote one
+    JSON file per experiment instead (generator, card, evidence tag SIM,
+    metered seconds 0, eqc_models version, rows, summary). No Phase 2
+    `results.json` exists yet. Recommendation: keep per-experiment files for
+    exploratory proxy work, and require schema rows in a Phase 2
+    `results.json` from the first run under the Phase 2 preregistration
+    (F102) or the first device run, whichever comes first.
+
+## Definition of Done, walked
+
+- **Acceptance met with evidence**: each task's document names its result
+  file. F17 and F20 falsifiers are reported as they came out, including the
+  F17 falsifier that was met.
+- **Suite green**: full suite passed on the final code; the IMP-3 guard did
+  not fire.
+- **Every number in a results file with its evidence tag**: yes, in the
+  per-experiment files (see D7 for the format gap).
+- **No Phase 1 file changed by this sprint's tasks**: checked with
+  `git diff origin/develop...HEAD` against the filing commit `f35699c`. Files
+  that existed at the filing and changed: `.claude/sprint_status.json`,
+  `CHANGELOG.md`, `docs/ALL_SPRINTS_MASTER_PLAN.md` and one test. None is in
+  group L or group B. No file under `experiments/results/`, `docs/paper/`,
+  `docs/submission/` or `PREREGISTRATION.md` changed. The only non-test code
+  changed under `experiments/src/` is the three post-filing runner files
+  (item 5).
+- **Every new results file where F123's layout says**: all under
+  `experiments/phase2/results/`.
+- **Zero metered seconds**: yes.
+
 ## Effort
 
 Wall-clock minutes from `.claude/sprint_status.json`, recorded as each task
