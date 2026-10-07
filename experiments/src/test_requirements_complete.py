@@ -22,6 +22,7 @@ from pathlib import Path
 
 SRC = Path(__file__).resolve().parent
 ROOT = SRC.parents[1]
+FIRST_PARTY_DIRS = (SRC, ROOT / "scripts", ROOT / "experiments" / "phase2" / "src")
 REQS = ROOT / "experiments" / "requirements.txt"
 
 # import name -> distribution name, where they differ.
@@ -62,9 +63,11 @@ def _local_modules() -> set[str]:
 
     Both directories hold first-party code and both are imported by tests, so
     both belong here.
+
+    `experiments/phase2/src/` joined them in Sprint 22 (F123's Phase 2 tree),
+    for the same reason: tests import its modules via a sys.path insert.
     """
-    return ({p.stem for p in SRC.glob("*.py")} |
-            {p.stem for p in (ROOT / "scripts").glob("*.py")})
+    return {p.stem for d in FIRST_PARTY_DIRS for p in d.glob("*.py")}
 
 
 def _imports() -> dict[str, set[str]]:
@@ -82,7 +85,7 @@ def _imports() -> dict[str, set[str]]:
     local = _local_modules()
     found: dict[str, set[str]] = {}
 
-    files = list(SRC.glob("*.py")) + list((ROOT / "scripts").glob("*.py"))
+    files = [p for d in FIRST_PARTY_DIRS for p in d.glob("*.py")]
     for f in files:
         try:
             tree = ast.parse(f.read_text(encoding="utf-8", errors="ignore"))
