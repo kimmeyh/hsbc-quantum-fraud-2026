@@ -590,6 +590,16 @@ not a sweep correction.
 - Investigation first: QCi's published products, docs and papers, for a documented simulator or device model before building one. The SLSQP/Hexaly precedent in Emami et al. is the optimizer-backend candidate
 - Acceptance (investigation): a written finding on whether QCi publishes a usable model, and either a build plan with the sparsity-reproduction test as its gate, or a recorded decision not to build with the reason. Acceptance (build, if taken): reproduces the B2 sparsity pattern on the frozen pools; miniaturized subsets so any test run completes within 10 minutes
 - Depends on: nothing. Pairs with F94 (both prepare Experiment 3) and with F20
+
+**F126. Model of the device's sparsity, validated on held-out fits (~3h [no-history], zero metered) Priority 101**
+- Phase: Phase 2 preparation, Experiment 3 (added 2026-10-07, team lead decision D9 at Sprint 22 Manual Validation: F17 follow-up)
+- Platform: local (`experiments/phase2/src/dirac3_emulator.py`)
+- **Measured (Sprint 22, `experiments/phase2/results/f17_emulator_sparsity.json`)**: F17's emulator fails the card's own acceptance test. Exact-zero fraction of the lowest-energy sample: device 0.14-0.16 (oilgas) and 0.35-0.38 (telecom); emulator 0.002-0.004 and 0.14-0.17. The device's smallest nonzero weights are about 0.00001, far below the ~0.005 step, so "weights below the step are zeroed" is not the mechanism. Its largest weights are about twice the exact proxy's
+- The question: what rule reproduces the device's exact zeros and weight concentration, and does it predict fits it was not fitted to?
+- **Data limit**: only the 10 B4 fits (and 12 B5 fits at small size) have full samples on disk. B2's 11 responses are truncated in storage and returned 404 ("Job not found") on 2026-10-07, so they cannot serve as held-out data. A held-out split inside B4 (for example, fit on oilgas, test on telecom) is the only option without new device time
+- Acceptance: a sparsity rule fitted on one subset reproduces the zero fraction on the held-out subset within a stated tolerance, set before the fit; or a recorded finding that 22 fits cannot support one. A rule fitted and tested on the same 10 fits does not count
+- Depends on: F17 (done, Sprint 22)
+
 **F20. Soft-vote CVQBoost exploration (multi-level weak outputs) (~3h proxy investigation) Priority 16**
 - Phase: Phase 2 preparation (team-lead approved 2026-09-02, "fits naturally as a post-submission/Phase 2 exploration item next to F17"). **OFF HOLD 2026-10-05 (team lead): waiting is no longer a HOLD reason for Phase 2 work.** Scored 16 to sit immediately after F90/F100/F101 and NOT inside Sprint 21, at the team lead's direction ("after this sprint"), because F90 acceptance (c) must first store every returned sample --- which makes the multi-sample half of this card cost zero further device time
 - Platform: local proxy first; Dirac-3 only if the proxy shows signal

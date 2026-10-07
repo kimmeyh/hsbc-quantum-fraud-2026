@@ -6,6 +6,9 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ### 2026-10-07
 
+- **fix**: **B2's 11 device responses are not recoverable.** Team lead decision D8 approved a read-only recovery by job id. The job ids were read from the stored responses; QCi returned 404 "Job not found" for all 11, balance unchanged at 1,022 s. Nothing reconstructed. `recover_device_samples.py --block B2` records an absent job as absent; `requests` declared in `experiments/requirements.txt` (PR #159)
+- **docs**: **F126 carded** (team lead decision D9): a model of the device's sparsity, validated on held-out fits (PR #159)
+- **process**: **Manual Validation round 1 recorded**: F124 list approved (D1), per-experiment Phase 2 results files approved (D7). D2-D6 open; see `docs/sprints/SPRINT_22_VALIDATION.md` (PR #159)
 - **feat**: **F124 ranked list of SPECTRA levers.** Rank 1 is leaf regularization of the weak trees (`min_samples_leaf=20`): energy_steel CVQBoost reaches parity with HGB on the proxy. Nothing found closes the gap on telecom or oilgas. NeuraWave assessed from QCi's own releases: not a fit. `docs/phase2/SPECTRA_IMPROVEMENT_RESEARCH.md` (Issue #162 / PR #159)
 - **feat**: **F20 soft votes and ensembling.** The specified soft vote is degenerate; a Laplace-smoothed vote improves all 15 cells. Multi-sample ensembling fails its falsifier. `docs/phase2/F20_SOFT_VOTES_RESULT.md` (Issue #164 / PR #159)
 - **feat**: **F17 Dirac-3 emulator**, one tool with exact and emulate modes, importing the proxy unchanged. Its AUPRC falsifier is met, and the card's own sparsity acceptance test fails (device 14-38% exact zeros, emulator 0.2-17%), so it is kept for cost estimates and samples only. `docs/phase2/F17_EMULATOR.md` (Issue #163 / PR #159)

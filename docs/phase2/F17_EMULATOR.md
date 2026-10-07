@@ -117,7 +117,9 @@ B2 pools. That test cannot run as written:
 
 - the 833-variable B2 pools were never stored; and
 - the 11 stored B2 responses carry the same truncated print as B4's, so B2's
-  samples are not on disk either.
+  samples are not on disk either. A read-only recovery by job id (team lead
+  decision D8, 2026-10-07) returned 404 "Job not found" for all 11, so they
+  cannot be recovered. Follow-up: F126.
 
 The same mechanism was tested on B4, where every device sample is recovered
 (`experiments/phase2/src/emulator_sparsity.py`, results in

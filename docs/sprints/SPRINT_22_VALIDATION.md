@@ -211,3 +211,32 @@ finished:
 - **Total recorded: 256 minutes against 980 estimated.** The overlaps mean
   the sum exceeds elapsed time.
 - Device seconds: 0.
+
+## Manual Validation, round 1 (2026-10-07)
+
+Team lead answers: D1 1, D2 2, D3 2, D4 1, D5 2, D6 "need more
+information", D7 1, D8 1 ("so we have them in Phase 2 but do not change
+phase 1 files"), D9 1.
+
+Done:
+
+- **D1 approved**: the F124 ranked list. Each device block still needs its
+  own Criterion H approval.
+- **D7 approved**: per-experiment Phase 2 results files now; schema rows in
+  a Phase 2 `results.json` from the first preregistered or device run.
+- **D8 attempted, not recoverable.** The B2 rows in `results.json` carry no
+  job id; each stored response's printed form does (one id per file, read,
+  not changed). QCi returned 404 "Job not found" for all 11. Balance 1,022 s
+  before and after. No file written, nothing reconstructed. Why QCi no
+  longer holds them (a retention window, or something else) is
+  **unverified**; B4's jobs, 1 day old, were found.
+- **D9 approved**: carded as F126 in `docs/ALL_SPRINTS_MASTER_PLAN.md`.
+
+Open, put back to the team lead with an inventory:
+
+- **D3 = relocate (section 4.3)**, with D4 (move) and D2 (the correction
+  note), which depend on what moves. The relocation edits group B evidence
+  files, so it waits for a confirmed inventory (the CLAUDE.md echo-back
+  rule).
+- **D5 = "something else"**: no alternative was named.
+- **D6**: information requested.
