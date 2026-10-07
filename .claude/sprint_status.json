@@ -1,11 +1,11 @@
 {
   "current_sprint": {
     "number": 22,
-    "name": "TBD -- scope selected at Phase 8.4 refinement",
+    "name": "Separate the Phases, Then Look for Better Numbers",
     "branch": "feature/20261006_Sprint_22",
     "status": "phase_1_backlog_refinement",
-    "plan_doc": null,
-    "pr": null,
+    "plan_doc": "docs/sprints/SPRINT_22_PLAN.md",
+    "pr": 159,
     "plan_approved": false,
     "github_issues": [],
     "task_actuals": {
