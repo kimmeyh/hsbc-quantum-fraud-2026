@@ -192,4 +192,9 @@ Exceptions to the restore, kept at their current content:
 - `docs/submission/PACKAGE.md` and `SUBMISSION_RECEIPT.md` keep their
   post-filing text, which says the PDFs are tracked and why. Restoring the
   filing text would say the PDFs are not tracked, beside the tracked PDFs.
-  (Proposed; confirmed by the team lead before the restore.)
+  (Confirmed by the team lead, 2026-10-07.)
+
+Also decided 2026-10-07: the `spectra_segment.py` record is this document's
+dated note (section 4.2), and the restore returns this repository's copy to
+its filing version; IMP-4 and the placement check (section 6) are dropped,
+because an archived repository refuses every push.

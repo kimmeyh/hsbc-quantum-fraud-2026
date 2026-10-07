@@ -254,3 +254,16 @@ directory tree, then a separate repository. Decided:
   exists, with three exceptions (section 9).
 - Found while checking: the filed proposal and appendix cite this public
   repository's URL, which now shows four weeks of post-filing work.
+
+## Manual Validation, round 3 (2026-10-07): closed
+
+Team lead: "as recommended", then "Manual Validation complete".
+
+- `docs/submission/PACKAGE.md` and `SUBMISSION_RECEIPT.md` keep their
+  current text: the third restore exception (F127).
+- **D2**: the correction note stays in `docs/B4_B5_HARDWARE_RESULT.md`;
+  after the split that document exists only in the Phase 2 repository.
+- **D5**: the dated note in `PHASE_SEPARATION.md`; the restore returns this
+  repository's `spectra_segment.py` to its filing version.
+- **D6**: IMP-4 and the placement check are dropped; the archived
+  repository refuses every push.

@@ -596,7 +596,7 @@ not a sweep correction.
 - Platform: GitHub, git, CI
 - **Why**: the filed proposal and appendix cite this public repository's URL, so the link should show what was filed. An archived repository refuses every push. Phase 2 paths stay unchanged in the new repository
 - Steps, with the team lead's actions marked: (1) Sprint 22 closes here, team lead merges; (2) **team lead** creates the new private repository; (3) push `develop` with full history; (4) copy untracked files (`.env`, datasets, predictions, `docs/qci_package/`) with ignore rules written FIRST (CLAUDE.md, Sprint 16 IMP-2); (5) CI green in the new repository; CLAUDE.md there updated for the new boundary; (6) one restore commit here to `f35699c`, tagged `as-filed`; (7) **team lead** archives this repository
-- Restore exceptions, kept at current content: `docs/paper/qci_cover.md` stays out (private correspondence, moved out 2026-09-17); the three filed PDFs stay in; `docs/submission/PACKAGE.md` and `SUBMISSION_RECEIPT.md` keep their post-filing text describing the tracked PDFs (to be confirmed by the team lead)
+- Restore exceptions, kept at current content: `docs/paper/qci_cover.md` stays out (private correspondence, moved out 2026-09-17); the three filed PDFs stay in; `docs/submission/PACKAGE.md` and `SUBMISSION_RECEIPT.md` keep their post-filing text describing the tracked PDFs (confirmed by the team lead 2026-10-07)
 - Not carried as issues: open GitHub issues do not move; the backlog travels in this document
 - Acceptance: the new repository's suite passes in CI; this repository's tree equals `f35699c` except the listed exceptions (`git diff --stat f35699c` shows only those); this repository archived
 - Depends on: Sprint 22 merged
