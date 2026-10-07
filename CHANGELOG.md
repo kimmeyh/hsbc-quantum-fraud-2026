@@ -6,6 +6,7 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ### 2026-10-06
 
+- **chore**: **Sprint 21 delivered and merged.** PR #152 to develop, PR #158 develop to main. F90, F100, F101, F122 delivered; 454 minutes against 750 estimated, 653 metered seconds. The team lead waived the PR reviews for this sprint; the decision is recorded in `.claude/sprint_status.json`
 - **process**: **Sprint 21 retrospective: IMP-1 and IMP-2 applied, IMP-3 and IMP-4 carded on F123.** IMP-1 extends the capability pre-flight's read list with the frozen preregistration's sections 4 and 10 and the proven runner for any new runner, plus a rule to search before declaring anything absent. IMP-2 extends the every-turn Stop hook: a reply ending with a footer no `status_footer.py` run printed in the same turn is held back. Proven red against three mutations
 - **feat**: **F123 and F124 registered (team lead).** F123: separate Phase 2 files from Phase 1's locked files. F124: research what to try for better SPECTRA predictions before any further Dirac-3 run; every open card that can spend device seconds depends on it
 
