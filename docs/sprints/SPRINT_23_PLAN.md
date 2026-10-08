@@ -59,6 +59,17 @@ Each finding changes a task.
 7. **The protection hooks do not block the recipe.** The restore is a new
    forward commit: no force push, no reset to a remote ref, no move of
    `prereg-freeze`, and no Edit or Write on a guarded document.
+8. **In a fresh worktree the confidentiality scan would skip silently.**
+   `.githooks/pre-commit` is plain `sh` and needs no venv, but it scans only
+   `if [ -f .secrets-patterns.txt ]`, relative to the worktree root. That file
+   is gitignored, so a new worktree does not have it, and the hook passes
+   without scanning. The recipe copies it into the worktree first and checks
+   it is there.
+9. **This branch is checked out in this working tree**, so no worktree can
+   check it out. The restore commit is built in a DETACHED worktree and pushed
+   by its ID: `git push origin <id>:refs/heads/feature/20261007_Sprint_23`.
+   The remote branch and PR #167 advance; the local branch stays at the
+   pre-restore tip, which is the record Task B pushes to the new repository.
 
 ## Decisions needed at approval
 
@@ -84,6 +95,15 @@ draft PR #1 and a status file that says Sprint 23.
 2. The new repository keeps the number 23, and this repository's sprint is
    renumbered
 
+**D3. A red CI result on the restore commit.** The restored tree carries
+the as-filed `ci.yml` and suite, last run 2026-09-12. They may fail on
+today's runner or packages. Fixing that would change the filed tree.
+
+1. A red result there is reported to you with the merge request, with its
+   cause, and does not block the merge. The close-out CI check (7.0 and 7.7)
+   reads the pre-restore tip, which is this sprint's own work (recommended)
+2. A red result there blocks the merge until you decide
+
 ## Tasks
 
 | Task | Card | What | Est | Depends on |
@@ -95,11 +115,16 @@ draft PR #1 and a status file that says Sprint 23.
 | - | F127 (7) | **Team lead** archives this repository | - | D |
 
 **Derived total: 115 minutes**, the sum of the task estimates above.
+`docs/VELOCITY_LOG.md` was read first: tooling cards in Sprints 20-22 ran at
+0.95-1.4 of their estimates, and this sprint is git and tooling work with
+nothing to research, so no reduction is applied.
 
 ### Task A detail: the restore recipe and its checks
 
 In a scratch worktree, detached at this branch's tip:
 
+0. Copy `.secrets-patterns.txt` into the worktree root and confirm it is
+   there (pre-flight finding 8)
 1. `git read-tree -m -u f35699c`
 2. Exceptions: `git rm --cached docs/paper/qci_cover.md` and delete it if
    present; `git checkout <tip> --` for `docs/paper/out/proposal.pdf`,
@@ -117,11 +142,18 @@ The dry run commits nothing. Its output goes to the Manual Validation list.
 
 ### Task C detail
 
-Task A's recipe again, on the branch tip after Task B, in a worktree. The
-worktree keeps `.githooks/pre-commit` on disk, untracked, so the hook runs on
-the commit; the file is deleted after. CI on the PR runs the as-filed
-`ci.yml` and suite. A red result there goes to a background agent as usual,
-and it is reported, not hidden: the as-filed suite last ran on 2026-09-12.
+Order: Task B's retrospective is committed and pushed; the close-out CI check
+runs on that tip (7.0); then Task A's recipe again, in a detached worktree at
+that tip. The worktree keeps `.githooks/pre-commit` on disk, untracked, so the
+hook runs on the commit, and deletes it after. The commit is pushed by ID
+(pre-flight finding 9). CI on the PR then runs the as-filed `ci.yml` and
+suite; its result is handled per D3. `gh pr ready` follows.
+
+### Task D detail
+
+No checkout of the restored tree here: `git fetch origin main`, then
+`git tag as-filed origin/main` and `git push origin as-filed`, then
+`git diff --stat f35699c as-filed`.
 
 ## Deviations from the process, for approval
 
