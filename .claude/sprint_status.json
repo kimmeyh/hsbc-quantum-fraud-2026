@@ -3,13 +3,14 @@
     "number": 23,
     "name": "Restore the Repository as Filed",
     "branch": "feature/20261007_Sprint_23",
-    "status": "phase_3_planning",
+    "status": "phase_4_execution",
     "plan_doc": "docs/sprints/SPRINT_23_PLAN.md",
     "pr": 167,
     "plan_approved": true,
     "github_issues": [168, 169, 170, 171],
     "task_actuals": {
-      "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective."
+      "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective.",
+      "A": 20
     },
     "scope_additions": []
   },
