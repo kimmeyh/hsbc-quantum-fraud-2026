@@ -3,7 +3,7 @@
     "number": 23,
     "name": "Restore the Repository as Filed",
     "branch": "feature/20261007_Sprint_23",
-    "status": "phase_4_execution",
+    "status": "phase_5_3_manual_validation",
     "plan_doc": "docs/sprints/SPRINT_23_PLAN.md",
     "pr": 167,
     "plan_approved": true,
