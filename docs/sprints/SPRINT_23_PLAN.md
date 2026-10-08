@@ -160,6 +160,16 @@ No checkout of the restored tree here: `git fetch origin main`, then
 `git tag as-filed origin/main` and `git push origin as-filed`, then
 `git diff --stat f35699c as-filed`.
 
+## Amendment, 2026-10-08: Task C waits for the Phase 2 repository's Sprint 24
+
+Team lead decision D6 ("2"): the restore commit is not made until the Phase 2
+repository has completed a whole sprint, Sprint 24, merged to its `develop`.
+That is the first proof that its hooks, memory, pre-commit scan, CI and sprint
+process work together in a real session. The record up to Task B is on the
+Phase 2 repository's `feature/20261007_Sprint_23` at `16f16ff`. When the team
+lead reports the merge, this session checks the Phase 2 repository read-only,
+then runs Task C. PR #167 stays draft until then.
+
 ## Deviations from the process, for approval
 
 - **Three-doc rule.** There is no Sprint 24 in this repository, so
