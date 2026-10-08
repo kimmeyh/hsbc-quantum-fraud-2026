@@ -59,6 +59,7 @@
 | 22 | UNPLANNED: retrospective and improvements IMP-1 to IMP-7 | process+tooling | 0m | 70m | n/a | IMP-3's tracked pre-commit hook was the code item |
 | 22 | UNPLANNED: second security review, 12 findings fixed | fix | 0m | 55m | n/a | evidence guard moved to the root conftest |
 | 22 | UNPLANNED: PR #159 code review, 15 findings fixed | fix | 0m | 85m | n/a | 1 critical: the confidentiality scan missed renamed files |
+| 23 | Task A (F127) restore dry run | tooling | 45m | 20m | 0.44 | actual judged at completion, no start time recorded (Sprint 23 IMP-3); Tasks C and D run after this row |
 
 **Pattern, recomputed at the Sprint 22 retrospective.** Tooling cards land
 near their estimate (ratio 0.95-1.4 in Sprints 20-22; a wrong diagnosis

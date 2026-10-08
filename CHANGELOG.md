@@ -6,6 +6,7 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ### 2026-10-08
 
+- **process**: Sprint 23 retrospective complete. Three improvements to the Phase 2 repository's backlog (team lead): the pre-commit hook blocks when its pattern file is missing; a decision option must be executable as answered; task start times recorded so actuals are measured. Velocity log row added (Issue #169 / PR #167)
 - **process**: D5 (team lead): the Phase 2 repository's first sprint is this repository's last sprint plus one. Sprint 23 is the last sprint here; the Phase 2 repository starts at Sprint 24. This corrects the D2 entry below to option 1 (PR #167)
 - **process**: F127 Task A, restore dry run in a scratch worktree: the diff against `f35699c` names exactly the 7 approved exception paths; the three filed PDFs match their recorded SHA-256; all 260 files ignored today stay ignored; the pre-commit scan runs in the worktree and blocks a planted match. Nothing committed (Issue #168 / PR #167)
 - **process**: Sprint 23 plan approved (team lead): D1 keep the current `.gitignore` as a fourth restore exception; D2 the Phase 2 repository keeps the number 23 and this sprint is renumbered (number pending); D3 a red as-filed CI on the restore commit is reported and does not block the merge. Issues #168-171 (PR #167)

@@ -197,4 +197,17 @@ F numbers, because this session does not write there.
 
 ## Improvement Decisions
 
-Pending.
+Team lead, 2026-10-08: "1" (all three to the Phase 2 repository's backlog,
+as recommended).
+
+| # | Decision | Where |
+|---|---|---|
+| IMP-1 | **backlog**, Phase 2 repository | carded there by its session from this record |
+| IMP-2 | **backlog**, Phase 2 repository | carded there by its session from this record |
+| IMP-3 | **backlog**, Phase 2 repository | carded there by its session from this record |
+
+**Completion updates (step 7), adapted to the last sprint here.** The
+velocity log row is added in this commit. The master plan's Last Completed
+Sprint and the checklist reconciliation are the Phase 2 repository's, at its
+Sprint 24 refinement: this repository's copies leave the tree at the
+restore. `SPRINT_23_SUMMARY.md` is written there too (plan, Deviations).
