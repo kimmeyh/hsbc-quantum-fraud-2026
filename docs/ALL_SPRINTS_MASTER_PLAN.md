@@ -35,14 +35,15 @@ Adapted 2026-08-30 from spamfilter-multi's ALL_SPRINTS_MASTER_PLAN.md structure.
 | 19 | docs/sprints/SPRINT_19_SUMMARY.md | [OK] Complete | ~7 days (Sep 23-30, 2026) |
 | 20 | docs/sprints/SPRINT_20_SUMMARY.md | [OK] Complete | ~4 days (Sep 30 - Oct 4, 2026) |
 | 21 | docs/sprints/SPRINT_21_SUMMARY.md | [OK] Complete | ~3 days (Oct 4 - Oct 6, 2026) |
+| 22 | docs/sprints/SPRINT_22_SUMMARY.md | [OK] Complete | ~2 days (Oct 6 - Oct 7, 2026) |
 
 ## Last Completed Sprint
 
 **Sprint 22: Separate the Phases, Then Look for Better Numbers** (Oct 6 -
-Oct 7, 2026; PR #159). Delivered **F123, IMP-3, F124, F17, F20, F125**.
+Oct 7, 2026; PR #159, main PR #166). Delivered **F123, IMP-3, F124, F17, F20, F125**.
 256 minutes recorded against 980 estimated, zero metered seconds. The record
-is `docs/sprints/SPRINT_22_RETROSPECTIVE.md` and `SPRINT_22_VALIDATION.md`;
-the SUMMARY doc is written during the next sprint's planning.
+is `docs/sprints/SPRINT_22_SUMMARY.md`, with the retrospective and
+`SPRINT_22_VALIDATION.md` beside it.
 
 **F124's ranked list is approved and gates every device run**: leaf
 regularization first, at parity with HGB on energy_steel only. **Phase 2
@@ -273,7 +274,7 @@ Three findings outlived their cards and are recorded there:
 - The feedback document's open question 1, "Would relaxation schedule 4 close the residual?", is still open: every Phase 1 fit ran schedule 2, frozen before the grant. The memo names it as a use of the remaining balance
 - **Four fits at 45-91 variables**, enumerated in the HELD note below. Schedule-2 cost there is 4-9 s per fit, measured; **schedule-4 cost is unmeasured**, so the block opens with one fit to establish the rate (the F87 pattern). (Corrected 2026-09-27: this bullet said "about five fits at 91-136 variables" while the note below enumerated four, one of them at 45 variables. IMP-4 directs future readers to trust this card's numbers rather than re-derive them, so a card contradicting itself undercuts the rule that cites it. Found by both PR #141 reviews.)
 - Acceptance: the runner is idempotent before its first approval (Criterion H); per-fit residual against the proxy optimum reported as `[HW]` rows beside their schedule-2 twins
-- Depends on: **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run); per-block team-lead approval (Criterion H)
+- Depends on: **F124 reported 2026-10-07**: its approved ranked list gates any device run, rank 1 (leaf regularization) first; per-block team-lead approval (Criterion H)
 - **HELD until the QCi memo (F92) is sent** (team lead, 2026-09-23). Case and cost worked out at refinement, recorded so it is not re-derived: 4 fits on frozen pools that already have schedule-2 and exact-optimum twins (B1 dct seeds 42 and 43 at 91 variables; the G0b fit with the 0.413% gap; B1 lg seed 42 at 45 variables), stopping after fit 1 to re-quote if the rate exceeds 27 s. About 60 s, range 40-110 s, cap 120 s. Extrapolated, low confidence: measured schedule-2 cost of 4-5 s per fit times the 3.4x schedule-4 ratio (range 2.3x-5.3x) in QCi's portfolio example, a problem of unstated size. The per-fit data suggests the residual is a fixed offset (all 8 samples clustered well above the optimum), which predicts schedule 4 will NOT close it; that is inference, and the run is what settles it
 
 **F90. F2b at the configuration that can actually show an effect: B5, then B4 at schedule 3 -- CLOSED 2026-10-06 (Sprint 21: B5 and B4 ran; the H5 replication did not reproduce)**
@@ -387,56 +388,13 @@ with the track outcome: F90 and the cards that make it readable first, then the
 preregistration framework that gates all reporting, then the zero-cost screens,
 then the builds for the committed experiments. Estimates are `[no-history]`.
 
-**F125. The close-out hook counts commits against a stale local `develop` (~20m, zero metered) Priority 12**
-- Phase: Finalize / tooling (added 2026-10-06, Pass 2 of the Sprint 22 refinement)
-- Platform: N/A (`.claude/hooks/verify_closeout_complete.py`)
-- **Measured**: the hook counts `develop..HEAD`, and the LOCAL `develop` ref was last updated at Sprint 16's merge (#120). On the fresh Sprint 22 branch it reported **105** commits where `origin/develop..HEAD` is **1** (the Pass 1 refinement commit), then demanded Sprint 22's Phase 3 artifacts during backlog refinement. A false block at every planning window, the same class as F97 (a check reading state that can go stale)
-- Fix: count against `origin/develop`, falling back to local `develop`; a test with a stale local ref proven red against the current code
-- Depends on: nothing
-
-**F124. SPECTRA prediction research: what to try before the next Dirac-3 run (~4h investigation [no-history], zero metered) Priority 10**
-- Phase: Phase 2 preparation (added 2026-10-06, team lead; scheduled for Sprint 22). Scored 10, the slot F90 vacates at Sprint 21 close-out. **Every open card that can spend Dirac-3 seconds depends on it** -- F95, F110, F20, F25, F30 -- by the team lead's decision to enforce this as a card dependency rather than a code gate (2026-10-06, answer 2.2)
-- Platform: SPECTRA, Dirac-3, eqc_models, docs
-- **The question**: what could improve prediction on the SPECTRA datasets -- feature analysis, run setup, model configuration -- and which of it is worth device time?
-- **Sources to search, all of them**:
-  - This repository: results.json, the F100 classical bar, F101, the B4/B5 result, the SPECTRA feasibility analysis, A31 (resolution), B2's sparsity result, and the open cards that already propose levers (F20 soft votes, F25 non-convex selection, F104 resolution screen, F106 dequantization check, F109 domain ladder and aggregation, F113 oracle gap)
-  - The off-repository `CVQBoost_Findings.md`: planning reference only, nothing copied in as evidence (team lead, Sprint 20)
-  - **EvidenceBasedDB**: its database and the articles, repositories and references behind it. READ-ONLY: this repository never writes there (CLAUDE.md standing rule)
-  - Dirac-3 and `eqc_models`: device behavior, solver arguments, and library options not yet tried. Verified 2026-10-06 that `eqc_models.ml` ships `feature_selection`, `decomposition`, `reservoir`, `clustering` and a dual QSVM (`QSVMClassifierDual`), none of which this repository has used; `QBoostClassifier` also exposes `weak_cls_type`, `weak_cls_params` and `batched_qboost_enabled` (**Corrected 2026-10-07, Sprint 22: `batched_qboost_enabled` is NOT in the installed eqc_models 0.21.0**, neither in the signature nor in the package source; `docs/phase2/SPECTRA_IMPROVEMENT_RESEARCH.md` section 3)
-  - **QCi NeuraWave**: what it is, from primary sources, and whether it can help with feature analysis or prediction. **Unverified so far**: nothing in this repository describes it; whether it relates to `eqc_models.ml.reservoir` is a question to settle, not an assumption
-- **What the evidence already says, so the search starts from it**:
-  - The device returns its classical proxy's answer (in-pocket AUPRC within 0.0072 on all 8 B4 cells; weight cosine 0.83-0.90). A better number has to come from the PROBLEM -- features, pool, regularization, formulation -- not from the solve
-  - The classical lanes that win are the ones with feature interactions (HGB, GA2M beat the proxy on every cell); additive lanes lose
-  - In-pocket, CVQBoost beat XGBoost on 2 of 8 cells (ROC) in a scratch comparison on B4's splits, against the off-repository single-seed result's clean sweep; seed-to-seed spread (~0.05) exceeds that result's margins
-  - Train-test AUPRC gap +0.15 to +0.30 on every B4 cell: overfit, so regularization and pool size are levers
-  - `in_pocket` is predictable from the phase features at AUC 0.93-0.99 (F101)
-  - B5's QSVM Hamiltonians exceed A31's ~23 dB limit on 11 of 12 cells
-  - energy_steel, the off-repository result's strongest cell, has never run here: the H5(ii) control is infeasible there, but a CVQBoost-versus-XGBoost in-pocket comparison needs no control
-- Acceptance: `docs/SPECTRA_IMPROVEMENT_RESEARCH.md` with a RANKED list of candidates; each carries its source (verified or unverified), the expected effect, how to test it on the classical proxy first at zero metered cost, and the device seconds it would need if the proxy shows signal. NeuraWave assessed from primary sources. The team lead approves the list before any Dirac-3 card starts
-- Depends on: nothing. Results it produces follow F123's Phase 2 file layout once decided
-
-**F123. Separate Phase 2 work from Phase 1 files: deep dive (~2h investigation [no-history], zero metered) Priority 14**
-- Phase: Phase 2 preparation (added 2026-10-06, team lead: "since we are no longer in phase 1 and now in phase 2, there should be a separate set of files (JSON, .md...) and reports for phase 2 so that we are not updating phase 1 files"). Scored 14, the slot F101 vacates at Sprint 21 close-out, so it lands BEFORE F20 (16), which is the next card that writes results
-- Platform: N/A (repository structure, `experiments/results/`, `experiments/src/`, guards)
-- **The question**: how do Phase 2 work and learning live in their own files and reports, so that nothing done in Phase 2 alters the locked Phase 1 files or the files those were built from?
-- **Already happening, measured 2026-10-06, so this is not hypothetical.** Sprint 21 left `PREREGISTRATION.md`, `docs/paper/`, `docs/submission/`, `score_gates.py` and `metrics.py` untouched, but it CHANGED five Phase 1 files:
-  - `experiments/results/results.json`: 22 B4/B5 hardware rows appended
-  - `experiments/results/gate_report.md`: regenerated with them
-  - `experiments/results/qpu_cost_ledger.json`: 22 call records
-  - `docs/HARDWARE_REQUEST_B4.md`: an additive "8 of 13" correction (the sent text left standing)
-  - `experiments/src/spectra_segment.py`: a feasibility check added to the scoring path. **This is Phase 1 analysis code, and section 11 makes later changes to it dated amendments; it was changed without one.** Recorded here rather than reverted, because the deep dive decides where it belongs
-- **Questions the deep dive must answer**:
-  - Which files are LOCKED (the frozen preregistration, the submitted documents, their hashed PDFs) and which are the files they were BUILT FROM (`results.json`, `gate_report.md`, `score_gates.py`, `metrics.py`, the loaders, `spectra_segment.py`)? Today only the first group is guarded
-  - Where do post-submission runs of FROZEN Phase 1 blocks belong? B4 and B5 are rows of the Phase 1 grid (section 10) but ran after the 2026-09-12 filing. Phase 1 evidence, Phase 2 evidence, or a third bucket
-  - Phase 2 layout: its own results store, cost ledger, gate report and generator (e.g. under `experiments/phase2/`), and how Phase 2 code reuses Phase 1 code without editing it
-  - Whether today's five changes stay, move, or are copied into a Phase 2 store with the Phase 1 files restored to their pre-Sprint-21 state, and what each option does to the tests that reconcile those files
-  - The guard: a hook or test that fails when Phase 2 work writes a Phase 1 path, proven red. This repository's rule is that a prevention is a mechanism, not a reminder
-  - **Deferred here by the team lead, 2026-10-06 (decision A.3):** `score_gates.is_metered_arm()` counts only `cvqboost_hw*` arms, so the regenerated `gate_report.md` omits B5's 12 fits and 13 s from its hardware spend line, and its header names only two arms as `[HW]`. Fixing it changes frozen analysis code. Whether B5's rows belong in the Phase 1 report at all is part of this card's question, so the fix waits for its answer
-- **From the Sprint 21 retrospective (team lead, 2026-10-06: "essentially carded for next sprint")**:
-  - IMP-3: the test suite may not change committed evidence. Hash every tracked results file at suite start and end; any change fails and names the file. Extends `test_evidence_artifacts_current.py`. A test rewrote `gate_report.md` without restoring it for several sprints, invisible until Sprint 21's rows changed its output
-  - IMP-4: guard Phase 1 analysis code against unapproved edits, extending `block_unapproved_submission_edit.py`. Waits on this card's locked-file inventory, which decides what the guard covers
-- Acceptance: a written decision document with the locked-file inventory, the target layout, the disposition of the five Sprint 21 changes, and the guard design; the team lead approves it before any file is moved. Nothing is moved by this card
-- Depends on: nothing. Should precede F20 and every later card that writes results
+(F123 phase separation, F124 SPECTRA lever research, F125 close-out hook ref,
+F17 Dirac-3 emulator and F20 soft votes: COMPLETED in Sprint 22, merged via
+PR #159 (main PR #166). See SPRINT_22_SUMMARY.md and CHANGELOG.md. Removed
+from candidates per convention. F124's approved ranked list,
+`docs/phase2/SPECTRA_IMPROVEMENT_RESEARCH.md`, now gates every device card
+below: rank 1, leaf regularization, is tested first. F17's follow-up is F126;
+F123's layout is superseded by F127.)
 
 **F102. Phase 2 preregistration framework (~3h [no-history], zero metered) Priority 30**
 - Phase: Phase 2 preparation (the checklist's Deliverable)
@@ -507,7 +465,7 @@ then the builds for the committed experiments. Estimates are `[no-history]`.
 - Phase: Phase 2 preparation, Experiment 6
 - Platform: classical proxy first; Dirac-3 only under F102 and per-block approval
 - Time including Hamiltonian construction. `HARDWARE_PLAN_PHASE_2.md` owns the sent sizing (12 fits at 833 variables) and the pool-build-to-device-time ratio
-- Depends on: **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run) before any metered fit; F102 for reporting; Criterion H for any metered fit
+- Depends on: **F124 reported 2026-10-07**: its approved ranked list gates any device run, rank 1 (leaf regularization) first before any metered fit; F102 for reporting; Criterion H for any metered fit
 
 **F111. Experiment 4 build: Loke et al. replication harness (~4h [no-history], zero metered) Priority 120**
 - Phase: Phase 2 preparation, Experiment 4
@@ -590,17 +548,6 @@ not a sweep correction.
 - Related to F110 (Experiment 6) but not the same question: F110 measures training TIME against sample count; this card measures whether the OPTIMUM moves (2026-10-03)
 - Depends on: nothing (reuses qubo_proxy build/solve)
 
-**F17. Dirac-3 simulator for pre-hardware test runs (~2-3h investigation, then build TBD; zero metered) Priority 100**
-- Phase: Phase 2 preparation, Experiment 3 (**OFF HOLD 2026-10-02**, team lead: "lots of time between now and February 2027 to explore"; re-scored 14 to 100 in the 2026-10-03 refinement)
-- Platform: Dirac-3 / local
-- **Why this is worth more now than when it was held.** The hold reasoned that ADR-0002's proxy plus the G0b fidelity gate already filled the role. Two Sprint 18-19 findings changed that. The proxy solves the CONTINUOUS relaxation, which is convex and so has nothing a device can win, while Phase 2's Experiment 3 is the INTEGER cardinality problem where the proxy is no longer an equivalent. And we now know, from measurement, what makes the device diverge from the exact optimum
-- **What the device model would encode, from our own measurements rather than the vendor figure alone**: the 200:1 (23 dB) analog resolution, against which our pools' off-diagonal coefficients differ by at most 20.0 where 2,553.5 is resolvable, so quantization collapses them to a single value; the sum constraint at 1.0, under which a diffuse optimum over 833 learners averages 0.0012 per weight against a representable step near 0.005, forcing sparsity; `num_samples` stochasticity; and that cost tracks the VARIABLE COUNT rather than the level budget (the controlled pair: 1.4x more levels, 2.3x less cost)
-- **The point is to predict the SPARSIFICATION, not the objective value.** A simulator that returns the exact optimum tells us nothing the proxy does not already give free. One that reproduces "weights below the resolvable step are zeroed, and the answer returned is sparser than the one asked for" would let us size Experiment 3's cells before spending metered seconds
-- **A falsifiable acceptance test already exists, which the original card lacked**: eleven B2 fits at 833 variables, each containing exact zeros with nonzero weights from 0.0007 to 0.0029, all below the resolution, at weight cosine 0.83. The simulator is worth building only if it reproduces that sparsity pattern on those frozen pools
-- Investigation first: QCi's published products, docs and papers, for a documented simulator or device model before building one. The SLSQP/Hexaly precedent in Emami et al. is the optimizer-backend candidate
-- Acceptance (investigation): a written finding on whether QCi publishes a usable model, and either a build plan with the sparsity-reproduction test as its gate, or a recorded decision not to build with the reason. Acceptance (build, if taken): reproduces the B2 sparsity pattern on the frozen pools; miniaturized subsets so any test run completes within 10 minutes
-- Depends on: nothing. Pairs with F94 (both prepare Experiment 3) and with F20
-
 **F127. Phase 2 moves to its own private repository; this one is restored as filed and archived (~2-4h [no-history], zero metered) Priority 1**
 - Phase: Phase 2 setup (added 2026-10-07, team lead decision at Sprint 22 Manual Validation; supersedes F123's in-repository layout). First task after Sprint 22 closes
 - Platform: GitHub, git, CI
@@ -610,6 +557,8 @@ not a sweep correction.
 - The pre-commit gate is tracked (`.githooks/pre-commit`, IMP-3 Sprint 22) and arrives with the history, but git runs it only after `git config core.hooksPath .githooks` in the new clone; `.secrets-patterns.txt` is gitignored and is copied by hand
 - **IMP-6 (Sprint 22 retrospective, backlog)**: in the new repository, every Phase 2 device row carries its `job_id`, enforced by extending `test_row_schema.py` to the Phase 2 store (~20m). B2's samples were lost because its rows never stored one
 - Not carried as issues: open GitHub issues do not move; the backlog travels in this document
+- **New repository name** (team lead, 2026-10-07): `https://github.com/kimmeyh/hsbc-quantum-fraud-2026p2`. At the Pass 1 sweep, `gh repo view` could not resolve it, so step (2) is still open
+- **Step (3) corrected in the Pass 1 sweep, 2026-10-07: push every branch and tag, not only `develop`.** Work committed on the open sprint branch after the last merge never reaches `develop`, and the restore commit here makes `develop` the as-filed tree once it merges. Push `--all` and `--tags` before the restore commit is merged here
 - Acceptance: the new repository's suite passes in CI; this repository's tree equals `f35699c` except the listed exceptions (`git diff --stat f35699c` shows only those); this repository archived
 - Depends on: Sprint 22 merged
 
@@ -622,16 +571,6 @@ not a sweep correction.
 - Acceptance: a sparsity rule fitted on one subset reproduces the zero fraction on the held-out subset within a stated tolerance, set before the fit; or a recorded finding that 22 fits cannot support one. A rule fitted and tested on the same 10 fits does not count
 - Depends on: F17 (done, Sprint 22)
 
-**F20. Soft-vote CVQBoost exploration (multi-level weak outputs) (~3h proxy investigation) Priority 16**
-- Phase: Phase 2 preparation (team-lead approved 2026-09-02, "fits naturally as a post-submission/Phase 2 exploration item next to F17"). **OFF HOLD 2026-10-05 (team lead): waiting is no longer a HOLD reason for Phase 2 work.** Scored 16 to sit immediately after F90/F100/F101 and NOT inside Sprint 21, at the team lead's direction ("after this sprint"), because F90 acceptance (c) must first store every returned sample --- which makes the multi-sample half of this card cost zero further device time
-- Platform: local proxy first; Dirac-3 only if the proxy shows signal
-- Replace hard +/-1 weak-classifier votes in the H matrix with confidence scores (predict_proba mapped to [-1,1], optionally discretized to the device's ~200-level dynamic range); same Hamiltonian shape (J=HH^T+lambda*I, C=-2Hy), same simplex solve -- a model variant, not a protocol change
-- Rationale: hard votes discard per-learner confidence; the weights are already continuous (CVQBoost), so the information bottleneck is the vote quantization
-- Zero-cost evaluation path: proxy side-by-side vs hard-vote pools on identical seeds (the A3 comparison machinery reused verbatim)
-- Constraints: custom H construction departs from eqc-models' builders (pool identity with the library is lost; document as its own arm); Phase 1 evidence chain untouched; any Phase 2 use enters through that phase's preregistration
-- Depends on: **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run) before any Dirac-3 fit; F17 pairs well (the simulator would evaluate both); nothing blocks the proxy investigation
-- **Expanded 2026-10-03 (Phase 2 plan W3.2): multi-sample ensembling.** Average predictions over the top-k low-energy samples instead of keeping only the best. Zero added QPU cost, because the samples are already paid for, and it attacks the variance behind the train-test gap F90 carries. Needs F90 to store every returned sample (F90 acceptance (c))
-
 **F25. Non-convex CVQBoost: cardinality-constrained weak-learner selection on Dirac-3 (~4h investigation + hardware) Priority HOLD**
 - Phase: Phase 2, **Experiment 3 device run** (team-lead approved 2026-09-03; the direct consequence of the Sprint 4 degeneracy finding)
 - **HOLD reason, restated 2026-10-03**: needs F102 (preregistration), F94 (controls) and the allocation. Sized at 3,070 s in the sent hardware plan; after F90 about 445 s of the 1,681 remain (**corrected 2026-10-06: F90 ran and the measured balance is 1,022 s**), so this card depends on the additional 7,500 s asked of QCi
@@ -639,7 +578,7 @@ not a sweep correction.
 - The Sprint 4 evidence: the continuous-weight formulation is strictly convex AND nearly degenerate (uniform weights even at lambda = 0), so an exact classical proxy always matches the hardware. The formulation where that stops being true is combinatorial selection: choose the best subset of m weak learners from a pool of n (cardinality or L0 sparsity constraint), optionally with integer weights -- NP-hard, no exact classical proxy, and the native problem class for Dirac-3's integer solver (num_levels budget against the documented 949 device limit)
 - Design sketch: same H matrix and objective, plus a cardinality constraint; classical comparators become greedy/forward selection, L1-then-threshold, and a MIP solver at small n; the honest question is solution QUALITY at fixed wall-clock, not just feasibility
 - Expected value: this is the concrete "where quantum optimization is necessary rather than optional" program the Phase 1 paper points at, and the strongest technical item for the QCi conversation
-- Depends on: **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run); Phase 2 preregistration; QCi grant for meaningful hardware time; pairs with F17 (simulator) and F20 (soft votes)
+- Depends on: **F124 reported 2026-10-07**: its approved ranked list gates any device run, rank 1 (leaf regularization) first; Phase 2 preregistration; QCi grant for meaningful hardware time; pairs with F17 (simulator) and F20 (soft votes)
 
 **F30. Concurrent Dirac-3 submission with bounded in-flight requests (~4h build + 1h dry run) Priority HOLD**
 - Phase: Phase 2 preparation / infrastructure (team-lead request 2026-09-04)
@@ -653,7 +592,7 @@ not a sweep correction.
 - **Measured queue behavior, 2026-09-09**: the F46 probe submitted at 14:33 local was still queued 52 minutes later, having spent ~97 CPU-seconds on its local pool build. Flat CPU against growing wall clock is the signature of queue wait, not computation. The team lead reports the queue is ALMOST ALWAYS EMPTY AFTER 5PM LOCAL, so wall-clock cost is a function of WHEN a block runs, not what it computes
 - **The team lead's intent for this card**: enqueue 4 or more jobs at once so they run CONSECUTIVELY, raising the odds they execute back to back rather than each paying a fresh queue wait. That is a different and stronger value case than the throughput argument below
 - Value was judged to arrive with Phase 2 volume (81+ fit grids), and that judgment was made against a free tier with 163 spent seconds. With 3,000 granted seconds (F46) and queue wait as the binding cost rather than device seconds, the case is stronger: whenever a session needs more than one or two fits, serial submission wastes most of the wall clock. Still not recommended BEFORE submission, on calendar grounds alone
-- Depends on: nothing to build; **F124 first** (team lead 2026-10-06: the SPECTRA improvement research runs before any future Dirac-3 run) before live vetting; live vetting needs team-lead approval (Criterion H)
+- Depends on: nothing to build; **F124 reported 2026-10-07**: its approved ranked list gates any device run, rank 1 (leaf regularization) first before live vetting; live vetting needs team-lead approval (Criterion H)
 
 **F13. Phase 2 PoC sprint planning (~unknown) Priority 180**
 - Phase: Phase 2 (Nov 17 - Feb 28, if selected)
@@ -677,7 +616,7 @@ not a sweep correction.
 
 **F121. Experiment 5 transfer half and router acceptance (~unknown) Priority HOLD**
 - Phase: Phase 2, Experiment 5 (added 2026-10-03). Transfer of the in-segment result to fraud segments, judged by the proposal's router criterion: at least one point of recall at the 0.5% budget above the classical champion, out of time, on prespecified segments, against a matched random-segment control
-- HOLD until F90 reports. Bounded in advance by F113. **Corrected 2026-10-06 (Pass 1): F90 has reported** -- the replication half did not reproduce on the device (`docs/B4_B5_HARDWARE_RESULT.md`). The stated hold reason is spent; whether the transfer half is still worth running after a failed replication is a scope question for Pass 2, not a correction. **Decided 2026-10-06 (team lead, 3.1): stays on HOLD until F124 reports.**
+- HOLD until F90 reports. Bounded in advance by F113. **Corrected 2026-10-06 (Pass 1): F90 has reported** -- the replication half did not reproduce on the device (`docs/B4_B5_HARDWARE_RESULT.md`). The stated hold reason is spent; whether the transfer half is still worth running after a failed replication is a scope question for Pass 2, not a correction. **Decided 2026-10-06 (team lead, 3.1): stays on HOLD until F124 reports.** **Corrected 2026-10-07 (Pass 1): F124 has reported** -- no lever beats HGB with a CI that excludes zero on any dataset (`docs/phase2/SPECTRA_IMPROVEMENT_RESEARCH.md`). This hold reason is spent too; whether the transfer half runs is a Pass 2 scope question
 
 
 **F116. G2 entanglement ablation on the SV1 simulator (~3h [no-history]) Priority HOLD**

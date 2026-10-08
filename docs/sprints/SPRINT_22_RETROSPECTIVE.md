@@ -65,7 +65,9 @@ feedback, recorded verbatim under each of the three roles.
 - **Scrum Master**: Very Good
 - **Lead Developer**: Very Good
 - **Claude Code Development Team**: Needs Improvement. 256 minutes against
-  980 estimated, 3.8 times over in total. One task ran the other way: F125
+  980 estimated: the estimate was 3.8 times the actual. (Corrected in
+  the Pass 1 sweep, 2026-10-07: this line said "3.8 times over", which
+  reads as an overrun.) One task ran the other way: F125
   took 45 minutes against 20. `docs/VELOCITY_LOG.md`, which exists to calibrate estimates, stops at
   Sprint 14.
 

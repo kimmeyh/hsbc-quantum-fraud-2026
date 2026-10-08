@@ -58,12 +58,6 @@ def _claim() -> str:
     })
 
 
-def _run_hook() -> tuple[int, str]:
-    r = subprocess.run([sys.executable, str(HOOK)], input=_claim(),
-                       capture_output=True, text=True, cwd=str(ROOT))
-    return r.returncode, r.stderr
-
-
 def _status() -> dict:
     if not STATUS.exists():
         pytest.skip("sprint_status.json not present")
@@ -151,6 +145,15 @@ def test_plan_approval_is_recorded():
         "issue checks were silently skipped in Sprint 17.")
 
 
+# The text the hook writes for each omission. Asserted per field, so a block
+# raised for some OTHER reason cannot pass as this field's block.
+_ARTIFACT_MESSAGE = {
+    "pr": "current_sprint.pr is null",
+    "github_issues": "current_sprint.github_issues is empty",
+    "plan_approved": "plan_approved is not true",
+}
+
+
 @pytest.mark.parametrize("field,broken", [
     ("pr", None),
     ("github_issues", []),
@@ -160,23 +163,53 @@ def test_the_hook_blocks_when_a_phase_3_artifact_is_missing(field, broken,
                                                             tmp_path):
     """Each omission must BLOCK a close-out claim, independently.
 
-    Mutates the real status file and restores it, because the hook reads that
-    path directly. The assertion that the mutation reached disk is the part
-    that five Sprint 17 injections skipped.
+    HERMETIC since the Sprint 22 Pass 1 sweep. The first version mutated the
+    REAL status file and ran the hook against the real repository, so its
+    answer depended on the live sprint. Since F125 the hook owes no Phase 3
+    artifacts before the sprint's plan exists, so in every backlog-refinement
+    window all three cases went red on correct behavior (2026-10-07, Sprint 23
+    Phase 1). A scratch repository with a plan and one commit is the state
+    these checks exist for, whatever phase the real sprint is in.
     """
-    orig = STATUS.read_text(encoding="utf-8")
-    doc = json.loads(orig)
-    doc["current_sprint"][field] = broken
-    STATUS.write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
-    try:
-        on_disk = json.loads(STATUS.read_text(encoding="utf-8"))
-        assert on_disk["current_sprint"][field] == broken, "mutation not on disk"
-        rc, err = _run_hook()
-        assert rc != 0, f"a missing {field} did not block the close-out claim"
-        assert "Phase 3" in err
-    finally:
-        STATUS.write_text(orig, encoding="utf-8")
-        assert STATUS.read_text(encoding="utf-8") == orig
+    repo = tmp_path / "clone"
+    repo.mkdir()
+
+    def git(*args: str):
+        return subprocess.run(["git", *args], cwd=str(repo),
+                              capture_output=True, text=True)
+
+    git("init", "-b", "feature/20260919_Sprint_17")
+    git("config", "user.email", "t@example.com")
+    git("config", "user.name", "t")
+    (repo / "docs" / "sprints").mkdir(parents=True)
+    (repo / "docs" / "sprints" / "SPRINT_17_PLAN.md").write_text(
+        "# plan\n", encoding="utf-8")
+    git("add", "-A")
+    git("commit", "-m", "a commit exists on this branch")
+
+    current = {"number": 17, "pr": 1, "github_issues": [1],
+               "plan_approved": True}
+    current[field] = broken
+    claude = repo / ".claude"
+    claude.mkdir()
+    (claude / "sprint_status.json").write_text(
+        json.dumps({"current_sprint": current}), encoding="utf-8")
+
+    payload = json.dumps({
+        "last_assistant_message": "The sprint close-out is complete.",
+        "repo_override": str(repo),
+        "branch_override": "feature/20260919_Sprint_17",
+    })
+    r = subprocess.run([sys.executable, str(HOOK)], input=payload,
+                       capture_output=True, text=True, cwd=str(ROOT))
+
+    assert r.returncode != 0, (
+        f"a missing {field} did not block the close-out claim")
+    assert _ARTIFACT_MESSAGE[field] in r.stderr, r.stderr
+    for other, text in _ARTIFACT_MESSAGE.items():
+        if other != field:
+            assert text not in r.stderr, (
+                f"{other} is present but was reported missing")
 
 
 def test_an_unresolvable_base_ref_does_not_disable_the_checks(tmp_path):
