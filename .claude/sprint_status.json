@@ -6,8 +6,8 @@
     "status": "phase_3_planning",
     "plan_doc": "docs/sprints/SPRINT_23_PLAN.md",
     "pr": 167,
-    "plan_approved": false,
-    "github_issues": [],
+    "plan_approved": true,
+    "github_issues": [168, 169, 170, 171],
     "task_actuals": {
       "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective."
     },

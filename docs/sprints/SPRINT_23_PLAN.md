@@ -1,7 +1,9 @@
 # Sprint 23 Plan: Restore the Repository as Filed
 
 **Sprint**: 23 | **Branch**: `feature/20261007_Sprint_23`
-**Planned**: 2026-10-08 | **Status**: DRAFT, awaiting approval
+**Planned**: 2026-10-08 | **Status**: APPROVED 2026-10-08 (D4: 1), with
+D1: 1, D2: 2, D3: 1. Issues #168-171. **D2 renumbers this sprint; the new
+number is pending, and this file and the branch are renamed once it is set.**
 **Scope**: F127, the steps that run in this repository (the team lead's
 selection, 2026-10-08: "F127 only, planned and recorded here as usual")
 **Metered Dirac-3 seconds**: **0**.

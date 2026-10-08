@@ -6,6 +6,7 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ### 2026-10-08
 
+- **process**: Sprint 23 plan approved (team lead): D1 keep the current `.gitignore` as a fourth restore exception; D2 the Phase 2 repository keeps the number 23 and this sprint is renumbered (number pending); D3 a red as-filed CI on the restore commit is reported and does not block the merge. Issues #168-171 (PR #167)
 - **docs**: Sprint 23 plan drafted: restore this repository as filed (F127 step 6). Pre-flight: the as-filed `.gitignore` would expose `docs/qci_package/`; the restore is built in a worktree because the as-filed hooks and status file trip the old close-out hook; `.githooks/pre-commit` stays on disk for the commit that removes it. Two decisions open (D1, D2). `docs/sprints/SPRINT_23_PLAN.md`
 - **docs**: Sprint 23 selected (team lead): F127 only, planned and recorded in this repository, with Claude sessions split between this repository and the Phase 2 repository. F121 stays on HOLD until F128 and F129 report. F131 carded: `test_ci_status.py` rewrites the real `check_ci_status.py`. F127 records that the as-filed `.gitignore` does not ignore `docs/qci_package/`
 
