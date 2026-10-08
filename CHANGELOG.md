@@ -4,6 +4,10 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-10-08
+
+- **docs**: Sprint 23 selected (team lead): F127 only, planned and recorded in this repository, with Claude sessions split between this repository and the Phase 2 repository. F121 stays on HOLD until F128 and F129 report. F131 carded: `test_ci_status.py` rewrites the real `check_ci_status.py`. F127 records that the as-filed `.gitignore` does not ignore `docs/qci_package/`
+
 ### 2026-10-07
 
 - **docs**: Backlog refinement Pass 2: F128 (leaf-regularization sweep), F130 (proxy screens for F124 ranks 3, 5, 6) and F129 (rank-1 device pilot, about 82-410 metered s) registered from F124's ranked list, which carded none of its follow-ups

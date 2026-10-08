@@ -414,6 +414,14 @@ F123's layout is superseded by F127.)
 - Acceptance: each lever reported against HGB on the same splits with the paired CI; a lever that does not move AUPRC is recorded as rejected, as F124 did for ensembling
 - Depends on: F127
 
+**F131. `test_ci_status.py` rewrites the real `scripts/check_ci_status.py` (~30m [no-history], zero metered) Priority 14**
+- Phase: Phase 2 repository, test hygiene (added 2026-10-08, found while verifying F127's copy)
+- Platform: local, CI
+- `_hook_with_ci` overwrites the real script with a stub, then restores it. Two failures, both seen on 2026-10-07: a CI check run during the suite reads the stub and prints a fake red result ("CI (failure) http://x") while the real run is green; and the restore writes LF content back as CRLF on Windows, so `git status` shows the script modified with identical text
+- Same class as the `injection.py` byte-preservation fix (PR #159): use a hermetic copy of the script in a temporary directory, or restore exact bytes
+- Acceptance: the suite never writes to the tracked script (its bytes asserted before and after); the test still fails when the hook ignores CI status, proven with `assert_can_fail`
+- Depends on: F127
+
 **F129. Rank-1 device pilot: energy_steel with leaf regularization on Dirac-3 (~1h + ~82-410 metered s) Priority 34**
 - Phase: Phase 2, first device run under F124's approved list (added 2026-10-07, Pass 2 of the Sprint 23 refinement)
 - Platform: SPECTRA, Dirac-3
@@ -587,6 +595,9 @@ not a sweep correction.
 - **New repository name** (team lead, 2026-10-07): `https://github.com/kimmeyh/hsbc-quantum-fraud-2026p2`. At the Pass 1 sweep, `gh repo view` could not resolve it, so step (2) is still open
 - **Step (3) corrected in the Pass 1 sweep, 2026-10-07: push every branch and tag, not only `develop`.** Work committed on the open sprint branch after the last merge never reaches `develop`, and the restore commit here makes `develop` the as-filed tree once it merges. Push `--all` and `--tags` before the restore commit is merged here
 - Acceptance: the new repository's suite passes in CI; this repository's tree equals `f35699c` except the listed exceptions (`git diff --stat f35699c` shows only those); this repository archived
+- **Selected for Sprint 23** (team lead, 2026-10-08): F127 only, planned and recorded in THIS repository as usual. The restore commit then removes those records from the tree; they survive in history and in the Phase 2 repository. Claude sessions are split: this repository's session runs step (6) and the Sprint 23 record; the Phase 2 repository's session owns the rest of step (5) (its CLAUDE.md boundary update) and IMP-6, and takes F128 and F130 into its own first sprint
+- **Done 2026-10-07**: steps (2)-(4) and the CI half of (5). All 32 branches and 2 tags pushed, every tip matching; 195 ignored paths copied and hash-verified; a fresh venv from the lock file; CI green on the new repository's draft PR #1
+- **Found in Sprint 23 planning, 2026-10-08: the as-filed `.gitignore` does not ignore `docs/qci_package/`** (18 files of private QCi correspondence), `.claude/settings.local.json`, `.claude/scheduled_tasks.lock` or `experiments/results/b3_hardware.dryrun.json`. A plain restore leaves them unignored in a public repository. The Sprint 23 plan settles this before the restore runs
 - Depends on: Sprint 22 merged
 
 **F126. Model of the device's sparsity, validated on held-out fits (~3h [no-history], zero metered) Priority 101**
@@ -643,7 +654,7 @@ not a sweep correction.
 
 **F121. Experiment 5 transfer half and router acceptance (~unknown) Priority HOLD**
 - Phase: Phase 2, Experiment 5 (added 2026-10-03). Transfer of the in-segment result to fraud segments, judged by the proposal's router criterion: at least one point of recall at the 0.5% budget above the classical champion, out of time, on prespecified segments, against a matched random-segment control
-- HOLD until F90 reports. Bounded in advance by F113. **Corrected 2026-10-06 (Pass 1): F90 has reported** -- the replication half did not reproduce on the device (`docs/B4_B5_HARDWARE_RESULT.md`). The stated hold reason is spent; whether the transfer half is still worth running after a failed replication is a scope question for Pass 2, not a correction. **Decided 2026-10-06 (team lead, 3.1): stays on HOLD until F124 reports.** **Corrected 2026-10-07 (Pass 1): F124 has reported** -- no lever beats HGB with a CI that excludes zero on any dataset (`docs/phase2/SPECTRA_IMPROVEMENT_RESEARCH.md`). This hold reason is spent too; whether the transfer half runs is a Pass 2 scope question
+- HOLD until F90 reports. Bounded in advance by F113. **Corrected 2026-10-06 (Pass 1): F90 has reported** -- the replication half did not reproduce on the device (`docs/B4_B5_HARDWARE_RESULT.md`). The stated hold reason is spent; whether the transfer half is still worth running after a failed replication is a scope question for Pass 2, not a correction. **Decided 2026-10-06 (team lead, 3.1): stays on HOLD until F124 reports.** **Corrected 2026-10-07 (Pass 1): F124 has reported** -- no lever beats HGB with a CI that excludes zero on any dataset (`docs/phase2/SPECTRA_IMPROVEMENT_RESEARCH.md`). This hold reason is spent too; whether the transfer half runs is a Pass 2 scope question. **Decided 2026-10-08 (team lead, Sprint 23 refinement): stays on HOLD until F128 and F129 report.**
 
 
 **F116. G2 entanglement ablation on the SV1 simulator (~3h [no-history]) Priority HOLD**
