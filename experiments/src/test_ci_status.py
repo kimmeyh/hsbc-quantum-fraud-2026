@@ -390,7 +390,24 @@ def test_the_hook_timeout_budget_covers_its_own_subprocess_calls():
     # runs_for. The first version counted two and so did the hook comment, so
     # this guard passed on the same undercount it existed to catch. Two PR
     # #146 reviewers found it independently.
-    worst = sum(hook_timeouts) + 3 * ci_default
+    # A HELPER'S TIMEOUT COUNTS ONCE PER CALL, NOT ONCE PER LITERAL (F125,
+    # Sprint 22). `_count` holds one `timeout=2)` literal and is called up to
+    # three times (origin/develop..HEAD, develop..HEAD, HEAD). Summing
+    # literals counted it once, so adding the origin/develop attempt raised
+    # the real worst case by 2s and this guard saw nothing -- the F98
+    # undercount again, in a different shape.
+    m_count = re.search(r"def _count\(.*?timeout=(\d+)\)", hook_src, re.S)
+    assert m_count, "the _count helper or its timeout was not found"
+    # Every `_count(` call, whatever its argument: a call written
+    # `_count(base_ref)` or `_count(f"...")` must count too (PR #159 review;
+    # the first version matched only a quoted literal). The definition is the
+    # one match that is not a call.
+    count_calls = (len(re.findall(r"\b_count\(", hook_src))
+                   - len(re.findall(r"\bdef _count\(", hook_src)))
+    assert count_calls >= 1, "no _count call sites found"
+    extra_count_calls = (count_calls - 1) * int(m_count.group(1))
+
+    worst = sum(hook_timeouts) + extra_count_calls + 3 * ci_default
     assert worst <= budget, (
         f"worst-case internal timeouts total {worst}s against a {budget}s "
         f"hook budget. A killed hook cannot block, so exceeding the budget "

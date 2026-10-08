@@ -1,0 +1,43 @@
+{
+ "block": "B5",
+ "dataset": "ulb",
+ "seed": 44,
+ "protocol": "stratified",
+ "job_id": "6ac4dcb3358b23d0cb3719d7",
+ "n_vars_expected": 27,
+ "solutions": [
+  [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0.9999996,
+   0,
+   0,
+   0,
+   4e-07,
+   0,
+   0
+  ]
+ ],
+ "energies": [
+  -151282.90625
+ ],
+ "source": "QciClient.get_job_results (read)"
+}

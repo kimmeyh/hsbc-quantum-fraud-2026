@@ -28,6 +28,42 @@ import numpy as np
 import metered_call as mc
 from run_hardware_b3 import _find_job_id      # reused, not rewritten
 
+def to_jsonable(obj):
+    """A device response as JSON-safe data, IN FULL.
+
+    WHY (Sprint 22). The B4 and B5 runners saved responses with
+    `json.dumps(resp, default=str)`. A real solve returns a `SolutionResults`
+    dataclass, not a dict, so `default=str` stored its PRINTED form -- and
+    numpy truncates long arrays when printing. Every 560- and 816-value B4
+    sample was saved as its first and last three values. The full samples
+    were recovered by job id (experiments/phase2/src/recover_device_samples.py).
+    """
+    import dataclasses
+
+    if dataclasses.is_dataclass(obj) and not isinstance(obj, type):
+        return {f.name: to_jsonable(getattr(obj, f.name))
+                for f in dataclasses.fields(obj)}
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    if isinstance(obj, (np.floating, np.integer, np.bool_)):
+        return obj.item()
+    if isinstance(obj, dict):
+        return {str(k): to_jsonable(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [to_jsonable(v) for v in obj]
+    if obj is None or isinstance(obj, (str, int, float, bool)):
+        return obj
+    return f"<unserializable {type(obj).__name__}>"
+
+
+def samples_of(resp) -> list:
+    """Every returned sample, from a SolutionResults or a cloud-shaped dict."""
+    sols = getattr(resp, "solutions", None)
+    if sols is None and isinstance(resp, dict):
+        sols = (resp.get("results") or {}).get("solutions")
+    return [] if sols is None else [list(map(float, s)) for s in np.asarray(sols)]
+
+
 MAX_RETRIES = 2                 # PREREGISTRATION section 11: at most twice
 UNPARSEABLE_CALL_CHARGE_S = 10.0  # run_hardware.py's conservative charge
 
@@ -125,7 +161,16 @@ def offline_solver(record: list):
 
     real = cb.Dirac3CloudSolver
 
+    class _OfflineClient:
+        """from_cloud_response asks the client for job metrics (a network
+        read). An empty answer takes the library's own KeyError path: no
+        timing, everything else intact."""
+        def get_job_metrics(self, job_id=None):
+            return {}
+
     class OfflineSolver:
+        client = _OfflineClient()
+
         def connect(self, *args, **kwargs):
             pass
 
@@ -151,7 +196,22 @@ def offline_solver(record: list):
             rng = np.random.default_rng(0)
             s = float(kw.get("sum_constraint", 1.0))
             sols = [list(rng.dirichlet(np.ones(n)) * s) for _ in range(ns)]
-            return {"results": {"energies": [0.0] * ns, "solutions": sols}}
+            # Return what the REAL solver returns: a SolutionResults built by
+            # the same from_cloud_response call Dirac3CloudSolver.makeResults
+            # uses. The first version returned a plain dict, so every dry run
+            # exercised a response shape a real run never produces -- which
+            # is how the truncated-sample bug reached the device unseen.
+            # No fallback to the dict: a dry run that cannot build the real
+            # type must fail, not quietly diverge from a real run again.
+            from eqc_models.base.results import SolutionResults
+            raw = {"results": {"energies": [0.0] * ns, "solutions": sols,
+                               "counts": [1] * ns},
+                   "job_info": {"job_id": "0" * 24, "job_submission": {
+                       "device_config": {"dirac-3": {
+                           "num_samples": ns,
+                           "relaxation_schedule": kw.get("relaxation_schedule"),
+                           "sum_constraint": s}}}}}
+            return SolutionResults.from_cloud_response(model, raw, self)
 
     cb.Dirac3CloudSolver = OfflineSolver
     try:

@@ -4,8 +4,36 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-10-07
+
+- **fix**: **The tracked pre-commit hook's confidentiality scan missed renamed files and names with a space** (PR #159 review, critical). It now scans the whole staged diff and blocks if git cannot produce it; tests cover both cases (PR #159)
+- **fix**: PR #159 code review, findings 3-15: the F125 test asserts the hook finished; the no-plan diff uses the counted base ref; the timeout guard counts every `_count` call; behavioral "never writes evidence" tests for the emulator and soft votes; F20 compares gains with the measured overall seed SD; F17's sparsity ratio corrected; Phase 2 READMEs, validator docstring, cost-floor count and emulator return-type note corrected; velocity log rows completed (PR #159)
+- **fix**: `injection.py` rewrote LF files as CRLF on Windows and still passed its restore check; it now preserves bytes exactly (PR #159)
+- **fix**: **The evidence guard (IMP-3) ran for every invocation only from the repository root.** Moved from `experiments/src/conftest.py` to the root `conftest.py`: in its old place `pytest experiments -k x` took no snapshot and passed a test that rewrote evidence. All 12 findings of a second security review addressed (no-snapshot fails, `-z` names, `GIT_*` scrubbed, anchor check, root-only ignores, symlinks, case renames, stderr, dirty-at-start warning, docstrings); source-text tests in `test_evidence_immutability.py` replaced by behavioral ones, each proven red (PR #159)
+- **fix**: The pre-commit CHANGELOG check now matches any `.py` file, including the root `conftest.py` (PR #159)
+- **process**: **Sprint 22 retrospective improvements applied** (team lead: all as recommended). IMP-1 card claims checked against files and the installed package before scheduling; IMP-2 dependent decisions asked after their parent; IMP-4 no test outcomes in commit messages; IMP-5 background reviews write findings to a file read in full; IMP-7 velocity log restarted (Sprints 15-22) and used for estimates. IMP-6 to the backlog on F127 (PR #159)
+- **feat**: **IMP-3: the pre-commit hook is tracked and checks the CHANGELOG.** `.githooks/pre-commit` keeps the confidentiality checks and blocks a code commit without a `CHANGELOG.md` change; enable with `git config core.hooksPath .githooks`. `test_pre_commit_hook.py`, proven red against two mutations (PR #159)
+- **chore**: Sprint 22 completion updates: master plan Last Completed Sprint, `CHECKLIST-Phase2.md` reconciled (PR #159)
+- **process**: **Sprint 22 Manual Validation complete; retrospective recorded** with seven improvements proposed for the team lead's decision. `docs/sprints/SPRINT_22_RETROSPECTIVE.md` (PR #159)
+- **docs**: **Phase 2 moves to its own private repository** (team lead, Sprint 22 Manual Validation), superseding F123's in-repository layout. This repository is to be restored as filed and archived after Sprint 22 closes. `docs/PHASE_SEPARATION.md` section 9; carded as F127 (PR #159)
+- **fix**: **B2's 11 device responses are not recoverable.** Team lead decision D8 approved a read-only recovery by job id. The job ids were read from the stored responses; QCi returned 404 "Job not found" for all 11, balance unchanged at 1,022 s. Nothing reconstructed. `recover_device_samples.py --block B2` records an absent job as absent; `requests` declared in `experiments/requirements.txt` (PR #159)
+- **docs**: **F126 carded** (team lead decision D9): a model of the device's sparsity, validated on held-out fits (PR #159)
+- **process**: **Manual Validation round 1 recorded**: F124 list approved (D1), per-experiment Phase 2 results files approved (D7). D2-D6 open; see `docs/sprints/SPRINT_22_VALIDATION.md` (PR #159)
+- **feat**: **F124 ranked list of SPECTRA levers.** Rank 1 is leaf regularization of the weak trees (`min_samples_leaf=20`): energy_steel CVQBoost reaches parity with HGB on the proxy. Nothing found closes the gap on telecom or oilgas. NeuraWave assessed from QCi's own releases: not a fit. `docs/phase2/SPECTRA_IMPROVEMENT_RESEARCH.md` (Issue #162 / PR #159)
+- **feat**: **F20 soft votes and ensembling.** The specified soft vote is degenerate; a Laplace-smoothed vote improves all 15 cells. Multi-sample ensembling fails its falsifier. `docs/phase2/F20_SOFT_VOTES_RESULT.md` (Issue #164 / PR #159)
+- **feat**: **F17 Dirac-3 emulator**, one tool with exact and emulate modes, importing the proxy unchanged. Its AUPRC falsifier is met, and the card's own sparsity acceptance test fails (device 14-38% exact zeros, emulator 0.2-17%), so it is kept for cost estimates and samples only. `docs/phase2/F17_EMULATOR.md` (Issue #163 / PR #159)
+- **fix**: **The sample-storage defect also covers B2**: all 11 stored B2 responses are truncated prints. Recorded; recovery waits for the team lead (PR #159)
+- **fix**: **Sprint 21 device samples were stored truncated.** All 22 responses recovered read-only by job id, balance unchanged; runners and the offline stand-in fixed; dated correction added to `docs/B4_B5_HARDWARE_RESULT.md` (PR #159)
+- **test**: `test_requirements_complete.py` treats `experiments/phase2/src/` as first-party code and scans it (PR #159)
+- **process**: These Sprint 22 entries were added at Manual Validation, not in the same commit as each change as this file's policy requires (PR #159)
+
 ### 2026-10-06
 
+- **feat**: **F123 Phase 1 / Phase 2 separation.** Decision document `docs/PHASE_SEPARATION.md`; Phase 2 tree `experiments/phase2/` and `docs/phase2/` (Issue #160 / PR #159)
+- **test**: **IMP-3: the test suite fails if it changes committed evidence**, hardened after a security review (Issue #161 / PR #159)
+- **fix**: **F125: the close-out hook counts against `origin/develop`** and owes no Phase 3 artifacts before a plan exists (Issue #165 / PR #159)
+
+- **chore**: **Sprint 21 delivered and merged.** PR #152 to develop, PR #158 develop to main. F90, F100, F101, F122 delivered; 454 minutes against 750 estimated, 653 metered seconds. The team lead waived the PR reviews for this sprint; the decision is recorded in `.claude/sprint_status.json`
 - **process**: **Sprint 21 retrospective: IMP-1 and IMP-2 applied, IMP-3 and IMP-4 carded on F123.** IMP-1 extends the capability pre-flight's read list with the frozen preregistration's sections 4 and 10 and the proven runner for any new runner, plus a rule to search before declaring anything absent. IMP-2 extends the every-turn Stop hook: a reply ending with a footer no `status_footer.py` run printed in the same turn is held back. Proven red against three mutations
 - **feat**: **F123 and F124 registered (team lead).** F123: separate Phase 2 files from Phase 1's locked files. F124: research what to try for better SPECTRA predictions before any further Dirac-3 run; every open card that can spend device seconds depends on it
 

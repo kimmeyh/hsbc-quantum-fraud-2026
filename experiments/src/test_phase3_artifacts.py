@@ -203,6 +203,14 @@ def test_an_unresolvable_base_ref_does_not_disable_the_checks(tmp_path):
     git("config", "user.email", "t@example.com")
     git("config", "user.name", "t")
     (repo / "f.txt").write_text("work happened\n", encoding="utf-8")
+    # Sprint 17 HAD a written plan; its failure was nine tasks run under it
+    # with no PR, no issues and no approval. Since F125 (Sprint 22) the Phase
+    # 3 checks apply once the plan exists, so the fixture carries one -- as
+    # the real Sprint 17 did. Without it, this repository is in the no-plan
+    # branch, which test_closeout_plan_gate.py covers.
+    (repo / "docs" / "sprints").mkdir(parents=True)
+    (repo / "docs" / "sprints" / "SPRINT_17_PLAN.md").write_text(
+        "# plan\n", encoding="utf-8")
     git("add", "-A")
     git("commit", "-m", "a commit exists on this branch")
 

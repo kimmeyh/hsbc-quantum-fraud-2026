@@ -1,0 +1,52 @@
+#!/bin/sh
+# Pre-commit gate. Tracked in git (IMP-3, Sprint 22 retrospective) so every
+# clone, and the Phase 2 repository started from this one, gets it. Enable it
+# once per clone:  git config core.hooksPath .githooks
+#
+# 1. Confidentiality: block commits containing sensitive patterns or files.
+#    Patterns live in .secrets-patterns.txt (gitignored, local-only) so the
+#    patterns themselves never enter the repository.
+# 2. CHANGELOG: a commit that changes code must also change CHANGELOG.md, as
+#    the file's own policy requires. That policy failed twice on memory alone
+#    (F70, 2026-09; Sprint 22). No override flag: a commit that genuinely
+#    needs no entry is rare enough to get one line in the CHANGELOG anyway.
+
+staged=$(git diff --cached --name-only)
+
+if echo "$staged" | grep -qE '(^|/)\.env$'; then
+  echo "BLOCKED: .env is staged. Unstage it (git restore --staged .env)."
+  exit 1
+fi
+
+# The WHOLE staged diff is scanned, never a list of file names. A name list
+# missed renamed files (--diff-filter=ACM has no R) and split names with a
+# space through xargs, with 2>/dev/null hiding the miss (PR #159 review). An
+# added line starts with "+"; the "+++ b/<path>" file headers are dropped.
+# If git cannot produce the diff, the commit is blocked, not waved through.
+if [ -f .secrets-patterns.txt ]; then
+  if ! diff=$(git diff --cached --no-color --no-ext-diff --unified=0); then
+    echo "BLOCKED: git could not produce the staged diff, so it was NOT"
+    echo "scanned for confidential patterns. That is not a pass."
+    exit 1
+  fi
+  hits=$(printf '%s\n' "$diff" | grep '^+' | grep -vE '^\+\+\+ (b/|/dev/null)' \
+    | grep -nEf .secrets-patterns.txt)
+  if [ -n "$hits" ]; then
+    echo "BLOCKED: staged changes match confidential patterns in .secrets-patterns.txt:"
+    echo "$hits" | head -5
+    exit 1
+  fi
+fi
+
+# Any Python file anywhere (the evidence guard is the ROOT conftest.py), plus
+# scripts, Claude hooks and these git hooks.
+code=$(echo "$staged" | grep -E '(\.py$|^scripts/|^\.claude/hooks/|^\.githooks/)')
+if [ -n "$code" ] && ! echo "$staged" | grep -qx 'CHANGELOG.md'; then
+  echo "BLOCKED: this commit changes code but not CHANGELOG.md."
+  echo "The CHANGELOG policy is: an entry in the SAME commit as the change."
+  echo "Code staged:"
+  echo "$code" | head -5
+  exit 1
+fi
+
+exit 0

@@ -1,0 +1,73 @@
+{
+  "generator": "experiments/phase2/src/lever_screen.py",
+  "card": "F124",
+  "sprint": 22,
+  "phase": 2,
+  "evidence_tag": "SIM",
+  "metered_seconds": 0,
+  "eqc_models_version": "0.21.0",
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "rows": [
+    {
+      "dataset": "spectra_energy_steel",
+      "seed": 42,
+      "hard_test_auprc": 0.9772969030163658,
+      "hard_n_nonzero_weights": 290,
+      "soft_test_auprc": 0.9808600557386812,
+      "soft_n_nonzero_weights": 174,
+      "delta_soft_minus_hard": 0.0035631527223153325
+    },
+    {
+      "dataset": "spectra_energy_steel",
+      "seed": 43,
+      "hard_test_auprc": 0.9777280841537029,
+      "hard_n_nonzero_weights": 298,
+      "soft_test_auprc": 0.983148664284581,
+      "soft_n_nonzero_weights": 183,
+      "delta_soft_minus_hard": 0.005420580130878094
+    },
+    {
+      "dataset": "spectra_energy_steel",
+      "seed": 44,
+      "hard_test_auprc": 0.9692963645062199,
+      "hard_n_nonzero_weights": 306,
+      "soft_test_auprc": 0.9771436769556154,
+      "soft_n_nonzero_weights": 192,
+      "delta_soft_minus_hard": 0.007847312449395516
+    },
+    {
+      "dataset": "spectra_energy_steel",
+      "seed": 45,
+      "hard_test_auprc": 0.9665722545205945,
+      "hard_n_nonzero_weights": 313,
+      "soft_test_auprc": 0.9755201441480398,
+      "soft_n_nonzero_weights": 182,
+      "delta_soft_minus_hard": 0.008947889627445305
+    },
+    {
+      "dataset": "spectra_energy_steel",
+      "seed": 46,
+      "hard_test_auprc": 0.9759304385974558,
+      "hard_n_nonzero_weights": 292,
+      "soft_test_auprc": 0.9800261716037661,
+      "soft_n_nonzero_weights": 180,
+      "delta_soft_minus_hard": 0.004095733006310387
+    }
+  ],
+  "summary": {
+    "mean_hard_auprc": 0.9734,
+    "mean_soft_auprc": 0.9793,
+    "mean_delta_soft_minus_hard": 0.006,
+    "delta_ci95": [
+      0.0041,
+      0.0078
+    ],
+    "seeds_soft_better": 5
+  }
+}

@@ -191,8 +191,10 @@ def _fit_one(df, spec: dict, client, dry_run: bool) -> dict:
     clf, resp = fit["clf"], fit["resp"]
     if not dry_run:
         RESP_DIR.mkdir(parents=True, exist_ok=True)
+        # FIXED Sprint 22: to_jsonable saves the SolutionResults in full;
+        # default=str saved numpy's truncated print (see eqc_submit).
         (RESP_DIR / f"b5_{spec['protocol']}_{spec['seed']}.json").write_text(
-            json.dumps(resp, default=str, indent=1), encoding="utf-8")
+            json.dumps(eqc_submit.to_jsonable(resp), indent=1), encoding="utf-8")
 
     # predict_raw is the signed margin. With the weights on the simplex (sum
     # constraint 1) and features MinMax-scaled to [-1, 1], it lies in about
