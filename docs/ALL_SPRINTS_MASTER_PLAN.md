@@ -396,6 +396,33 @@ from candidates per convention. F124's approved ranked list,
 below: rank 1, leaf regularization, is tested first. F17's follow-up is F126;
 F123's layout is superseded by F127.)
 
+**F128. Leaf-regularization sweep on the proxy, three datasets (~1.5h [no-history], zero metered) Priority 10**
+- Phase: Phase 2 preparation (added 2026-10-07, Pass 2 of the Sprint 23 refinement: F124 rank 1's "next proxy test", which had no card)
+- Platform: SPECTRA, classical proxy (`qubo_proxy.py`)
+- **Measured so far (F124, `docs/phase2/SPECTRA_IMPROVEMENT_RESEARCH.md`)**: `min_samples_leaf=20` lifts energy_steel from 0.902 to 0.973 AUPRC over 5 seeds, parity with HGB (CI [-0.0063, +0.0256]); a 2-seed screen showed oilgas +0.004 and telecom -0.009. Only one value of the parameter was tried
+- The test: `min_samples_leaf` at 5, 10, 20 and 50 on energy_steel, oilgas and telecom, 5 seeds each, with HGB on the same splits; train-test gap and nonzero-weight count beside every AUPRC
+- This enables: choosing the value F129 would put on the device, from a sweep rather than one point. This prevents: spending device seconds on a value that a free sweep would have beaten
+- Acceptance: a dated Phase 2 result file with all 60 cells, the paired difference against HGB with its CI per dataset and value, and a stated best value per dataset; written in the Phase 2 store, no Phase 1 file touched
+- Depends on: F127 (the work lands in the Phase 2 repository)
+
+**F130. Proxy screens for F124 ranks 3, 5 and 6: KNN learners, phase features, pool size (~2h [no-history], zero metered) Priority 12**
+- Phase: Phase 2 preparation (added 2026-10-07, Pass 2 of the Sprint 23 refinement: the "next proxy test" of three ranked levers, none carded). Sprints with F128
+- Platform: SPECTRA, ULB, classical proxy
+- Rank 3, KNN weak learners: 5 seeds on oilgas and telecom, and on ULB to test the EvidenceBasedDB record's 0.8108 AUC-PR claim directly (certainty low; a different setup, not a replication)
+- Rank 5, phase-encode the cyclic columns and whiten, rebuild the pool, 5 seeds, three datasets. The source records are about angle-encoded QNNs, so the effect on CVQBoost is unverified
+- Rank 6, `weak_cls_pair_count` at 100, 200 and 400 on three datasets; a smaller pool is also cheaper per device fit
+- Acceptance: each lever reported against HGB on the same splits with the paired CI; a lever that does not move AUPRC is recorded as rejected, as F124 did for ensembling
+- Depends on: F127
+
+**F129. Rank-1 device pilot: energy_steel with leaf regularization on Dirac-3 (~1h + ~82-410 metered s) Priority 34**
+- Phase: Phase 2, first device run under F124's approved list (added 2026-10-07, Pass 2 of the Sprint 23 refinement)
+- Platform: SPECTRA, Dirac-3
+- B4's energy_steel cell with `weak_cls_params={"min_samples_leaf": <F128's value>}`, no other change: 816 variables, 8 samples. **About 82 s per fit; 1-seed pilot about 82 s, 5 seeds about 410 s** (F124, from the F17 cost model fitted on B2's measured 82.4 s/fit). The balance is 1,022 s
+- What it tests: whether the device reproduces the proxy on a sparse, better-scoring problem. energy_steel has never run on the device. It cannot be expected to beat the proxy, and the card says so up front
+- Every row carries its `job_id` and every returned sample (F127 IMP-6; B2's samples were lost because its rows did not)
+- Acceptance: `[HW]` rows with metered seconds from the response; device-versus-proxy AUPRC and nonzero-weight count per seed; stops after the 1-seed pilot to re-quote if the cost exceeds 110 s
+- Depends on: F128 (the value); F102 (reporting); per-block team-lead approval (Criterion H); the runner is idempotent before its first approval
+
 **F102. Phase 2 preregistration framework (~3h [no-history], zero metered) Priority 30**
 - Phase: Phase 2 preparation (the checklist's Deliverable)
 - Platform: docs

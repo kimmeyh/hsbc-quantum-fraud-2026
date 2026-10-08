@@ -6,6 +6,8 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ### 2026-10-07
 
+- **docs**: Backlog refinement Pass 2: F128 (leaf-regularization sweep), F130 (proxy screens for F124 ranks 3, 5, 6) and F129 (rank-1 device pilot, about 82-410 metered s) registered from F124's ranked list, which carded none of its follow-ups
+
 - **docs**: Backlog refinement Pass 1 sweep, Sprint 22 closed: `SPRINT_22_SUMMARY.md` written; F123, F124, F125, F17 and F20 pruned from the master plan; the spent "F124 first" dependencies on F95, F110, F25 and F30 and F121's hold reason corrected; F127 records the new repository name and pushes every branch and tag, not only `develop`; a retrospective line that read the estimate as an overrun corrected; issues #160-165 closed; status rolled to Sprint 23
 - **fix**: Three close-out hook tests in `test_phase3_artifacts.py` failed in every backlog-refinement window. They mutated the live status file and ran the hook against the live repository, and since F125 the hook owes no Phase 3 artifacts before the plan exists. They now build a scratch repository with a plan and one commit, and assert each field's own message; each proven red with `injection.assert_can_fail`
 - **merge**: Sprint 22 merged: PR #159 to develop, PR #166 develop to main. `feature/20261007_Sprint_23` cut from the Sprint 22 branch on notification
