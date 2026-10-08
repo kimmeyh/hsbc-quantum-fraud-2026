@@ -1,0 +1,118 @@
+{
+  "generator": "experiments/phase2/src/soft_votes.py",
+  "card": "F20",
+  "sprint": 22,
+  "phase": 2,
+  "evidence_tag": "SIM",
+  "metered_seconds": 0,
+  "eqc_models_version": "0.21.0",
+  "rows": [
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 42,
+      "n_samples": 8,
+      "top1_auprc": 0.8502049018349794,
+      "top2_auprc": 0.8505814311403257,
+      "top4_auprc": 0.8502712654651047,
+      "top8_auprc": 0.8510123408026357,
+      "delta_top8_minus_top1": 0.0008074389676562266
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 43,
+      "n_samples": 8,
+      "top1_auprc": 0.8410117723867819,
+      "top2_auprc": 0.8407205115137767,
+      "top4_auprc": 0.8409562664695549,
+      "top8_auprc": 0.8409750972850282,
+      "delta_top8_minus_top1": -3.66751017537581e-05
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 44,
+      "n_samples": 8,
+      "top1_auprc": 0.821851570067268,
+      "top2_auprc": 0.822695147347229,
+      "top4_auprc": 0.8228400567135763,
+      "top8_auprc": 0.8233810657815708,
+      "delta_top8_minus_top1": 0.001529495714302831
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 45,
+      "n_samples": 8,
+      "top1_auprc": 0.8317730844147418,
+      "top2_auprc": 0.8320429558260825,
+      "top4_auprc": 0.8319239643852055,
+      "top8_auprc": 0.8323424702829589,
+      "delta_top8_minus_top1": 0.0005693858682170871
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 46,
+      "n_samples": 8,
+      "top1_auprc": 0.8436534369221922,
+      "top2_auprc": 0.8436517878398594,
+      "top4_auprc": 0.8428999569940859,
+      "top8_auprc": 0.8428150816007941,
+      "delta_top8_minus_top1": -0.0008383553213980877
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 42,
+      "n_samples": 8,
+      "top1_auprc": 0.759740006486649,
+      "top2_auprc": 0.7623118042413003,
+      "top4_auprc": 0.7626888812891366,
+      "top8_auprc": 0.7644707676930798,
+      "delta_top8_minus_top1": 0.004730761206430789
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 43,
+      "n_samples": 8,
+      "top1_auprc": 0.7428496729467596,
+      "top2_auprc": 0.7409114777923732,
+      "top4_auprc": 0.7407236351283618,
+      "top8_auprc": 0.7421107022354984,
+      "delta_top8_minus_top1": -0.0007389707112612776
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 44,
+      "n_samples": 8,
+      "top1_auprc": 0.7648379376359332,
+      "top2_auprc": 0.7667883077269848,
+      "top4_auprc": 0.7672552090917941,
+      "top8_auprc": 0.7681859757879869,
+      "delta_top8_minus_top1": 0.003348038152053645
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 45,
+      "n_samples": 8,
+      "top1_auprc": 0.7009958196116663,
+      "top2_auprc": 0.7032589152327067,
+      "top4_auprc": 0.7027415518447211,
+      "top8_auprc": 0.7024855018589035,
+      "delta_top8_minus_top1": 0.0014896822472371118
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 46,
+      "n_samples": 8,
+      "top1_auprc": 0.7060359769804878,
+      "top2_auprc": 0.7082436331590027,
+      "top4_auprc": 0.7082468326475041,
+      "top8_auprc": 0.7088064993647474,
+      "delta_top8_minus_top1": 0.002770522384259566
+    }
+  ],
+  "basis": "emulated samples, calibrated budget 25",
+  "mean_delta_top8_minus_top1": 0.00136,
+  "delta_ci95": [
+    0.0003,
+    0.0025
+  ],
+  "cells_top8_better": 7
+}

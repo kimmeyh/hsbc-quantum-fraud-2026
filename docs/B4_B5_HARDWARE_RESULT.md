@@ -6,6 +6,23 @@ summarized in `b4_hardware.json`, `b5_hardware.json` and the regenerated
 `gate_report.md`. Full device responses, every returned sample included, are in
 `experiments/results/pools/hw_responses/`.
 
+> **Correction, 2026-10-06 (Sprint 22).** The sentence above is false for
+> the stored files. The runners saved each response with
+> `json.dumps(resp, default=str)`. A real solve returns a `SolutionResults`
+> object, so its printed form was stored, and numpy prints long arrays
+> truncated: each 560- and 816-value sample was saved as its first and last
+> three values. The B4 rows in `results.json` also record
+> `n_samples_returned` = 0, because the runner looked for a dict; the device
+> did return 8 samples per fit. No AUPRC figure in this document is affected:
+> scoring used the in-memory response, not the stored file. All samples were
+> recovered by job id, read-only, with the allocation balance unchanged
+> (1,022 s before and after), into
+> `experiments/phase2/results/device_samples/`
+> (`experiments/phase2/src/recover_device_samples.py`). The runners are fixed
+> and `test_response_serialization.py` pins the fix. The stored files and the
+> B4 rows are left as they are: they are Phase 1 evidence
+> (`docs/PHASE_SEPARATION.md`). The sentence above stands beneath this note.
+
 ## Spend
 
 | Block | Fits | Failed | Metered s | Per fit |

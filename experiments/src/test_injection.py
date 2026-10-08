@@ -54,14 +54,15 @@ def test_every_occurrence_is_replaced_not_just_the_first(sample):
 def test_a_surviving_occurrence_is_an_error_not_a_pass(sample, monkeypatch):
     """If a replace could leave the target reachable, that must raise rather
     than hand back a result the caller will read as success."""
-    real = Path.write_text
+    import injection
+    real = injection._write
 
-    def partial(self, data, *a, **kw):           # emulate replace(..., 1)
-        if self == sample:
+    def partial(path, data):                     # emulate replace(..., 1)
+        if path == sample:
             data = sample.read_text(encoding="utf-8").replace("0.7671", "X", 1)
-        return real(self, data, *a, **kw)
+        return real(path, data)
 
-    monkeypatch.setattr(Path, "write_text", partial)
+    monkeypatch.setattr(injection, "_write", partial)
     with pytest.raises(InjectionError, match="SURVIVE"):
         Mutation(sample, "0.7671", "X").apply()
 
@@ -92,6 +93,19 @@ def test_the_file_is_restored_after_the_block(sample):
     with injected(Mutation(sample, "0.7671", "X")):
         assert sample.read_text(encoding="utf-8") != before
     assert sample.read_text(encoding="utf-8") == before
+
+
+@pytest.mark.parametrize("eol", [b"\n", b"\r\n"])
+def test_line_endings_survive_the_mutation_and_the_restore(tmp_path, eol):
+    """Compared as BYTES. Read as text, a CRLF file and its LF copy look
+    identical, which is how the defect passed the restore check: on Windows
+    an LF-only shell hook was rewritten with CRLF, breaking its shebang."""
+    p = tmp_path / "hook"
+    original = b"#!/bin/sh" + eol + b"VALUE=1" + eol + b"exit 0" + eol
+    p.write_bytes(original)
+    with injected(Mutation(p, "VALUE=1", "VALUE=2")):
+        assert p.read_bytes() == original.replace(b"VALUE=1", b"VALUE=2")
+    assert p.read_bytes() == original
 
 
 def test_the_file_is_restored_even_when_the_body_raises(sample):

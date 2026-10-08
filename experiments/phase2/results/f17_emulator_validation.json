@@ -1,0 +1,356 @@
+{
+  "generator": "experiments/phase2/src/validate_emulator.py",
+  "card": "F17",
+  "sprint": 22,
+  "phase": 2,
+  "evidence_tag": "SIM",
+  "metered_seconds": 0,
+  "device_mean_cosine": 0.8674,
+  "summary_by_iteration_budget": {
+    "25": {
+      "mean_abs_cosine_gap_vs_device": 0.0402,
+      "mean_cosine": 0.8383
+    },
+    "100": {
+      "mean_abs_cosine_gap_vs_device": 0.054,
+      "mean_cosine": 0.9214
+    },
+    "400": {
+      "mean_abs_cosine_gap_vs_device": 0.061,
+      "mean_cosine": 0.9284
+    }
+  },
+  "calibrated_budget": "25",
+  "rows": [
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 42,
+      "n_vars": 560,
+      "exact_test_auprc": 0.852017036688324,
+      "device": {
+        "weight_cosine": 0.8947094438944325,
+        "test_auprc": 0.852565280376637,
+        "energy_rel_spread": 0.00021989761623857602,
+        "metered_seconds": 34.0
+      },
+      "emulated": {
+        "25": {
+          "weight_cosine": 0.8290806164686966,
+          "test_auprc": 0.8499734932279212,
+          "energy_rel_spread": 0.00043664979170661997,
+          "cost_estimate_s": 38.5
+        },
+        "100": {
+          "weight_cosine": 0.9272805128587946,
+          "test_auprc": 0.8509350179636592,
+          "energy_rel_spread": 1.1884828418260937e-05,
+          "cost_estimate_s": 38.5
+        },
+        "400": {
+          "weight_cosine": 0.9330769664959501,
+          "test_auprc": 0.8507910221263896,
+          "energy_rel_spread": 8.87257796229885e-07,
+          "cost_estimate_s": 38.5
+        }
+      },
+      "elapsed_s": 48.8
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 43,
+      "n_vars": 560,
+      "exact_test_auprc": 0.8411248513692361,
+      "device": {
+        "weight_cosine": 0.900745044946253,
+        "test_auprc": 0.8408476694925249,
+        "energy_rel_spread": 0.00028130912721770863,
+        "metered_seconds": 44.0
+      },
+      "emulated": {
+        "25": {
+          "weight_cosine": 0.8278174936602861,
+          "test_auprc": 0.8407787258732295,
+          "energy_rel_spread": 0.00023717452697311035,
+          "cost_estimate_s": 38.5
+        },
+        "100": {
+          "weight_cosine": 0.9298670895366055,
+          "test_auprc": 0.8401450979756636,
+          "energy_rel_spread": 1.9355645962245618e-05,
+          "cost_estimate_s": 38.5
+        },
+        "400": {
+          "weight_cosine": 0.9348096802154978,
+          "test_auprc": 0.8400785485357553,
+          "energy_rel_spread": 1.0981468434198187e-06,
+          "cost_estimate_s": 38.5
+        }
+      },
+      "elapsed_s": 48.5
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 44,
+      "n_vars": 560,
+      "exact_test_auprc": 0.8236690860992985,
+      "device": {
+        "weight_cosine": 0.8990027561447058,
+        "test_auprc": 0.8234178889259705,
+        "energy_rel_spread": 0.0001409246161740594,
+        "metered_seconds": 45.0
+      },
+      "emulated": {
+        "25": {
+          "weight_cosine": 0.8346455265641667,
+          "test_auprc": 0.8220819822011902,
+          "energy_rel_spread": 0.0003813442634728112,
+          "cost_estimate_s": 38.5
+        },
+        "100": {
+          "weight_cosine": 0.9256773744816864,
+          "test_auprc": 0.8233068628745379,
+          "energy_rel_spread": 9.512133324002767e-06,
+          "cost_estimate_s": 38.5
+        },
+        "400": {
+          "weight_cosine": 0.9309396905429417,
+          "test_auprc": 0.8232197941978951,
+          "energy_rel_spread": 6.998268518710682e-07,
+          "cost_estimate_s": 38.5
+        }
+      },
+      "elapsed_s": 48.7
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 45,
+      "n_vars": 560,
+      "exact_test_auprc": 0.833212961892567,
+      "device": {
+        "weight_cosine": 0.8919757872818673,
+        "test_auprc": 0.8341649887428035,
+        "energy_rel_spread": 0.00018945614246083185,
+        "metered_seconds": 46.0
+      },
+      "emulated": {
+        "25": {
+          "weight_cosine": 0.8327747010774662,
+          "test_auprc": 0.831718737372158,
+          "energy_rel_spread": 0.00036213206793479254,
+          "cost_estimate_s": 38.5
+        },
+        "100": {
+          "weight_cosine": 0.9197352172155253,
+          "test_auprc": 0.8326572287753092,
+          "energy_rel_spread": 2.90532747354027e-06,
+          "cost_estimate_s": 38.5
+        },
+        "400": {
+          "weight_cosine": 0.9255503885072218,
+          "test_auprc": 0.8325939256083132,
+          "energy_rel_spread": 7.844852509613514e-07,
+          "cost_estimate_s": 38.5
+        }
+      },
+      "elapsed_s": 48.1
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 46,
+      "n_vars": 560,
+      "exact_test_auprc": 0.8438316235132306,
+      "device": {
+        "weight_cosine": 0.9006817545498976,
+        "test_auprc": 0.8439967028359462,
+        "energy_rel_spread": 0.00029074575891254606,
+        "metered_seconds": 37.0
+      },
+      "emulated": {
+        "25": {
+          "weight_cosine": 0.8319838166647999,
+          "test_auprc": 0.8436308153950091,
+          "energy_rel_spread": 0.0003071272540790389,
+          "cost_estimate_s": 38.5
+        },
+        "100": {
+          "weight_cosine": 0.9237714948875843,
+          "test_auprc": 0.8432931170497677,
+          "energy_rel_spread": 1.6391003909769036e-05,
+          "cost_estimate_s": 38.5
+        },
+        "400": {
+          "weight_cosine": 0.92875914688288,
+          "test_auprc": 0.8432405386078704,
+          "energy_rel_spread": 8.327777825561967e-07,
+          "cost_estimate_s": 38.5
+        }
+      },
+      "elapsed_s": 47.3
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 42,
+      "n_vars": 816,
+      "exact_test_auprc": 0.7595922905681831,
+      "device": {
+        "weight_cosine": 0.8504889033352213,
+        "test_auprc": 0.7621435450111825,
+        "energy_rel_spread": 0.0004885798291076254,
+        "metered_seconds": 88.0
+      },
+      "emulated": {
+        "25": {
+          "weight_cosine": 0.8350077313607029,
+          "test_auprc": 0.7586832899390189,
+          "energy_rel_spread": 0.0003552366061332669,
+          "cost_estimate_s": 81.7
+        },
+        "100": {
+          "weight_cosine": 0.9262224559572647,
+          "test_auprc": 0.7618681116766752,
+          "energy_rel_spread": 1.672774936734623e-05,
+          "cost_estimate_s": 81.7
+        },
+        "400": {
+          "weight_cosine": 0.9335078607023714,
+          "test_auprc": 0.7626347560811655,
+          "energy_rel_spread": 6.85529592326897e-07,
+          "cost_estimate_s": 81.7
+        }
+      },
+      "elapsed_s": 13.4
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 43,
+      "n_vars": 816,
+      "exact_test_auprc": 0.7401267218946708,
+      "device": {
+        "weight_cosine": 0.8320419135755134,
+        "test_auprc": 0.7395832213551322,
+        "energy_rel_spread": 0.0003435621664493793,
+        "metered_seconds": 90.0
+      },
+      "emulated": {
+        "25": {
+          "weight_cosine": 0.8513670048431079,
+          "test_auprc": 0.7454865611608644,
+          "energy_rel_spread": 0.00023308423060834863,
+          "cost_estimate_s": 81.7
+        },
+        "100": {
+          "weight_cosine": 0.9376109461602431,
+          "test_auprc": 0.7443122507007002,
+          "energy_rel_spread": 7.646395910605368e-06,
+          "cost_estimate_s": 81.7
+        },
+        "400": {
+          "weight_cosine": 0.9421153186981471,
+          "test_auprc": 0.744649673059596,
+          "energy_rel_spread": 8.100657034922356e-07,
+          "cost_estimate_s": 81.7
+        }
+      },
+      "elapsed_s": 15.2
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 44,
+      "n_vars": 816,
+      "exact_test_auprc": 0.7630007741424354,
+      "device": {
+        "weight_cosine": 0.8326275435188025,
+        "test_auprc": 0.7663769746824373,
+        "energy_rel_spread": 0.0002905962785525999,
+        "metered_seconds": 85.0
+      },
+      "emulated": {
+        "25": {
+          "weight_cosine": 0.851596666526495,
+          "test_auprc": 0.7651023038755543,
+          "energy_rel_spread": 0.00026250886968592836,
+          "cost_estimate_s": 81.7
+        },
+        "100": {
+          "weight_cosine": 0.9256467795843978,
+          "test_auprc": 0.7680686129065174,
+          "energy_rel_spread": 1.8294908087021338e-05,
+          "cost_estimate_s": 81.7
+        },
+        "400": {
+          "weight_cosine": 0.9350368982689782,
+          "test_auprc": 0.7674088003563442,
+          "energy_rel_spread": 9.182884810840241e-07,
+          "cost_estimate_s": 81.7
+        }
+      },
+      "elapsed_s": 13.7
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 45,
+      "n_vars": 816,
+      "exact_test_auprc": 0.6973085114980947,
+      "device": {
+        "weight_cosine": 0.8352496596588066,
+        "test_auprc": 0.6965779286248938,
+        "energy_rel_spread": 0.0003353052153301842,
+        "metered_seconds": 84.0
+      },
+      "emulated": {
+        "25": {
+          "weight_cosine": 0.8470036688665917,
+          "test_auprc": 0.7024675477993167,
+          "energy_rel_spread": 0.00018228244442353744,
+          "cost_estimate_s": 81.7
+        },
+        "100": {
+          "weight_cosine": 0.8942082747192421,
+          "test_auprc": 0.7027726410529493,
+          "energy_rel_spread": 2.3777718222023612e-05,
+          "cost_estimate_s": 81.7
+        },
+        "400": {
+          "weight_cosine": 0.9052864653215995,
+          "test_auprc": 0.7040084995381565,
+          "energy_rel_spread": 6.687945031860664e-07,
+          "cost_estimate_s": 81.7
+        }
+      },
+      "elapsed_s": 14.3
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 46,
+      "n_vars": 816,
+      "exact_test_auprc": 0.7059195215748165,
+      "device": {
+        "weight_cosine": 0.8362539083282584,
+        "test_auprc": 0.7025314427279121,
+        "energy_rel_spread": 0.00035172077552180273,
+        "metered_seconds": 87.0
+      },
+      "emulated": {
+        "25": {
+          "weight_cosine": 0.8416533624283384,
+          "test_auprc": 0.7060278084433761,
+          "energy_rel_spread": 0.00014292863591777063,
+          "cost_estimate_s": 81.7
+        },
+        "100": {
+          "weight_cosine": 0.9039938898730071,
+          "test_auprc": 0.7089059536026178,
+          "energy_rel_spread": 1.0475566228404307e-05,
+          "cost_estimate_s": 81.7
+        },
+        "400": {
+          "weight_cosine": 0.9150523431552947,
+          "test_auprc": 0.708740497057924,
+          "energy_rel_spread": 1.0158178245161492e-06,
+          "cost_estimate_s": 81.7
+        }
+      },
+      "elapsed_s": 13.9
+    }
+  ]
+}

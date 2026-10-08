@@ -37,6 +37,25 @@ from pathlib import Path
 from typing import Callable, Iterator
 
 
+def _read(path: Path) -> str:
+    """The file's text with its line endings exactly as on disk.
+
+    `Path.read_text` folds CRLF to LF and `Path.write_text` expands LF to the
+    platform's line ending. On Windows that pair rewrote an LF-only file (a
+    shell hook) with CRLF -- breaking its shebang, so a mutation failed for the
+    wrong reason -- and then passed the restore check, because the read folded
+    the CRLF back (found in PR #159 review work, Sprint 22). newline=""
+    disables both translations.
+    """
+    with open(path, encoding="utf-8", newline="") as fh:
+        return fh.read()
+
+
+def _write(path: Path, text: str) -> None:
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        fh.write(text)
+
+
 class InjectionError(RuntimeError):
     """The injection itself was invalid, so its result means nothing.
 
@@ -63,7 +82,7 @@ class Mutation:
         replaced, the assertion still satisfied by the other two, and the
         injection reported as a passing guard.
         """
-        original = self.path.read_text(encoding="utf-8")
+        original = _read(self.path)
         count = original.count(self.old)
 
         if count == 0:
@@ -83,9 +102,9 @@ class Mutation:
                 f"the mutation changed nothing in {self.path.name}; old and "
                 "new are equivalent")
 
-        self.path.write_text(mutated, encoding="utf-8")
+        _write(self.path, mutated)
 
-        on_disk = self.path.read_text(encoding="utf-8")
+        on_disk = _read(self.path)
         remaining = on_disk.count(self.old)
         if remaining:
             raise InjectionError(
@@ -119,13 +138,13 @@ def injected(*mutations: Mutation) -> Iterator[None]:
             # Measured, not reasoned: injecting "VALUE" -> "XVALUEX" left the
             # file reading "XVALUEX = 1" with no restore. Found by Copilot on
             # PR #139.
-            originals.append((m.path, m.path.read_text(encoding="utf-8")))
+            originals.append((m.path, _read(m.path)))
             m.apply()
         yield
     finally:
         for path, text in reversed(originals):
-            path.write_text(text, encoding="utf-8")
-            if path.read_text(encoding="utf-8") != text:
+            _write(path, text)
+            if _read(path) != text:
                 raise InjectionError(
                     f"FAILED TO RESTORE {path}. The working tree is dirty and "
                     "the file it guards may be unprotected.")

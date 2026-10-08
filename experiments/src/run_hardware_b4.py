@@ -218,12 +218,16 @@ def _fit_one(spec: dict, client, dry_run: bool) -> dict:
     # Every returned sample is kept, not only the lowest-energy one (F90
     # acceptance (c)), so F20's multi-sample ensembling costs no further
     # device time. The full response is the record; the row carries the count.
-    samples = (resp.get("results", {}) or {}).get("solutions", []) \
-        if isinstance(resp, dict) else []
+    #
+    # FIXED Sprint 22: a real solve returns a SolutionResults, not a dict, so
+    # the first version counted 0 samples and saved numpy's TRUNCATED print of
+    # each one via default=str. eqc_submit.samples_of / to_jsonable read and
+    # save the object in full.
+    samples = eqc_submit.samples_of(resp)
     if not dry_run:
         RESP_DIR.mkdir(parents=True, exist_ok=True)
         (RESP_DIR / f"b4_{name}_stratified_{spec['seed']}.json").write_text(
-            json.dumps(resp, default=str, indent=1), encoding="utf-8")
+            json.dumps(eqc_submit.to_jsonable(resp), indent=1), encoding="utf-8")
 
     w_hw = np.asarray(clf.params, dtype=np.float64)
     H_tr = qubo_proxy.h_matrix(clf, Xtr)

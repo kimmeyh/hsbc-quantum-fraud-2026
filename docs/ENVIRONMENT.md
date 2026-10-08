@@ -28,6 +28,18 @@ python3.12 -m venv .venv
 .venv/bin/python -m pip install -r experiments/requirements-lock.txt
 ```
 
+**Then enable the tracked pre-commit hook, once per clone, on any OS:**
+
+```
+git config core.hooksPath .githooks
+```
+
+`.githooks/pre-commit` blocks a staged `.env`, staged text matching the local
+`.secrets-patterns.txt`, and a commit that changes code without changing
+`CHANGELOG.md`. Git does not run a tracked hook until this is set
+(IMP-3, Sprint 22 retrospective). `.secrets-patterns.txt` is gitignored and is
+copied by hand to each clone.
+
 The lock file pins all 18 dependencies. That is deliberate and load-bearing:
 amendment A29(h) records that drift in the comparator stack is material to the
 null result, so `numpy==1.26.4`, `scikit-learn==1.9.0` and `xgboost==3.4.1` are

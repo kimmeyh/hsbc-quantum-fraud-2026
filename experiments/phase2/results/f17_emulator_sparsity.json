@@ -1,0 +1,281 @@
+{
+  "generator": "experiments/phase2/src/emulator_sparsity.py",
+  "card": "F17",
+  "sprint": 22,
+  "phase": 2,
+  "evidence_tag": "SIM",
+  "metered_seconds": 0,
+  "budget": 25,
+  "summary": {
+    "device": {
+      "zero_fraction": 0.25969,
+      "nonzero_min": 1e-05,
+      "nonzero_max": 0.0041,
+      "nonzero_median": 0.00215
+    },
+    "exact": {
+      "zero_fraction": 0.06527,
+      "nonzero_min": 6e-05,
+      "nonzero_max": 0.00182,
+      "nonzero_median": 0.00182
+    },
+    "emulated": {
+      "zero_fraction": 0.07894,
+      "nonzero_min": 8e-05,
+      "nonzero_max": 0.00716,
+      "nonzero_median": 0.00135
+    }
+  },
+  "rows": [
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 42,
+      "device": {
+        "n": 560,
+        "zero_fraction": 0.1625,
+        "nonzero_min": 1.06e-05,
+        "nonzero_max": 0.0038671,
+        "nonzero_median": 0.0021586
+      },
+      "exact": {
+        "n": 560,
+        "zero_fraction": 0.0054,
+        "nonzero_min": 0.0002804143034193978,
+        "nonzero_max": 0.0018267419471482574,
+        "nonzero_median": 0.00182674194714822
+      },
+      "emulated": {
+        "n": 560,
+        "zero_fraction": 0.0036,
+        "nonzero_min": 0.00017278223436381507,
+        "nonzero_max": 0.008418410773176626,
+        "nonzero_median": 0.0014512635302161574
+      }
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 43,
+      "device": {
+        "n": 560,
+        "zero_fraction": 0.1446,
+        "nonzero_min": 5.05e-05,
+        "nonzero_max": 0.0038855,
+        "nonzero_median": 0.0020728
+      },
+      "exact": {
+        "n": 560,
+        "zero_fraction": 0.0054,
+        "nonzero_min": 0.0001342497604638365,
+        "nonzero_max": 0.001827676254987856,
+        "nonzero_median": 0.0018276762549878454
+      },
+      "emulated": {
+        "n": 560,
+        "zero_fraction": 0.0036,
+        "nonzero_min": 0.0001690285274748747,
+        "nonzero_max": 0.008017444831595893,
+        "nonzero_median": 0.0014564452319212077
+      }
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 44,
+      "device": {
+        "n": 560,
+        "zero_fraction": 0.1536,
+        "nonzero_min": 1.73e-05,
+        "nonzero_max": 0.0038302,
+        "nonzero_median": 0.0020862
+      },
+      "exact": {
+        "n": 560,
+        "zero_fraction": 0.0054,
+        "nonzero_min": 0.0001331481596667016,
+        "nonzero_max": 0.0018296129177141007,
+        "nonzero_median": 0.001829612917713954
+      },
+      "emulated": {
+        "n": 560,
+        "zero_fraction": 0.0018,
+        "nonzero_min": 0.000407376544372112,
+        "nonzero_max": 0.007410601688895232,
+        "nonzero_median": 0.0014750293684472244
+      }
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 45,
+      "device": {
+        "n": 560,
+        "zero_fraction": 0.1589,
+        "nonzero_min": 5e-07,
+        "nonzero_max": 0.0044851,
+        "nonzero_median": 0.0021262
+      },
+      "exact": {
+        "n": 560,
+        "zero_fraction": 0.0054,
+        "nonzero_min": 5.7412384582723705e-05,
+        "nonzero_max": 0.0018304546521865069,
+        "nonzero_median": 0.0018304546521863692
+      },
+      "emulated": {
+        "n": 560,
+        "zero_fraction": 0.0036,
+        "nonzero_min": 2.4197425538992783e-06,
+        "nonzero_max": 0.009163450615365706,
+        "nonzero_median": 0.0014454114543759797
+      }
+    },
+    {
+      "dataset": "spectra_oilgas_gasturbine",
+      "seed": 46,
+      "device": {
+        "n": 560,
+        "zero_fraction": 0.1464,
+        "nonzero_min": 2.24e-05,
+        "nonzero_max": 0.0041822,
+        "nonzero_median": 0.0020823
+      },
+      "exact": {
+        "n": 560,
+        "zero_fraction": 0.0036,
+        "nonzero_min": 2.09683129630597e-05,
+        "nonzero_max": 0.0018275620738545872,
+        "nonzero_median": 0.001827562073854575
+      },
+      "emulated": {
+        "n": 560,
+        "zero_fraction": 0.0036,
+        "nonzero_min": 6.822386759263105e-05,
+        "nonzero_max": 0.0070612395900335875,
+        "nonzero_median": 0.0014524761537430054
+      }
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 42,
+      "device": {
+        "n": 816,
+        "zero_fraction": 0.3542,
+        "nonzero_min": 6e-07,
+        "nonzero_max": 0.0044206,
+        "nonzero_median": 0.0020979
+      },
+      "exact": {
+        "n": 816,
+        "zero_fraction": 0.1189,
+        "nonzero_min": 5.999794969532461e-10,
+        "nonzero_max": 0.0017851060958106876,
+        "nonzero_median": 0.0017851060958106743
+      },
+      "emulated": {
+        "n": 816,
+        "zero_fraction": 0.1397,
+        "nonzero_min": 2.2522510026554395e-08,
+        "nonzero_max": 0.006013389861005186,
+        "nonzero_median": 0.0011719393270977693
+      }
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 43,
+      "device": {
+        "n": 816,
+        "zero_fraction": 0.3787,
+        "nonzero_min": 4e-07,
+        "nonzero_max": 0.0043701,
+        "nonzero_median": 0.0022141
+      },
+      "exact": {
+        "n": 816,
+        "zero_fraction": 0.1287,
+        "nonzero_min": 1.190684571221439e-07,
+        "nonzero_max": 0.0018119367732782185,
+        "nonzero_median": 0.001811936773277992
+      },
+      "emulated": {
+        "n": 816,
+        "zero_fraction": 0.1703,
+        "nonzero_min": 2.0775319528141705e-07,
+        "nonzero_max": 0.006292768152925047,
+        "nonzero_median": 0.0012992823059983748
+      }
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 44,
+      "device": {
+        "n": 816,
+        "zero_fraction": 0.3652,
+        "nonzero_min": 4e-07,
+        "nonzero_max": 0.0040517,
+        "nonzero_median": 0.0021885999999999997
+      },
+      "exact": {
+        "n": 816,
+        "zero_fraction": 0.1275,
+        "nonzero_min": 2.731958952729238e-06,
+        "nonzero_max": 0.0018323776207992127,
+        "nonzero_median": 0.0017950884226588157
+      },
+      "emulated": {
+        "n": 816,
+        "zero_fraction": 0.1544,
+        "nonzero_min": 1.2603083161100538e-08,
+        "nonzero_max": 0.005844905486388793,
+        "nonzero_median": 0.0012381727133140225
+      }
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 45,
+      "device": {
+        "n": 816,
+        "zero_fraction": 0.3664,
+        "nonzero_min": 1e-07,
+        "nonzero_max": 0.0039773,
+        "nonzero_median": 0.0022177
+      },
+      "exact": {
+        "n": 816,
+        "zero_fraction": 0.1213,
+        "nonzero_min": 2.5785449649498477e-07,
+        "nonzero_max": 0.0018140021908107345,
+        "nonzero_median": 0.001814002190810373
+      },
+      "emulated": {
+        "n": 816,
+        "zero_fraction": 0.1507,
+        "nonzero_min": 2.756814054958772e-07,
+        "nonzero_max": 0.006642768179415874,
+        "nonzero_median": 0.0012404968259535328
+      }
+    },
+    {
+      "dataset": "spectra_telecom_churn",
+      "seed": 46,
+      "device": {
+        "n": 816,
+        "zero_fraction": 0.3664,
+        "nonzero_min": 1e-07,
+        "nonzero_max": 0.0038853,
+        "nonzero_median": 0.0022078
+      },
+      "exact": {
+        "n": 816,
+        "zero_fraction": 0.1311,
+        "nonzero_min": 8.590657688391355e-07,
+        "nonzero_max": 0.0018072100886509712,
+        "nonzero_median": 0.0018072100886509506
+      },
+      "emulated": {
+        "n": 816,
+        "zero_fraction": 0.1581,
+        "nonzero_min": 1.2057431981203383e-07,
+        "nonzero_max": 0.006688740562069892,
+        "nonzero_median": 0.0012301290918716621
+      }
+    }
+  ]
+}
