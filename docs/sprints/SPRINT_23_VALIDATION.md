@@ -36,5 +36,5 @@ paths. It stays in git history and in the Phase 2 repository. This includes:
 
 ## Decisions
 
-- V1: pending
-- V2: pending
+- V1: 1, approved (team lead, 2026-10-08)
+- V2: 1, accepted (team lead, 2026-10-08)
