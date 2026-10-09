@@ -184,6 +184,14 @@ becomes a fifth exception, so F127's acceptance check
 Phase 2 repository is PRIVATE, so whether the note names or links it is the
 team lead's decision (D7).
 
+**D7 decided 2026-10-09 (team lead): 1, name and link it, dated.** The Phase
+2 repository stays private and becomes public the first time anyone needs
+it, and an archived README cannot be edited, so the wording stays true
+either way. The note's sentence: "Work after the filing, including Phase 2,
+continues in [kimmeyh/hsbc-qfraud-phase2](https://github.com/kimmeyh/hsbc-qfraud-phase2),
+which is private for now, <date>", with `<date>` the date of the README
+commit.
+
 ## Deviations from the process, for approval
 
 - **Three-doc rule.** There is no Sprint 24 in this repository, so
