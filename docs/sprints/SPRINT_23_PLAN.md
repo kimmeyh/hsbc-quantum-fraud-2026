@@ -175,6 +175,15 @@ repository is now `kimmeyh/hsbc-qfraud-phase2`, disk folder
 `D:\Data\Harold\github\hsbc-qfraud-phase2`, so neither repository's name
 contains the other. This repository's `p2` remote points at the new URL.
 
+**Added 2026-10-09 (team lead): a README note after the restore.** A second
+commit on top of the restore commit adds a brief section at the top of
+`README.md`: the work moved to a second repository, and this one is kept as
+the Phase 1 submission repository, restored to the filed tree. `README.md`
+becomes a fifth exception, so F127's acceptance check
+(`git diff --stat f35699c as-filed`) lists it beside the other paths. The
+Phase 2 repository is PRIVATE, so whether the note names or links it is the
+team lead's decision (D7).
+
 ## Deviations from the process, for approval
 
 - **Three-doc rule.** There is no Sprint 24 in this repository, so
