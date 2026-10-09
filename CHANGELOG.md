@@ -4,6 +4,10 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-10-09
+
+- **chore**: The Phase 2 repository was renamed to `kimmeyh/hsbc-qfraud-phase2` (team lead), so neither repository's name contains the other; the `p2` remote and the Sprint 23 plan updated (PR #167)
+
 ### 2026-10-08
 
 - **process**: D6 (team lead): the restore commit (Task C) waits until the Phase 2 repository completes Sprint 24, merged to its `develop`, as proof that the new repository works in a real sprint. PR #167 stays draft (PR #167)

@@ -170,6 +170,11 @@ Phase 2 repository's `feature/20261007_Sprint_23` at `16f16ff`. When the team
 lead reports the merge, this session checks the Phase 2 repository read-only,
 then runs Task C. PR #167 stays draft until then.
 
+**Renamed 2026-10-09 (team lead, Sprint 24 D3 there):** the Phase 2
+repository is now `kimmeyh/hsbc-qfraud-phase2`, disk folder
+`D:\Data\Harold\github\hsbc-qfraud-phase2`, so neither repository's name
+contains the other. This repository's `p2` remote points at the new URL.
+
 ## Deviations from the process, for approval
 
 - **Three-doc rule.** There is no Sprint 24 in this repository, so
