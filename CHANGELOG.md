@@ -4,6 +4,10 @@ Policy (disposition item 8, adapted from spamfilter-multi ADR-0025): updated in 
 
 ## [Unreleased]
 
+### 2026-10-10
+
+- **process**: D6's condition met: the Phase 2 repository's Sprint 24 is merged to its `develop` (39e9787, PR #2) and `main` (PR #11), CI green on the merged head 1bf0e18, and its Sprint 23 summary is written. Checked read-only. Task C (the restore commit) proceeds (Issue #170 / PR #167)
+
 ### 2026-10-09
 
 - **chore**: The Phase 2 repository was renamed to `kimmeyh/hsbc-qfraud-phase2` (team lead), so neither repository's name contains the other; the `p2` remote and the Sprint 23 plan updated (PR #167)
