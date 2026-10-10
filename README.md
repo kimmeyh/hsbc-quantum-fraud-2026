@@ -1,3 +1,10 @@
+> **Status.** This repository is kept as the Phase 1 submission record. On
+> 2026-10-10, its files were reset to the version filed on 2026-09-12 (commit
+> `f35699c`). Work after the filing, including Phase 2, continues in
+> [kimmeyh/hsbc-qfraud-phase2](https://github.com/kimmeyh/hsbc-qfraud-phase2),
+> which is private for now, 2026-10-10. That work, up to the reset, also
+> remains in this repository's git history.
+
 # Quantum-Enhanced Credit Card Fraud Detection
 
 Phase 1 concept proposal to the **2026 Global Quantum + AI Challenge**
