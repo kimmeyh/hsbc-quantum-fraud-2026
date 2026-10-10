@@ -174,20 +174,9 @@ def _stored_values() -> set[float]:
     """
     vals: set[float] = set()
 
-    # WALL-CLOCK TIMINGS ARE NOT EVIDENCE (Sprint 21). f100_classical_bar.json
-    # records each lane's fit time, and one of them is `elapsed_s: 0.26` -- which
-    # made the retired GAM figure 0.26 "resolve" and tripped the guard-the-guard
-    # test below. The collision is the smaller problem: a pool that mixes run
-    # timings with results lets ANY quoted figure resolve against a timing by
-    # coincidence, which weakens the forward check this module exists for.
-    # Metered seconds stay in: they are reported figures (906 s, 1,681 s).
-    TIMING_KEYS = {"elapsed_s", "elapsed_sec"}
-
     def walk(o):
         if isinstance(o, dict):
-            for k, v in o.items():
-                if k in TIMING_KEYS:
-                    continue
+            for v in o.values():
                 walk(v)
         elif isinstance(o, list):
             for v in o:

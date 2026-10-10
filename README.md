@@ -1,3 +1,10 @@
+> **Status.** This repository is kept as the Phase 1 submission record. On
+> 2026-10-10, its files were reset to the version filed on 2026-09-12 (commit
+> `f35699c`). Work after the filing, including Phase 2, continues in
+> [kimmeyh/hsbc-qfraud-phase2](https://github.com/kimmeyh/hsbc-qfraud-phase2),
+> which is private for now, 2026-10-10. That work, up to the reset, also
+> remains in this repository's git history.
+
 # Quantum-Enhanced Credit Card Fraud Detection
 
 Phase 1 concept proposal to the **2026 Global Quantum + AI Challenge**
@@ -27,13 +34,9 @@ that goes stale.
 | Appendices | 3 | [`docs/paper/appendix.md`](docs/paper/appendix.md) |
 | Team profile | 1 | [`docs/paper/team_profile.md`](docs/paper/team_profile.md) |
 
-**The three submitted PDFs are committed** at `docs/paper/out/`, and the
-committed bytes are the ones filed on 2026-09-12. Their SHA-256 values are
-recorded in [`docs/submission/PACKAGE.md`](docs/submission/PACKAGE.md) and
-asserted by the suite, so a rebuild cannot silently replace them.
-
-Every other rendered PDF is a build output and is not committed. Rebuild with
-`python scripts/render_all.py`.
+The rendered PDFs are build outputs and are not committed. Rebuild them with
+`scripts/render-all.ps1`; per-file SHA-256 of the submitted versions is recorded
+in [`docs/submission/PACKAGE.md`](docs/submission/PACKAGE.md).
 
 ### Retrieving the repository exactly as submitted
 
@@ -67,9 +70,9 @@ references never move**; a hook refuses force-pushes and tag moves.
 | [`docs/submission/`](docs/submission/) | Submission receipt, package manifest, compliance walk |
 | [`docs/sprints/`](docs/sprints/) | Plan, retrospective and summary for every sprint |
 | `CHECKLIST-Phase1.md` | The Phase 1 record. **CLOSED 2026-09-12 and never updated** |
-| `CHECKLIST-Phase2.md` | **LIVE.** Phase 2 work, before and after finalist notification, and the six committed experiments. `CHECKLIST-Phase2-pre.md` was merged into it and deleted on 2026-10-03 |
+| `CHECKLIST-Phase2-pre.md` | Live work during the review window |
+| `CHECKLIST-Phase2.md` | Dormant until selection; the six committed experiments |
 | [`docs/adr/`](docs/adr/) | Architecture decision records |
-| [`docs/research/`](docs/research/) | Primary-source research behind design decisions, each recording what could NOT be established alongside what could |
 
 **Evidence tags** appear on every figure: **[HW]** measured on Dirac-3
 hardware, **[SIM]** classical or simulated, **[PROJ]** projected. The
@@ -128,24 +131,11 @@ reports, and they are not restated here: this paragraph was written with one set
 of numbers and was wrong within the same sprint, which is precisely the failure
 one-source-of-truth avoids.
 
-**The skips are correct and expected.** Two kinds. Most are the tests that need
-raw datasets, which are not redistributed here because their licenses do not
-permit it. The rest are parity cases for the PowerShell hooks retired in
-Sprint 16: they skip as "already removed" on Windows and "powershell not on
-PATH" elsewhere, and both readings are accurate. A fresh clone cannot run
-either kind, and they skip rather than fail so that a red suite always means a
-real defect. Each skip states its own reason; run with `-rs` to see them.
-
-**The suite gives identical results on Windows and Linux**, measured at the
-same commit with the locked dependency versions (Sprint 17 F83,
-[`docs/VENV_PARITY.md`](docs/VENV_PARITY.md)). Same passes, same skips, zero
-failures on either. If your platform disagrees, that is a finding worth
-reporting rather than an expected difference.
-
-A caveat worth stating plainly: that measurement is why rows written from
-2026-09-19 record their execution environment (amendment A33). The 168 rows
-produced before it do not, so a figure regenerated from them cannot be
-attributed to a platform. Those rows are deliberately not retrofitted.
+**The skips are correct and expected.** They are the tests that need raw
+datasets, which are not redistributed here because their licences do not permit
+it. A fresh clone cannot run them, and they skip rather than fail so that a red
+suite always means a real defect. Each skip states its own reason; run with
+`-rs` to see them.
 
 The pool-mechanism guard is deliberately NOT among them: it runs against a
 committed fixture (`experiments/results/pool_mechanism_fixture.npz`) so the
@@ -185,13 +175,9 @@ Set `HSBC_ULB_CSV` to override the ULB location.
 
 **The hardware rows**, tagged **[HW]**. They ran on QCi's Dirac-3 against a
 grant to this project and need a funded account. Campaign totals -- fits, metered
-seconds, and how many carry a retained job identifier -- are in the appendix and
-in [`experiments/results/hw_job_ids.json`](experiments/results/hw_job_ids.json),
-not restated here.
-
-`qpu_cost_ledger.json` is a PARTIAL record and is deliberately not named first:
-it was last regenerated on 2026-09-09 and predates blocks B2 and B3, so its
-totals understate the campaign. It remains accurate for the calls it covers.
+seconds, and how many carry a retained job identifier -- are in
+[`experiments/results/qpu_cost_ledger.json`](experiments/results/qpu_cost_ledger.json)
+and the appendix, not restated here.
 
 What IS reproducible is their classical counterpart: every hardware fit solves a
 Hamiltonian that `experiments/src/mechanism_controls.py` solves exactly, and the
@@ -219,7 +205,7 @@ scripts/          rendering, manifest, confidentiality scan
 Methodology was **frozen before any result was observed** and changes only by
 dated amendment. Gates are scored as committed even when they fail: G0 missed
 its 0.85 AUPRC floor at 0.8296, and that is reported as a failure along with the
-fact that the stopping rule attached to it was not honored.
+fact that the stopping rule attached to it was not honoured.
 
 Three published claims were found false during external review and withdrawn
 (A26, A27) rather than quietly corrected. The amendment log carries them,
@@ -234,7 +220,7 @@ Phase 1 submitted 2026-09-12. Review runs 16 Sep to 14 Nov 2026, with finalist
 notification mid-November. Work continues on tooling and Phase 2 preparation;
 the submitted documents are a record and are not edited.
 
-## License and contact
+## Licence and contact
 
 Team lead: Harold Kimmey, independent researcher. Contact details are in the
 team profile. All IP remains with the author per the Challenge Terms &

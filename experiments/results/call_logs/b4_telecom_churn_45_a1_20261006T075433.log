@@ -1,3 +1,0 @@
-2026-10-06T11:54:33.066999+00:00  INTENT b4_telecom_churn_45_a1 vars=816 samples=8 expected=250-680 s for 10 fits: ~676 s at B2's measured 82.4 s/fit at 833 vars, ~250 s at HARDWARE_REQUEST_B4 line 43's 26-34 s/fit for 560-816 vars. The two anchors disagree by 2.4x and both are described as measured balance=1399 attempt=1
-2026-10-06T11:56:25.711995+00:00  OK job_id=6ac4e184358b23d0cb3719e4
-2026-10-06T11:56:25.829850+00:00  BALANCE after=1315 cost=84.0

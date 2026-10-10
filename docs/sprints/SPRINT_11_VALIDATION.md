@@ -17,7 +17,7 @@ The submission explained a key finding by saying our weak classifiers were
 all looked alike. An outside reviewer checked the saved data. The trees are not
 depth-limited at all -- they grow without limit -- and **not one** of them
 predicts "not fraud" everywhere. What actually happens is that 80 to 84 of the 91
-classifiers **memorize the training data exactly**, which makes them literally
+classifiers **memorise the training data exactly**, which makes them literally
 the same thing as each other. Same observation, wrong explanation.
 
 The measurement was right the whole time; the story attached to it was wrong.
@@ -32,7 +32,7 @@ changed at once to produce it, and we had never separated them. Now we have:
 |---|---|---|
 | Using four kinds of classifier instead of one | **-0.0047** | No -- below our detection threshold |
 | Handling class imbalance while training | **+0.0328** | **Yes** -- this is the whole gain |
-| Tweaking the nearest-neighbor settings | +0.0038 | No |
+| Tweaking the nearest-neighbour settings | +0.0038 | No |
 
 So the benefit came from imbalance handling, not from classifier variety. That
 is a **better** finding than the one we had: it is a simpler, cheaper

@@ -1,3 +1,0 @@
-2026-10-06T12:06:32.174958+00:00  INTENT b4_oilgas_gasturbine_46_a1 vars=560 samples=8 expected=250-680 s for 10 fits: ~676 s at B2's measured 82.4 s/fit at 833 vars, ~250 s at HARDWARE_REQUEST_B4 line 43's 26-34 s/fit for 560-816 vars. The two anchors disagree by 2.4x and both are described as measured balance=1059 attempt=1
-2026-10-06T12:08:11.151609+00:00  OK job_id=6ac4e477358b23d0cb3719eb
-2026-10-06T12:08:11.274317+00:00  BALANCE after=1022 cost=37.0

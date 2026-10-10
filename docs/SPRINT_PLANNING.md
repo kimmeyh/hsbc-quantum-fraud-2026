@@ -34,71 +34,6 @@ Any item that depends on an external capability (a Dirac-3/eqc-models feature, a
 
 **The pre-flight inventories CODE, not only documents (Sprint 10 improvement 6).** Grep the source tree for whatever the item is about to change, not just the docs that mention it. F40's card listed four documents referencing the path being moved and was verified against exactly those four. It missed `data.py`, which hardcoded the ULB dataset location -- so the repository that Appendix C promises "regenerates every figure" would have worked on no machine but the author's. The card was right about every document and silent about the one line that mattered.
 
-**AND IT INVENTORIES THE DOCUMENTS THAT ALREADY HOLD FINDINGS (IMP-2, Sprint
-20 retrospective).** The converse of the rule above, and it cost most of a
-task. For any item about a hardware block, a dataset or an external result,
-read these BEFORE estimating:
-
-- `docs/TROUBLESHOOTING.md` -- the symptom index; search it first, it is one
-  lookup
-- `docs/HARDWARE_REQUEST_<block>.md` -- if one exists for the block
-- any `docs/*_RESULT.md` or `docs/*_RECONCILIATION.md` for that subject
-- `docs/RESULTS_MEMO.md`
-- **the FROZEN `experiments/PREREGISTRATION.md`, sections 4 and 10**, for any
-  block, arm or cell -- section 10 is the hardware grid, section 4 the model
-  arms (IMP-1, Sprint 21)
-- **for any NEW RUNNER: the proven runner for the same kind of call and its
-  submission helper** (`run_hardware*.py`; `run_hardware_b3._submit_via_eqc`,
-  `eqc_submit.metered_fit`). Copy its path; do not write a new one (IMP-1,
-  Sprint 21)
-
-These are the places findings actually land. The broad version ("grep docs/")
-was too vague to be followed reliably.
-
-**AND IT CHECKS THE CARD'S OWN CLAIMS AGAINST WHAT EXISTS (IMP-1, Sprint 22
-retrospective).** Before a card is scheduled:
-
-- every acceptance test and falsifier names its input files, and each one
-  is confirmed on disk (`ls` or `git ls-files`), not assumed
-- every library option, parameter or endpoint the card names is confirmed
-  in the INSTALLED package (`inspect.signature`, or a grep of
-  `.venv/Lib/site-packages/<package>`), not in a document about it
-- a diagnosis in the card ("X fails because Y") is reproduced once, and the
-  fix is checked against the reproduction, before it is estimated
-
-(Sprint 22, three cards. F17's acceptance test named the B2 pools, which were
-never stored, and B2's samples, which were stored truncated; the test could
-not run as written. F124 named `batched_qboost_enabled`, which eqc_models
-0.21.0 does not have; it came from an off-repository document about another
-version. F125 diagnosed a stale ref; correcting the ref alone still blocked.)
-
-**And before declaring anything "blocked on the team lead" or "not defined in
-this repository", search the repository for it** -- the card's own earlier
-bullets, the preregistration, the commits that touched the subject. Absence
-is a claim, and it needs the same evidence as presence (IMP-1, Sprint 21).
-
-(Sprint 21, three times in one sprint. Task A was declared blocked on the team
-lead for a configuration the F90 card had recorded on 2026-10-03, two bullets
-above the dependency line. B5 was reported as having "no definition in this
-repository" when PREREGISTRATION section 10 lists it. And the B4 and B5
-runners hand-built the request sent to QCi with invented field names, while
-three proven runners submitted through `eqc_models` and
-`run_hardware_b3._submit_via_eqc`'s docstring said why not to; QCi rejected the
-one that reached it. CLAUDE.md already carried the rule -- "grep for the
-existing method first" -- and it did not reach the moment the runner was
-written. Putting the proven runner on this list puts it in front of the
-pre-flight that precedes the writing.)
-
-(Sprint 20, F93: I built a four-option decision document about the SPECTRA
-block without reading `docs/HARDWARE_REQUEST_B4.md`, whose line 89 already
-stated that the 13 negative proxy edges are expected and "not a red flag for
-B4", with the reason. It also already carried the tuned configuration's
-measured per-fit costs. I searched `results.json`, found no SPECTRA rows, and
-reasoned from absence -- CLAUDE.md's "don't state what an external system
-contains without opening it", applied to my own repository. The decision I
-presented rested on a misread figure, and a decision aid built on a wrong
-premise is worse than none because it looks like diligence.)
-
 ## Defined-scope rule (team lead, 2026-08-30 -- binding)
 
 Sprint scope is DEFINED, never additive: the team lead's selection list IS the complete scope. Items previously proposed, drafted, or carded are NOT in scope unless they appear in the selection. If an unselected item looks critical-path, raise it as a question during refinement; never plan it in by inference. Cards created for unselected items are closed as premature and recreated at the sprint that selects them.
@@ -117,45 +52,6 @@ Inputs: sprint goal (1-2 sentences), refined candidates (BACKLOG_REFINEMENT.md f
 ## Estimation
 
 Minutes, from recorded actuals of comparable step-types; `[no-history]` + timebox where uncalibrated. Re-estimate after plan-to-branch-state verification findings (workflow 3.2.2.1/3.2.2.2). Record actuals at task completion; recompute at retro Category 3.
-
-**Read `docs/VELOCITY_LOG.md` before writing any estimate, and add the
-sprint's rows to it at the retrospective (IMP-7, Sprint 22 retrospective).**
-For a card of a type the log has rows for, start from the median ratio of the
-last three sprints for that type and say so on the card. For a research or
-analysis card marked `[no-history]`, size the first decisive measurement, not
-every branch: Sprints 21-22 ran such cards far below their estimates (see the log)
-(Sprint 22: 980 minutes estimated, 256 recorded). The log stopped at Sprint 14
-and nobody noticed for eight sprints; the retrospective step that adds the
-rows is in `SPRINT_RETROSPECTIVE.md` step 7.
-
-### The sprint total is DERIVED from the cards, never asserted in the plan (Sprint 17 improvement 1)
-
-**Order of operations, and the order is the point:**
-
-1. **Each card carries its own estimate**, written on the card during
-   refinement, from that card's detailed scope.
-2. **Dependencies between cards are stated on the cards**, because a
-   dependency changes what can run in parallel and therefore what the sprint
-   costs in elapsed time. A card that blocks another is not the same cost as
-   one that does not.
-3. **The total is COMPUTED from those card estimates and their dependencies,
-   and recorded.**
-4. **The plan is then written or updated FROM the recorded total.** The plan
-   document reports the number; it does not originate it.
-
-**A total typed into the plan document is not an estimate. It is a guess that
-looks like an estimate**, and it has been wrong in two consecutive sprints:
-Sprint 16's draft said 590 against an actual 585, and Sprint 17's said 605 and
-716 against an actual 585 and 696. Both were caught only by summing the table
-during the mandatory plan-to-branch-state verification, which is late.
-
-Estimating before the cards are detailed is worse than useless: the number is
-stale before it is written, because the detail that would change it does not
-exist yet. Estimate the cards first, derive the total, then write the plan.
-
-**When a card's estimate changes mid-sprint**, the recorded total is recomputed
-and the plan updated, not left to drift. A plan whose total no longer matches
-its own cards is reporting a number nothing owns.
 
 ### Runtime is estimated SEPARATELY from implementation (Sprint 8 improvement 1)
 
@@ -226,25 +122,6 @@ Rule: any sprint whose scope is dominated by verification carries a stated
 **30% findings allowance** on top of its task estimates, named in the plan rather
 than absorbed silently. If the checks all pass, the allowance is returned and the
 sprint finishes early, which is the good outcome and should be recorded as such.
-
-### A WRITING sprint carries a sourcing allowance (Sprint 15 improvement 3)
-
-The rule above covers sprints dominated by verification. Sprint 15 was dominated
-by WRITING and generated the same shape of uncarded work, for a different
-reason: prose makes claims, and every claim has to be traced to a source or
-removed.
-
-Sprint 15 measured it. Five claims were caught and corrected during writing --
-two dataset details and a nationality written from background knowledge rather
-than from the repository, an acronym expansion asserted as fact, and a
-publication year taken from one vendor source while another disagreed. None had
-a card. Each cost a research step, a rewrite, or both.
-
-Rule: any sprint whose scope is dominated by producing prose that makes factual
-claims carries a stated **30% sourcing allowance** on the writing estimate, named
-in the plan rather than absorbed silently. Same discipline as the findings
-allowance: if every claim sources cleanly, the allowance is returned and the
-sprint finishes early.
 
 ## Risk assessment per sprint plan
 
