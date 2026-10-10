@@ -1,3 +1,0 @@
-2026-10-06T11:39:52.406592+00:00  INTENT b5_stratified_48_a1 vars=27 samples=1 expected=~15 s total for 12 fits (~1.2 s/fit); frozen grid section 10 balance=1668 attempt=1
-2026-10-06T11:40:07.376683+00:00  OK job_id=6ac4de0b358b23d0cb3719db
-2026-10-06T11:40:07.494452+00:00  BALANCE after=1667 cost=1.0

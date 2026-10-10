@@ -1,24 +1,31 @@
 {
   "current_sprint": {
-    "number": 23,
-    "name": "Restore the Repository as Filed",
-    "branch": "feature/20261007_Sprint_23",
-    "status": "phase_7_retrospective",
-    "plan_doc": "docs/sprints/SPRINT_23_PLAN.md",
-    "pr": 167,
+    "number": 14,
+    "name": "Make the Record Durable",
+    "branch": "feature/20260912_Sprint_14",
+    "status": "phase_5_manual_validation",
+    "plan_doc": "docs/sprints/SPRINT_14_PLAN.md",
+    "pr": null,
     "plan_approved": true,
-    "github_issues": [168, 169, 170, 171],
-    "task_actuals": {
-      "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective.",
-      "A": 20,
-      "B": 30
-    },
-    "scope_additions": []
+    "github_issues": [
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93
+    ],
+    "prior_prs": [],
+    "note": "All ten tasks complete, issues #84-93 closed plus legacy #69. Suite 321 -> 329 local; a clean clone of the branch runs 296 passed / 16 skipped / 0 failed. Two ADRs proposed (0014 fact database, 0015 reference library), both awaiting team-lead acceptance."
   },
   "last_completed_sprint": {
-    "number": 22,
-    "merged_pr": 159,
-    "main_merge_pr": 166,
+    "number": 13,
+    "merged_pr": 82,
+    "main_merge_pr": 83,
     "docs_triad_complete": true
   },
   "prereg": {
@@ -26,5 +33,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-10-08"
+  "updated": "2026-09-12"
 }

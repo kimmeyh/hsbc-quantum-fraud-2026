@@ -78,24 +78,8 @@ def test_report_generates_over_the_live_store():
     memo and paper cite. Catches keying regressions like the Sprint 4 one where
     the hardware H1b block silently produced no lines."""
     sg = _load()
-
-    # RESTORE THE COMMITTED REPORT (Sprint 21). sg.main() writes the REAL
-    # gate_report.md. This test never restored it, which was invisible while
-    # results.json did not change between commits -- regeneration produced the
-    # same bytes. On 2026-10-06 B4 and B5 added 22 rows, and this test silently
-    # rewrote the evidence file mid-suite: test_gate_report_totals (4 tests,
-    # earlier alphabetically) failed against the stale report on the first run,
-    # then passed on every later run because this test had changed the thing
-    # they check. A test must not mutate evidence; the sibling in
-    # test_evidence_artifacts_current.py already restores in a `finally`.
-    path = SRC.parents[0] / "results" / "gate_report.md"
-    before = path.read_bytes()
-    try:
-        assert sg.main() == 0
-        report = path.read_text(encoding="utf-8")
-    finally:
-        path.write_bytes(before)
-
+    assert sg.main() == 0
+    report = (SRC.parents[0] / "results" / "gate_report.md").read_text(encoding="utf-8")
     for section in ("## G0 ", "## Score health", "## Hardware rows",
                     "### H1b on hardware", "## A3 build side-by-side"):
         assert section in report, f"missing section: {section}"

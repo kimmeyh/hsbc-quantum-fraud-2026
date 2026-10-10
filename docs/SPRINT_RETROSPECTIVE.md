@@ -16,7 +16,7 @@ Adapted 2026-08-30 from spamfilter-multi's SPRINT_RETROSPECTIVE.md. The source's
 4. **Combine and display** in chat, both feedback sets together per category.
 5. **Propose improvements** from the combined feedback; per proposal: Title / Source / Type / Effort / Recommendation. Display; do NOT auto-apply.
 6. **Team lead disposes each**: apply now, backlog, or skip (blanket disposition acceptable). Record in an "Improvement Decisions" section.
-7. **Apply**: now-items as commits on the sprint branch; backlog-items to ALL_SPRINTS_MASTER_PLAN.md; skips noted. Then the mandatory completion updates (master plan Last Completed Sprint, summary doc scheduling, CHECKLIST reconciliation, **one `docs/VELOCITY_LOG.md` row per task from `sprint_status.json` `task_actuals`** (IMP-7, Sprint 22)). THEN `gh pr ready`.
+7. **Apply**: now-items as commits on the sprint branch; backlog-items to ALL_SPRINTS_MASTER_PLAN.md; skips noted. Then the mandatory completion updates (master plan Last Completed Sprint, summary doc scheduling, CHECKLIST reconciliation). THEN `gh pr ready`.
 
 ## The 16 Mandatory Categories
 
@@ -28,7 +28,7 @@ Adapted 2026-08-30 from spamfilter-multi's SPRINT_RETROSPECTIVE.md. The source's
 6. **Communication** -- narration, timely blocker reporting, commit/PR clarity.
 7. **Requirements Clarity** -- ambiguity encountered; hidden requirements surfaced mid-sprint.
 8. **Documentation** -- docs updated with the work; prereg amendments recorded properly; reference docs current.
-9. **Process Issues** -- errors, blockers, tooling friction, anything that belongs in a troubleshooting note or hook. **The troubleshooting note now EXISTS: `docs/TROUBLESHOOTING.md`** (IMP-2, Sprint 20). A category-9 finding with an authoritative home gets an entry there -- one symptom line, one cause line, one pointer. This category asked for that document from Sprint 2 and nine retrospectives' findings had nowhere to go, so each was rediscovered by a later session.
+9. **Process Issues** -- errors, blockers, tooling friction, anything that belongs in a troubleshooting note or hook.
 10. **Risk Management** -- risks identified vs materialized (hardware budget, leakage, deadline, grant timing); mitigation effectiveness.
 11. **Next Sprint Readiness** -- blockers for next sprint; master plan current.
 12. **Architecture Maintenance** -- for this project: protocol integrity (does anything in code diverge from the frozen preregistration; are amendments logged), pipeline structure, results.json schema adherence.
