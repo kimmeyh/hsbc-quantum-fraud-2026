@@ -22,7 +22,6 @@ from pathlib import Path
 
 SRC = Path(__file__).resolve().parent
 ROOT = SRC.parents[1]
-FIRST_PARTY_DIRS = (SRC, ROOT / "scripts", ROOT / "experiments" / "phase2" / "src")
 REQS = ROOT / "experiments" / "requirements.txt"
 
 # import name -> distribution name, where they differ.
@@ -52,22 +51,7 @@ def _declared() -> set[str]:
 
 
 def _local_modules() -> set[str]:
-    """First-party module names, from BOTH source directories.
-
-    `scripts/` was missing until 2026-09-20, so a test importing a module from
-    there (test_status_footer.py -> scripts/status_footer.py, via a sys.path
-    insert) was reported as an undeclared THIRD-PARTY package. The advice that
-    came with the failure was to add it to requirements.txt, which would have
-    been wrong: there is no such distribution on PyPI, and pip install would
-    fail on the next fresh clone.
-
-    Both directories hold first-party code and both are imported by tests, so
-    both belong here.
-
-    `experiments/phase2/src/` joined them in Sprint 22 (F123's Phase 2 tree),
-    for the same reason: tests import its modules via a sys.path insert.
-    """
-    return {p.stem for d in FIRST_PARTY_DIRS for p in d.glob("*.py")}
+    return {p.stem for p in SRC.glob("*.py")}
 
 
 def _imports() -> dict[str, set[str]]:
@@ -85,7 +69,7 @@ def _imports() -> dict[str, set[str]]:
     local = _local_modules()
     found: dict[str, set[str]] = {}
 
-    files = [p for d in FIRST_PARTY_DIRS for p in d.glob("*.py")]
+    files = list(SRC.glob("*.py")) + list((ROOT / "scripts").glob("*.py"))
     for f in files:
         try:
             tree = ast.parse(f.read_text(encoding="utf-8", errors="ignore"))

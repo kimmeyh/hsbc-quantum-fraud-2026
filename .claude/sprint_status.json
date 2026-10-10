@@ -1,47 +1,31 @@
 {
   "current_sprint": {
-    "number": 22,
-    "name": "Separate the Phases, Then Look for Better Numbers",
-    "branch": "feature/20261006_Sprint_22",
-    "status": "phase_7_retrospective",
-    "plan_doc": "docs/sprints/SPRINT_22_PLAN.md",
-    "pr": 159,
+    "number": 14,
+    "name": "Make the Record Durable",
+    "branch": "feature/20260912_Sprint_14",
+    "status": "phase_5_manual_validation",
+    "plan_doc": "docs/sprints/SPRINT_14_PLAN.md",
+    "pr": null,
     "plan_approved": true,
     "github_issues": [
-      160,
-      161,
-      162,
-      163,
-      164,
-      165
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93
     ],
-    "task_actuals": {
-      "_note": "Wall-clock minutes at completion, per IMP-1. Recorded as each task finishes, never reconstructed at the retrospective.",
-      "A": 30,
-      "B": 32,
-      "F": 45,
-      "D+E": 34,
-      "C": 95,
-      "D_sparsity_acceptance": 20,
-      "validation_round1": 20,
-      "validation_round2": 25,
-      "retrospective_and_improvements": 70,
-      "security_review_findings_1_to_12": 55,
-      "pr_review_findings_1_to_15": 85,
-      "_note_CDE": "D and E ran in parallel 22:56-23:30 and are not separable; C ran 23:15-00:30 (2026-10-07), overlapping E, plus 20 min of named-source review to 00:52. D_sparsity_acceptance is the F17 card-acceptance test, 00:32-00:52, overlapping C. Read from commit times and the live clock, not reconstructed later."
-    },
-    "scope_additions": [],
-    "decisions": {
-      "approval_2026-10-06": "Approved as amended: F17 built (one tool, exact+emulate, imports qubo_proxy unchanged); F123 provisional Phase 2 layout, adjustable at Manual Validation; F20 parallel after A,B feeding C; F125 added (2.1); F121 HOLD until F124 reports (3.1). Do not stop between tasks until Manual Validation.",
-      "manual_validation_round1_2026-10-07": "D1=1 F124 list approved; D2=2; D3=2 relocate (section 4.3); D4=1; D5=2 (no alternative named); D6 more information requested; D7=1; D8=1 attempted: all 11 B2 jobs 404 Job not found, balance 1022 unchanged, not recoverable; D9=1 carded F126. D2-D6 put back with an inventory before any group B file is edited.",
-      "manual_validation_round2_2026-10-07": "Phase 2 moves to its own repository (1), private (1), after Sprint 22 closes here (1). Settles D3 and D4. This repository restored to f35699c and archived later, under F127. PHASE_SEPARATION.md section 9.",
-      "manual_validation_round3_2026-10-07": "As recommended: PACKAGE.md and SUBMISSION_RECEIPT.md keep current text (third restore exception); D2 note stays in B4_B5_HARDWARE_RESULT.md; D5 dated note in PHASE_SEPARATION.md; D6 IMP-4 and placement check dropped. Manual Validation complete. Retrospective: team lead scored all 13 scored categories Very Good; no minor updates, no backlog additions, no questions."
-    }
+    "prior_prs": [],
+    "note": "All ten tasks complete, issues #84-93 closed plus legacy #69. Suite 321 -> 329 local; a clean clone of the branch runs 296 passed / 16 skipped / 0 failed. Two ADRs proposed (0014 fact database, 0015 reference library), both awaiting team-lead acceptance."
   },
   "last_completed_sprint": {
-    "number": 21,
-    "merged_pr": 152,
-    "main_merge_pr": 158,
+    "number": 13,
+    "merged_pr": 82,
+    "main_merge_pr": 83,
     "docs_triad_complete": true
   },
   "prereg": {
@@ -49,5 +33,5 @@
     "freeze_commit": "95751b9",
     "tag": "prereg-freeze"
   },
-  "updated": "2026-10-07"
+  "updated": "2026-09-12"
 }
