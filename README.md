@@ -4,6 +4,12 @@
 > [kimmeyh/hsbc-qfraud-phase2](https://github.com/kimmeyh/hsbc-qfraud-phase2),
 > which is private for now, 2026-10-10. That work, up to the reset, also
 > remains in this repository's git history.
+>
+> **Read the submission:** copies of the three submitted PDFs (proposal,
+> appendix, team profile) and a plain-language explanation of the submission
+> are at <https://kimmeyh.github.io/hsbc-quantum-fraud-2026/>. The explanation
+> was written on 2026-09-17, after the filing, and is not part of the
+> submission.
 
 # Quantum-Enhanced Credit Card Fraud Detection
 
